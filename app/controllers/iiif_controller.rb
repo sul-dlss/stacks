@@ -5,7 +5,7 @@ class IiifController < ApplicationController
   before_action :add_iiif_profile_header
 
   def show
-    fail "File Not Found" unless @image.exist?
+  #  fail "File Not Found" unless @image.exist?
     authorize! :read, @image
     self.content_type = mime_type(params[:format])
     self.response_body = @image.response

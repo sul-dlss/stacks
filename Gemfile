@@ -46,6 +46,8 @@ group :development, :test do
   gem 'rspec-rails'
 end
 
+gem 'bootstrap-sass'
+gem 'sul_styles'
 gem 'djatoka'
 gem 'riiif'
 gem 'config'

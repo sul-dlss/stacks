@@ -60,6 +60,9 @@ Rails.application.routes.draw do
     get '/file/auth/:id/:file_name' => 'webauth#file_login'
   end
 
+  get '/image/iiif' => 'stacks#iiif'
+  root 'stacks#index'
+
   constraints identifier: %r{[^/]+}, size: %r{[^/]+} do
     get '/image/iiif/:identifier' => 'iiif#show', as: :iiif_base
     get '/image/iiif/:identifier/:region/:size/:rotation/:quality' => 'iiif#show', as: :iiif
