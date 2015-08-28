@@ -62,6 +62,9 @@ group :development, :test do
 
   # Coveralls for code coverage metrics
   gem 'coveralls', require: false
+
+  gem 'webmock'
+  gem 'vcr'
 end
 
 # Use Capistrano for deployment
