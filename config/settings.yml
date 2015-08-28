@@ -1,0 +1,6 @@
+stacks:
+  storage_root: /stacks
+  djatoka_url: 'http://imageserver-b.stanford.edu/adore-djatoka/resolver'
+
+purl:
+  url: 'http://purl.stanford.edu/'
