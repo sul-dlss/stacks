@@ -40,4 +40,40 @@ describe StacksImage do
       expect(subject.tap { |x| x.region = '0,0,800,600'; x.size = ',256' }).not_to be_a_tile
     end
   end
+
+  describe '#tile_dimensions' do
+    it 'handles explicit sizes' do
+      expect(subject.tap { |x| x.size = '257,257' }.tile_dimensions).to eq [257, 257]
+    end
+
+    it 'calculates implied dimensions' do
+      expect(subject.tap { |x| x.region = '0,0,800,600'; x.size = '256,' }.tile_dimensions).to eq [256, 192]
+      expect(subject.tap { |x| x.region = '0,0,800,600'; x.size = ',192' }.tile_dimensions).to eq [256, 192]
+    end
+
+    it 'handles full dimensions' do
+      expect(subject.tap { |x| x.region = '0,0,800,600'; x.size = 'full' }.tile_dimensions).to eq [800, 600]
+    end
+
+    it 'handles percentages' do
+      expect(subject.tap { |x| x.region = '0,0,800,600'; x.size = 'pct:50' }.tile_dimensions).to eq [400, 300]
+    end
+  end
+
+  describe '#region_dimensions' do
+    subject { StacksImage.new.tap { |x| allow(x).to receive_messages(image_width: 800, image_height: 600) } }
+
+    it 'uses the image dimensions' do
+      expect(subject.tap { |x| x.region = 'full' }.region_dimensions).to eq [800, 600]
+    end
+
+    it 'calculates percentages of the full image' do
+      expect(subject.tap { |x| x.region = 'pct:50' }.region_dimensions).to eq [400, 300]
+      expect(subject.tap { |x| x.region = 'pct:200' }.region_dimensions).to eq [1600, 1200]
+    end
+
+    it 'handles explicit region requests' do
+      expect(subject.tap { |x| x.region = '0,1,2,3' }.region_dimensions).to eq [2, 3]
+    end
+  end
 end

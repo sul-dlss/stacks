@@ -42,7 +42,15 @@ class StacksImage < StacksFile
   def region_dimensions
     case region
     when 'full', /^pct/
-      [image_width, image_height]
+      scale = case region
+              when 'full'
+                1.0
+              when /^pct:/
+                region.sub(/^pct:/, '').to_f / 100
+              else
+                1.0
+              end
+      [image_width, image_height].map { |i| i * scale }
     when /^(\d+),(\d+),(\d+),(\d+)$/
       m = region.match(/^(\d+),(\d+),(\d+),(\d+)$/)
       [m[3], m[4]].map(&:to_i)
