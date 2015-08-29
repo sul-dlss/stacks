@@ -1,0 +1,57 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://imageserver-b.stanford.edu/adore-djatoka/resolver?rft_id=/stacks/nr/349/ct/7889/nr349ct7889_00_0001.jp2&svc_id=info:lanl-repo/svc/getMetadata&url_ver=Z39.88-2004
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - imageserver-b.stanford.edu
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Apache-Coyote/1.1
+      Set-Cookie:
+      - JSESSIONID=ABE4D1C005E0FC2C53C5F20A7A54A75A; Path=/adore-djatoka
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '227'
+      Accept-Ranges:
+      - bytes
+      Date:
+      - Sat, 29 Aug 2015 18:22:51 GMT
+      X-Varnish:
+      - 411072349 411072325
+      Age:
+      - '14'
+      Via:
+      - 1.1 varnish
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+        "identifier": "/stacks/nr/349/ct/7889/nr349ct7889_00_0001.jp2",
+        "imagefile": "/stacks/nr/349/ct/7889/nr349ct7889_00_0001.jp2",
+        "width": "3832",
+        "height": "2552",
+        "dwtLevels": "5",
+        "levels": "5",
+        "compositingLayerCount": "1"
+        }
+    http_version: 
+  recorded_at: Sat, 29 Aug 2015 18:22:51 GMT
+recorded_with: VCR 2.9.3
