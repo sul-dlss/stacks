@@ -14,7 +14,15 @@ class StacksImage < StacksFile
 
   def tile_dimensions
     if size =~ /^\d*,\d*$/
-      size.split(',').map(&:to_i)
+      dim = size.split(',', 2)
+
+      if dim[0].blank? || dim[1].blank?
+        rdim = region_dimensions
+        dim[0] = (rdim[0] / rdim[1].to_f) * dim[1].to_i if dim[0].blank?
+        dim[1] = (rdim[1] / rdim[0].to_f) * dim[0].to_i if dim[1].blank?
+      end
+
+      dim.map(&:to_i)
     elsif region_dimensions
       scale = case size
               when 'full'
@@ -43,7 +51,7 @@ class StacksImage < StacksFile
 
   def thumbnail?
     w, h = tile_dimensions
-    region == 'full' && w <= 400 && w <= 400
+    region == 'full' && w <= 400 && h <= 400
   end
 
   def tile?
