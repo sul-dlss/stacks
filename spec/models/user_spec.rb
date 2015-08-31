@@ -6,7 +6,7 @@ describe User do
     let(:user) { nil }
     let(:file) { StacksFile.new.tap { |x| allow(x).to receive(:rights_xml).and_return(rights_xml) } }
     let(:image) { StacksImage.new.tap { |x| allow(x).to receive(:rights_xml).and_return(rights_xml) } }
-    let(:thumbnail) { StacksImage.new(region: 'full', size: '400,400').tap { |x| allow(x).to receive(:rights_xml).and_return(rights_xml) } }
+    let(:thumbnail) { StacksImage.new(region: 'full', size: '!400,400').tap { |x| allow(x).to receive(:rights_xml).and_return(rights_xml) } }
     let(:tile) { StacksImage.new(region: '0,0,100,100', size: '256,256').tap { |x| allow(x).to receive(:rights_xml).and_return(rights_xml) } }
     let(:rights_xml) { '' }
     context 'webauth user' do

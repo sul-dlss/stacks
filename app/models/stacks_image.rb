@@ -13,8 +13,8 @@ class StacksImage < StacksFile
   # end
 
   def tile_dimensions
-    if size =~ /^\d*,\d*$/
-      dim = size.split(',', 2)
+    if size =~ /^!?\d*,\d*$/
+      dim = size.gsub('!', '').split(',', 2)
 
       if dim[0].blank? || dim[1].blank?
         rdim = region_dimensions
