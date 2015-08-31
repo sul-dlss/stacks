@@ -62,7 +62,9 @@ group :development, :test do
 
   # Coveralls for code coverage metrics
   gem 'coveralls', require: false
+end
 
+group :test do
   gem 'webmock'
   gem 'vcr'
 end
