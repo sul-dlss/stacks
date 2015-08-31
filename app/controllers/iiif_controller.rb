@@ -16,7 +16,7 @@ class IiifController < ApplicationController
       if can? :download, @image
         md.tile_width = 1024
         md.tile_height = 1024
-      else
+      elsif can? :access, @image
         md.tile_width = 256
         md.tile_height = 256
       end

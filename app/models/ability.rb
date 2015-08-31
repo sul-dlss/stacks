@@ -59,16 +59,18 @@ class Ability
     end
 
     can :read, StacksImage do |f|
-      if f.tile?
-        val, rule = f.world_rights
-        next true if val
+      f.tile? && can?(:access, f)
+    end
 
-        val, rule = f.stanford_only_rights
-        next true if val && user.webauth_user?
+    can :access, StacksImage do |f|
+      val, rule = f.world_rights
+      next true if val
 
-        val, rule = f.agent_rights(user.id)
-        next true if val
-      end
+      val, rule = f.stanford_only_rights
+      next true if val && user.webauth_user?
+
+      val, rule = f.agent_rights(user.id)
+      next true if val
     end
 
   end
