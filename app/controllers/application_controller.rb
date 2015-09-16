@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Metal
   include AbstractController::Callbacks
+  include ActionController::ConditionalGet
   include CanCan::ControllerAdditions
 
   include ActiveSupport::Rescuable
@@ -16,6 +17,10 @@ class ApplicationController < ActionController::Metal
                       elsif request.remote_user
                         webauth_user
                       end
+  end
+
+  def anonymous_ability
+    @anonymous_ability ||= Ability.new(nil)
   end
 
   def basic_auth_user

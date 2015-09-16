@@ -25,7 +25,15 @@ class StacksFile
   end
 
   def exist?
-    File.exist? path
+    File.exist?(path)
+  end
+
+  def mtime
+    @mtime ||= File.mtime(path) if exist?
+  end
+
+  def etag
+    mtime.to_i if mtime
   end
 
   def path

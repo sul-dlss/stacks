@@ -5,13 +5,19 @@ class IiifController < ApplicationController
   before_action :add_iiif_profile_header
 
   def show
-  #  fail "File Not Found" unless @image.exist?
+  #  fail 'File Not Found' unless @image.exist?
+    return unless stale?(cache_headers)
+    expires_in 10.minutes, public: anonymous_ability.can?(:read, @image)
     authorize! :read, @image
     self.content_type = mime_type(params[:format])
     self.response_body = @image.response
   end
 
   def metadata
+  #  fail 'File Not Found' unless @image.exist?
+    return unless stale?(cache_headers)
+    expires_in 10.minutes, public: anonymous_ability.can?(:read, @image)
+
     info = @image.info do |md|
       if can? :download, @image
         md.tile_width = 1024
@@ -31,6 +37,17 @@ class IiifController < ApplicationController
   end
 
   private
+
+  def cache_headers
+    return {} unless @image.exist?
+
+    {
+      etag: @image.mtime.to_i,
+      last_modified: @image.mtime,
+      public: anonymous_ability.can?(:read, @image),
+      template: false
+    }
+  end
 
   def mime_type(format)
     case format
