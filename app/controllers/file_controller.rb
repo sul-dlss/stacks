@@ -1,4 +1,5 @@
 class FileController < ApplicationController
+  include ActionController::DataStreaming
   before_action :load_file
 
   def show
@@ -6,7 +7,7 @@ class FileController < ApplicationController
     return unless stale?(cache_headers)
     expires_in 10.minutes
     authorize! :read, @file
-    send_file @file.path, x_sendfile: true
+    send_file @file.path
   end
 
   private
