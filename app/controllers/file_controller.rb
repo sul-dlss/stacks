@@ -11,6 +11,10 @@ class FileController < ApplicationController
 
   private
 
+  def file_params
+    params.slice(:id, :file_name)
+  end
+
   def cache_headers
     {
       etag: @file.etag,
@@ -21,6 +25,6 @@ class FileController < ApplicationController
   end
 
   def load_file
-    @file ||= StacksFile.new(params)
+    @file ||= StacksFile.new(file_params)
   end
 end
