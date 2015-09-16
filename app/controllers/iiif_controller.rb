@@ -77,7 +77,7 @@ class IiifController < ApplicationController
   end
 
   def identifier_params
-    id, file_name = params[:identifier].split(%r{[/(%2F)]})
+    id, file_name = params[:identifier].split(Regexp.union(%r{/}, %r{%2F}))
     { id: id, file_name: file_name }
   end
 

@@ -38,8 +38,9 @@ class StacksFile
 
   def path
     @path ||= begin
-      id =~ /^druid:([a-z]{2})(\d{3})([a-z]{2})(\d{4})$/i
-      File.join(Settings.stacks.storage_root, $1, $2, $3, $4, file_name)
+      match = druid.match(/^([a-z]{2})(\d{3})([a-z]{2})(\d{4})$/i)
+
+      File.join(Settings.stacks.storage_root, match[1], match[2], match[3], match[4], file_name)
     end
   end
 
