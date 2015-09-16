@@ -2,13 +2,13 @@
 http_interactions:
 - request:
     method: get
-    uri: http://purl.stanford.edu//nr349ct7889.xml
+    uri: https://purl.stanford.edu//nr349ct7889.xml
     body:
       encoding: US-ASCII
       string: ''
     headers:
       User-Agent:
-      - Hurley v0.1
+      - Hurley v0.2
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -19,7 +19,7 @@ http_interactions:
       message: ''
     headers:
       Date:
-      - Fri, 28 Aug 2015 23:05:31 GMT
+      - Wed, 16 Sep 2015 22:40:32 GMT
       Server:
       - Apache/2.2.15 (Red Hat)
       X-Powered-By:
@@ -35,9 +35,9 @@ http_interactions:
       Cache-Control:
       - max-age=0, private, must-revalidate
       X-Request-Id:
-      - 8c36aaa6-db49-4f74-95a6-b6aae5316da1
+      - 6ef5a6dc-0045-4e59-8d17-8e6301920ceb
       X-Runtime:
-      - '0.202005'
+      - '0.046358'
       Status:
       - '200'
       Content-Length:
@@ -378,5 +378,5 @@ http_interactions:
           </oai_dc:dc>
         </publicObject>
     http_version: 
-  recorded_at: Fri, 28 Aug 2015 23:05:31 GMT
+  recorded_at: Wed, 16 Sep 2015 22:40:33 GMT
 recorded_with: VCR 2.9.3

@@ -2,178 +2,13 @@
 http_interactions:
 - request:
     method: get
-    uri: http://imageserver-b.stanford.edu/adore-djatoka/resolver?rft_id=/stacks/nr/349/ct/7889/.jp2&svc_id=info:lanl-repo/svc/getMetadata&url_ver=Z39.88-2004
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-      Host:
-      - imageserver-b.stanford.edu
-  response:
-    status:
-      code: 404
-      message: Not Found
-    headers:
-      Server:
-      - Apache-Coyote/1.1
-      Set-Cookie:
-      - JSESSIONID=4A412B6837A295A5DAA48E4FABAE5677; Path=/adore-djatoka
-      Content-Type:
-      - text/html;charset=utf-8
-      Content-Length:
-      - '952'
-      Accept-Ranges:
-      - bytes
-      Date:
-      - Fri, 28 Aug 2015 23:05:31 GMT
-      X-Varnish:
-      - 410889127 410888355
-      Age:
-      - '158'
-      Via:
-      - 1.1 varnish
-      Connection:
-      - keep-alive
-    body:
-      encoding: UTF-8
-      string: '<html><head><title>Apache Tomcat/6.0.24 - Error report</title><style><!--H1
-        {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:22px;}
-        H2 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:16px;}
-        H3 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:14px;}
-        BODY {font-family:Tahoma,Arial,sans-serif;color:black;background-color:white;}
-        B {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;}
-        P {font-family:Tahoma,Arial,sans-serif;background:white;color:black;font-size:12px;}A
-        {color : black;}A.name {color : black;}HR {color : #525D76;}--></style> </head><body><h1>HTTP
-        Status 404 - </h1><HR size="1" noshade="noshade"><p><b>type</b> Status report</p><p><b>message</b>
-        <u></u></p><p><b>description</b> <u>The requested resource () is not available.</u></p><HR
-        size="1" noshade="noshade"><h3>Apache Tomcat/6.0.24</h3></body></html>'
-    http_version: 
-  recorded_at: Fri, 28 Aug 2015 23:05:31 GMT
-- request:
-    method: get
-    uri: http://imageserver-b.stanford.edu/adore-djatoka/resolver?rft_id=/stacks/nr/349/ct/7889/.jp2&svc_id=info:lanl-repo/svc/getMetadata&url_ver=Z39.88-2004
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-      Host:
-      - imageserver-b.stanford.edu
-  response:
-    status:
-      code: 404
-      message: Not Found
-    headers:
-      Server:
-      - Apache-Coyote/1.1
-      Set-Cookie:
-      - JSESSIONID=4A412B6837A295A5DAA48E4FABAE5677; Path=/adore-djatoka
-      Content-Type:
-      - text/html;charset=utf-8
-      Content-Length:
-      - '952'
-      Accept-Ranges:
-      - bytes
-      Date:
-      - Fri, 28 Aug 2015 23:05:31 GMT
-      X-Varnish:
-      - 410889128 410888355
-      Age:
-      - '158'
-      Via:
-      - 1.1 varnish
-      Connection:
-      - keep-alive
-    body:
-      encoding: UTF-8
-      string: '<html><head><title>Apache Tomcat/6.0.24 - Error report</title><style><!--H1
-        {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:22px;}
-        H2 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:16px;}
-        H3 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:14px;}
-        BODY {font-family:Tahoma,Arial,sans-serif;color:black;background-color:white;}
-        B {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;}
-        P {font-family:Tahoma,Arial,sans-serif;background:white;color:black;font-size:12px;}A
-        {color : black;}A.name {color : black;}HR {color : #525D76;}--></style> </head><body><h1>HTTP
-        Status 404 - </h1><HR size="1" noshade="noshade"><p><b>type</b> Status report</p><p><b>message</b>
-        <u></u></p><p><b>description</b> <u>The requested resource () is not available.</u></p><HR
-        size="1" noshade="noshade"><h3>Apache Tomcat/6.0.24</h3></body></html>'
-    http_version: 
-  recorded_at: Sat, 29 Aug 2015 18:22:51 GMT
-- request:
-    method: get
-    uri: http://imageserver-b.stanford.edu/adore-djatoka/resolver?rft_id=/stacks/nr/349/ct/7889/.jp2&svc_id=info:lanl-repo/svc/getMetadata&url_ver=Z39.88-2004
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-      Host:
-      - imageserver-b.stanford.edu
-  response:
-    status:
-      code: 404
-      message: Not Found
-    headers:
-      Server:
-      - Apache-Coyote/1.1
-      Set-Cookie:
-      - JSESSIONID=94F8CCA245FAEBE8871820CE37C4C0FC; Path=/adore-djatoka
-      Content-Type:
-      - text/html;charset=utf-8
-      Content-Length:
-      - '952'
-      Accept-Ranges:
-      - bytes
-      Date:
-      - Sat, 29 Aug 2015 18:22:51 GMT
-      X-Varnish:
-      - 411072343 411072341
-      Age:
-      - '0'
-      Via:
-      - 1.1 varnish
-      Connection:
-      - keep-alive
-    body:
-      encoding: UTF-8
-      string: '<html><head><title>Apache Tomcat/6.0.24 - Error report</title><style><!--H1
-        {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:22px;}
-        H2 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:16px;}
-        H3 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:14px;}
-        BODY {font-family:Tahoma,Arial,sans-serif;color:black;background-color:white;}
-        B {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;}
-        P {font-family:Tahoma,Arial,sans-serif;background:white;color:black;font-size:12px;}A
-        {color : black;}A.name {color : black;}HR {color : #525D76;}--></style> </head><body><h1>HTTP
-        Status 404 - </h1><HR size="1" noshade="noshade"><p><b>type</b> Status report</p><p><b>message</b>
-        <u></u></p><p><b>description</b> <u>The requested resource () is not available.</u></p><HR
-        size="1" noshade="noshade"><h3>Apache Tomcat/6.0.24</h3></body></html>'
-    http_version: 
-  recorded_at: Sat, 29 Aug 2015 18:22:51 GMT
-- request:
-    method: get
-    uri: http://purl.stanford.edu//nr349ct7889.xml
+    uri: https://purl.stanford.edu//nr349ct7889.xml
     body:
       encoding: US-ASCII
       string: ''
     headers:
       User-Agent:
-      - Hurley v0.1
+      - Hurley v0.2
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -184,7 +19,7 @@ http_interactions:
       message: ''
     headers:
       Date:
-      - Fri, 28 Aug 2015 23:05:31 GMT
+      - Wed, 16 Sep 2015 22:40:32 GMT
       Server:
       - Apache/2.2.15 (Red Hat)
       X-Powered-By:
@@ -200,9 +35,9 @@ http_interactions:
       Cache-Control:
       - max-age=0, private, must-revalidate
       X-Request-Id:
-      - 0a29d14e-97b9-401d-80d5-c50977324368
+      - 938b3a06-ae3c-454b-a0cf-814cd194e9c8
       X-Runtime:
-      - '0.107316'
+      - '0.115601'
       Status:
       - '200'
       Content-Length:
@@ -543,60 +378,5 @@ http_interactions:
           </oai_dc:dc>
         </publicObject>
     http_version: 
-  recorded_at: Fri, 28 Aug 2015 23:05:31 GMT
-- request:
-    method: get
-    uri: http://imageserver-b.stanford.edu/adore-djatoka/resolver?rft_id=/stacks/nr/349/ct/7889/.jp2&svc_id=info:lanl-repo/svc/getMetadata&url_ver=Z39.88-2004
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-      Host:
-      - imageserver-b.stanford.edu
-  response:
-    status:
-      code: 404
-      message: Not Found
-    headers:
-      Server:
-      - Apache-Coyote/1.1
-      Set-Cookie:
-      - JSESSIONID=4A412B6837A295A5DAA48E4FABAE5677; Path=/adore-djatoka
-      Content-Type:
-      - text/html;charset=utf-8
-      Content-Length:
-      - '952'
-      Accept-Ranges:
-      - bytes
-      Date:
-      - Fri, 28 Aug 2015 23:05:32 GMT
-      X-Varnish:
-      - 410889131 410888355
-      Age:
-      - '159'
-      Via:
-      - 1.1 varnish
-      Connection:
-      - keep-alive
-    body:
-      encoding: UTF-8
-      string: '<html><head><title>Apache Tomcat/6.0.24 - Error report</title><style><!--H1
-        {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:22px;}
-        H2 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:16px;}
-        H3 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:14px;}
-        BODY {font-family:Tahoma,Arial,sans-serif;color:black;background-color:white;}
-        B {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;}
-        P {font-family:Tahoma,Arial,sans-serif;background:white;color:black;font-size:12px;}A
-        {color : black;}A.name {color : black;}HR {color : #525D76;}--></style> </head><body><h1>HTTP
-        Status 404 - </h1><HR size="1" noshade="noshade"><p><b>type</b> Status report</p><p><b>message</b>
-        <u></u></p><p><b>description</b> <u>The requested resource () is not available.</u></p><HR
-        size="1" noshade="noshade"><h3>Apache Tomcat/6.0.24</h3></body></html>'
-    http_version: 
-  recorded_at: Fri, 28 Aug 2015 23:05:32 GMT
+  recorded_at: Wed, 16 Sep 2015 22:40:33 GMT
 recorded_with: VCR 2.9.3
