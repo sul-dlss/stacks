@@ -31,7 +31,9 @@ class ApplicationController < ActionController::Metal
   end
 
   def webauth_user
-    User.new(id: request.remote_user, webauth_user: true)
+    User.new(id: request.remote_user,
+             webauth_user: true,
+             ldap_groups: request.env.fetch('WEBAUTH_LDAPPRIVGROUP', '').split('|'))
   end
 
   # stubs for squash

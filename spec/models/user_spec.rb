@@ -10,7 +10,7 @@ describe User do
     let(:tile) { StacksImage.new(region: '0,0,100,100', size: '256,256').tap { |x| allow(x).to receive(:rights_xml).and_return(rights_xml) } }
     let(:rights_xml) { '' }
     context 'webauth user' do
-      let(:user) { User.new(id: 'a', webauth_user: true) }
+      let(:user) { User.new(id: 'a', webauth_user: true, ldap_groups: %w(stanford:stanford)) }
 
       context 'with an unrestricted file' do
         let(:rights_xml) do
