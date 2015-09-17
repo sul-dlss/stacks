@@ -220,4 +220,18 @@ describe User do
       end
     end
   end
+
+  describe '#stanford?' do
+    context 'with a webauth user in the appropriate workgroups' do
+      it 'is a stanford user' do
+        expect(User.new(webauth_user: true, ldap_groups: %w(stanford:stanford))).to be_stanford
+      end
+    end
+
+    context 'with just a webauth user' do
+      it 'is not a stanford user' do
+        expect(User.new(webauth_user: true, ldap_groups: %w(stanford:sponsored))).not_to be_stanford
+      end
+    end
+  end
 end
