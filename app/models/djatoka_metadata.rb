@@ -17,10 +17,10 @@ class DjatokaMetadata
   attr_reader :metadata, :canonical_url
 
   def self.find(canonical_url, file_path)
-    DjatokaMetadata.new(canonical_url, raw_metadata_response(file_path), file_path)
+    DjatokaMetadata.new(canonical_url, file_path)
   end
 
-  def self.raw_metadata_response(file_path)
+  def raw_metadata_response(file_path)
     # return the image metadata
     Rails.cache.fetch("djatoka/metadata/#{file_path}") do
       benchmark "Fetching djatoka metadata for #{file_path}" do
@@ -31,9 +31,9 @@ class DjatokaMetadata
   end
 
   # constructor
-  def initialize(canonical_url, md, stacks_file_path)
+  def initialize(canonical_url, stacks_file_path)
     @canonical_url = canonical_url
-    @metadata = md
+    @metadata = raw_metadata_response(stacks_file_path)
     @stacks_file_path = stacks_file_path
   end
 
