@@ -2,7 +2,7 @@ class FileController < ApplicationController
   include Rails.application.routes.url_helpers
 
   include ActionController::DataStreaming
-  check_authorization
+
   before_action :load_file
 
   def show

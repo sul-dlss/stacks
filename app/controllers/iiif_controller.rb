@@ -1,6 +1,4 @@
 class IiifController < ApplicationController
-  check_authorization
-
   include Rails.application.routes.url_helpers
 
   before_action :load_image
