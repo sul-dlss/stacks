@@ -72,7 +72,9 @@ Rails.application.routes.draw do
     get '/image/iiif/auth/:identifier/info.json' => 'webauth#iiif_login'
   end
 
-  get '/image/:id/:file_name' => 'legacy_image_service#show'
-  get '/image/app/:id/:file_name' => 'legacy_image_service#show'
-  get '/image/auth/:id/:file_name' => 'legacy_image_service#show'
+  constraints file_name: %r{[^/]+}, format: %r{(jpg|png|gif|jp2)} do
+    get '/image/:id/:file_name(.:format)' => 'legacy_image_service#show'
+    get '/image/app/:id/:file_name' => 'legacy_image_service#show'
+    get '/image/auth/:id/:file_name' => 'legacy_image_service#show'
+  end
 end
