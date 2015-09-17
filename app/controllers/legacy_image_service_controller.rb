@@ -4,10 +4,6 @@ class LegacyImageServiceController < ApplicationController
 
   before_action :load_image
 
-  SIZE_CATEGORIES = %w(square thumb small medium large xlarge full)
-  SIZE_REGEX = /_(#{SIZE_CATEGORIES.join('|')})$/i
-
-
   def show
     if params[:format] == 'xml'
     elsif params[:format] == 'json'
@@ -99,19 +95,10 @@ class LegacyImageServiceController < ApplicationController
   end
 
   def file_name
-    if params[:file_name] =~ SIZE_REGEX
-      params[:file_name].sub(SIZE_REGEX, '')
-    else
-      params[:file_name]
-    end
+    params[:file_name]
   end
 
   def size
-    @size = if params[:size]
-      params[:size]
-    elsif params[:file_name] =~ SIZE_REGEX
-      m = params[:file_name].match(SIZE_REGEX)
-      m[1] if m
-    end
+    params[:size]
   end
 end
