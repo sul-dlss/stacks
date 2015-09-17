@@ -1,14 +1,8 @@
-class ApplicationController < ActionController::Metal
-  include AbstractController::Callbacks
-  include ActionController::ConditionalGet
-  include CanCan::ControllerAdditions
-
-  include ActiveSupport::Rescuable
+class ApplicationController < ActionController::Base
   include Squash::Ruby::ControllerMethods
   enable_squash_client
 
   include ActionController::HttpAuthentication::Basic
-  include ActionController::Redirecting
 
   rescue_from CanCan::AccessDenied, with: :rescue_can_can
 

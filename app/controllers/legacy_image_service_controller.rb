@@ -1,7 +1,4 @@
 class LegacyImageServiceController < ApplicationController
-  include ActionController::Redirecting
-  include Rails.application.routes.url_helpers
-
   before_action :load_image
 
   def show

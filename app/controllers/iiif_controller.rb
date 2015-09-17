@@ -1,6 +1,4 @@
 class IiifController < ApplicationController
-  include Rails.application.routes.url_helpers
-
   before_action :load_image
   before_action :add_iiif_profile_header
 

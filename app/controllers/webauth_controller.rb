@@ -1,6 +1,4 @@
 class WebauthController < ApplicationController
-  include Rails.application.routes.url_helpers
-
   before_action do
     fail CanCan::AccessDenied, 'Unable to authenticate' unless request.remote_user
   end
