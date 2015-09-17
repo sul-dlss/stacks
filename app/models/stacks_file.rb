@@ -51,7 +51,9 @@ class StacksFile
   end
 
   def rights_xml
-    Hurley.get(Settings.purl.url + "/#{druid}.xml").body
+    benchmark "Fetching public xml for #{druid}" do
+      Hurley.get(Settings.purl.url + "/#{druid}.xml").body
+    end
   end
 
   def logger

@@ -2,6 +2,7 @@ require 'djatoka'
 require 'nokogiri'
 
 class DjatokaMetadata
+  include ActiveSupport::Benchmarkable
 
   THUMBNAIL_EDGE = 400 # 400-pixel long edge dimension
   SQUARE_EDGE    = 100
@@ -22,8 +23,10 @@ class DjatokaMetadata
   def self.raw_metadata_response(file_path)
     # return the image metadata
     Rails.cache.fetch("djatoka/metadata/#{file_path}") do
-      resolver = Djatoka::Resolver.new(Settings.stacks.djatoka_url)
-      resolver.metadata(file_path).perform
+      benchmark "Fetching djatoka metadata for #{file_path}" do
+        resolver = Djatoka::Resolver.new(Settings.stacks.djatoka_url)
+        resolver.metadata(file_path).perform
+      end
     end
   end
 
@@ -48,5 +51,11 @@ class DjatokaMetadata
   # returns the maximum height
   def max_height
     @metadata.height.to_i
+  end
+
+  private
+
+  def logger
+    Rails.logger
   end
 end
