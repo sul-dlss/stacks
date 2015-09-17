@@ -12,6 +12,14 @@ class FileController < ApplicationController
 
   private
 
+  def rescue_can_can
+    if current_user
+      super
+    else
+      redirect_to auth_file_url(params.symbolize_keys)
+    end
+  end
+
   def file_params
     params.slice(:id, :file_name)
   end

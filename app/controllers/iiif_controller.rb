@@ -38,6 +38,14 @@ class IiifController < ApplicationController
 
   private
 
+  def rescue_can_can
+    if current_user
+      super
+    else
+      redirect_to auth_iiif_url(params.symbolize_keys)
+    end
+  end
+
   def cache_headers
     return {} unless @image.exist?
 

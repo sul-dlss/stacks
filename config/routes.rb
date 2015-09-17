@@ -57,7 +57,7 @@ Rails.application.routes.draw do
   constraints file_name: %r{[^/]+} do
     get '/file/:id/:file_name' => 'file#show', as: :file
     get '/file/:id/:file_name' => 'file#show'
-    get '/file/auth/:id/:file_name' => 'webauth#file_login'
+    get '/file/auth/:id/:file_name' => 'webauth#login_file', as: :auth_file
   end
 
   get '/image/iiif' => 'stacks#iiif'
@@ -67,9 +67,9 @@ Rails.application.routes.draw do
     get '/image/iiif/:identifier' => 'iiif#show', as: :iiif_base
     get '/image/iiif/:identifier/:region/:size/:rotation/:quality' => 'iiif#show', as: :iiif
     get '/image/iiif/:identifier/info.json' => 'iiif#metadata', as: :iiif_metadata
-    get '/image/iiif/auth/:identifier' => 'webauth#iiif_login'
-    get '/image/iiif/auth/:identifier/:region/:size/:rotation/:quality' => 'webauth#iiif_login'
-    get '/image/iiif/auth/:identifier/info.json' => 'webauth#iiif_login'
+    get '/image/iiif/auth/:identifier' => 'webauth#login_iiif'
+    get '/image/iiif/auth/:identifier/:region/:size/:rotation/:quality' => 'webauth#login_iiif', as: :auth_iiif
+    get '/image/iiif/auth/:identifier/info.json' => 'webauth#login_iiif'
   end
 
   constraints file_name: %r{[^/]+}, format: %r{(jpg|png|gif|jp2)} do

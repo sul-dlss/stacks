@@ -8,6 +8,9 @@ class ApplicationController < ActionController::Metal
   enable_squash_client
 
   include ActionController::HttpAuthentication::Basic
+  include ActionController::Redirecting
+
+  rescue_from CanCan::AccessDenied, with: :rescue_can_can
 
   protected
 
@@ -34,6 +37,12 @@ class ApplicationController < ActionController::Metal
     User.new(id: request.remote_user,
              webauth_user: true,
              ldap_groups: request.env.fetch('WEBAUTH_LDAPPRIVGROUP', '').split('|'))
+  end
+
+  def rescue_can_can(exception)
+    Rails.logger.debug "Access denied on #{exception.action} #{exception.subject.inspect}"
+
+    render file: "#{Rails.root}/public/403.html", status: 403, layout: false
   end
 
   # stubs for squash
