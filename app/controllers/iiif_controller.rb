@@ -7,8 +7,8 @@ class IiifController < ApplicationController
   def show
   #  fail 'File Not Found' unless @image.exist?
     return unless stale?(cache_headers)
-    expires_in 10.minutes, public: anonymous_ability.can?(:read, @image)
     authorize! :read, @image
+    expires_in 10.minutes, public: anonymous_ability.can?(:read, @image)
     self.content_type = mime_type(params[:format])
     self.response_body = @image.response
   end
