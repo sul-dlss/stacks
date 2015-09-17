@@ -16,8 +16,7 @@ Rails.application.routes.draw do
     get '/image/iiif/auth/:identifier/:region/:size/:rotation/:quality' => 'webauth#login_iiif', as: :auth_iiif
   end
 
-  SIZE_CATEGORIES = %w(square thumb small medium large xlarge full)
-  constraints file_name: %r{[^/]+}, format: %r{(jpg|png|gif|jp2)}, size: %r{(#{SIZE_CATEGORIES.join('|')})} do
+  constraints file_name: %r{[^/]+}, format: %r{(jpg|png|gif|jp2)}, size: %r{(#{Settings.legacy.sizes.join('|')})} do
     get '/image/:id/(:file_name)_:size(.:format)' => 'legacy_image_service#show'
     get '/image/:id/:file_name.:format' => 'legacy_image_service#show'
     get '/image/:id/:file_name' => 'legacy_image_service#show'
