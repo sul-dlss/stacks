@@ -61,6 +61,22 @@ describe User do
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
       end
+
+      context 'with a tile of a no-download file' do
+        let(:rights_xml) do
+          <<-EOF.strip_heredoc
+          <rightsMetadata>
+            <access type="read">
+              <machine>
+                <group rule="no-download">Stanford</group>
+              </machine>
+            </access>
+          </rightsMetadata>
+          EOF
+        end
+        it { is_expected.to be_able_to(:read, tile) }
+        it { is_expected.not_to be_able_to(:read, image) }
+      end
     end
 
     context 'app user' do
@@ -133,6 +149,22 @@ describe User do
 
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
+      end
+
+      context 'with a tile of a no-download file' do
+        let(:rights_xml) do
+          <<-EOF.strip_heredoc
+          <rightsMetadata>
+            <access type="read">
+              <machine>
+                <agent rule="no-download">a</group>
+              </machine>
+            </access>
+          </rightsMetadata>
+          EOF
+        end
+        it { is_expected.to be_able_to(:read, tile) }
+        it { is_expected.not_to be_able_to(:read, image) }
       end
     end
 
