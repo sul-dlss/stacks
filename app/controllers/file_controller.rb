@@ -1,12 +1,13 @@
 class FileController < ApplicationController
   include ActionController::DataStreaming
+  check_authorization
   before_action :load_file
 
   def show
     fail "File Not Found" unless @file.exist?
     return unless stale?(cache_headers)
-    expires_in 10.minutes
     authorize! :read, @file
+    expires_in 10.minutes
     send_file @file.path
   end
 

@@ -1,4 +1,6 @@
 class IiifController < ApplicationController
+  check_authorization
+
   include Rails.application.routes.url_helpers
 
   before_action :load_image
@@ -16,6 +18,7 @@ class IiifController < ApplicationController
   def metadata
   #  fail 'File Not Found' unless @image.exist?
     return unless stale?(cache_headers)
+    authorize! :read_metadata, @image
     expires_in 10.minutes, public: anonymous_ability.can?(:read, @image)
 
     info = @image.info do |md|

@@ -62,6 +62,8 @@ class Ability
       f.tile? && can?(:access, f)
     end
 
+    can :read_metadata, [StacksFile, StacksImage]
+
     can :access, StacksImage do |f|
       val, rule = f.world_rights
       next true if val
