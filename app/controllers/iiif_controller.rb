@@ -41,7 +41,7 @@ class IiifController < ApplicationController
     if current_user
       super
     else
-      redirect_to auth_iiif_url(params.symbolize_keys)
+      redirect_to auth_iiif_url(params.symbolize_keys.tap { |x| x[:identifier].gsub!('/', '%2F') })
     end
   end
 
