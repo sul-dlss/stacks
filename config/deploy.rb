@@ -8,7 +8,7 @@ set :repo_url, 'https://github.com/sul-dlss/digital_stacks_rails.git'
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
 
 # Default deploy_to directory is /var/www/my_app
-set :deploy_to, '/home/lyberadmin/digistacks_services'
+set :deploy_to, '/opt/app/stacks/stacks'
 
 # Default value for :scm is :git
 # set :scm, :git
