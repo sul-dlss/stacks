@@ -1,3 +1,15 @@
+GIT
+  remote: https://github.com/cbeer/djatoka.git
+  revision: 3ee555a2e358e28fa6069df68f7441dae7c36ac3
+  branch: iiif-improvements
+  specs:
+    djatoka (0.3.2)
+      addressable
+      hashie
+      json
+      mime-types
+      trollop
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -107,12 +119,6 @@ GEM
     debug_inspector (0.0.2)
     deep_merge (1.0.1)
     diff-lcs (1.2.5)
-    djatoka (0.3.2)
-      addressable
-      hashie
-      json
-      mime-types
-      trollop
     docile (1.1.5)
     domain_name (0.5.24)
       unf (>= 0.0.5, < 1.0.0)
@@ -153,7 +159,7 @@ GEM
       capistrano-releaseboard
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
-    mime-types (2.6.1)
+    mime-types (2.6.2)
     mini_portile (0.6.2)
     minitest (5.8.0)
     multi_json (1.11.2)
@@ -321,7 +327,7 @@ DEPENDENCIES
   config
   coveralls
   database_cleaner
-  djatoka
+  djatoka!
   dor-rights-auth
   factory_girl_rails
   hurley
