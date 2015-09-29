@@ -31,13 +31,13 @@ describe StacksImage do
       expect(subject.tap { |x| x.region = 'full'; x.size = '256,256' }).not_to be_a_tile
     end
 
-    it 'must be smaller than 256px long edge' do
+    it 'must be smaller than 512px long edge' do
       expect(subject.tap { |x| x.region = '0,0,256,256'; x.size = '256,256' }).to be_a_tile
       expect(subject.tap { |x| x.region = '0,0,256,256'; x.size = '256,' }).to be_a_tile
       expect(subject.tap { |x| x.region = '0,0,256,256'; x.size = ',256' }).to be_a_tile
 
-      expect(subject.tap { |x| x.region = '0,0,1,1'; x.size = '257,257' }).not_to be_a_tile
-      expect(subject.tap { |x| x.region = '0,0,800,600'; x.size = ',256' }).not_to be_a_tile
+      expect(subject.tap { |x| x.region = '0,0,1,1'; x.size = '513,513' }).not_to be_a_tile
+      expect(subject.tap { |x| x.region = '0,0,800,600'; x.size = ',513' }).not_to be_a_tile
     end
   end
 

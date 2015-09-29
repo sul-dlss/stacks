@@ -64,7 +64,7 @@ class StacksImage < StacksFile
 
   def tile?
     w, h = tile_dimensions
-    (region =~ /^(\d+),(\d+),(\d+),(\d+)$/) && w <= 256 && h <= 256
+    (region =~ /^(\d+),(\d+),(\d+),(\d+)$/) && w <= 512 && h <= 512
   end
 
   def druid
