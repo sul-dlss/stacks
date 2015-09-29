@@ -2,8 +2,15 @@ class IiifController < ApplicationController
   before_action :load_image
   before_action :add_iiif_profile_header
 
+  rescue_from ActionController::MissingFile do
+    render text: 'File not found', status: :not_found
+  end
+
+  before_action do
+    fail ActionController::MissingFile, 'File Not Found' unless @image.image_exist?
+  end
+
   def show
-  #  fail 'File Not Found' unless @image.exist?
     return unless stale?(cache_headers)
     authorize! :read, @image
     expires_in 10.minutes, public: anonymous_ability.can?(:read, @image)
@@ -12,7 +19,6 @@ class IiifController < ApplicationController
   end
 
   def metadata
-  #  fail 'File Not Found' unless @image.exist?
     return unless stale?(cache_headers)
     authorize! :read_metadata, @image
     expires_in 10.minutes, public: anonymous_ability.can?(:read, @image)

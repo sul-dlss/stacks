@@ -1,8 +1,11 @@
 class FileController < ApplicationController
   before_action :load_file
 
+  rescue_from ActionController::MissingFile do
+    render text: 'File not found', status: :not_found
+  end
+
   def show
-    fail "File Not Found" unless @file.exist?
     return unless stale?(cache_headers)
     authorize! :read, @file
     expires_in 10.minutes

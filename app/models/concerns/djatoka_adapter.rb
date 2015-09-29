@@ -23,6 +23,10 @@ module DjatokaAdapter
     metadata.max_height
   end
 
+  def image_exist?
+    image_width > 0
+  end
+
   private
 
   def url
