@@ -51,8 +51,10 @@ class StacksFile
   end
 
   def rights_xml
-    benchmark "Fetching public xml for #{druid}" do
-      Hurley.get(Settings.purl.url + "/#{druid}.xml").body
+    Rails.cache.fetch("stacks_file/#{druid}-#{etag}/rights_xml", expires_in: 10.minutes) do
+      benchmark "Fetching public xml for #{druid}" do
+        Hurley.get(Settings.purl.url + "/#{druid}.xml").body
+      end
     end
   end
 
