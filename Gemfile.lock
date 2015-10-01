@@ -115,6 +115,7 @@ GEM
       thor (~> 0.19.1)
     crack (0.4.2)
       safe_yaml (~> 1.0.0)
+    dalli (2.7.4)
     database_cleaner (1.5.0)
     debug_inspector (0.0.2)
     deep_merge (1.0.1)
@@ -326,6 +327,7 @@ DEPENDENCIES
   coffee-rails (~> 4.1.0)
   config
   coveralls
+  dalli
   database_cleaner
   djatoka!
   dor-rights-auth
