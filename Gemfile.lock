@@ -1,7 +1,6 @@
 GIT
-  remote: https://github.com/cbeer/djatoka.git
-  revision: 3ee555a2e358e28fa6069df68f7441dae7c36ac3
-  branch: iiif-improvements
+  remote: https://github.com/jronallo/djatoka.git
+  revision: 61a9a4fe8af78e1d7179c608c4bc5c31620ffc43
   specs:
     djatoka (0.3.2)
       addressable

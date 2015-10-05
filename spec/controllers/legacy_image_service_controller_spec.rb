@@ -5,7 +5,7 @@ describe LegacyImageServiceController, :vcr do
     context 'squares' do
       it 'works' do
         page = get :show, id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001', size: 'square'
-        expect(page).to redirect_to '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/640,0,2552,2552/100,100/0/default.jpg'
+        expect(page).to redirect_to '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/square/100,100/0/default.jpg'
       end
     end
 

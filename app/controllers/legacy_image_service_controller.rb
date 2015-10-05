@@ -71,17 +71,7 @@ class LegacyImageServiceController < ApplicationController
     when params[:region]
       params[:region]
     when size == 'square'
-      image = StacksImage.new(identifier_params)
-      w = image.image_width
-      h = image.image_height
-      min, max = [w,h].minmax
-      offset = (max - min) / 2
-
-      if h >= w
-        "0,#{offset},#{min},#{min}"
-      else
-        "#{offset},0,#{min},#{min}"
-      end
+      'square'
     else
       'full'
     end
