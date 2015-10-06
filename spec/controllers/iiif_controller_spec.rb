@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 describe IiifController, :vcr do
+  before do
+    allow_any_instance_of(StacksImage).to receive(:image_exist?).and_return(true)
+  end
+
   describe '#show' do
     subject { get :show, identifier: 'nr349ct7889%2Fnr349ct7889_00_0001', region: '0,640,2552,2552', size: '100,100', rotation: '0', quality: 'default', format: 'jpg' }
 
