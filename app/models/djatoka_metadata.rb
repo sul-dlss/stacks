@@ -20,37 +20,36 @@ class DjatokaMetadata
     DjatokaMetadata.new(canonical_url, file_path)
   end
 
-  def raw_metadata_response(file_path)
-    # return the image metadata
-    Rails.cache.fetch("djatoka/metadata/#{file_path}") do
-      benchmark "Fetching djatoka metadata for #{file_path}" do
-        resolver = Djatoka::Resolver.new(Settings.stacks.djatoka_url)
-        resolver.metadata(file_path).perform
-      end
-    end
-  end
-
   # constructor
   def initialize(canonical_url, stacks_file_path)
     @canonical_url = canonical_url
-    @metadata = raw_metadata_response(stacks_file_path)
     @stacks_file_path = stacks_file_path
   end
 
   # Builds an Hash containing the response to a IIIF Image Information Request
   # @return [String] The serialized JSON-LD of a Image Information Request
   def as_json(&block)
-    JSON.parse(@metadata.to_iiif_json(canonical_url, &block))
+    JSON.parse(metadata.to_iiif_json(canonical_url, &block))
   end
 
   # returns the maximum width
   def max_width
-    @metadata.width.to_i
+    metadata.width.to_i
   end
 
   # returns the maximum height
   def max_height
-    @metadata.height.to_i
+    metadata.height.to_i
+  end
+
+  # return the image metadata
+  def metadata
+    @metadata ||= Rails.cache.fetch("djatoka/metadata/#{@stacks_file_path}") do
+      benchmark "Fetching djatoka metadata for #{@stacks_file_path}" do
+        resolver = Djatoka::Resolver.new(Settings.stacks.djatoka_url)
+        resolver.metadata(@stacks_file_path).perform
+      end
+    end
   end
 
   private
