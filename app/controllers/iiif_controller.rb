@@ -43,9 +43,9 @@ class IiifController < ApplicationController
 
   private
 
-  def rescue_can_can
+  def rescue_can_can(exception)
     if current_user
-      super
+      super(exception)
     else
       redirect_to auth_iiif_url(params.symbolize_keys.tap { |x| x[:identifier].gsub!('/', '%2F') })
     end

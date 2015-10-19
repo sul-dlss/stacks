@@ -14,9 +14,9 @@ class FileController < ApplicationController
 
   private
 
-  def rescue_can_can
+  def rescue_can_can(exception)
     if current_user
-      super
+      super(exception)
     else
       redirect_to auth_file_url(params.symbolize_keys)
     end
