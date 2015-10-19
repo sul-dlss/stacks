@@ -76,4 +76,19 @@ describe StacksImage do
       expect(subject.tap { |x| x.region = '0,1,2,3' }.region_dimensions).to eq [2, 3]
     end
   end
+
+  describe '#path' do
+    subject { described_class.new(id: 'ab012cd3456', file_name: 'def') }
+
+    it 'should be the pairtree path to the jp2' do
+      expect(subject.path).to eq "#{Settings.stacks.storage_root}/ab/012/cd/3456/def.jp2"
+    end
+
+    context 'with a malformed druid' do
+      subject { described_class.new(id: 'abcdef', file_name: 'def') }
+      it 'is nil' do
+        expect(subject.path).to be_nil
+      end
+    end
+  end
 end

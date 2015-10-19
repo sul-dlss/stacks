@@ -25,7 +25,7 @@ class StacksFile
   end
 
   def exist?
-    File.exist?(path)
+    path && File.exist?(path)
   end
 
   def mtime
@@ -40,7 +40,7 @@ class StacksFile
     @path ||= begin
       match = druid.match(/^([a-z]{2})(\d{3})([a-z]{2})(\d{4})$/i)
 
-      File.join(Settings.stacks.storage_root, match[1], match[2], match[3], match[4], file_name)
+      File.join(Settings.stacks.storage_root, match[1], match[2], match[3], match[4], file_name) if match
     end
   end
 

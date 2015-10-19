@@ -24,7 +24,7 @@ module DjatokaAdapter
   end
 
   def image_exist?
-    image_width > 0
+    path && image_width > 0
   end
 
   private

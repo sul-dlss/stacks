@@ -72,10 +72,8 @@ class StacksImage < StacksFile
   end
 
   def path
-    @path ||= begin
-      match = id.match(/^([a-z]{2})(\d{3})([a-z]{2})(\d{4})$/i)
+    path = super
 
-      File.join(Settings.stacks.storage_root, match[1], match[2], match[3], match[4], file_name + '.jp2')
-    end
+    path + '.jp2' if path
   end
 end
