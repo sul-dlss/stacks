@@ -381,7 +381,7 @@ http_interactions:
   recorded_at: Wed, 16 Sep 2015 22:40:33 GMT
 - request:
     method: get
-    uri: http://imageserver-b.stanford.edu/adore-djatoka/resolver?rft_id=/stacks/nr/349/ct/7889/nr349ct7889_00_0001.jp2&svc_id=info:lanl-repo/svc/getMetadata&url_ver=Z39.88-2004
+    uri: http://imageserver-b.stanford.edu/adore-djatoka/resolver?rft_id=file:///stacks/nr/349/ct/7889/nr349ct7889_00_0001.jp2&svc_id=info:lanl-repo/svc/getMetadata&url_ver=Z39.88-2004
     body:
       encoding: US-ASCII
       string: ''

@@ -35,7 +35,7 @@ module DjatokaAdapter
 
   def djatoka_region
     @djatoka_region ||= begin
-      iiif_req = Djatoka::IiifRequest.new(resolver, path)
+      iiif_req = Djatoka::IiifRequest.new(resolver, djatoka_path)
       iiif_req.region(region)
               .size(size)
               .rotation(rotation)
@@ -46,7 +46,11 @@ module DjatokaAdapter
   end
 
   def metadata
-    @metadata ||= DjatokaMetadata.find(canonical_url, path)
+    @metadata ||= DjatokaMetadata.find(canonical_url, djatoka_path)
+  end
+
+  def djatoka_path
+    "file://#{path}"
   end
 
   def resolver
