@@ -28,7 +28,7 @@ class FileController < ApplicationController
 
   def cache_headers
     {
-      etag: @file.etag,
+      etag: [@file.etag, current_user.try(:etag)],
       last_modified: @file.mtime,
       public: anonymous_ability.can?(:read, @file),
       template: false

@@ -55,7 +55,7 @@ class IiifController < ApplicationController
     return {} unless @image.exist?
 
     {
-      etag: @image.mtime.to_i,
+      etag: [@image.etag, current_user.try(:etag)],
       last_modified: @image.mtime,
       public: anonymous_ability.can?(:read, @image),
       template: false

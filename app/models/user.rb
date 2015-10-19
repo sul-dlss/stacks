@@ -14,4 +14,8 @@ class User
   def app_user?
     !!app_user
   end
+
+  def etag
+    id
+  end
 end
