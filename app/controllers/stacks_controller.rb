@@ -1,6 +1,4 @@
-class StacksController < ActionController::Base
-  layout 'application'
-
+class StacksController < ApplicationController
   def index
   end
 
