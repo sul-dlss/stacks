@@ -38,13 +38,4 @@ class ApplicationController < ActionController::Base
 
     render file: "#{Rails.root}/public/403.html", status: 403, layout: false
   end
-
-  # stubs for squash
-  def flash
-    {}
-  end
-
-  def cookies
-    {}
-  end
 end
