@@ -18,5 +18,39 @@ describe FileController, vcr: { record: :new_episodes } do
       expect(controller).to receive(:send_file).with(file.path).and_call_original
       subject
     end
+
+    context 'for a missing file' do
+      before do
+        expect(controller).to receive(:send_file).with(file.path).and_raise ActionController::MissingFile
+      end
+
+      it 'returns a 404 Not Found' do
+        expect(subject.status).to eq 404
+      end
+    end
+
+    context 'for a restricted image' do
+      before do
+        allow(controller).to receive(:authorize!).and_raise CanCan::AccessDenied
+      end
+
+      context 'with an authenticated user' do
+        let(:user) { User.new }
+
+        before do
+          allow(controller).to receive(:current_user).and_return(user)
+        end
+
+        it 'fails' do
+          expect(subject.status).to eq 403
+        end
+      end
+
+      context 'with an unauthenticated user' do
+        it 'redirects to the webauth login endpoint' do
+          expect(subject).to redirect_to auth_file_url(controller.params.symbolize_keys)
+        end
+      end
+    end
   end
 end
