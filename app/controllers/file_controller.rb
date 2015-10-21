@@ -11,6 +11,7 @@ class FileController < ApplicationController
     return unless stale?(cache_headers)
     authorize! :read, @file
     expires_in 10.minutes
+
     send_file @file.path
   end
 

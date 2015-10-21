@@ -12,14 +12,19 @@ class IiifController < ApplicationController
     fail ActionController::MissingFile, 'File Not Found' unless @image.image_exist?
   end
 
+  ##
+  # Image delivery, streamed from the image server backend
   def show
     return unless stale?(cache_headers)
     authorize! :read, @image
     expires_in 10.minutes, public: anonymous_ability.can?(:read, @image)
+
     self.content_type = Mime::Type.lookup_by_extension(params[:format]).to_s
     self.response_body = @image.response
   end
 
+  ##
+  # IIIF info.json endpoint
   def metadata
     return unless stale?(cache_headers)
     authorize! :read_metadata, @image
@@ -35,7 +40,7 @@ class IiifController < ApplicationController
     if current_user
       super(exception)
     else
-      redirect_to auth_iiif_url(params.symbolize_keys.tap { |x| x[:identifier].gsub!('/', '%2F') })
+      redirect_to auth_iiif_url(params.symbolize_keys.tap { |x| x[:identifier] = escaped_identifier })
     end
   end
 
@@ -77,12 +82,17 @@ class IiifController < ApplicationController
   end
 
   def identifier_params
-    id, file_name = params[:identifier].split(Regexp.union(%r{/}, /%2F/))
+    id, file_name = escaped_identifier.split('%2F')
     { id: id, file_name: file_name }
   end
 
   def canonical_params
-    { canonical_url: iiif_base_url(identifier: params[:identifier].gsub('/', '%2F'), host: request.host_with_port) }
+    { canonical_url: iiif_base_url(identifier: escaped_identifier, host: request.host_with_port) }
+  end
+
+  # kludge to get around Rails' overzealous URL escaping
+  def escaped_identifier
+    params[:identifier].sub('/', '%2F')
   end
 
   def add_iiif_profile_header
