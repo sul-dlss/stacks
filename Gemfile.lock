@@ -114,6 +114,11 @@ GEM
       json
       mime-types
       trollop
+    dlss-capistrano (3.2.0)
+      capistrano (~> 3.0)
+      capistrano-bundle_audit (>= 0.0.3)
+      capistrano-one_time_key
+      capistrano-releaseboard
     docile (1.1.5)
     domain_name (0.5.25)
       unf (>= 0.0.5, < 1.0.0)
@@ -148,11 +153,6 @@ GEM
     libv8 (3.16.14.13)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
-    lyberteam-capistrano-devel (3.2.0)
-      capistrano (~> 3.0)
-      capistrano-bundle_audit (>= 0.0.3)
-      capistrano-one_time_key
-      capistrano-releaseboard
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
     mime-types (2.6.2)
@@ -326,13 +326,13 @@ DEPENDENCIES
   dalli
   database_cleaner
   djatoka
+  dlss-capistrano
   dor-rights-auth
   factory_girl_rails
   hurley
   is_it_working
   jbuilder (~> 2.0)
   jquery-rails
-  lyberteam-capistrano-devel
   poltergeist
   rails (= 4.2.4)
   riiif
