@@ -38,14 +38,18 @@ class DjatokaMetadata
   # return the image metadata
   def metadata
     @metadata ||= Rails.cache.fetch("djatoka/metadata/#{@stacks_file_path}", expires_in: 10.minutes) do
-      benchmark "Fetching djatoka metadata for #{@stacks_file_path}" do
-        resolver = Djatoka::Resolver.new(Settings.stacks.djatoka_url)
-        resolver.metadata(@stacks_file_path).perform
-      end
+      fetch_metadata
     end
   end
 
   private
+
+  def fetch_metadata
+    benchmark "Fetching djatoka metadata for #{@stacks_file_path}" do
+      resolver = Djatoka::Resolver.new(Settings.stacks.djatoka_url)
+      resolver.metadata(@stacks_file_path).perform
+    end
+  end
 
   def logger
     Rails.logger
