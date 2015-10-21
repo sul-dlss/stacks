@@ -1,3 +1,5 @@
+##
+# Files in stacks
 class StacksFile
   include ActiveModel::Model
   include ActiveSupport::Benchmarkable

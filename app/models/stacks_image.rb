@@ -1,3 +1,5 @@
+##
+# Images in the image stacks
 class StacksImage < StacksFile
   include DjatokaAdapter
 
@@ -5,26 +7,9 @@ class StacksImage < StacksFile
 
   def tile_dimensions
     if size =~ /^!?\d*,\d*$/
-      dim = size.delete('!').split(',', 2)
-
-      if dim[0].blank? || dim[1].blank?
-        rdim = region_dimensions
-        dim[0] = (rdim[0] / rdim[1].to_f) * dim[1].to_i if dim[0].blank?
-        dim[1] = (rdim[1] / rdim[0].to_f) * dim[0].to_i if dim[1].blank?
-      end
-
-      dim.map(&:to_i)
+      explicit_tile_dimensions
     elsif region_dimensions
-      scale = case size
-              when 'full'
-                1.0
-              when /^pct:/
-                size.sub(/^pct:/, '').to_f / 100
-              else
-                1.0
-              end
-
-      region_dimensions.map { |i| i * scale }
+      scaled_tile_dimensions
     else
       [Float::INFINITY, Float::INFINITY]
     end
@@ -33,18 +18,9 @@ class StacksImage < StacksFile
   def region_dimensions
     case region
     when 'full', /^pct/
-      scale = case region
-              when 'full'
-                1.0
-              when /^pct:/
-                region.sub(/^pct:/, '').to_f / 100
-              else
-                1.0
-              end
-      [image_width, image_height].map { |i| i * scale }
+      scaled_region_dimensions
     when /^(\d+),(\d+),(\d+),(\d+)$/
-      m = region.match(/^(\d+),(\d+),(\d+),(\d+)$/)
-      [m[3], m[4]].map(&:to_i)
+      explicit_region_dimensions
     end
   end
 
@@ -66,5 +42,51 @@ class StacksImage < StacksFile
     path = super
 
     path + '.jp2' if path
+  end
+
+  private
+
+  # rubocop:disable Metrics/AbcSize
+  def explicit_tile_dimensions
+    dim = size.delete('!').split(',', 2)
+
+    if dim[0].blank? || dim[1].blank?
+      rdim = region_dimensions
+      dim[0] = (rdim[0] / rdim[1].to_f) * dim[1].to_i if dim[0].blank?
+      dim[1] = (rdim[1] / rdim[0].to_f) * dim[0].to_i if dim[1].blank?
+    end
+
+    dim.map(&:to_i)
+  end
+  # rubocop:enable Metrics/AbcSize
+
+  def scaled_tile_dimensions
+    scale = case size
+            when 'full'
+              1.0
+            when /^pct:/
+              size.sub(/^pct:/, '').to_f / 100
+            else
+              1.0
+            end
+
+    region_dimensions.map { |i| i * scale }
+  end
+
+  def explicit_region_dimensions
+    m = region.match(/^(\d+),(\d+),(\d+),(\d+)$/)
+    [m[3], m[4]].map(&:to_i)
+  end
+
+  def scaled_region_dimensions
+    scale = case region
+            when 'full'
+              1.0
+            when /^pct:/
+              region.sub(/^pct:/, '').to_f / 100
+            else
+              1.0
+            end
+    [image_width, image_height].map { |i| i * scale }
   end
 end

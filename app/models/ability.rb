@@ -1,3 +1,6 @@
+##
+# User authentication
+# rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 class Ability
   include CanCan::Ability
 
@@ -61,14 +64,15 @@ class Ability
     can :read_metadata, [StacksFile, StacksImage]
 
     can :access, StacksImage do |f|
-      val, rule = f.world_rights
+      val, _rule = f.world_rights
       next true if val
 
-      val, rule = f.stanford_only_rights
+      val, _rule = f.stanford_only_rights
       next true if val && user.webauth_user?
 
-      val, rule = f.agent_rights(user.id)
+      val, _rule = f.agent_rights(user.id)
       next true if val && user.app_user?
     end
   end
 end
+# rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity

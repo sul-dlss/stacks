@@ -1,17 +1,10 @@
 require 'djatoka'
 require 'nokogiri'
 
+##
+# Djatoka metadata response wrapper/parser
 class DjatokaMetadata
   include ActiveSupport::Benchmarkable
-
-  THUMBNAIL_EDGE = 400 # 400-pixel long edge dimension
-  SQUARE_EDGE    = 100
-
-  PRECAST_SIZES = %w(full xlarge large medium small)
-  AVAILABLE_MIME_TYPES = %w(image/jpeg image/png image/gif image/bmp)
-
-  IIIF_PROFILE_URL = 'http://library.stanford.edu/iiif/image-api/1.1/compliance.html'
-  IIIF_CONTEXT_URL = 'http://library.stanford.edu/iiif/image-api/1.1/context.json'
 
   # instance variables
   attr_reader :metadata, :canonical_url

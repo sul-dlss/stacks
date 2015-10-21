@@ -1,5 +1,6 @@
 require 'rails_helper'
 
+# rubocop:disable Metrics/LineLength
 describe 'Legacy image API routes' do
   it 'routes to #show' do
     expect(get: '/image/abc/def.png').to route_to('legacy_image_service#show', id: 'abc', file_name: 'def', format: 'png')
@@ -18,3 +19,4 @@ describe 'Legacy image API routes' do
     end
   end
 end
+# rubocop:enable Metrics/LineLength

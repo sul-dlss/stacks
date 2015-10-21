@@ -6,7 +6,14 @@ describe IiifController, :vcr do
   end
 
   describe '#show' do
-    subject { get :show, identifier: 'nr349ct7889%2Fnr349ct7889_00_0001', region: '0,640,2552,2552', size: '100,100', rotation: '0', quality: 'default', format: 'jpg' }
+    subject do
+      get :show, identifier: 'nr349ct7889%2Fnr349ct7889_00_0001',
+                 region: '0,640,2552,2552',
+                 size: '100,100',
+                 rotation: '0',
+                 quality: 'default',
+                 format: 'jpg'
+    end
 
     it 'loads the image' do
       subject

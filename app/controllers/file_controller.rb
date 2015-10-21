@@ -1,3 +1,5 @@
+##
+# API for delivering files from stacks
 class FileController < ApplicationController
   before_action :load_file
 

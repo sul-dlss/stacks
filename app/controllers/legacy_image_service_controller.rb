@@ -1,17 +1,15 @@
+##
+# Translate legacy Stanford API image requests into IIIF API requests
 class LegacyImageServiceController < ApplicationController
   before_action :load_image
 
   def show
-    if params[:format] == 'xml'
-    elsif params[:format] == 'json'
-    else
-      redirect_to iiif_path(identifier: "#{params[:id]}ZZZZZZZ#{file_name}",
-                            region: @image.region,
-                            size: @image.size,
-                            rotation: @image.rotation || 0,
-                            quality: @image.quality,
-                            format: @image.format).sub('ZZZZZZZ', '%2F')
-    end
+    redirect_to iiif_path(identifier: "#{params[:id]}ZZZZZZZ#{file_name}",
+                          region: @image.region,
+                          size: @image.size,
+                          rotation: @image.rotation || 0,
+                          quality: @image.quality,
+                          format: @image.format).sub('ZZZZZZZ', '%2F')
   end
 
   private
@@ -34,6 +32,7 @@ class LegacyImageServiceController < ApplicationController
     }
   end
 
+  # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength
   def iiif_size
     case
     when params[:zoom]
@@ -61,7 +60,9 @@ class LegacyImageServiceController < ApplicationController
       'full'
     end
   end
+  # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength
 
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def iiif_region
     case
     when params[:region] && params[:zoom]
@@ -76,6 +77,7 @@ class LegacyImageServiceController < ApplicationController
       'full'
     end
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   def identifier_params
     { id: params[:id], file_name: file_name }

@@ -1,8 +1,16 @@
 require 'rails_helper'
 
 describe StacksImage do
+  before do
+    allow(subject).to receive_messages(image_width: 800, image_height: 600)
+  end
+
   describe '#thumbnail?' do
-    subject { StacksImage.new(region: 'full').tap { |x| allow(x).to receive_messages(image_width: 800, image_height: 600) } }
+    subject { StacksImage.new(region: 'full') }
+
+    before do
+      allow(subject).to receive_messages(image_width: 800, image_height: 600)
+    end
 
     it 'must be smaller than 400px long edge' do
       expect(subject.tap { |x| x.size = '400,400' }).to be_a_thumbnail
@@ -23,9 +31,8 @@ describe StacksImage do
     end
   end
 
+  # rubocop:disable Style/Semicolon
   describe '#tile?' do
-    subject { StacksImage.new.tap { |x| allow(x).to receive_messages(image_width: 800, image_height: 600) } }
-
     it 'must specify a region' do
       expect(subject.tap { |x| x.region = '0,0,1,1'; x.size = '256,256' }).to be_a_tile
       expect(subject.tap { |x| x.region = 'full'; x.size = '256,256' }).not_to be_a_tile
@@ -59,10 +66,9 @@ describe StacksImage do
       expect(subject.tap { |x| x.region = '0,0,800,600'; x.size = 'pct:50' }.tile_dimensions).to eq [400, 300]
     end
   end
+  # rubocop:enable Style/Semicolon
 
   describe '#region_dimensions' do
-    subject { StacksImage.new.tap { |x| allow(x).to receive_messages(image_width: 800, image_height: 600) } }
-
     it 'uses the image dimensions' do
       expect(subject.tap { |x| x.region = 'full' }.region_dimensions).to eq [800, 600]
     end

@@ -1,3 +1,5 @@
+##
+# Djatoka-backed implementation of StacksImage delivery
 module DjatokaAdapter
   def response
     return to_enum(:response) unless block_given?

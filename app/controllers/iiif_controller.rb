@@ -1,3 +1,5 @@
+##
+# API for delivering IIIF-compatible images and image tiles
 class IiifController < ApplicationController
   before_action :load_image
   before_action :add_iiif_profile_header
@@ -23,20 +25,8 @@ class IiifController < ApplicationController
     authorize! :read_metadata, @image
     expires_in 10.minutes, public: anonymous_ability.can?(:read, @image)
 
-    info = @image.info do |md|
-      if can? :download, @image
-        md.tile_width = 1024
-        md.tile_height = 1024
-      else
-        md.tile_width = 256
-        md.tile_height = 256
-      end
-    end
-
-    info['sizes'] = [{ width: 400, height: 400 }] unless can? :download, @image
-
     self.content_type = 'application/json'
-    self.response_body = JSON.pretty_generate(info)
+    self.response_body = JSON.pretty_generate(image_info)
   end
 
   private
@@ -63,6 +53,24 @@ class IiifController < ApplicationController
   def load_image
     @image ||= StacksImage.new(image_params)
   end
+
+  # rubocop:disable Metrics/MethodLength
+  def image_info
+    info = @image.info do |md|
+      if can? :download, @image
+        md.tile_width = 1024
+        md.tile_height = 1024
+      else
+        md.tile_width = 256
+        md.tile_height = 256
+      end
+    end
+
+    info['sizes'] = [{ width: 400, height: 400 }] unless can? :download, @image
+
+    info
+  end
+  # rubocop:enable Metrics/MethodLength
 
   def image_params
     params.except(:identifier, :controller, :action).merge(identifier_params).merge(canonical_params)
