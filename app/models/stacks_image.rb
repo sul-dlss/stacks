@@ -1,6 +1,6 @@
 class StacksImage < StacksFile
   include DjatokaAdapter
-#  include RiiifAdapter
+  #  include RiiifAdapter
 
   attr_accessor :canonical_url, :size, :region, :rotation, :quality, :format
 
@@ -14,7 +14,7 @@ class StacksImage < StacksFile
 
   def tile_dimensions
     if size =~ /^!?\d*,\d*$/
-      dim = size.gsub('!', '').split(',', 2)
+      dim = size.delete('!').split(',', 2)
 
       if dim[0].blank? || dim[1].blank?
         rdim = region_dimensions

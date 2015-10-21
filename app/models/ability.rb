@@ -29,9 +29,7 @@ class Ability
     # See the wiki for details:
     # https://github.com/CanCanCommunity/cancancan/wiki/Defining-Abilities
 
-    can :download, [StacksFile, StacksImage] do |f|
-      f.world_unrestricted?
-    end
+    can :download, [StacksFile, StacksImage], &:world_unrestricted?
 
     can :download, [StacksFile, StacksImage] do |f|
       val, rule = f.world_rights
@@ -54,9 +52,7 @@ class Ability
       can? :download, f
     end
 
-    can :read, StacksImage do |f|
-      f.thumbnail?
-    end
+    can :read, StacksImage, &:thumbnail?
 
     can :read, StacksImage do |f|
       f.tile? && can?(:access, f)
@@ -74,6 +70,5 @@ class Ability
       val, rule = f.agent_rights(user.id)
       next true if val && user.app_user?
     end
-
   end
 end

@@ -36,7 +36,7 @@ describe IiifController, :vcr do
       allow(controller).to receive(:can?).and_return(true)
       subject
       info = JSON.parse(controller.response_body.first)
-      expect(info['tiles'].first).to include "width" => 1024, "height" => 1024
+      expect(info['tiles'].first).to include 'width' => 1024, 'height' => 1024
     end
   end
 end

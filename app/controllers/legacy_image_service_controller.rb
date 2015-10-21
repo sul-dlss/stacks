@@ -6,11 +6,11 @@ class LegacyImageServiceController < ApplicationController
     elsif params[:format] == 'json'
     else
       redirect_to iiif_path(identifier: "#{params[:id]}ZZZZZZZ#{file_name}",
-                           region: @image.region,
-                           size: @image.size,
-                           rotation: @image.rotation || 0,
-                           quality: @image.quality,
-                           format: @image.format).sub('ZZZZZZZ', '%2F')
+                            region: @image.region,
+                            size: @image.size,
+                            rotation: @image.rotation || 0,
+                            quality: @image.quality,
+                            format: @image.format).sub('ZZZZZZZ', '%2F')
     end
   end
 
@@ -43,7 +43,7 @@ class LegacyImageServiceController < ApplicationController
     when size
       case size
       when 'square'
-        "100,100"
+        '100,100'
       when 'thumb'
         '!400,400'
       when 'small'
@@ -65,7 +65,7 @@ class LegacyImageServiceController < ApplicationController
   def iiif_region
     case
     when params[:region] && params[:zoom]
-      x,y,w,h = params[:region].split(',').map(&:to_i)
+      x, y, w, h = params[:region].split(',').map(&:to_i)
       zoom = params[:zoom].to_i / 100.0
       [x / zoom, y / zoom, w / zoom, h / zoom].map(&:to_i).join(',')
     when params[:region]

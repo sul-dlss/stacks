@@ -14,7 +14,7 @@ class IiifController < ApplicationController
     return unless stale?(cache_headers)
     authorize! :read, @image
     expires_in 10.minutes, public: anonymous_ability.can?(:read, @image)
-    self.content_type = mime_type(params[:format])
+    self.content_type = Mime::Type.lookup_by_extension(params[:format]).to_s
     self.response_body = @image.response
   end
 
@@ -33,9 +33,7 @@ class IiifController < ApplicationController
       end
     end
 
-    unless can? :download, @image
-      info['sizes'] = [{width: 400, height: 400}]
-    end
+    info['sizes'] = [{ width: 400, height: 400 }] unless can? :download, @image
 
     self.content_type = 'application/json'
     self.response_body = JSON.pretty_generate(info)
@@ -62,25 +60,6 @@ class IiifController < ApplicationController
     }
   end
 
-  def mime_type(format)
-    case format
-    when 'jpg'
-      'image/jpeg'
-    when 'tif'
-      'image/tiff'
-    when 'png'
-      'image/png'
-    when 'gif'
-      'image/gif'
-    when 'jp2'
-      'image/jp2'
-    when 'pdf'
-      'application/pdf'
-    when 'webp'
-      'image/webp'
-    end
-  end
-
   def load_image
     @image ||= StacksImage.new(image_params)
   end
@@ -90,7 +69,7 @@ class IiifController < ApplicationController
   end
 
   def identifier_params
-    id, file_name = params[:identifier].split(Regexp.union(%r{/}, %r{%2F}))
+    id, file_name = params[:identifier].split(Regexp.union(%r{/}, /%2F/))
     { id: id, file_name: file_name }
   end
 

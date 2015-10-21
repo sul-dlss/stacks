@@ -1,0 +1,13 @@
+AllCops:
+  Exclude:
+    - 'Gemfile'
+    - 'bin/**/*'
+    - 'db/**/*'
+    - 'config/**/*'
+    - 'spec/spec_helper.rb'
+    - 'spec/teaspoon_env.rb'
+    - 'vendor/**/*'
+  RunRailsCops: true
+
+Metrics/LineLength:
+  Max: 120
