@@ -8,6 +8,8 @@ Rails.application.routes.draw do
   get '/image/iiif' => 'stacks#iiif'
   root 'stacks#index'
 
+  get '/auth/iiif' => 'webauth#login', as: :iiif_auth_api
+
   constraints identifier: %r{[^/]+}, size: %r{[^/]+} do
     get '/image/iiif/:identifier' => 'iiif#show', as: :iiif_base
     get '/image/iiif/:identifier/:region/:size/:rotation/:quality' => 'iiif#show', as: :iiif

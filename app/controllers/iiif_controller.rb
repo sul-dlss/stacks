@@ -73,6 +73,12 @@ class IiifController < ApplicationController
 
     info['sizes'] = [{ width: 400, height: 400 }] unless can? :download, @image
 
+    info['service'] = {
+      '@id' => iiif_auth_api_url,
+      'profile' => 'http://iiif.io/api/auth/0/login',
+      'label' => 'Login via WebAuth'
+    } unless anonymous_ability.can? :download, @image
+
     info
   end
   # rubocop:enable Metrics/MethodLength
