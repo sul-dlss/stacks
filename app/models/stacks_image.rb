@@ -1,16 +1,7 @@
 class StacksImage < StacksFile
   include DjatokaAdapter
-  #  include RiiifAdapter
 
   attr_accessor :canonical_url, :size, :region, :rotation, :quality, :format
-
-  # def response
-  #   ''
-  # end
-  #
-  # def info
-  #   {}
-  # end
 
   def tile_dimensions
     if size =~ /^!?\d*,\d*$/
