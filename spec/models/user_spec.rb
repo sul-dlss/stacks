@@ -7,6 +7,7 @@ describe User do
     let(:file) { StacksFile.new.tap { |x| allow(x).to receive(:rights_xml).and_return(rights_xml) } }
     let(:image) { StacksImage.new.tap { |x| allow(x).to receive(:rights_xml).and_return(rights_xml) } }
     let(:thumbnail) { StacksImage.new(region: 'full', size: '!400,400') }
+    let(:square_thumbnail) { StacksImage.new(region: 'square', size: '!400,400') }
     let(:tile) { StacksImage.new(region: '0,0,100,100', size: '256,256') }
     let(:rights_xml) { '' }
 
@@ -205,6 +206,7 @@ describe User do
         end
 
         it { is_expected.to be_able_to(:read, thumbnail) }
+        it { is_expected.to be_able_to(:read, square_thumbnail) }
         it { is_expected.not_to be_able_to(:read, image) }
       end
 

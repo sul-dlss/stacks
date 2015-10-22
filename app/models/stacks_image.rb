@@ -26,7 +26,7 @@ class StacksImage < StacksFile
 
   def thumbnail?
     w, h = tile_dimensions
-    region == 'full' && w <= 400 && h <= 400
+    (region == 'full' || region == 'square') && w <= 400 && h <= 400
   end
 
   def tile?
