@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe IiifController, :vcr do
   before do
-    allow_any_instance_of(StacksImage).to receive(:image_exist?).and_return(true)
+    allow_any_instance_of(StacksImage).to receive(:valid?).and_return(true)
   end
 
   describe '#show' do
@@ -31,7 +31,7 @@ describe IiifController, :vcr do
 
     context 'for a missing image' do
       before do
-        allow_any_instance_of(StacksImage).to receive(:image_exist?).and_return(false)
+        allow_any_instance_of(StacksImage).to receive(:valid?).and_return(false)
       end
 
       it 'returns a 404 Not Found' do
