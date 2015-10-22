@@ -44,6 +44,10 @@ class StacksImage < StacksFile
     path + '.jp2' if path
   end
 
+  def valid?
+    image_exist?
+  end
+
   private
 
   # rubocop:disable Metrics/AbcSize

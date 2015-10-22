@@ -9,7 +9,7 @@ class IiifController < ApplicationController
   end
 
   before_action do
-    fail ActionController::MissingFile, 'File Not Found' unless @image.image_exist?
+    fail ActionController::MissingFile, 'File Not Found' unless @image.valid?
   end
 
   ##

@@ -26,13 +26,16 @@ module DjatokaAdapter
   end
 
   def image_exist?
-    path && image_width > 0
+    path && image_width > 0 && url.present?
   end
 
   private
 
   def url
     djatoka_region.url
+  rescue Djatoka::IiifInvalidParam => e
+    Squash::Ruby.notify e
+    nil
   end
 
   def djatoka_region

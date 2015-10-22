@@ -11,6 +11,10 @@ class StacksFile
     path && File.exist?(path)
   end
 
+  def valid?
+    image_exist?
+  end
+
   def mtime
     @mtime ||= File.mtime(path) if exist?
   end

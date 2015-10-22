@@ -97,4 +97,21 @@ describe StacksImage do
       end
     end
   end
+
+  describe '#valid?' do
+    subject { described_class.new(id: 'ab012cd3456', file_name: 'def') }
+
+    it 'is valid with good parameters' do
+      subject.quality = 'default'
+      subject.region = 'full'
+      subject.size = 'full'
+      subject.format = 'jpg'
+      subject.rotation = '0'
+      expect(subject).to be_valid
+    end
+
+    it 'is invalid if the IIIF parameters are invalid' do
+      expect(subject.tap { |x| x.quality = 'native' }).not_to be_valid
+    end
+  end
 end
