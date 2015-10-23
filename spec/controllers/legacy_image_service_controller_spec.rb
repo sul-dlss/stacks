@@ -111,5 +111,17 @@ describe LegacyImageServiceController, :vcr do
 
       expect(page).to redirect_to '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/512,512,512,512/pct:50/90/default.png'
     end
+
+    it 'works with fractional zooms' do
+      page = get :show, id: 'nr349ct7889',
+                        file_name: 'nr349ct7889_00_0001',
+                        format: 'jpg',
+                        zoom: '0.78125',
+                        rotate: '0',
+                        region: '0,0,256,256'
+
+      expected = '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/0,0,32768,32768/pct:0.78125/0/default.jpg'
+      expect(page).to redirect_to expected
+    end
   end
 end
