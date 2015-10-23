@@ -41,4 +41,17 @@ describe WebauthController do
       expect(subject.status).to eq 403
     end
   end
+
+  describe '#token' do
+    subject do
+      get :token, format: :json
+    end
+
+    it 'returns the token response' do
+      data = JSON.parse(subject.body)
+      expect(data['accessToken']).not_to be_blank
+      expect(data['tokenType']).to eq 'Bearer'
+      expect(data['expiresIn']).to be > 0
+    end
+  end
 end

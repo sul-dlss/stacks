@@ -20,4 +20,9 @@ class User
   def etag
     id
   end
+
+  def token
+    crypt = ActiveSupport::MessageEncryptor.new(Rails.application.secrets.secret_key_base)
+    crypt.encrypt_and_sign(etag)
+  end
 end
