@@ -8,8 +8,12 @@ class IiifController < ApplicationController
     render text: 'File not found', status: :not_found
   end
 
-  before_action do
+  before_action only: :show do
     fail ActionController::MissingFile, 'File Not Found' unless @image.valid?
+  end
+
+  before_action only: :meadata do
+    fail ActionController::MissingFile, 'File Not Found' unless @image.exist?
   end
 
   ##

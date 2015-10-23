@@ -26,7 +26,11 @@ module DjatokaAdapter
   end
 
   def image_exist?
-    path && image_width > 0 && url.present?
+    path && image_width > 0
+  end
+
+  def image_valid?
+    image_exist? && url.present?
   end
 
   private

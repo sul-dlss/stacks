@@ -8,6 +8,10 @@ class StacksFile
   attr_accessor :id, :file_name
 
   def exist?
+    file_exist?
+  end
+
+  def file_exist?
     path && File.exist?(path)
   end
 
@@ -16,7 +20,7 @@ class StacksFile
   end
 
   def mtime
-    @mtime ||= File.mtime(path) if exist?
+    @mtime ||= File.mtime(path) if file_exist?
   end
 
   def etag

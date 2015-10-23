@@ -3,6 +3,7 @@ require 'rails_helper'
 describe IiifController, :vcr do
   before do
     allow_any_instance_of(StacksImage).to receive(:valid?).and_return(true)
+    allow_any_instance_of(StacksImage).to receive(:exist?).and_return(true)
   end
 
   describe '#show' do

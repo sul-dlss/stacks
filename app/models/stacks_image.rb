@@ -44,8 +44,12 @@ class StacksImage < StacksFile
     path + '.jp2' if path
   end
 
-  def valid?
+  def exist?
     image_exist?
+  end
+
+  def valid?
+    image_valid?
   end
 
   private
