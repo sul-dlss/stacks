@@ -14,6 +14,19 @@ class WebauthController < ApplicationController
     end
   end
 
+  def token
+    respond_to do |format|
+      format.json do
+        response = {
+          accessToken: current_user.token,
+          tokenType: 'Bearer',
+          expiresIn: 3600
+        }
+        render json: response.to_json, callback: params[:callback]
+      end
+    end
+  end
+
   def login_file
     redirect_to file_path(params.symbolize_keys)
   end

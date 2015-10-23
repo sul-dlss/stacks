@@ -241,4 +241,10 @@ describe User do
       end
     end
   end
+
+  describe '#token' do
+    it 'is a value' do
+      expect(subject.token).not_to be_blank
+    end
+  end
 end
