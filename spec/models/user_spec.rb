@@ -15,7 +15,7 @@ describe User do
       allow_any_instance_of(StacksImage).to receive(:rights_xml).and_return(rights_xml)
     end
 
-    context 'webauth user' do
+    context 'stanford webauth user' do
       let(:user) { User.new(id: 'a', webauth_user: true, ldap_groups: %w(stanford:stanford)) }
 
       context 'with an unrestricted file' do
@@ -81,6 +81,76 @@ describe User do
           EOF
         end
         it { is_expected.to be_able_to(:read, tile) }
+        it { is_expected.not_to be_able_to(:read, image) }
+      end
+    end
+
+    context 'non-stanford webauth user' do
+      let(:user) { User.new(id: 'a', webauth_user: true, ldap_groups: %w(stanford:sponsored)) }
+
+      context 'with an unrestricted file' do
+        let(:rights_xml) do
+          <<-EOF.strip_heredoc
+          <rightsMetadata>
+              <access type="read">
+                <machine>
+                  <world/>
+                </machine>
+              </access>
+            </rightsMetadata>
+          EOF
+        end
+        it { is_expected.to be_able_to(:download, file) }
+        it { is_expected.to be_able_to(:download, image) }
+      end
+
+      context 'with an world-readable file' do
+        let(:rights_xml) do
+          <<-EOF.strip_heredoc
+          <rightsMetadata>
+              <access type="read">
+                <machine>
+                  <world/>
+                </machine>
+              </access>
+            </rightsMetadata>
+          EOF
+        end
+
+        it { is_expected.to be_able_to(:download, file) }
+        it { is_expected.to be_able_to(:download, image) }
+      end
+
+      context 'with an stanford-only file' do
+        let(:rights_xml) do
+          <<-EOF.strip_heredoc
+          <rightsMetadata>
+            <access type="read">
+              <machine>
+                <group>Stanford</group>
+              </machine>
+            </access>
+          </rightsMetadata>
+          EOF
+        end
+
+        it { is_expected.not_to be_able_to(:download, file) }
+        it { is_expected.not_to be_able_to(:download, image) }
+      end
+
+      context 'with a tile of a no-download file' do
+        let(:rights_xml) do
+          <<-EOF.strip_heredoc
+          <rightsMetadata>
+            <access type="read">
+              <machine>
+                <group rule="no-download">Stanford</group>
+              </machine>
+            </access>
+          </rightsMetadata>
+          EOF
+        end
+        it { is_expected.not_to be_able_to(:read, tile) }
         it { is_expected.not_to be_able_to(:read, image) }
       end
     end

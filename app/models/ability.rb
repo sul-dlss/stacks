@@ -42,7 +42,7 @@ class Ability
     can :download, [StacksFile, StacksImage] do |f|
       val, rule = f.stanford_only_rights
 
-      (val && rule.blank?) && user.webauth_user?
+      (val && rule.blank?) && user.stanford?
     end
 
     can :download, [StacksFile, StacksImage] do |f|
@@ -68,7 +68,7 @@ class Ability
       next true if val
 
       val, _rule = f.stanford_only_rights
-      next true if val && user.webauth_user?
+      next true if val && user.stanford?
 
       val, _rule = f.agent_rights(user.id)
       next true if val && user.app_user?
