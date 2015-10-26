@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   enable_squash_client
 
   include ActionController::HttpAuthentication::Basic
+  include ActionController::HttpAuthentication::Bearer
 
   rescue_from CanCan::AccessDenied, with: :rescue_can_can
 
@@ -12,6 +13,10 @@ class ApplicationController < ActionController::Base
   def current_user
     @current_user ||= if has_basic_credentials?(request)
                         basic_auth_user
+                      elsif has_bearer_credentials?(request)
+                        bearer_auth_user
+                      elsif has_bearer_cookie?
+                        bearer_cookie_user
                       elsif request.remote_user
                         webauth_user
                       end
@@ -26,6 +31,27 @@ class ApplicationController < ActionController::Base
     credentials = Settings.app_users[user_name]
 
     User.new(id: user_name, app_user: true) if credentials && credentials == password
+  end
+
+  def bearer_auth_user
+    User.from_token(*bearer_token_and_options(request))
+  end
+
+  def bearer_cookie
+    cookies[:bearer_token]
+  end
+
+  # rubocop:disable Style/PredicateName
+  def has_bearer_cookie?
+    bearer_cookie.present?
+  end
+  # rubocop:enable Style/PredicateName
+
+  def bearer_cookie_user
+    authorization_request = bearer_cookie.to_s
+    params = bearer_token_params_from authorization_request
+    token_and_options = [params.shift[1], Hash[params].with_indifferent_access]
+    User.from_token(*token_and_options)
   end
 
   def webauth_user

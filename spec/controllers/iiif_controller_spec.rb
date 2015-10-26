@@ -81,38 +81,4 @@ describe IiifController, :vcr do
       expect(info['tiles'].first).to include 'width' => 1024, 'height' => 1024
     end
   end
-
-  describe '#token' do
-    subject do
-      get :token, format: :json
-    end
-
-    before do
-      allow(controller).to receive(:current_user).and_return(user)
-    end
-
-    context 'with a user' do
-      let(:user) { User.new }
-
-      it 'returns the token response' do
-        expect(subject.status).to eq 200
-
-        data = JSON.parse(subject.body)
-        expect(data['accessToken']).not_to be_blank
-        expect(data['tokenType']).to eq 'Bearer'
-        expect(data['expiresIn']).to be > 0
-      end
-    end
-
-    context 'without a user' do
-      let(:user) { nil }
-
-      it 'returns the error response' do
-        expect(subject.status).to eq 401
-
-        data = JSON.parse(subject.body)
-        expect(data['error']).to eq 'missingCredentials'
-      end
-    end
-  end
 end

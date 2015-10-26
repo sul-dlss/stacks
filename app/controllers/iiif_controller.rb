@@ -1,18 +1,18 @@
 ##
 # API for delivering IIIF-compatible images and image tiles
 class IiifController < ApplicationController
-  before_action :load_image, except: [:token]
-  before_action :add_iiif_profile_header, except: [:token]
+  before_action :load_image
+  before_action :add_iiif_profile_header
 
   rescue_from ActionController::MissingFile do
     render text: 'File not found', status: :not_found
   end
 
-  before_action only: :show do
+  before_action except: :metadata do
     fail ActionController::MissingFile, 'File Not Found' unless @image.valid?
   end
 
-  before_action only: :meadata do
+  before_action only: :metadata do
     fail ActionController::MissingFile, 'File Not Found' unless @image.exist?
   end
 
@@ -36,20 +36,6 @@ class IiifController < ApplicationController
 
     self.content_type = 'application/json'
     self.response_body = JSON.pretty_generate(image_info)
-  end
-
-  def token
-    respond_to do |format|
-      format.json do
-        response = if current_user
-                     { accessToken: current_user.token, tokenType: 'Bearer', expiresIn: 3600 }
-                   else
-                     { error: 'missingCredentials', description: '' }
-                   end
-
-        render json: response.to_json, callback: params[:callback], status: current_user.present? ? :ok : :unauthorized
-      end
-    end
   end
 
   private
