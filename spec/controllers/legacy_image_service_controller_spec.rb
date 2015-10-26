@@ -123,5 +123,15 @@ describe LegacyImageServiceController, :vcr do
       expected = '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/0,0,32768,32768/pct:0.78125/0/default.jpg'
       expect(page).to redirect_to expected
     end
+
+    it 'works with incompletely specified regions' do
+      page = get :show, id: 'nr349ct7889',
+                        file_name: 'nr349ct7889_00_0001',
+                        format: 'jpg',
+                        region: '0,0,256',
+                        zoom: '100'
+      expected = '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/0,0,256,0/pct:100/0/default.jpg'
+      expect(page).to redirect_to expected
+    end
   end
 end

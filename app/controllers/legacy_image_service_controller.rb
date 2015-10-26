@@ -71,9 +71,9 @@ class LegacyImageServiceController < ApplicationController
   def iiif_region
     case
     when params[:region] && params[:zoom]
-      x, y, w, h = params[:region].split(',').map(&:to_i)
+      x, y, w, h = params[:region].split(',')
       zoom = params[:zoom].to_f / 100.0
-      [x / zoom, y / zoom, w / zoom, h / zoom].map(&:to_i).join(',')
+      [x.to_i / zoom, y.to_i / zoom, w.to_i / zoom, h.to_i / zoom].map(&:to_i).join(',')
     when params[:region]
       params[:region]
     when size == 'square'
