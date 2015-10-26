@@ -94,7 +94,7 @@ class IiifController < ApplicationController
     info['service'] = {
       '@id' => iiif_auth_api_url,
       'profile' => 'http://iiif.io/api/auth/0/login',
-      'label' => 'Login via WebAuth',
+      'label' => 'Stanford-affiliated? Login to view',
       'service' => [
         {
           '@id' => iiif_token_api_url,
