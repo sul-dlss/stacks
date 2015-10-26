@@ -14,5 +14,12 @@ describe StacksFile do
         expect(subject.path).to be_nil
       end
     end
+
+    context 'with a missing file name' do
+      subject { described_class.new(id: 'abcdef') }
+      it 'is nil' do
+        expect(subject.path).to be_nil
+      end
+    end
   end
 end
