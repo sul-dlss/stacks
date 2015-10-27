@@ -19,7 +19,7 @@ class IiifTokenController < ApplicationController
                      { error: 'missingCredentials', description: '' }
                    end
 
-        status = if request.xhr? || token
+        status = if params[:callback] || token
                    :ok
                  else
                    :unauthorized
