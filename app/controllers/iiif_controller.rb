@@ -29,14 +29,20 @@ class IiifController < ApplicationController
 
   ##
   # IIIF info.json endpoint
+  # rubocop:disable Metrics/AbcSize
   def metadata
     return unless stale?(cache_headers)
     authorize! :read_metadata, @image
     expires_in 10.minutes, public: anonymous_ability.can?(:read, @image)
 
-    self.content_type = 'application/json'
-    self.response_body = JSON.pretty_generate(image_info)
+    if request.method == 'OPTIONS'
+      self.response_body = ''
+    else
+      self.content_type = 'application/json'
+      self.response_body = JSON.pretty_generate(image_info)
+    end
   end
+  # rubocop:enable Metrics/AbcSize
 
   private
 
