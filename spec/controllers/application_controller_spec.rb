@@ -17,6 +17,21 @@ describe ApplicationController do
       end
     end
 
+    context 'with a Bearer token' do
+      let(:user) { User.new(id: 'test-user', ldap_groups: ['stanford:stanford']) }
+      let(:credentials) { ActionController::HttpAuthentication::Bearer.encode_credentials(user.token) }
+
+      before do
+        request.env['HTTP_AUTHORIZATION'] = credentials
+      end
+
+      it 'supports bearer auth users' do
+        expect(subject.id).to eq 'test-user'
+        expect(subject).to be_a_token_user
+        expect(subject).to be_stanford
+      end
+    end
+
     context 'with a REMOTE_USER header' do
       before do
         request.env['REMOTE_USER'] = 'my-user'

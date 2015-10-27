@@ -1,3 +1,5 @@
+inherit_from: .rubocop_todo.yml
+
 AllCops:
   Exclude:
     - 'Gemfile'
@@ -7,6 +9,7 @@ AllCops:
     - 'spec/spec_helper.rb'
     - 'spec/teaspoon_env.rb'
     - 'vendor/**/*'
+    - 'app/controllers/concerns/action_controller/**/*'
   RunRailsCops: true
 
 Metrics/LineLength:
