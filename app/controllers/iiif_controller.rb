@@ -94,7 +94,7 @@ class IiifController < ApplicationController
   # rubocop:enable Metrics/MethodLength
 
   def image_params
-    params.except(:identifier, :controller, :action).merge(identifier_params).merge(canonical_params)
+    params.slice(:region, :size, :rotation, :quality, :format).merge(identifier_params).merge(canonical_params)
   end
 
   def identifier_params
