@@ -7,8 +7,8 @@ class IiifTokenController < ApplicationController
     write_bearer_token_cookie(token) if token
 
     respond_to do |format|
-      format.html { redirect_to format: 'json' }
-      format.json do
+      format.html { redirect_to format: 'js' }
+      format.js do
         response = if token
                      {
                        accessToken: token,

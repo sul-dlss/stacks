@@ -5,7 +5,7 @@ describe 'IIIF integration tests' do
     # get the token as a webauth user
     allow_any_instance_of(ActionDispatch::Request).to receive(:remote_user).and_return('xyz')
 
-    visit '/image/iiif/token.json'
+    visit '/image/iiif/token.js'
     data = JSON.parse(page.body)
 
     expect(data).to include 'accessToken'
@@ -14,7 +14,7 @@ describe 'IIIF integration tests' do
     allow_any_instance_of(ActionDispatch::Request).to receive(:remote_user).and_return(nil)
     page.driver.header 'Authorization', "Bearer #{data['accessToken']}"
 
-    visit '/image/iiif/token.json'
+    visit '/image/iiif/token.js'
     data = JSON.parse(page.body)
 
     expect(page.driver.response.headers).to include 'Set-Cookie'
@@ -24,7 +24,7 @@ describe 'IIIF integration tests' do
     # and, finally, try the request with cookie-based authentication
     page.driver.header 'Authorization', nil
 
-    visit '/image/iiif/token.json'
+    visit '/image/iiif/token.js'
 
     data = JSON.parse(page.body)
 

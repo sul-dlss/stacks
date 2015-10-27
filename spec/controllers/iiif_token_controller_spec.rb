@@ -3,7 +3,7 @@ require 'rails_helper'
 describe IiifTokenController do
   describe '#create' do
     subject do
-      get :create, format: :json
+      get :create, format: :js
     end
 
     let(:user) { nil }
@@ -18,7 +18,7 @@ describe IiifTokenController do
       end
 
       it 'redirects to JSON' do
-        expect(subject).to redirect_to format: :json
+        expect(subject).to redirect_to format: :js
       end
     end
 
