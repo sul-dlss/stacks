@@ -1,6 +1,6 @@
 # API to create IIIF Authentication access tokens
 class IiifTokenController < ApplicationController
-  # rubocop:disable Metrics/MethodLength, Metrics/PerceivedComplexity
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
   def create
     token = mint_bearer_token if current_user
 
@@ -29,7 +29,7 @@ class IiifTokenController < ApplicationController
       end
     end
   end
-  # rubocop:enable Metrics/MethodLength, Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   private
 
