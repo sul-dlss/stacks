@@ -15,7 +15,7 @@ Rails.application.routes.draw do
     get '/image/iiif/:identifier' => 'iiif#show', as: :iiif_base
     get '/image/iiif/:identifier/:region/:size/:rotation/:quality' => 'iiif#show', as: :iiif
     get '/image/iiif/:identifier/info.json' => 'iiif#metadata', as: :iiif_metadata
-    match '/image/iiif/:identifier/info.json' => 'iiif#metadata', via: [:options]
+    match '/image/iiif/:identifier/info.json' => 'iiif#metadata_options', via: [:options]
     get '/image/iiif/app/:identifier/:region/:size/:rotation/:quality' => 'webauth#login_iiif'
     get '/image/iiif/auth/:identifier/:region/:size/:rotation/:quality' => 'webauth#login_iiif', as: :auth_iiif
   end

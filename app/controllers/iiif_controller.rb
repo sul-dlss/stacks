@@ -8,7 +8,7 @@ class IiifController < ApplicationController
     render text: 'File not found', status: :not_found
   end
 
-  before_action except: :metadata do
+  before_action only: :show do
     fail ActionController::MissingFile, 'File Not Found' unless @image.valid?
   end
 
@@ -29,20 +29,19 @@ class IiifController < ApplicationController
 
   ##
   # IIIF info.json endpoint
-  # rubocop:disable Metrics/AbcSize
   def metadata
     return unless stale?(cache_headers)
     authorize! :read_metadata, @image
     expires_in 10.minutes, public: anonymous_ability.can?(:read, @image)
 
-    if request.method == 'OPTIONS'
-      self.response_body = ''
-    else
-      self.content_type = 'application/json'
-      self.response_body = JSON.pretty_generate(image_info)
-    end
+    self.content_type = 'application/json'
+    self.response_body = JSON.pretty_generate(image_info)
   end
-  # rubocop:enable Metrics/AbcSize
+
+  def metadata_options
+    response.headers['Access-Control-Allow-Headers'] = 'Authorization'
+    self.response_body = ''
+  end
 
   private
 

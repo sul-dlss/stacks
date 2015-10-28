@@ -17,12 +17,14 @@ describe 'IIIF routes' do
       expect(get: '/image/iiif/abc/info.json').to route_to('iiif#metadata', identifier: 'abc')
     end
 
-    it 'routes OPTION requests for metadata' do
-      expect(options: '/image/iiif/abc/info.json').to route_to('iiif#metadata', identifier: 'abc')
-    end
-
     it 'routes with embedded slashes' do
       expect(get: '/image/iiif/abc%2Fdef/info.json').to route_to('iiif#metadata', identifier: 'abc/def')
+    end
+  end
+
+  describe 'iiif metadata preflight requests' do
+    it 'routes OPTION requests for metadata' do
+      expect(options: '/image/iiif/abc/info.json').to route_to('iiif#metadata_options', identifier: 'abc')
     end
   end
 
