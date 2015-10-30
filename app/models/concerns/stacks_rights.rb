@@ -13,6 +13,14 @@ module StacksRights
     rights.stanford_only_rights_for_file file_name
   end
 
+  def stanford_only_unrestricted?
+    rights.stanford_only_unrestricted_file? file_name
+  end
+
+  def maybe_downloadable?
+    world_unrestricted? || stanford_only_unrestricted?
+  end
+
   def agent_rights(agent)
     rights.agent_rights_for_file file_name, agent
   end

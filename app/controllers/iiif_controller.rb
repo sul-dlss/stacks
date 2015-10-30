@@ -80,7 +80,7 @@ class IiifController < ApplicationController
       end
     end
 
-    info['sizes'] = [{ width: 400, height: 400 }] unless can? :download, @image
+    info['sizes'] = [{ width: 400, height: 400 }] unless @image.maybe_downloadable?
 
     info['service'] = {
       '@id' => iiif_auth_api_url,
