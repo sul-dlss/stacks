@@ -68,7 +68,7 @@ class IiifController < ApplicationController
     @image ||= StacksImage.new(image_params)
   end
 
-  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
   def image_info
     info = @image.info do |md|
       if can? :download, @image
@@ -81,6 +81,9 @@ class IiifController < ApplicationController
     end
 
     info['sizes'] = [{ width: 400, height: 400 }] unless @image.maybe_downloadable?
+
+    info['tiles'][0]['scaleFactors'] = info['tiles'][0]['scaleFactors']
+                                       .map { |x| 2**(x - 1) }
 
     info['service'] = {
       '@id' => iiif_auth_api_url,
@@ -96,7 +99,7 @@ class IiifController < ApplicationController
 
     info
   end
-  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   def image_params
     params.slice(:region, :size, :rotation, :quality, :format).merge(identifier_params).merge(canonical_params)

@@ -80,5 +80,12 @@ describe IiifController, :vcr do
       info = JSON.parse(controller.response_body.first)
       expect(info['tiles'].first).to include 'width' => 1024, 'height' => 1024
     end
+
+    it 'includes scaleFactors that are power of 2' do
+      allow(controller).to receive(:can?).and_return(true)
+      subject
+      info = JSON.parse(controller.response_body.first)
+      expect(info['tiles'][0]['scaleFactors']).to match_array [1, 2, 4, 8, 16]
+    end
   end
 end
