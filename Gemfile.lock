@@ -108,7 +108,7 @@ GEM
     debug_inspector (0.0.2)
     deep_merge (1.0.1)
     diff-lcs (1.2.5)
-    djatoka (0.4.0)
+    djatoka (0.4.1)
       addressable
       hashie
       json
@@ -136,7 +136,7 @@ GEM
     globalid (0.3.6)
       activesupport (>= 4.1.0)
     hashdiff (0.2.2)
-    hashie (3.4.2)
+    hashie (3.4.3)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
     hurley (0.2)
@@ -353,4 +353,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   1.10.4
+   1.10.6
