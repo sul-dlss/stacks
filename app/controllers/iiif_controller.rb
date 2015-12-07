@@ -32,9 +32,9 @@ class IiifController < ApplicationController
   ##
   # IIIF info.json endpoint
   def metadata
+    expires_in 10.minutes, public: false
     return unless stale?(cache_headers)
     authorize! :read_metadata, @image
-    expires_in 10.minutes, public: anonymous_ability.can?(:read, @image)
 
     self.content_type = 'application/json'
     self.response_body = JSON.pretty_generate(image_info)
