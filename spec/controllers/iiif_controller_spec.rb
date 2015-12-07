@@ -7,13 +7,19 @@ describe IiifController, :vcr do
   end
 
   describe '#show' do
+    let(:iiif_params) do
+      {
+        identifier: 'nr349ct7889%2Fnr349ct7889_00_0001',
+        region: '0,640,2552,2552',
+        size: '100,100',
+        rotation: '0',
+        quality: 'default',
+        format: 'jpg'
+      }
+    end
+
     subject do
-      get :show, identifier: 'nr349ct7889%2Fnr349ct7889_00_0001',
-                 region: '0,640,2552,2552',
-                 size: '100,100',
-                 rotation: '0',
-                 quality: 'default',
-                 format: 'jpg'
+      get :show, iiif_params
     end
 
     it 'loads the image' do
@@ -61,6 +67,18 @@ describe IiifController, :vcr do
         it 'redirects to the webauth login endpoint' do
           expect(subject).to redirect_to auth_iiif_url(controller.params.symbolize_keys)
         end
+      end
+    end
+
+    context 'with the download flag set' do
+      subject { get :show, iiif_params.merge(download: true) }
+
+      it 'sets the content-disposition header to attachment' do
+        expect(subject.headers['Content-Disposition']).to start_with 'attachment'
+      end
+
+      it 'sets the preferred filename' do
+        expect(subject.headers['Content-Disposition']).to include 'filename=nr349ct7889%2Fnr349ct7889_00_0001.jpg'
       end
     end
   end

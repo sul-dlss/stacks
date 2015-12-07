@@ -23,6 +23,8 @@ class IiifController < ApplicationController
     authorize! :read, @image
     expires_in 10.minutes, public: anonymous_ability.can?(:read, @image)
 
+    set_image_response_headers
+
     self.content_type = Mime::Type.lookup_by_extension(params[:format]).to_s
     self.response_body = @image.response
   end
@@ -62,6 +64,14 @@ class IiifController < ApplicationController
       public: anonymous_ability.can?(:read, @image),
       template: false
     }
+  end
+
+  def set_image_response_headers
+    set_attachment_content_disposition_header if params[:download]
+  end
+
+  def set_attachment_content_disposition_header
+    response.headers['Content-Disposition'] = "attachment;filename=#{params[:identifier]}.#{params[:format]}"
   end
 
   def load_image
