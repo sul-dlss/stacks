@@ -10,6 +10,7 @@ class LegacyImageServiceController < ApplicationController
   # Redirect legacy image requests to their IIIF equivalents
   def show
     redirect_to iiif_path(identifier: "#{params[:id]}#{IDENTIFIER_SEPARATOR}#{file_name}",
+                          download: params[:download],
                           region: @image.region,
                           size: @image.size,
                           rotation: @image.rotation || 0,
