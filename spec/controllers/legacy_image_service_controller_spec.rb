@@ -101,6 +101,18 @@ describe LegacyImageServiceController, :vcr do
       expect(page).to redirect_to '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/512,512,512,512/pct:50/90/default.jpg'
     end
 
+    it 'works with a download link' do
+      page = get :show, id: 'nr349ct7889',
+                        file_name: 'nr349ct7889_00_0001',
+                        format: 'jpg',
+                        zoom: 100,
+                        region: '0,0,256,256',
+                        download: 'true'
+
+      expected_url = '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/0,0,256,256/pct:100/0/default.jpg?download=true'
+      expect(page).to redirect_to expected_url
+    end
+
     it 'works with a different image format' do
       page = get :show, id: 'nr349ct7889',
                         file_name: 'nr349ct7889_00_0001',
