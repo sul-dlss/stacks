@@ -46,11 +46,11 @@ module DjatokaAdapter
     @djatoka_region ||= begin
       iiif_req = Djatoka::IiifRequest.new(resolver, djatoka_path)
       iiif_req.region(region)
-      .size(size)
-      .rotation(rotation)
-      .quality(quality)
-      .format(format)
-      .djatoka_region
+              .size(size)
+              .rotation(rotation)
+              .quality(quality)
+              .format(format)
+              .djatoka_region
     end
   end
 

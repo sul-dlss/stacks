@@ -4,7 +4,7 @@ class LegacyImageServiceController < ApplicationController
   before_action :load_image
 
   # kludge to get around Rails' overzealous URL escaping
-  IDENTIFIER_SEPARATOR = 'ZZZZZZZ'
+  IDENTIFIER_SEPARATOR = 'ZZZZZZZ'.freeze
 
   ##
   # Redirect legacy image requests to their IIIF equivalents

@@ -10,7 +10,9 @@ AllCops:
     - 'spec/teaspoon_env.rb'
     - 'vendor/**/*'
     - 'app/controllers/concerns/action_controller/**/*'
-  RunRailsCops: true
+
+Rails:
+  Enabled: true
 
 Metrics/LineLength:
   Max: 120
