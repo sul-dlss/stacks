@@ -2,7 +2,7 @@
 # Authentication endpoint, protected in production by a webauth prompt
 class WebauthController < ApplicationController
   before_action do
-    fail CanCan::AccessDenied, 'Unable to authenticate' unless current_user
+    raise CanCan::AccessDenied, 'Unable to authenticate' unless current_user
   end
 
   def login
