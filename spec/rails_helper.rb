@@ -11,11 +11,6 @@ require 'rspec/rails'
 require 'capybara/rails'
 require 'cancan/matchers'
 
-# https://github.com/rspec/rspec-rails/issues/1532
-RSpec::Rails::ViewRendering::EmptyTemplatePathSetDecorator.class_eval do
-  alias_method :find_all_anywhere, :find_all
-end
-
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in

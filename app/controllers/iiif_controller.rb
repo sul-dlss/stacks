@@ -9,11 +9,11 @@ class IiifController < ApplicationController
   end
 
   before_action only: :show do
-    fail ActionController::MissingFile, 'File Not Found' unless @image.valid?
+    raise ActionController::MissingFile, 'File Not Found' unless @image.valid?
   end
 
   before_action only: :metadata do
-    fail ActionController::MissingFile, 'File Not Found' unless @image.exist?
+    raise ActionController::MissingFile, 'File Not Found' unless @image.exist?
   end
 
   ##
