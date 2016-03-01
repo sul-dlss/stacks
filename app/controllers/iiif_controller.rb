@@ -71,7 +71,7 @@ class IiifController < ApplicationController
   end
 
   def set_attachment_content_disposition_header
-    response.headers['Content-Disposition'] = "attachment;filename=#{params[:identifier]}.#{params[:format]}"
+    response.headers['Content-Disposition'] = "attachment;filename=#{identifier_params[:file_name]}.#{params[:format]}"
   end
 
   def load_image
