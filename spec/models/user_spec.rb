@@ -9,6 +9,7 @@ describe User do
     let(:thumbnail) { StacksImage.new(region: 'full', size: '!400,400') }
     let(:square_thumbnail) { StacksImage.new(region: 'square', size: '!400,400') }
     let(:tile) { StacksImage.new(region: '0,0,100,100', size: '256,256') }
+    let(:media) { StacksMediaStream.new.tap { |x| allow(x).to receive(:rights_xml).and_return(rights_xml) } }
     let(:rights_xml) { '' }
 
     before do
@@ -32,6 +33,7 @@ describe User do
         end
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
+        it { is_expected.to be_able_to(:download, media) }
       end
 
       context 'with an world-readable file' do
@@ -49,6 +51,7 @@ describe User do
 
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
+        it { is_expected.to be_able_to(:download, media) }
       end
 
       context 'with an stanford-only file' do
@@ -66,6 +69,7 @@ describe User do
 
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
+        it { is_expected.to be_able_to(:download, media) }
       end
 
       context 'with a tile of a no-download file' do
@@ -81,7 +85,9 @@ describe User do
           EOF
         end
         it { is_expected.to be_able_to(:read, tile) }
+        it { is_expected.not_to be_able_to(:read, file) }
         it { is_expected.not_to be_able_to(:read, image) }
+        it { is_expected.not_to be_able_to(:read, media) }
       end
     end
 
@@ -102,6 +108,7 @@ describe User do
         end
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
+        it { is_expected.to be_able_to(:download, media) }
       end
 
       context 'with an world-readable file' do
@@ -119,6 +126,7 @@ describe User do
 
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
+        it { is_expected.to be_able_to(:download, media) }
       end
 
       context 'with an stanford-only file' do
@@ -136,6 +144,7 @@ describe User do
 
         it { is_expected.not_to be_able_to(:download, file) }
         it { is_expected.not_to be_able_to(:download, image) }
+        it { is_expected.not_to be_able_to(:download, media) }
       end
 
       context 'with a tile of a no-download file' do
@@ -151,7 +160,9 @@ describe User do
           EOF
         end
         it { is_expected.not_to be_able_to(:read, tile) }
+        it { is_expected.not_to be_able_to(:read, file) }
         it { is_expected.not_to be_able_to(:read, image) }
+        it { is_expected.not_to be_able_to(:read, media) }
       end
     end
 
@@ -172,6 +183,7 @@ describe User do
         end
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
+        it { is_expected.to be_able_to(:download, media) }
       end
 
       context 'with an world-readable file' do
@@ -190,6 +202,7 @@ describe User do
 
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
+        it { is_expected.to be_able_to(:download, media) }
       end
 
       context 'with an stanford-only file' do
@@ -208,6 +221,7 @@ describe User do
 
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
+        it { is_expected.to be_able_to(:download, media) }
       end
 
       context 'with an agent-only file' do
@@ -225,6 +239,7 @@ describe User do
 
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
+        it { is_expected.to be_able_to(:download, media) }
       end
 
       context 'with a tile of a no-download file' do
@@ -240,7 +255,9 @@ describe User do
           EOF
         end
         it { is_expected.to be_able_to(:read, tile) }
+        it { is_expected.not_to be_able_to(:read, file) }
         it { is_expected.not_to be_able_to(:read, image) }
+        it { is_expected.not_to be_able_to(:read, media) }
       end
     end
 
@@ -260,6 +277,7 @@ describe User do
 
         it { is_expected.not_to be_able_to(:download, file) }
         it { is_expected.not_to be_able_to(:download, image) }
+        it { is_expected.not_to be_able_to(:download, media) }
       end
 
       context 'with a thumbnail of an unreadable file' do
@@ -278,6 +296,7 @@ describe User do
         it { is_expected.to be_able_to(:read, thumbnail) }
         it { is_expected.to be_able_to(:read, square_thumbnail) }
         it { is_expected.not_to be_able_to(:read, image) }
+        it { is_expected.not_to be_able_to(:read, media) }
       end
 
       context 'with a tile of a no-download file' do
@@ -293,7 +312,9 @@ describe User do
           EOF
         end
         it { is_expected.to be_able_to(:read, tile) }
+        it { is_expected.not_to be_able_to(:read, file) }
         it { is_expected.not_to be_able_to(:read, image) }
+        it { is_expected.not_to be_able_to(:read, media) }
       end
     end
   end

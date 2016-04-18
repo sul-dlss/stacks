@@ -14,11 +14,21 @@ class WebauthController < ApplicationController
     end
   end
 
+  # TODO: we may want one method for all the below, with a referer param to know where to redirect
+
   def login_file
     redirect_to file_path(params.symbolize_keys)
   end
 
   def login_iiif
     redirect_to iiif_path(params.symbolize_keys)
+  end
+
+  def login_media_download
+    redirect_to media_path(params.symbolize_keys)
+  end
+
+  def login_media_stream
+    redirect_to media_stream_path(params.symbolize_keys)
   end
 end

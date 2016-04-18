@@ -10,7 +10,7 @@ describe WebauthController do
   describe '#login_file' do
     subject { get :login_file, id: 'xf680rd3068', file_name: 'xf680rd3068_1.jp2' }
 
-    it 'returns to the user to the file api' do
+    it 'returns the user to the file api' do
       expect(subject).to redirect_to file_url(controller.params.symbolize_keys)
     end
   end
@@ -27,6 +27,22 @@ describe WebauthController do
 
     it 'returns the user to the image' do
       expect(subject).to redirect_to iiif_url(controller.params.symbolize_keys)
+    end
+  end
+
+  describe '#login_media_download' do
+    subject { get :login_media_download, id: 'bb582xs1304', file_name: 'bb582xs1304_sl', format: 'mp4' }
+
+    it 'returns the user to the media download action' do
+      expect(subject).to redirect_to media_url(controller.params.symbolize_keys)
+    end
+  end
+
+  describe '#login_media_stream' do
+    subject { get :login_media_stream, id: 'bb582xs1304', file_name: 'bb582xs1304_sl.mp4', format: 'm3u8' }
+
+    it 'returns the user to the media stream action' do
+      expect(subject).to redirect_to media_stream_url(controller.params.symbolize_keys)
     end
   end
 
