@@ -16,6 +16,8 @@ class StacksFile
   end
 
   def valid?
+    # FIXME: image_exist? is defined in app/models/concerns/djatoka_adapter.rb,
+    #  which is included in StacksImage, but is probably undefined here
     image_exist?
   end
 
