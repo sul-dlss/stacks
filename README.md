@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.org/sul-dlss/digital_stacks_rails.svg?branch=master)](https://travis-ci.org/sul-dlss/digital_stacks_rails)
 [![Coverage Status](https://coveralls.io/repos/sul-dlss/digital_stacks_rails/badge.svg)](https://coveralls.io/r/sul-dlss/digital_stacks_rails)
 [![Dependency Status](https://gemnasium.com/sul-dlss/digital_stacks_rails.svg)](https://gemnasium.com/sul-dlss/digital_stacks_rails)
+[![Code Climate](https://codeclimate.com/github/sul-dlss/digital_stacks_rails/badges/gpa.svg)](https://codeclimate.com/github/sul-dlss/digital_stacks_rails)
 
 # Digital Stacks
 
