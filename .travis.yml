@@ -10,3 +10,7 @@ env:
 
 sudo: false
 language: ruby
+
+addons:
+  code_climate:
+    repo_token: fd1f92afb6b7a906011c5f25d831c4eb70aac9d50439eb295f834dcd6484bb48
