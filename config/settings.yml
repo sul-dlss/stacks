@@ -6,6 +6,8 @@ purl:
   url: 'https://purl.stanford.edu/'
 
 stream:
+  # max_token_age is specified in seconds
+  max_token_age: 1
   url: http://streaming-server.com:1935/stuff
   # streaming media file extensions we support
   video:
