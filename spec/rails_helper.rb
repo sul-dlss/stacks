@@ -1,7 +1,13 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV['RAILS_ENV'] ||= 'test'
+require 'codeclimate-test-reporter'
+CodeClimate::TestReporter.start
 require 'coveralls'
 Coveralls.wear!('rails')
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
+  CodeClimate::TestReporter::Formatter,
+  Coveralls::SimpleCov::Formatter
+]
 
 require File.expand_path('../../config/environment', __FILE__)
 # Prevent database truncation if the environment is production
@@ -38,7 +44,10 @@ VCR.configure do |c|
   c.cassette_library_dir = 'spec/cassettes'
   c.hook_into :webmock
   c.configure_rspec_metadata!
+  c.ignore_hosts 'codeclimate.com'
 end
+
+WebMock.disable_net_connect!(allow: 'codeclimate.com')
 
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
