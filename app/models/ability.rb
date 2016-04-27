@@ -32,26 +32,26 @@ class Ability
     # See the wiki for details:
     # https://github.com/CanCanCommunity/cancancan/wiki/Defining-Abilities
 
-    can :download, [StacksFile, StacksImage], &:world_unrestricted?
+    can :download, [StacksFile, StacksImage, StacksMediaStream], &:world_unrestricted?
 
-    can :download, [StacksFile, StacksImage] do |f|
+    can :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
       val, rule = f.world_rights
       val && rule.blank?
     end
 
-    can :download, [StacksFile, StacksImage] do |f|
+    can :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
       val, rule = f.stanford_only_rights
 
       (val && rule.blank?) && user.stanford?
     end
 
-    can :download, [StacksFile, StacksImage] do |f|
+    can :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
       val, rule = f.agent_rights(user.id)
 
       val && rule.blank? && user.app_user?
     end
 
-    can :read, [StacksFile, StacksImage] do |f|
+    can :read, [StacksFile, StacksImage, StacksMediaStream] do |f|
       can? :download, f
     end
 
@@ -61,7 +61,7 @@ class Ability
       f.tile? && can?(:access, f)
     end
 
-    can :read_metadata, [StacksFile, StacksImage]
+    can :read_metadata, StacksImage
 
     can :access, StacksImage do |f|
       val, _rule = f.world_rights

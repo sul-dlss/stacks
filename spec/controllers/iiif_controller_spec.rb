@@ -24,7 +24,7 @@ describe IiifController, :vcr do
 
     it 'loads the image' do
       subject
-      image = controller.instance_variable_get(:@image)
+      image = assigns(:image)
       expect(image).to be_a_kind_of StacksImage
       expect(image.region).to eq '0,640,2552,2552'
       expect(image.size).to eq '100,100'

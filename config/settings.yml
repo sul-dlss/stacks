@@ -2,6 +2,20 @@ stacks:
   storage_root: /stacks
   djatoka_url: 'http://imageserver-b.stanford.edu/adore-djatoka/resolver'
 
+purl:
+  url: 'https://purl.stanford.edu/'
+
+stream:
+  url: http://streaming-server.com:1935/stuff
+  # streaming media file extensions we support
+  video:
+    - mov
+    - mp4
+    - mpeg
+  audio:
+    - mp3
+
+# non-IIIF images
 legacy:
   sizes:
     - square
@@ -11,8 +25,6 @@ legacy:
     - large
     - xlarge
     - full
-purl:
-  url: 'https://purl.stanford.edu/'
 
 user:
   stanford_groups:
