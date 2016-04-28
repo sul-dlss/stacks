@@ -5,13 +5,13 @@ Rails.application.routes.draw do
     get '/file/auth/:id/:file_name' => 'webauth#login_file', as: :auth_file
   end
 
-  constraints file_name: %r{[^/][\w]+} do
+  constraints file_name: %r{[^/][\w-]+} do
     get '/media/:id/:file_name' => 'media#download', as: :media
     get '/media/auth/:id/:file_name' => 'webauth#login_media_download', as: :auth_media_download
   end
 
   # stream file_name must include format extension, eg .../oo000oo0000.mp4/stream
-  constraints file_name: %r{[^/][\w\.]+} do
+  constraints file_name: %r{[^/][\w\.-]+} do
     get '/media/:id/:file_name/stream' => 'media#stream', as: :media_stream
     get '/media/auth/:id/:file_name/stream' => 'webauth#login_media_stream', as: :auth_media_stream
   end

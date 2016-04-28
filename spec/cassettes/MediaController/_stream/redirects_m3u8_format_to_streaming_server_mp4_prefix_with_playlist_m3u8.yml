@@ -1,0 +1,101 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://purl.stanford.edu//bb582xs1304.xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Hurley v0.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 28 Apr 2016 04:16:39 GMT
+      Server:
+      - Apache/2.2.15 (CentOS)
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Etag:
+      - '"e5d4a72920936917c4da84987fab72ad"'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Runtime:
+      - '0.011358'
+      X-Request-Id:
+      - ee4c43bd-ad0e-4a14-aee4-a35149ee7d69
+      X-Powered-By:
+      - Phusion Passenger 5.0.22
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Last-Modified:
+      - Fri, 25 Sep 2015 19:12:26 GMT
+      Status:
+      - 200 OK
+      Transfer-Encoding:
+      - chunked
+      Content-Type:
+      - application/xml; charset=utf-8
+    body:
+      encoding: UTF-8
+      string: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<publicObject id=\"druid:bb582xs1304\"
+        published=\"2015-09-25T12:12:24-07:00\">\n  <identityMetadata>\n    <sourceId
+        source=\"sul\">SC0659_b02_16</sourceId>\n    <objectId>druid:bb582xs1304</objectId>\n
+        \   <objectCreator>DOR</objectCreator>\n    <objectLabel>Arjay Miller, part
+        3</objectLabel>\n    <objectType>item</objectType>\n    <adminPolicy>druid:yf767bj4831</adminPolicy>\n
+        \   <otherId name=\"label\"/>\n    <otherId name=\"uuid\">fb13f19e-4f1c-11e4-86f9-0050569b3c3c</otherId>\n
+        \   <tag>Process : Content Type : File</tag>\n    <tag>Project : SC0659 gsb
+        : betacam sp</tag>\n    <tag>SMPL : video : ua</tag>\n    <tag>JIRA : DIGREQ-748</tag>\n
+        \   <tag>Registered By : gwillard</tag>\n    <tag>Remediated By : 4.21.4</tag>\n
+        \ </identityMetadata>\n  <contentMetadata objectId=\"bb582xs1304\" type=\"media\">\n
+        \   <resource sequence=\"1\" id=\"bb582xs1304_1\" type=\"video\">\n      <label>Tape
+        1</label>\n      <file id=\"bb582xs1304_sl.mp4\" mimetype=\"video/mp4\" size=\"152643219\">\n
+        \     \n      \n    </file>\n    </resource>\n    <resource sequence=\"2\"
+        id=\"bb582xs1304_2\" type=\"image\">\n      <label>Image of media (1 of 2)</label>\n
+        \     <file id=\"bb582xs1304_img_1.jp2\" mimetype=\"image/jp2\" size=\"770433\">\n
+        \       <imageData width=\"1708\" height=\"2368\"/>\n      </file>\n    </resource>\n
+        \   <resource sequence=\"3\" id=\"bb582xs1304_3\" type=\"image\">\n      <label>Image
+        of media (2 of 2)</label>\n      <file id=\"bb582xs1304_img_2.jp2\" mimetype=\"image/jp2\"
+        size=\"557708\">\n        <imageData width=\"2111\" height=\"1380\"/>\n      </file>\n
+        \   </resource>\n  </contentMetadata>\n  <rightsMetadata>\n    <access type=\"discover\">\n
+        \     <machine>\n        <world/>\n      </machine>\n    </access>\n    <access
+        type=\"read\">\n      <machine>\n        <world/>\n      </machine>\n    </access>\n
+        \   <use>\n      <human type=\"useAndReproduction\">The materials are open
+        for research use and may be used freely for non-commercial purposes with an
+        attribution. For commercial permission requests, please contact the Stanford
+        University Archives (archivesref@stanford.edu).</human>\n      <human type=\"creativeCommons\"/>\n
+        \     <machine type=\"creativeCommons\"/>\n    </use>\n    <copyright>\n      <human/>\n
+        \   </copyright>\n  </rightsMetadata>\n  <rdf:RDF xmlns:fedora=\"info:fedora/fedora-system:def/relations-external#\"
+        xmlns:fedora-model=\"info:fedora/fedora-system:def/model#\" xmlns:hydra=\"http://projecthydra.org/ns/relations#\"
+        xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n    <rdf:Description
+        rdf:about=\"info:fedora/druid:bb582xs1304\">\n      <fedora:isMemberOf rdf:resource=\"info:fedora/druid:dz810wk7025\"/>\n
+        \     <fedora:isMemberOfCollection rdf:resource=\"info:fedora/druid:dz810wk7025\"/>\n
+        \   </rdf:Description>\n  </rdf:RDF>\n  <oai_dc:dc xmlns:dc=\"http://purl.org/dc/elements/1.1/\"
+        xmlns:srw_dc=\"info:srw/schema/1/dc-schema\" xmlns:oai_dc=\"http://www.openarchives.org/OAI/2.0/oai_dc/\"
+        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai_dc/
+        http://www.openarchives.org/OAI/2.0/oai_dc.xsd\">\n    <dc:identifier>SC0659_b02_16</dc:identifier>\n
+        \   <dc:title>Arjay Miller. Part 3</dc:title>\n    <dc:date>2003-08-12</dc:date>\n
+        \   <dc:format>1 Betacam SP tape</dc:format>\n    <dc:format>videocassette</dc:format>\n
+        \   <dc:format>video/mp4</dc:format>\n    <dc:type>MovingImage</dc:type>\n
+        \   <dc:type>oral histories</dc:type>\n    <dc:type>interview</dc:type>\n
+        \   <dc:contributor>Miller, Arjay (spk speaker)</dc:contributor>\n    <dc:subject>Stanford
+        University. Graduate School of Business</dc:subject>\n    <dc:relation type=\"repository\">Stanford
+        University. Libraries. Department of Special Collections and University Archives
+        SC0659 http://purl.stanford.edu/bb582xs1304</dc:relation>\n    <dc:language>eng</dc:language>\n
+        \   <dc:relation type=\"collection\">Stanford University, Graduate School
+        of Business, oral history collection, 1974-1999</dc:relation>\n  </oai_dc:dc>\n</publicObject>\n"
+    http_version: 
+  recorded_at: Thu, 28 Apr 2016 04:16:39 GMT
+recorded_with: VCR 3.0.1
