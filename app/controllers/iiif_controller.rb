@@ -1,5 +1,6 @@
 ##
 # API for delivering IIIF-compatible images and image tiles
+# rubocop:disable Metrics/ClassLength
 class IiifController < ApplicationController
   before_action :load_image
   before_action :add_iiif_profile_header
@@ -25,7 +26,7 @@ class IiifController < ApplicationController
 
     set_image_response_headers
 
-    self.content_type = Mime::Type.lookup_by_extension(params[:format]).to_s
+    self.content_type = Mime::Type.lookup_by_extension(format_param).to_s
     self.response_body = @image.response
   end
 
@@ -47,11 +48,19 @@ class IiifController < ApplicationController
 
   private
 
+  def allowed_params
+    params.permit(:region, :size, :rotation, :quality, :format, :identifier, :download)
+  end
+
+  def format_param
+    allowed_params[:format]
+  end
+
   def rescue_can_can(exception)
     if current_user
       super(exception)
     else
-      redirect_to auth_iiif_url(params.symbolize_keys.tap { |x| x[:identifier] = escaped_identifier })
+      redirect_to auth_iiif_url(allowed_params.symbolize_keys.tap { |x| x[:identifier] = escaped_identifier })
     end
   end
 
@@ -67,15 +76,15 @@ class IiifController < ApplicationController
   end
 
   def set_image_response_headers
-    set_attachment_content_disposition_header if params[:download]
+    set_attachment_content_disposition_header if allowed_params[:download]
   end
 
   def set_attachment_content_disposition_header
-    response.headers['Content-Disposition'] = "attachment;filename=#{identifier_params[:file_name]}.#{params[:format]}"
+    response.headers['Content-Disposition'] = "attachment;filename=#{identifier_params[:file_name]}.#{format_param}"
   end
 
   def load_image
-    @image ||= StacksImage.new(image_params)
+    @image ||= StacksImage.new(stacks_image_params)
   end
 
   # rubocop:disable Metrics/MethodLength
@@ -108,8 +117,8 @@ class IiifController < ApplicationController
   end
   # rubocop:enable Metrics/MethodLength
 
-  def image_params
-    params.slice(:region, :size, :rotation, :quality, :format).merge(identifier_params).merge(canonical_params)
+  def stacks_image_params
+    allowed_params.slice(:region, :size, :rotation, :quality, :format).merge(identifier_params).merge(canonical_params)
   end
 
   def identifier_params
@@ -123,10 +132,11 @@ class IiifController < ApplicationController
 
   # kludge to get around Rails' overzealous URL escaping
   def escaped_identifier
-    params[:identifier].sub('/', '%2F')
+    allowed_params[:identifier].sub('/', '%2F')
   end
 
   def add_iiif_profile_header
     headers['Link'] = '<http://iiif.io/api/image/2/level1.json>;rel="profile"'
   end
 end
+# rubocop:enable Metrics/ClassLength

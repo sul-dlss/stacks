@@ -17,16 +17,18 @@ class FileController < ApplicationController
 
   private
 
+  def allowed_params
+    params.permit(:id, :file_name)
+  end
+  # the args needed for StacksFile.new happen to be the same as allowed_params
+  alias stacks_file_params allowed_params
+
   def rescue_can_can(exception)
     if current_user
       super(exception)
     else
-      redirect_to auth_file_url(params.symbolize_keys)
+      redirect_to auth_file_url(allowed_params.symbolize_keys)
     end
-  end
-
-  def file_params
-    params.slice(:id, :file_name)
   end
 
   def cache_headers
@@ -39,6 +41,6 @@ class FileController < ApplicationController
   end
 
   def load_file
-    @file ||= StacksFile.new(file_params)
+    @file ||= StacksFile.new(stacks_file_params)
   end
 end

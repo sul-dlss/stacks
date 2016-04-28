@@ -25,7 +25,7 @@ describe IiifController, :vcr do
     it 'loads the image' do
       subject
       image = assigns(:image)
-      expect(image).to be_a_kind_of StacksImage
+      expect(image).to be_a StacksImage
       expect(image.region).to eq '0,640,2552,2552'
       expect(image.size).to eq '100,100'
       expect(image.rotation).to eq '0'
@@ -34,6 +34,15 @@ describe IiifController, :vcr do
     it 'sets the content type' do
       subject
       expect(controller.content_type).to eq 'image/jpeg'
+    end
+
+    context 'additional params' do
+      subject { get :show, iiif_params.merge(ignored: 'ignored', host: 'host') }
+      it 'ignored when instantiating StacksImage' do
+        subject
+        expect { assigns(:image) }.not_to raise_exception
+        expect(assigns(:image)).to be_a StacksImage
+      end
     end
 
     context 'for a missing image' do
@@ -66,6 +75,16 @@ describe IiifController, :vcr do
       context 'with an unauthenticated user' do
         it 'redirects to the webauth login endpoint' do
           expect(subject).to redirect_to auth_iiif_url(controller.params.symbolize_keys)
+        end
+        context 'additional params' do
+          subject { get :show, iiif_params.merge(ignored: 'ignored', host: 'host') }
+          it 'ignored when redirecting' do
+            expect(subject).not_to redirect_to(auth_iiif_url(controller.params.symbolize_keys))
+            expect(subject).to redirect_to(auth_iiif_url(controller.send(:allowed_params).symbolize_keys))
+            expected = '/image/iiif/auth/nr349ct7889%252Fnr349ct7889_00_0001/0,640,2552,2552/100,100/0/default.jpg'
+            expect(subject).not_to redirect_to("#{expected}?ignored=ignored")
+            expect(subject).to redirect_to(expected)
+          end
         end
       end
     end
