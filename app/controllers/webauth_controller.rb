@@ -15,6 +15,7 @@ class WebauthController < ApplicationController
   end
 
   # TODO: we may want one method for all the below, with a referer param to know where to redirect
+  # TODO: can't think of a reasonable way to do strong params here
 
   def login_file
     redirect_to file_path(params.symbolize_keys)

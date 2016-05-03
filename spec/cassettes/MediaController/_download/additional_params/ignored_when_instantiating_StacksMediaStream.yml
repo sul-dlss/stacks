@@ -19,7 +19,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 03 May 2016 16:01:42 GMT
+      - Sun, 01 May 2016 20:16:37 GMT
       Server:
       - Apache/2.2.15 (CentOS)
       Cache-Control:
@@ -33,9 +33,9 @@ http_interactions:
       X-Content-Type-Options:
       - nosniff
       X-Runtime:
-      - '0.019676'
+      - '0.015750'
       X-Request-Id:
-      - dd80d8cb-35e7-449a-9006-2ed5052ddc5b
+      - 675677e4-1333-4eec-950e-ea31d753bb7d
       X-Powered-By:
       - Phusion Passenger 5.0.22
       Strict-Transport-Security:
@@ -129,5 +129,5 @@ http_interactions:
           <ReleaseData/>
         </publicObject>
     http_version: 
-  recorded_at: Tue, 03 May 2016 16:01:42 GMT
+  recorded_at: Sun, 01 May 2016 20:16:37 GMT
 recorded_with: VCR 3.0.1

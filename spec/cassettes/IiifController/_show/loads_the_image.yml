@@ -16,32 +16,36 @@ http_interactions:
   response:
     status:
       code: 200
-      message: ''
+      message: OK
     headers:
       Date:
-      - Wed, 16 Sep 2015 22:40:32 GMT
+      - Sun, 01 May 2016 20:15:05 GMT
       Server:
-      - Apache/2.2.15 (Red Hat)
-      X-Powered-By:
-      - Phusion Passenger (mod_rails/mod_rack) 3.0.19
+      - Apache/2.2.15 (CentOS)
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Etag:
+      - '"25531dfbe224e0aa0add4a853be4a1b6"'
       X-Frame-Options:
       - SAMEORIGIN
       X-Xss-Protection:
       - 1; mode=block
       X-Content-Type-Options:
       - nosniff
-      Etag:
-      - '"b4bfe652093bf3656c997041e1336efd"'
-      Cache-Control:
-      - max-age=0, private, must-revalidate
-      X-Request-Id:
-      - 209fafb7-81da-4643-93c5-338d9dc4f172
       X-Runtime:
-      - '0.134977'
+      - '0.021629'
+      X-Request-Id:
+      - 1f214b2b-cbcb-43d1-8047-ad88b6d448b3
+      X-Powered-By:
+      - Phusion Passenger 5.0.22
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Last-Modified:
+      - Tue, 14 Jul 2015 21:55:41 GMT
       Status:
-      - '200'
-      Content-Length:
-      - '14372'
+      - 200 OK
+      Transfer-Encoding:
+      - chunked
       Content-Type:
       - application/xml; charset=utf-8
     body:
@@ -378,5 +382,5 @@ http_interactions:
           </oai_dc:dc>
         </publicObject>
     http_version: 
-  recorded_at: Wed, 16 Sep 2015 22:40:32 GMT
-recorded_with: VCR 2.9.3
+  recorded_at: Sun, 01 May 2016 20:15:05 GMT
+recorded_with: VCR 3.0.1

@@ -19,7 +19,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 26 Apr 2016 21:15:36 GMT
+      - Sun, 01 May 2016 20:16:37 GMT
       Server:
       - Apache/2.2.15 (CentOS)
       Cache-Control:
@@ -33,9 +33,9 @@ http_interactions:
       X-Content-Type-Options:
       - nosniff
       X-Runtime:
-      - '0.007166'
+      - '0.020895'
       X-Request-Id:
-      - 5fe77954-df32-4749-8043-ec8648be0181
+      - 83bd71ac-ddca-4075-880f-e104b209ff6d
       X-Powered-By:
       - Phusion Passenger 5.0.22
       Strict-Transport-Security:
@@ -97,5 +97,5 @@ http_interactions:
         \   <dc:relation type=\"collection\">Stanford University, Graduate School
         of Business, oral history collection, 1974-1999</dc:relation>\n  </oai_dc:dc>\n</publicObject>\n"
     http_version: 
-  recorded_at: Tue, 26 Apr 2016 21:15:35 GMT
+  recorded_at: Sun, 01 May 2016 20:16:37 GMT
 recorded_with: VCR 3.0.1

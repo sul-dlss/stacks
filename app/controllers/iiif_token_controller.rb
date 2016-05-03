@@ -1,13 +1,13 @@
 # API to create IIIF Authentication access tokens
 class IiifTokenController < ApplicationController
-  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
+  # rubocop:disable Metrics/MethodLength, Metrics/PerceivedComplexity
   def create
     token = mint_bearer_token if current_user
 
     write_bearer_token_cookie(token) if token
 
     respond_to do |format|
-      format.html { redirect_to callback: params[:callback], format: 'js' }
+      format.html { redirect_to callback: callback_value, format: 'js' }
       format.js do
         response = if token
                      {
@@ -19,19 +19,27 @@ class IiifTokenController < ApplicationController
                      { error: 'missingCredentials', description: '' }
                    end
 
-        status = if params[:callback] || token
+        status = if callback_value || token
                    :ok
                  else
                    :unauthorized
                  end
 
-        render json: response.to_json, callback: params[:callback], status: status
+        render json: response.to_json, callback: callback_value, status: status
       end
     end
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/MethodLength, Metrics/PerceivedComplexity
 
   private
+
+  def allowed_params
+    params.permit(:callback)
+  end
+
+  def callback_value
+    allowed_params[:callback]
+  end
 
   def mint_bearer_token
     encode_credentials(current_user.token).sub('Bearer ', '')

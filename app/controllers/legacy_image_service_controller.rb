@@ -9,8 +9,8 @@ class LegacyImageServiceController < ApplicationController
   ##
   # Redirect legacy image requests to their IIIF equivalents
   def show
-    redirect_to iiif_path(identifier: "#{params[:id]}#{IDENTIFIER_SEPARATOR}#{file_name}",
-                          download: params[:download],
+    redirect_to iiif_path(identifier: "#{id}#{IDENTIFIER_SEPARATOR}#{file_name}",
+                          download: allowed_params[:download],
                           region: @image.region,
                           size: @image.size,
                           rotation: @image.rotation || 0,
@@ -20,20 +20,24 @@ class LegacyImageServiceController < ApplicationController
 
   private
 
-  def load_image
-    @image ||= StacksImage.new(image_params)
+  def allowed_params
+    params.permit(:id, :file_name, :download, :format, :h, :region, :rotate, :size, :w, :zoom)
   end
 
-  def image_params
+  def load_image
+    @image ||= StacksImage.new(stacks_image_params)
+  end
+
+  def stacks_image_params
     iiif_params.merge(identifier_params)
   end
 
   def iiif_params
     {
       region: iiif_region,
-      rotation: params[:rotate],
+      rotation: allowed_params[:rotate],
       quality: 'default',
-      format: params[:format] || 'jpg',
+      format: allowed_params[:format] || 'jpg',
       size: iiif_size
     }
   end
@@ -41,10 +45,10 @@ class LegacyImageServiceController < ApplicationController
   # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength
   def iiif_size
     case
-    when params[:zoom]
-      "pct:#{params[:zoom]}"
-    when params[:w]
-      "#{params[:w]},#{params[:h]}"
+    when zoom
+      "pct:#{zoom}"
+    when allowed_params[:w]
+      "#{allowed_params[:w]},#{allowed_params[:h]}"
     when size
       case size
       when 'square'
@@ -71,12 +75,12 @@ class LegacyImageServiceController < ApplicationController
   # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def iiif_region
     case
-    when params[:region] && params[:zoom]
-      x, y, w, h = params[:region].split(',')
-      zoom = params[:zoom].to_f / 100.0
-      [x.to_i / zoom, y.to_i / zoom, w.to_i / zoom, h.to_i / zoom].map(&:to_i).join(',')
-    when params[:region]
-      params[:region]
+    when region && zoom
+      x, y, w, h = region.split(',')
+      zoom_percent = zoom.to_f / 100.0
+      [x.to_i / zoom_percent, y.to_i / zoom_percent, w.to_i / zoom_percent, h.to_i / zoom_percent].map(&:to_i).join(',')
+    when region
+      region
     when size == 'square'
       'square'
     else
@@ -86,14 +90,26 @@ class LegacyImageServiceController < ApplicationController
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   def identifier_params
-    { id: params[:id], file_name: file_name }
+    { id: id, file_name: file_name }
+  end
+
+  def id
+    allowed_params[:id]
   end
 
   def file_name
-    params[:file_name]
+    allowed_params[:file_name]
+  end
+
+  def region
+    allowed_params[:region]
   end
 
   def size
-    params[:size]
+    allowed_params[:size]
+  end
+
+  def zoom
+    allowed_params[:zoom]
   end
 end
