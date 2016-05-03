@@ -35,4 +35,9 @@ describe 'Media routes' do
         'webauth#login_media_stream', id: 'id', file_name: 'filename.mp4', format: 'm3u8')
     end
   end
+
+  it 'verify_token' do
+    expect(get: '/media/id/filename.mp4/verify_token?token_string=asdf&user_ip_addr=192.168.1.100').to route_to(
+      'media#verify_token', id: 'id', file_name: 'filename.mp4', token_string: 'asdf', user_ip_addr: '192.168.1.100')
+  end
 end

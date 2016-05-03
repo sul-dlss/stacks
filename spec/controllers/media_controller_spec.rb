@@ -115,4 +115,78 @@ describe MediaController, vcr: { record: :new_episodes } do
       end
     end
   end
+
+  describe '#verify_token' do
+    let(:id) { 'ab123cd4567' }
+    let(:file_name) { 'interesting_video.mp4' }
+    let(:ip_addr) { '192.168.1.100' }
+    let(:token) { StacksMediaToken.new(id, file_name, ip_addr) }
+    let(:token_string) { token.to_encrypted_string }
+
+    context 'mock #token_valid?' do
+      it 'verifies a token when token_valid? returns true' do
+        expect(controller).to receive(:token_valid?).with(token_string, id, file_name, ip_addr).and_return true
+        get :verify_token, token_string: token_string, id: id, file_name: file_name, user_ip_addr: ip_addr
+        expect(response.body).to eq 'valid token'
+        expect(response.status).to eq 200
+      end
+
+      it 'rejects a token when token_valid? returns false' do
+        expect(controller).to receive(:token_valid?).with(token_string, id, file_name, ip_addr).and_return false
+        get :verify_token, token_string: token_string, id: id, file_name: file_name, user_ip_addr: ip_addr
+        expect(response.body).to eq 'invalid token'
+        expect(response.status).to eq 403
+      end
+    end
+
+    context 'actually try to verify the token' do
+      # these tests are a bit more integration-ish, since they actually end up calling
+      # StacksMediaToken.verify_encrypted_token? instead of mocking the call to MediaController#token_valid?
+      it 'verifies a valid token' do
+        get :verify_token, token_string: token_string, id: id, file_name: file_name, user_ip_addr: ip_addr
+        expect(response.body).to eq 'valid token'
+        expect(response.status).to eq 200
+      end
+
+      it 'rejects a token with a corrupted encrypted token string' do
+        get :verify_token, token_string: "#{token_string}aaaa", id: id, file_name: file_name, user_ip_addr: ip_addr
+        expect(response.body).to eq 'invalid token'
+        expect(response.status).to eq 403
+      end
+
+      it 'rejects a token for the wrong id' do
+        get :verify_token, token_string: token_string, id: 'zy098xv7654', file_name: file_name, user_ip_addr: ip_addr
+        expect(response.body).to eq 'invalid token'
+        expect(response.status).to eq 403
+      end
+
+      it 'rejects a token for the wrong file name' do
+        get :verify_token, token_string: token_string, id: id, file_name: 'some_other_file.mp3', user_ip_addr: ip_addr
+        expect(response.body).to eq 'invalid token'
+        expect(response.status).to eq 403
+      end
+
+      it 'rejects a token from the wrong IP address' do
+        get :verify_token, token_string: token_string, id: id, file_name: file_name, user_ip_addr: '192.168.1.101'
+        expect(response.body).to eq 'invalid token'
+        expect(response.status).to eq 403
+      end
+
+      it 'rejects a token that is too old' do
+        expired_timestamp = (StacksMediaToken.max_token_age + 2.seconds).ago
+        expect(token).to receive(:timestamp).and_return(expired_timestamp)
+        get :verify_token, token_string: token_string, id: id, file_name: file_name, user_ip_addr: '192.168.1.101'
+        expect(response.body).to eq 'invalid token'
+        expect(response.status).to eq 403
+      end
+    end
+  end
+
+  describe '#token_valid?' do
+    it 'should call through to StacksMediaToken.verify_encrypted_token? and return the result' do
+      expect(StacksMediaToken).to receive(:verify_encrypted_token?)
+        .with('token_string', 'id', 'file_name', 'ip_addr').and_return(true)
+      expect(controller.send(:token_valid?, 'token_string', 'id', 'file_name', 'ip_addr')).to eq true
+    end
+  end
 end

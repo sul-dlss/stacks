@@ -27,10 +27,21 @@ class MediaController < ApplicationController
     end
   end
 
+  def verify_token
+    # get the IP address from a parameter.  the service that's calling verify_token will pass it along,
+    # because we care about the IP address that made a request to that service with the token, not the IP
+    # address of the service checking the token.
+    if token_valid? allowed_params[:token_string], id, file_name, allowed_params[:user_ip_addr]
+      render text: 'valid token', status: :ok
+    else
+      render text: 'invalid token', status: :forbidden
+    end
+  end
+
   private
 
   def allowed_params
-    params.permit(:action, :id, :file_name, :format)
+    params.permit(:action, :id, :file_name, :format, :token_string, :user_ip_addr)
   end
 
   def rescue_can_can(exception)
@@ -47,7 +58,19 @@ class MediaController < ApplicationController
     allowed_params.slice(:id, :file_name, :format)
   end
 
+  def id
+    allowed_params[:id]
+  end
+
+  def file_name
+    allowed_params[:file_name]
+  end
+
   def load_media
     @media ||= StacksMediaStream.new(stacks_media_stream_params)
+  end
+
+  def token_valid?(token_string, expected_id, expected_file_name, expected_user_ip_addr)
+    StacksMediaToken.verify_encrypted_token? token_string, expected_id, expected_file_name, expected_user_ip_addr
   end
 end
