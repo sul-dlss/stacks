@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   constraints file_name: %r{[^/][\w\.-]+} do
     get '/media/:id/:file_name/stream' => 'media#stream', as: :media_stream
     get '/media/auth/:id/:file_name/stream' => 'webauth#login_media_stream', as: :auth_media_stream
+    get '/media/:id/:file_name/verify_token' => 'media#verify_token'
   end
 
   get '/image/iiif' => 'stacks#iiif'
