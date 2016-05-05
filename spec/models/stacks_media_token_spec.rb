@@ -14,7 +14,7 @@ describe StacksMediaToken do
 
       expect(token_from_encrypted_str.id).to eq id
       expect(token_from_encrypted_str.file_name).to eq file_name
-      expect(token_from_encrypted_str.user_ip_addr).to eq user_ip
+      expect(token_from_encrypted_str.user_ip).to eq user_ip
       expect(token_from_encrypted_str.timestamp).to be >= test_start_time
       expect(token_from_encrypted_str.timestamp).to be <= Time.zone.now
     end
@@ -93,7 +93,7 @@ describe StacksMediaToken do
       expect { StacksMediaToken.new(valid_id1, '', valid_ip) }
         .to raise_error(ActiveModel::StrictValidationFailed, "File name can't be blank")
       expect { StacksMediaToken.new(valid_id1, valid_filename, '') }
-        .to raise_error(ActiveModel::StrictValidationFailed, "User ip addr can't be blank")
+        .to raise_error(ActiveModel::StrictValidationFailed, "User ip can't be blank")
     end
 
     it 'raises an error when creating a token with a bad id' do
@@ -103,13 +103,13 @@ describe StacksMediaToken do
 
     it 'raises an error when creating a token with a bad IP' do
       expect { StacksMediaToken.new(valid_id1, valid_filename, '127') }
-        .to raise_error(ActiveModel::StrictValidationFailed, 'User ip addr is invalid')
+        .to raise_error(ActiveModel::StrictValidationFailed, 'User ip is invalid')
       expect { StacksMediaToken.new(valid_id1, valid_filename, '0') }
-        .to raise_error(ActiveModel::StrictValidationFailed, 'User ip addr is invalid')
+        .to raise_error(ActiveModel::StrictValidationFailed, 'User ip is invalid')
       expect { StacksMediaToken.new(valid_id1, valid_filename, '0.0.0.0.0') }
-        .to raise_error(ActiveModel::StrictValidationFailed, 'User ip addr is invalid')
+        .to raise_error(ActiveModel::StrictValidationFailed, 'User ip is invalid')
       expect { StacksMediaToken.new(valid_id1, valid_filename, 'localhost') }
-        .to raise_error(ActiveModel::StrictValidationFailed, 'User ip addr is invalid')
+        .to raise_error(ActiveModel::StrictValidationFailed, 'User ip is invalid')
     end
   end
 end
