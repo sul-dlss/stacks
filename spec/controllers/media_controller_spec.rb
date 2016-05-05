@@ -73,12 +73,12 @@ describe MediaController, vcr: { record: :new_episodes } do
     subject { get :stream, id: 'bb582xs1304', file_name: 'bb582xs1304_sl.mp4', format: 'm3u8' }
 
     it 'redirects m3u8 format to streaming server mp4 prefix with playlist.m3u8' do
-      allow(controller).to receive(:media_token).and_return encrypted_token
+      allow(controller).to receive(:encrypted_token).and_return encrypted_token
       streaming_url_path = '/bb/582/xs/1304/mp4:bb582xs1304_sl.mp4/playlist.m3u8'
       expect(subject).to redirect_to "#{streaming_base_url}#{streaming_url_path}?#{streaming_url_query_str}"
     end
     it 'redirects mpd format to streaming server mp4 prefix with manifest.mpd' do
-      allow(controller).to receive(:media_token).and_return encrypted_token
+      allow(controller).to receive(:encrypted_token).and_return encrypted_token
       get :stream, id: 'bb582xs1304', file_name: 'bb582xs1304_sl.mp4', format: 'mpd'
       streaming_url_path = '/bb/582/xs/1304/mp4:bb582xs1304_sl.mp4/manifest.mpd'
       expect(response).to redirect_to "#{streaming_base_url}#{streaming_url_path}?#{streaming_url_query_str}"

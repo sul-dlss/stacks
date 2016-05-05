@@ -19,10 +19,10 @@ class MediaController < ApplicationController
     authorize! :read, @media
     respond_to do |format|
       format.m3u8 do
-        redirect_to "#{@media.to_playlist_url}?token=#{media_token}"
+        redirect_to "#{@media.to_playlist_url}?token=#{encrypted_token}"
       end
       format.mpd do
-        redirect_to "#{@media.to_manifest_url}?token=#{media_token}"
+        redirect_to "#{@media.to_manifest_url}?token=#{encrypted_token}"
       end
     end
   end
@@ -74,15 +74,9 @@ class MediaController < ApplicationController
     StacksMediaToken.verify_encrypted_token? token, expected_id, expected_file_name, expected_user_ip
   end
 
-  def remote_ip_addr
-    request.remote_ip
-  end
-
-  # generates an encrypted string representation of a StacksMediaToken, e.g. for
-  # inclusion in redirects to streaming server
-  def media_token
-    # use IP from which request originated, since we assume the user is making the request to
-    # to stacks (as opposed to another service on the user's behalf)
-    StacksMediaToken.new(id, file_name, remote_ip_addr).to_encrypted_string
+  def encrypted_token
+    # we use IP from which request originated -- we want the end user IP, not
+    #   a service on the user's behalf (load-balancer, etc.)
+    StacksMediaToken.new(id, file_name, request.remote_ip).to_encrypted_string
   end
 end
