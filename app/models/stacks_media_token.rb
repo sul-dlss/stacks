@@ -3,7 +3,7 @@ require 'resolv'
 
 # this class is used for representing a time-limited grant of authorization to
 # view a streaming resource.  the token object has fields representing the resource
-# (id, file_name) and the request origin (user_ip_addr). additionally,
+# (id, file_name) and the request origin (user_ip). additionally,
 # it has a timestamp indicating when it was created.
 #
 # the object can be serialized as a signed/encrypted string representation of
@@ -44,18 +44,18 @@ class StacksMediaToken
 
   validates! :id, presence: true, format: /\A(druid:)?([a-z]{2})(\d{3})([a-z]{2})(\d{4})\z/i
   validates! :file_name, presence: true
-  validates! :user_ip_addr, presence: true, format: Resolv::AddressRegex
+  validates! :user_ip, presence: true, format: Resolv::AddressRegex
 
-  attr_reader :id, :file_name, :user_ip_addr, :timestamp
+  attr_reader :id, :file_name, :user_ip, :timestamp
 
   def self.max_token_age
     Settings.stream.max_token_age.to_i.seconds
   end
 
-  def initialize(id, file_name, user_ip_addr)
+  def initialize(id, file_name, user_ip)
     @id = id
     @file_name = file_name
-    @user_ip_addr = user_ip_addr
+    @user_ip = user_ip
     @timestamp = Time.zone.now
     validate
   end
@@ -64,7 +64,7 @@ class StacksMediaToken
     {
       id: id,
       file_name: file_name,
-      user_ip_addr: user_ip_addr,
+      user_ip: user_ip,
       timestamp: timestamp
     }
   end
@@ -78,17 +78,17 @@ class StacksMediaToken
   # this is how a string is checked to confirm whether it represents a still-valid token minted by stacks
   # NOTE: since this method does an expiry check at the time it's run, its result can
   # become stale, and should not be cached.
-  def self.verify_encrypted_token?(encrypted_string, expected_id, expected_file_name, expected_user_ip_addr)
+  def self.verify_encrypted_token?(encrypted_string, expected_id, expected_file_name, expected_user_ip)
     # if it can be decrypted, we assume we minted it.  if we minted it, we then check to see that
     # the information it contained still authorizes access for the resource it's expected to correspond to.
     unverified_token = StacksMediaToken.send(:create_from_encrypted_string, encrypted_string)
-    unverified_token.send(:token_valid?, expected_id, expected_file_name, expected_user_ip_addr)
+    unverified_token.send(:token_valid?, expected_id, expected_file_name, expected_user_ip)
   rescue ActiveSupport::MessageVerifier::InvalidSignature, ActiveSupport::MessageEncryptor::InvalidMessage
     false
   end
 
   def self.create_from_hash(token_hash)
-    new token_hash[:id], token_hash[:file_name], token_hash[:user_ip_addr]
+    new token_hash[:id], token_hash[:file_name], token_hash[:user_ip]
   end
   private_class_method :create_from_hash
 
@@ -114,9 +114,9 @@ class StacksMediaToken
   #  * it hasn't yet expired
   # NOTE: since this method does an expiry check at the time it's run, its result can
   # become stale, and should not be cached.
-  def token_valid?(expected_id, expected_file_name, expected_user_ip_addr)
+  def token_valid?(expected_id, expected_file_name, expected_user_ip)
     # max_token_age returns a duration.  calling `.ago` on it returns a date which we can check against for expiry.
-    id == expected_id && file_name == expected_file_name && user_ip_addr == expected_user_ip_addr &&
+    id == expected_id && file_name == expected_file_name && user_ip == expected_user_ip &&
       (timestamp >= self.class.max_token_age.ago)
   end
 end

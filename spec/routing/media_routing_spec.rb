@@ -37,7 +37,7 @@ describe 'Media routes' do
   end
 
   it 'verify_token' do
-    expect(get: '/media/id/filename.mp4/verify_token?token_string=asdf&user_ip_addr=192.168.1.100').to route_to(
-      'media#verify_token', id: 'id', file_name: 'filename.mp4', token_string: 'asdf', user_ip_addr: '192.168.1.100')
+    expect(get: '/media/id/filename.mp4/verify_token?stacks_token=asdf&user_ip=192.168.1.100').to route_to(
+      'media#verify_token', id: 'id', file_name: 'filename.mp4', stacks_token: 'asdf', user_ip: '192.168.1.100')
   end
 end

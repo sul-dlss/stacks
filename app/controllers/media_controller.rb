@@ -19,19 +19,19 @@ class MediaController < ApplicationController
     authorize! :read, @media
     respond_to do |format|
       format.m3u8 do
-        redirect_to "#{@media.to_playlist_url}?token_string=#{media_token}"
+        redirect_to "#{@media.to_playlist_url}?stacks_token=#{encrypted_token}"
       end
       format.mpd do
-        redirect_to "#{@media.to_manifest_url}?token_string=#{media_token}"
+        redirect_to "#{@media.to_manifest_url}?stacks_token=#{encrypted_token}"
       end
     end
   end
 
   def verify_token
-    # get the IP address from a parameter.  the service that's calling verify_token will pass it along,
-    # because we care about the IP address that made a request to that service with the token, not the IP
-    # address of the service checking the token.
-    if token_valid? allowed_params[:token_string], id, file_name, allowed_params[:user_ip_addr]
+    # the media service calling verify_token provides the end-user IP address,
+    # as we care about the (user) IP address that made a request to the media service with the
+    # stacks_token, not the IP address of the service checking the stacks_token.
+    if token_valid? allowed_params[:stacks_token], id, file_name, allowed_params[:user_ip]
       render text: 'valid token', status: :ok
     else
       render text: 'invalid token', status: :forbidden
@@ -41,7 +41,7 @@ class MediaController < ApplicationController
   private
 
   def allowed_params
-    params.permit(:action, :id, :file_name, :format, :token_string, :user_ip_addr)
+    params.permit(:action, :id, :file_name, :format, :stacks_token, :user_ip)
   end
 
   def rescue_can_can(exception)
@@ -70,19 +70,13 @@ class MediaController < ApplicationController
     @media ||= StacksMediaStream.new(stacks_media_stream_params)
   end
 
-  def token_valid?(token_string, expected_id, expected_file_name, expected_user_ip_addr)
-    StacksMediaToken.verify_encrypted_token? token_string, expected_id, expected_file_name, expected_user_ip_addr
+  def token_valid?(token, expected_id, expected_file_name, expected_user_ip)
+    StacksMediaToken.verify_encrypted_token? token, expected_id, expected_file_name, expected_user_ip
   end
 
-  def remote_ip_addr
-    request.remote_ip
-  end
-
-  # generates an encrypted string representation of a StacksMediaToken, e.g. for
-  # inclusion in redirects to streaming server
-  def media_token
-    # use IP from which request originated, since we assume the user is making the request to
-    # to stacks (as opposed to another service on the user's behalf)
-    StacksMediaToken.new(id, file_name, remote_ip_addr).to_encrypted_string
+  def encrypted_token
+    # we use IP from which request originated -- we want the end user IP, not
+    #   a service on the user's behalf (load-balancer, etc.)
+    StacksMediaToken.new(id, file_name, request.remote_ip).to_encrypted_string
   end
 end
