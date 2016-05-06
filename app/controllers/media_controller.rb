@@ -19,19 +19,19 @@ class MediaController < ApplicationController
     authorize! :read, @media
     respond_to do |format|
       format.m3u8 do
-        redirect_to "#{@media.to_playlist_url}?token=#{encrypted_token}"
+        redirect_to "#{@media.to_playlist_url}?stacks_token=#{encrypted_token}"
       end
       format.mpd do
-        redirect_to "#{@media.to_manifest_url}?token=#{encrypted_token}"
+        redirect_to "#{@media.to_manifest_url}?stacks_token=#{encrypted_token}"
       end
     end
   end
 
   def verify_token
-    # get the IP address from a parameter.  the service that's calling verify_token will pass it along,
-    # because we care about the IP address that made a request to that service with the token, not the IP
-    # address of the service checking the token.
-    if token_valid? allowed_params[:token], id, file_name, allowed_params[:user_ip]
+    # the media service calling verify_token provides the end-user IP address,
+    # as we care about the (user) IP address that made a request to the media service with the
+    # stacks_token, not the IP address of the service checking the stacks_token.
+    if token_valid? allowed_params[:stacks_token], id, file_name, allowed_params[:user_ip]
       render text: 'valid token', status: :ok
     else
       render text: 'invalid token', status: :forbidden
@@ -41,7 +41,7 @@ class MediaController < ApplicationController
   private
 
   def allowed_params
-    params.permit(:action, :id, :file_name, :format, :token, :user_ip)
+    params.permit(:action, :id, :file_name, :format, :stacks_token, :user_ip)
   end
 
   def rescue_can_can(exception)

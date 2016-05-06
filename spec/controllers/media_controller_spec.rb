@@ -69,7 +69,7 @@ describe MediaController, vcr: { record: :new_episodes } do
   describe '#stream' do
     let(:streaming_base_url) { Settings.stream.url }
     let(:encrypted_token) { 'encrypted_token_value' }
-    let(:streaming_url_query_str) { "token=#{encrypted_token}" }
+    let(:streaming_url_query_str) { "stacks_token=#{encrypted_token}" }
     subject { get :stream, id: 'bb582xs1304', file_name: 'bb582xs1304_sl.mp4', format: 'm3u8' }
 
     it 'redirects m3u8 format to streaming server mp4 prefix with playlist.m3u8' do
@@ -132,14 +132,14 @@ describe MediaController, vcr: { record: :new_episodes } do
     context 'mock #token_valid?' do
       it 'verifies a token when token_valid? returns true' do
         expect(controller).to receive(:token_valid?).with(encrypted_token, id, file_name, ip_addr).and_return true
-        get :verify_token, token: encrypted_token, id: id, file_name: file_name, user_ip: ip_addr
+        get :verify_token, stacks_token: encrypted_token, id: id, file_name: file_name, user_ip: ip_addr
         expect(response.body).to eq 'valid token'
         expect(response.status).to eq 200
       end
 
       it 'rejects a token when token_valid? returns false' do
         expect(controller).to receive(:token_valid?).with(encrypted_token, id, file_name, ip_addr).and_return false
-        get :verify_token, token: encrypted_token, id: id, file_name: file_name, user_ip: ip_addr
+        get :verify_token, stacks_token: encrypted_token, id: id, file_name: file_name, user_ip: ip_addr
         expect(response.body).to eq 'invalid token'
         expect(response.status).to eq 403
       end
@@ -149,31 +149,31 @@ describe MediaController, vcr: { record: :new_episodes } do
       # these tests are a bit more integration-ish, since they actually end up calling
       # StacksMediaToken.verify_encrypted_token? instead of mocking the call to MediaController#token_valid?
       it 'verifies a valid token' do
-        get :verify_token, token: encrypted_token, id: id, file_name: file_name, user_ip: ip_addr
+        get :verify_token, stacks_token: encrypted_token, id: id, file_name: file_name, user_ip: ip_addr
         expect(response.body).to eq 'valid token'
         expect(response.status).to eq 200
       end
 
       it 'rejects a token with a corrupted encrypted token string' do
-        get :verify_token, token: "#{encrypted_token}aaaa", id: id, file_name: file_name, user_ip: ip_addr
+        get :verify_token, stacks_token: "#{encrypted_token}aaaa", id: id, file_name: file_name, user_ip: ip_addr
         expect(response.body).to eq 'invalid token'
         expect(response.status).to eq 403
       end
 
       it 'rejects a token for the wrong id' do
-        get :verify_token, token: encrypted_token, id: 'zy098xv7654', file_name: file_name, user_ip: ip_addr
+        get :verify_token, stacks_token: encrypted_token, id: 'zy098xv7654', file_name: file_name, user_ip: ip_addr
         expect(response.body).to eq 'invalid token'
         expect(response.status).to eq 403
       end
 
       it 'rejects a token for the wrong file name' do
-        get :verify_token, token: encrypted_token, id: id, file_name: 'some_other_file.mp3', user_ip: ip_addr
+        get :verify_token, stacks_token: encrypted_token, id: id, file_name: 'some_other_file.mp3', user_ip: ip_addr
         expect(response.body).to eq 'invalid token'
         expect(response.status).to eq 403
       end
 
       it 'rejects a token from the wrong IP address' do
-        get :verify_token, token: encrypted_token, id: id, file_name: file_name, user_ip: '192.168.1.101'
+        get :verify_token, stacks_token: encrypted_token, id: id, file_name: file_name, user_ip: '192.168.1.101'
         expect(response.body).to eq 'invalid token'
         expect(response.status).to eq 403
       end
@@ -181,7 +181,7 @@ describe MediaController, vcr: { record: :new_episodes } do
       it 'rejects a token that is too old' do
         expired_timestamp = (StacksMediaToken.max_token_age + 2.seconds).ago
         expect(token).to receive(:timestamp).and_return(expired_timestamp)
-        get :verify_token, token: encrypted_token, id: id, file_name: file_name, user_ip: '192.168.1.101'
+        get :verify_token, stacks_token: encrypted_token, id: id, file_name: file_name, user_ip: '192.168.1.101'
         expect(response.body).to eq 'invalid token'
         expect(response.status).to eq 403
       end
@@ -191,8 +191,8 @@ describe MediaController, vcr: { record: :new_episodes } do
   describe '#token_valid?' do
     it 'should call through to StacksMediaToken.verify_encrypted_token? and return the result' do
       expect(StacksMediaToken).to receive(:verify_encrypted_token?)
-        .with('token', 'id', 'file_name', 'ip_addr').and_return(true)
-      expect(controller.send(:token_valid?, 'token', 'id', 'file_name', 'ip_addr')).to eq true
+        .with('stacks_token', 'id', 'file_name', 'ip_addr').and_return(true)
+      expect(controller.send(:token_valid?, 'stacks_token', 'id', 'file_name', 'ip_addr')).to eq true
     end
   end
 end
