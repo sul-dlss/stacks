@@ -38,10 +38,16 @@ class MediaController < ApplicationController
     end
   end
 
+  def auth_check
+    respond_to do |format|
+      format.js { render json: json_for_media_auth, callback: allowed_params[:callback] }
+    end
+  end
+
   private
 
   def allowed_params
-    params.permit(:action, :id, :file_name, :format, :stacks_token, :user_ip)
+    params.permit(:action, :callback, :id, :file_name, :format, :stacks_token, :user_ip)
   end
 
   def rescue_can_can(exception)
@@ -51,6 +57,19 @@ class MediaController < ApplicationController
       redirect_to auth_media_stream_url(allowed_params.symbolize_keys)
     else
       redirect_to auth_media_download_url(allowed_params.symbolize_keys)
+    end
+  end
+
+  def json_for_media_auth
+    if can? :read, @media
+      { status: :success }
+    else
+      { status: :must_authenticate,
+        service: {
+          '@id' => iiif_auth_api_url,
+          'label' => 'Stanford-affiliated? Login to view'
+        }
+      }
     end
   end
 

@@ -15,6 +15,7 @@ Rails.application.routes.draw do
     get '/media/:id/:file_name/stream' => 'media#stream', as: :media_stream
     get '/media/auth/:id/:file_name/stream' => 'webauth#login_media_stream', as: :auth_media_stream
     get '/media/:id/:file_name/verify_token' => 'media#verify_token'
+    get '/media/:id/:file_name/auth_check' => 'media#auth_check'
   end
 
   get '/image/iiif' => 'stacks#iiif'
