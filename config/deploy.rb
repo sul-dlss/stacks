@@ -5,7 +5,7 @@ set :application, 'digital_stacks'
 set :repo_url, 'https://github.com/sul-dlss/digital_stacks_rails.git'
 
 # Default branch is :master
-# ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
+ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
 
 # Default deploy_to directory is /var/www/my_app
 set :deploy_to, '/opt/app/stacks/stacks'
@@ -17,7 +17,7 @@ set :deploy_to, '/opt/app/stacks/stacks'
 # set :format, :pretty
 
 # Default value for :log_level is :debug
-# set :log_level, :debug
+set :log_level, :info
 
 # Default value for :pty is false
 # set :pty, true
