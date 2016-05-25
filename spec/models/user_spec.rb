@@ -338,4 +338,10 @@ describe User do
       expect(subject.token).not_to be_blank
     end
   end
+
+  describe '#location' do
+    it 'is the string representation of the ApprovedLocation' do
+      expect(User.new(ip_address: 'ip.address1').location).to eq 'location1'
+    end
+  end
 end

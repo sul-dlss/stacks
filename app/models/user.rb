@@ -3,7 +3,7 @@
 class User
   include ActiveModel::Model
 
-  attr_accessor :id, :webauth_user, :app_user, :token_user, :ldap_groups
+  attr_accessor :id, :webauth_user, :app_user, :token_user, :ldap_groups, :ip_address
 
   def webauth_user?
     webauth_user
@@ -23,6 +23,10 @@ class User
 
   def etag
     id
+  end
+
+  def location
+    ApprovedLocation.new(self).to_s
   end
 
   def self.from_token(token, _options = {})

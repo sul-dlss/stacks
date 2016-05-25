@@ -1,2 +1,8 @@
 app_users:
   test-user: 'password'
+
+user:
+  locations:
+    location1:
+      - ip.address1
+      - ip.address2
