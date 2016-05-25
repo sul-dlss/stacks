@@ -19,13 +19,13 @@ http_interactions:
       message: Not Found
     headers:
       Date:
-      - Wed, 11 May 2016 21:09:16 GMT
+      - Mon, 23 May 2016 17:42:26 GMT
       Server:
       - Apache/2.2.15 (CentOS)
       Cache-Control:
       - no-cache
       X-Runtime:
-      - '0.009010'
+      - '0.037325'
       X-Frame-Options:
       - SAMEORIGIN
       X-Xss-Protection:
@@ -33,11 +33,11 @@ http_interactions:
       X-Content-Type-Options:
       - nosniff
       X-Request-Id:
-      - d50089bf-8e30-49f2-81ed-ed7044b4e19c
+      - 92372c49-4cd1-4330-98b2-86741682bd3e
       X-Powered-By:
       - Phusion Passenger 5.0.22
       Set-Cookie:
-      - _purl_session=UjZBK1VvR0lVZlRDQ2U3WHYwSzhiSVh0aGlBVnAxR1JRendTT3NzMEFxbm1mdms3aFU3Tk54R2NGQ1g0VnpWREN0UGVISmhQNHBvRTNBQkJQWTE0Q3NWZ1NFOS91SUdoTVEvRGYxWnRMc0tEVW1laXJ1dGlucGplSFNSd0RaUGg2MjViZ3NHaHE3TGZVaXRqSzRJd3lnPT0tLXNWR3l3eXE2MXhtY01ZS3pPNHJaZXc9PQ%3D%3D--3aec22deaa361c86419badb14a842ba55aca4c18;
+      - _purl_session=MENqcnVHanZWRW96citqdDJOTTZKdHJ4YlFJYWxPbERUa2xudjZyOThDQnZrNEJXNnlBR1FYQ3cvT2dFMXc5NUVMQzN0VDNTTHNEdU53b2RNRktqamZmY0xpcFRieEViY1dvTEtaUEZuNG5xOS9Ra1l5SGZta0FKMXdTdDFrK205WGpqTndwd29CZWNXL0FRTm1ZYlNBPT0tLU02cWFYMmZqb3c3SE5BSERYT3B3YkE9PQ%3D%3D--4f44ce174052c4a0d24f88ecefc21481630cd1c7;
         path=/; HttpOnly
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
@@ -65,7 +65,7 @@ http_interactions:
         rel=\"stylesheet\">\n    <link rel=\"stylesheet\" media=\"screen\" href=\"https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700\"
         />\n    <script src=\"/assets/application-bb5122c67d67e6ebfe5d4eae3977762aa91c9798082be2d7a5976c8163edf2bf.js\"></script>\n
         \   <meta name=\"csrf-param\" content=\"authenticity_token\" />\n<meta name=\"csrf-token\"
-        content=\"2Suvs3y+A6G8b4ECqbJS2+PWIzzncmZsh8G+iPtF/QF+Edi/4z5CUraPrhIK8tx06yNqUU9GVCvWasqNydSbPw==\"
+        content=\"C4dANWE01UpszY3Moiz4rimsF92rm7MjddpqVrVRDtt7mWbuGM9b3e3/aft2FWkST/um+8TtbJo8+e8ODdPu7g==\"
         />\n\n    \n    \n    \n    <meta name=\"twitter:card\" />\n    \n\n    <!--[if
         lt IE 9]>\n      <script src=\"http://html5shim.googlecode.com/svn/trunk/html5.js\"></script>\n
         \   <![endif]-->\n    <!--[if IE 8]>\n      <link rel=\"stylesheet\" type=\"text/css\"
@@ -85,7 +85,7 @@ http_interactions:
         collapse\">\n  <div class=\"container\">\n  <form class=\"form-horizontal
         feedback-form\" role=\"form\" action=\"/feedback\" accept-charset=\"UTF-8\"
         method=\"post\"><input name=\"utf8\" type=\"hidden\" value=\"&#x2713;\" /><input
-        type=\"hidden\" name=\"authenticity_token\" value=\"Pp68lNaUjKLt+fiMP0B/zFjxZNuS5CKjJuMr2Kv6oZaZpMuYSRTNUecZ15ycAPFjUAQttjrQEOR3SF/dmWvHqA==\"
+        type=\"hidden\" name=\"authenticity_token\" value=\"OSB1k+ZDuX4NK2skTDkwPHjPUsqMHtAFVn3PR/0cjdlJPlNIn7g36YwZjxOYAKGAHpjj7ONoD7wfXkofRZ5t7A==\"
         />\n    <div class=\"col-sm-6 col-sm-offset-2\">\n      <div class=\"col-sm-offset-3\">\n
         \       Reporting from: <span class=\"reporting-from-field\"></span>\n<input
         type=\"hidden\" name=\"url\" id=\"url\" class=\"reporting-from-field\" />\n\n
@@ -147,7 +147,7 @@ http_interactions:
         \   </div> <!-- .row end -->\n  </div> <!-- .container end -->\n</div> <!--
         global-footer end -->\n<!-- Global footer snippet end -->\n\n  </body>\n</html>\n"
     http_version: 
-  recorded_at: Wed, 11 May 2016 21:09:16 GMT
+  recorded_at: Mon, 23 May 2016 17:42:36 GMT
 - request:
     method: get
     uri: https://purl-test.stanford.edu//abc123.xml
@@ -167,13 +167,13 @@ http_interactions:
       message: Not Found
     headers:
       Date:
-      - Tue, 24 May 2016 17:55:26 GMT
+      - Tue, 24 May 2016 23:25:32 GMT
       Server:
       - Apache/2.2.15 (CentOS)
       Cache-Control:
       - no-cache
       X-Runtime:
-      - '0.027384'
+      - '0.021590'
       X-Frame-Options:
       - SAMEORIGIN
       X-Xss-Protection:
@@ -181,11 +181,11 @@ http_interactions:
       X-Content-Type-Options:
       - nosniff
       X-Request-Id:
-      - bbd37baa-ba94-4ab2-8751-64ee67116957
+      - a5673093-c9ee-4fd8-8bca-7b701b86d47a
       X-Powered-By:
       - Phusion Passenger 5.0.22
       Set-Cookie:
-      - _purl_session=eyJzZXNzaW9uX2lkIjoiMWZlMmNjODNlOTQzNjgxZmE0OWYxMzExMTU5NDdlOGYiLCJfY3NyZl90b2tlbiI6IjRIWEVkUGE1TzhZMXhNZ0N5OHgyQ3NDWG95WGdqL3RiZ0xOYW5JSXoyMFU9In0%3D--46be860ce2b4105d98da07247b7be267b5c5cfe9;
+      - _purl_session=eyJzZXNzaW9uX2lkIjoiNjNiMmM5ZjIwZTc4ODdlMmUzOWQxNWMyZjkwMDVmZGYiLCJfY3NyZl90b2tlbiI6IlBEcmFmdzhaRE1BbjdnbUF3VkxZaFppaGdxekNoS0tzV1d3SGRmRHc1RjQ9In0%3D--84678f0c66fe8003cbdf70545647e51176a886d9;
         path=/; HttpOnly
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
@@ -213,7 +213,7 @@ http_interactions:
         rel=\"stylesheet\">\n    <link rel=\"stylesheet\" media=\"screen\" href=\"https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700\"
         />\n    <script src=\"/assets/application-22b5445a14ff4991b87ac46eee2bcc19d9b2e2aebdebf658096ea9fd54dd8665.js\"></script>\n
         \   <meta name=\"csrf-param\" content=\"authenticity_token\" />\n<meta name=\"csrf-token\"
-        content=\"JyCXkc0OKiYDTX7rIgzWuAkaGYPTFOa2GowEVWvogXvHVVPlO7cR4DaJtunpwKCyyY26pjObHe2aP17J6dtaPg==\"
+        content=\"EpYwC/+iGVW7i7ffA7pQBKB+6Ir+t0BGt2jKZtKHBMAurOp08LsVlZxlvl/C6IiBON9qJjwz4uruBM0TInfgng==\"
         />\n\n    \n    \n    \n    <meta name=\"twitter:card\" />\n    \n\n    <!--[if
         lt IE 9]>\n      <script src=\"http://html5shim.googlecode.com/svn/trunk/html5.js\"></script>\n
         \   <![endif]-->\n    <!--[if IE 8]>\n      <link rel=\"stylesheet\" type=\"text/css\"
@@ -233,7 +233,7 @@ http_interactions:
         collapse\">\n  <div class=\"container\">\n  <form class=\"form-horizontal
         feedback-form\" role=\"form\" action=\"/feedback\" accept-charset=\"UTF-8\"
         method=\"post\"><input name=\"utf8\" type=\"hidden\" value=\"&#x2713;\" /><input
-        type=\"hidden\" name=\"authenticity_token\" value=\"TOI2HbhkXJh+RDpBQWJmOj1gYBCFTewZTakv/TnQhU6sl/JpTt1nXkuA8kOKrhAw/ffDNWXCF0LNGnVhu+NeCw==\"
+        type=\"hidden\" name=\"authenticity_token\" value=\"H048Dvw95NhHtzPwKqrGo7r7lTnlA0Ky0BTiTPJgjyIjdOZx8yToGGBZOnDr+B4mIloXlSeH4B6JeOU5ApBrfA==\"
         />\n    <div class=\"col-sm-6 col-sm-offset-2\">\n      <div class=\"col-sm-offset-3\">\n
         \       Reporting from: <span class=\"reporting-from-field\"></span>\n<input
         type=\"hidden\" name=\"url\" id=\"url\" class=\"reporting-from-field\" />\n\n
@@ -295,5 +295,5 @@ http_interactions:
         \   </div> <!-- .row end -->\n  </div> <!-- .container end -->\n</div> <!--
         global-footer end -->\n<!-- Global footer snippet end -->\n\n  </body>\n</html>\n"
     http_version: 
-  recorded_at: Tue, 24 May 2016 17:55:38 GMT
+  recorded_at: Tue, 24 May 2016 23:25:43 GMT
 recorded_with: VCR 3.0.1

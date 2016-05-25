@@ -16,7 +16,7 @@ class MediaController < ApplicationController
   end
 
   def stream
-    authorize! :read, @media
+    authorize! :read, @media # May raise CanCan::AccessDenied which is rescued by rescue_can_can
     respond_to do |format|
       format.m3u8 do
         redirect_to "#{@media.to_playlist_url}?stacks_token=#{encrypted_token}"
@@ -50,13 +50,16 @@ class MediaController < ApplicationController
     params.permit(:action, :callback, :id, :file_name, :format, :stacks_token, :user_ip)
   end
 
+  # called when a CanCan::AccessDenied error is raised, typically by authorize!
   def rescue_can_can(exception)
-    if current_user
-      super(exception)
-    elsif allowed_params['action'] == 'stream'
-      redirect_to auth_media_stream_url(allowed_params.symbolize_keys)
+    if current_user.webauth_user?
+      super
     else
-      redirect_to auth_media_download_url(allowed_params.symbolize_keys)
+      if allowed_params['action'] == 'stream'
+        redirect_to auth_media_stream_url(allowed_params.symbolize_keys)
+      else
+        redirect_to auth_media_download_url(allowed_params.symbolize_keys)
+      end
     end
   end
 

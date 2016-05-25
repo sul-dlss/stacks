@@ -32,11 +32,23 @@ class Ability
     # See the wiki for details:
     # https://github.com/CanCanCommunity/cancancan/wiki/Defining-Abilities
 
+    # Note:  rule.blank?  means it's allowed (e.g. 'no-download' would be a value)
+
     can :download, [StacksFile, StacksImage, StacksMediaStream], &:world_unrestricted?
 
     can :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
       val, rule = f.world_rights
+
       val && rule.blank?
+    end
+
+    # location based rights exclude when NOT matching the location condition
+    #   (all other rights include when matching conditions)
+    cannot :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
+      user_in_location, rule = f.location_rights(user.location)
+
+      # location OR stanford, not location AND stanford
+      f.restricted_by_location? && (!user_in_location || !rule.blank?)
     end
 
     can :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
@@ -49,6 +61,12 @@ class Ability
       val, rule = f.agent_rights(user.id)
 
       val && rule.blank? && user.app_user?
+    end
+
+    can :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
+      val, rule = f.location_rights(user.location)
+
+      val && rule.blank? && f.restricted_by_location?
     end
 
     can :read, [StacksFile, StacksImage, StacksMediaStream] do |f|

@@ -25,6 +25,14 @@ module StacksRights
     rights.agent_rights_for_file file_name, agent
   end
 
+  def restricted_by_location?
+    rights.restricted_by_location?(file_name)
+  end
+
+  def location_rights(location)
+    rights.location_rights_for_file(file_name, location)
+  end
+
   def rights
     @rights ||= Dor::RightsAuth.parse(rights_xml)
   end
