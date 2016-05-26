@@ -96,6 +96,6 @@ http_interactions:
         SC0659 http://purl.stanford.edu/bb582xs1304</dc:relation>\n    <dc:language>eng</dc:language>\n
         \   <dc:relation type=\"collection\">Stanford University, Graduate School
         of Business, oral history collection, 1974-1999</dc:relation>\n  </oai_dc:dc>\n</publicObject>\n"
-    http_version: 
+    http_version:
   recorded_at: Thu, 28 Apr 2016 04:16:39 GMT
 recorded_with: VCR 3.0.1
