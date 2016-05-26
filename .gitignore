@@ -21,3 +21,5 @@ config/environments/*.local.yml
 !/log/.keep
 /tmp
 /coverage
+
+.pry_history
