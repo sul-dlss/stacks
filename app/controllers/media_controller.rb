@@ -8,21 +8,21 @@ class MediaController < ApplicationController
   end
 
   def download
-    authorize! :download, @media
+    authorize! :download, current_media
     expires_in 10.minutes
 
     self.content_type = Mime::Type.lookup_by_extension(allowed_params[:format]).to_s
-    send_file @media.path
+    send_file current_media.path
   end
 
   def stream
-    authorize! :read, @media # May raise CanCan::AccessDenied which is rescued by rescue_can_can
+    authorize! :read, current_media # May raise CanCan::AccessDenied which is rescued by rescue_can_can
     respond_to do |format|
       format.m3u8 do
-        redirect_to "#{@media.to_playlist_url}?stacks_token=#{encrypted_token}"
+        redirect_to "#{current_media.to_playlist_url}?stacks_token=#{encrypted_token}"
       end
       format.mpd do
-        redirect_to "#{@media.to_manifest_url}?stacks_token=#{encrypted_token}"
+        redirect_to "#{current_media.to_manifest_url}?stacks_token=#{encrypted_token}"
       end
     end
   end
@@ -64,7 +64,7 @@ class MediaController < ApplicationController
   end
 
   def json_for_media_auth
-    if can? :read, @media
+    if can? :read, current_media
       { status: :success }
     else
       { status: :must_authenticate,
@@ -90,6 +90,10 @@ class MediaController < ApplicationController
 
   def load_media
     @media ||= StacksMediaStream.new(stacks_media_stream_params)
+  end
+
+  def current_media
+    @media
   end
 
   def token_valid?(token, expected_id, expected_file_name, expected_user_ip)
