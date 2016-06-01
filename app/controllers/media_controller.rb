@@ -51,15 +51,16 @@ class MediaController < ApplicationController
   end
 
   # called when a CanCan::AccessDenied error is raised, typically by authorize!
+  #   Should only be here if
+  #   a)  access not allowed (send to super)  OR
+  #   b)  need user to login to determine if access allowed
   def rescue_can_can(exception)
-    if current_user.webauth_user?
-      super
+    stanford_restricted, _rule = current_media.stanford_only_rights
+    return super unless stanford_restricted && !current_user.webauth_user?
+    if allowed_params['action'] == 'stream'
+      redirect_to auth_media_stream_url(allowed_params.symbolize_keys)
     else
-      if allowed_params['action'] == 'stream'
-        redirect_to auth_media_stream_url(allowed_params.symbolize_keys)
-      else
-        redirect_to auth_media_download_url(allowed_params.symbolize_keys)
-      end
+      redirect_to auth_media_download_url(allowed_params.symbolize_keys)
     end
   end
 
