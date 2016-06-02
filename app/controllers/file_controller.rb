@@ -23,11 +23,16 @@ class FileController < ApplicationController
   # the args needed for StacksFile.new happen to be the same as allowed_params
   alias stacks_file_params allowed_params
 
+  # called when CanCan::AccessDenied error is raised, typically by authorize!
+  #   Should only be here if
+  #   a)  access not allowed (send to super)  OR
+  #   b)  need user to login to determine if access allowed
   def rescue_can_can(exception)
-    if current_user
-      super(exception)
-    else
+    stanford_restricted, _rule = current_file.stanford_only_rights
+    if stanford_restricted && !current_user.webauth_user?
       redirect_to auth_file_url(allowed_params.symbolize_keys)
+    else
+      super
     end
   end
 
