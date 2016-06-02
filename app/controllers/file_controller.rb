@@ -9,10 +9,10 @@ class FileController < ApplicationController
 
   def show
     return unless stale?(cache_headers)
-    authorize! :read, @file
+    authorize! :read, current_file
     expires_in 10.minutes
 
-    send_file @file.path
+    send_file current_file.path
   end
 
   private
@@ -33,11 +33,15 @@ class FileController < ApplicationController
 
   def cache_headers
     {
-      etag: [@file.etag, current_user.try(:etag)],
-      last_modified: @file.mtime,
-      public: anonymous_ability.can?(:read, @file),
+      etag: [current_file.etag, current_user.try(:etag)],
+      last_modified: current_file.mtime,
+      public: anonymous_ability.can?(:read, current_file),
       template: false
     }
+  end
+
+  def current_file
+    @file
   end
 
   def load_file
