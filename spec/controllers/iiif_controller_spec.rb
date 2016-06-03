@@ -45,48 +45,9 @@ describe IiifController, :vcr do
       end
     end
 
-    context 'for a missing image' do
-      before do
-        allow_any_instance_of(StacksImage).to receive(:valid?).and_return(false)
-      end
-
-      it 'returns a 404 Not Found' do
-        expect(subject.status).to eq 404
-      end
-    end
-
-    context 'for a restricted image' do
-      before do
-        allow(controller).to receive(:authorize!).and_raise CanCan::AccessDenied
-      end
-
-      context 'with an authenticated user' do
-        let(:user) { User.new }
-
-        before do
-          allow(controller).to receive(:current_user).and_return(user)
-        end
-
-        it 'fails' do
-          expect(subject.status).to eq 403
-        end
-      end
-
-      context 'with an unauthenticated user' do
-        it 'redirects to the webauth login endpoint' do
-          expect(subject).to redirect_to auth_iiif_url(controller.params.symbolize_keys)
-        end
-        context 'additional params' do
-          subject { get :show, iiif_params.merge(ignored: 'ignored', host: 'host') }
-          it 'ignored when redirecting' do
-            expect(subject).not_to redirect_to(auth_iiif_url(controller.params.symbolize_keys))
-            expect(subject).to redirect_to(auth_iiif_url(controller.send(:allowed_params).symbolize_keys))
-            expected = '/image/iiif/auth/nr349ct7889%252Fnr349ct7889_00_0001/0,640,2552,2552/100,100/0/default.jpg'
-            expect(subject).not_to redirect_to("#{expected}?ignored=ignored")
-            expect(subject).to redirect_to(expected)
-          end
-        end
-      end
+    it 'missing image returns 404 Not Found' do
+      allow_any_instance_of(StacksImage).to receive(:valid?).and_return(false)
+      expect(subject.status).to eq 404
     end
 
     context 'with the download flag set' do
