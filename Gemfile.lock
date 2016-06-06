@@ -121,7 +121,7 @@ GEM
       capistrano-one_time_key
       capistrano-releaseboard
     docile (1.1.5)
-    dor-rights-auth (1.0.2)
+    dor-rights-auth (1.1.0)
       nokogiri
     erubis (2.7.0)
     execjs (2.6.0)
