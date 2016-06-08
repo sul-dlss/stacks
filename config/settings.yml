@@ -36,3 +36,6 @@ user:
     - organization:sumc
     - sulair:proxy-access
     - lane:proxy-access
+  locations:
+    spec:
+      - an.ip.address

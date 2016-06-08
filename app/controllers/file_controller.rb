@@ -9,10 +9,10 @@ class FileController < ApplicationController
 
   def show
     return unless stale?(cache_headers)
-    authorize! :read, @file
+    authorize! :read, current_file
     expires_in 10.minutes
 
-    send_file @file.path
+    send_file current_file.path
   end
 
   private
@@ -23,21 +23,30 @@ class FileController < ApplicationController
   # the args needed for StacksFile.new happen to be the same as allowed_params
   alias stacks_file_params allowed_params
 
+  # called when CanCan::AccessDenied error is raised, typically by authorize!
+  #   Should only be here if
+  #   a)  access not allowed (send to super)  OR
+  #   b)  need user to login to determine if access allowed
   def rescue_can_can(exception)
-    if current_user
-      super(exception)
-    else
+    stanford_restricted, _rule = current_file.stanford_only_rights
+    if stanford_restricted && !current_user.webauth_user?
       redirect_to auth_file_url(allowed_params.symbolize_keys)
+    else
+      super
     end
   end
 
   def cache_headers
     {
-      etag: [@file.etag, current_user.try(:etag)],
-      last_modified: @file.mtime,
-      public: anonymous_ability.can?(:read, @file),
+      etag: [current_file.etag, current_user.try(:etag)],
+      last_modified: current_file.mtime,
+      public: anonymous_ability.can?(:read, current_file),
       template: false
     }
+  end
+
+  def current_file
+    @file
   end
 
   def load_file

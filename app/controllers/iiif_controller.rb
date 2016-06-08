@@ -10,24 +10,24 @@ class IiifController < ApplicationController
   end
 
   before_action only: :show do
-    raise ActionController::MissingFile, 'File Not Found' unless @image.valid?
+    raise ActionController::MissingFile, 'File Not Found' unless current_image.valid?
   end
 
   before_action only: :metadata do
-    raise ActionController::MissingFile, 'File Not Found' unless @image.exist?
+    raise ActionController::MissingFile, 'File Not Found' unless current_image.exist?
   end
 
   ##
   # Image delivery, streamed from the image server backend
   def show
     return unless stale?(cache_headers)
-    authorize! :read, @image
-    expires_in 10.minutes, public: anonymous_ability.can?(:read, @image)
+    authorize! :read, current_image
+    expires_in 10.minutes, public: anonymous_ability.can?(:read, current_image)
 
     set_image_response_headers
 
     self.content_type = Mime::Type.lookup_by_extension(format_param).to_s
-    self.response_body = @image.response
+    self.response_body = current_image.response
   end
 
   ##
@@ -35,7 +35,7 @@ class IiifController < ApplicationController
   def metadata
     expires_in 10.minutes, public: false
     return unless stale?(cache_headers)
-    authorize! :read_metadata, @image
+    authorize! :read_metadata, current_image
 
     self.content_type = 'application/json'
     self.response_body = JSON.pretty_generate(image_info)
@@ -56,21 +56,26 @@ class IiifController < ApplicationController
     allowed_params[:format]
   end
 
+  # called when CanCan::AccessDenied error is raised, typically by authorize!
+  #   Should only be here if
+  #   a)  access not allowed (send to super)  OR
+  #   b)  need user to login to determine if access allowed
   def rescue_can_can(exception)
-    if current_user
-      super(exception)
-    else
+    stanford_restricted, _rule = current_image.stanford_only_rights
+    if stanford_restricted && !current_user.webauth_user?
       redirect_to auth_iiif_url(allowed_params.symbolize_keys.tap { |x| x[:identifier] = escaped_identifier })
+    else
+      super
     end
   end
 
   def cache_headers
-    return {} unless @image.exist?
+    return {} unless current_image.exist?
 
     {
-      etag: [@image.etag, current_user.try(:etag)],
-      last_modified: @image.mtime,
-      public: anonymous_ability.can?(:read, @image),
+      etag: [current_image.etag, current_user.try(:etag)],
+      last_modified: current_image.mtime,
+      public: anonymous_ability.can?(:read, current_image),
       template: false
     }
   end
@@ -83,14 +88,18 @@ class IiifController < ApplicationController
     response.headers['Content-Disposition'] = "attachment;filename=#{identifier_params[:file_name]}.#{format_param}"
   end
 
+  def current_image
+    @image
+  end
+
   def load_image
     @image ||= StacksImage.new(stacks_image_params)
   end
 
   # rubocop:disable Metrics/MethodLength
   def image_info
-    info = @image.info do |md|
-      if can? :download, @image
+    info = current_image.info do |md|
+      if can? :download, current_image
         md.tile_width = 1024
         md.tile_height = 1024
       else
@@ -99,7 +108,7 @@ class IiifController < ApplicationController
       end
     end
 
-    info['sizes'] = [{ width: 400, height: 400 }] unless @image.maybe_downloadable?
+    info['sizes'] = [{ width: 400, height: 400 }] unless current_image.maybe_downloadable?
 
     info['service'] = {
       '@id' => iiif_auth_api_url,
@@ -111,7 +120,7 @@ class IiifController < ApplicationController
           'profile' => 'http://iiif.io/api/auth/0/token'
         }
       ]
-    } unless anonymous_ability.can? :download, @image
+    } unless anonymous_ability.can? :download, current_image
 
     info
   end

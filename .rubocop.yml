@@ -16,6 +16,16 @@ Rails:
 
 Metrics/LineLength:
   Max: 120
+  Exclude:
+    - 'spec/requests/file_auth_request_spec.rb'
+    - 'spec/requests/iiif_auth_request_spec.rb'
+    - 'spec/requests/media_auth_request_spec.rb'
 
-Metrics/AbcSize:
-  Max: 15.1
+Style/EmptyLinesAroundBlockBody:
+  Exclude:
+    - 'spec/requests/file_auth_request_spec.rb'
+    - 'spec/requests/iiif_auth_request_spec.rb'
+    - 'spec/requests/media_auth_request_spec.rb'
+
+Style/StringLiterals:
+  Enabled: false

@@ -19,6 +19,8 @@ class ApplicationController < ActionController::Base
                         bearer_cookie_user
                       elsif request.remote_user
                         webauth_user
+                      else
+                        anonymous_locatable_user
                       end
   end
 
@@ -56,8 +58,13 @@ class ApplicationController < ActionController::Base
 
   def webauth_user
     User.new(id: request.remote_user,
+             ip_address: request.remote_ip,
              webauth_user: true,
              ldap_groups: request.env.fetch('WEBAUTH_LDAPPRIVGROUP', '').split('|'))
+  end
+
+  def anonymous_locatable_user
+    User.new(ip_address: request.remote_ip)
   end
 
   def rescue_can_can(exception)

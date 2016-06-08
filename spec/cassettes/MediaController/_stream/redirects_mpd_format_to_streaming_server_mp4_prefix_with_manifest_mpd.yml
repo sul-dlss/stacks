@@ -98,4 +98,90 @@ http_interactions:
         of Business, oral history collection, 1974-1999</dc:relation>\n  </oai_dc:dc>\n</publicObject>\n"
     http_version: 
   recorded_at: Wed, 11 May 2016 21:09:16 GMT
+- request:
+    method: get
+    uri: https://purl-test.stanford.edu//bb582xs1304.xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Hurley v0.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 24 May 2016 17:55:25 GMT
+      Server:
+      - Apache/2.2.15 (CentOS)
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Etag:
+      - '"c42193d7c4a882d0680965f8dda73e2d"'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Runtime:
+      - '0.018748'
+      X-Request-Id:
+      - e604a1c3-410f-4558-887a-87b986b504de
+      X-Powered-By:
+      - Phusion Passenger 5.0.22
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Last-Modified:
+      - Mon, 25 Apr 2016 17:06:08 GMT
+      Status:
+      - 200 OK
+      Transfer-Encoding:
+      - chunked
+      Content-Type:
+      - application/xml; charset=utf-8
+    body:
+      encoding: UTF-8
+      string: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<publicObject id=\"druid:bb582xs1304\"
+        published=\"2016-04-25T17:06:08Z\" publishVersion=\"dor-services/5.7.0\">\n
+        \ <identityMetadata>\n    <sourceId source=\"sul\">SC0659_b02_16</sourceId>\n
+        \   <objectId>druid:bb582xs1304</objectId>\n    <objectCreator>DOR</objectCreator>\n
+        \   <objectLabel>Arjay Miller. Part 3</objectLabel>\n    <objectType>item</objectType>\n
+        \   <otherId name=\"label\"/>\n    <otherId name=\"uuid\">d55d195a-0b02-11e6-abc9-005056a7e0e1</otherId>\n
+        \   <tag>Process : Content Type : Media</tag>\n    <tag>Project : Media Fixture
+        Objects</tag>\n    <tag>Registered By : blalbrit</tag>\n    <tag>Remediated
+        By : 5.7.0</tag>\n  </identityMetadata>\n  <contentMetadata objectId=\"bb582xs1304\"
+        type=\"media\">\n    <resource id=\"bb582xs1304_1\" sequence=\"1\" type=\"video\">\n
+        \     <label>Tape 1</label>\n      <file id=\"bb582xs1304_sl.mp4\" mimetype=\"video/mp4\"
+        size=\"152643219\">\n      \n      \n    </file>\n    </resource>\n    <resource
+        id=\"bb582xs1304_2\" sequence=\"2\" type=\"image\">\n      <label>Image of
+        media (1 of 2)</label>\n      <file id=\"bb582xs1304_img_1.jp2\" mimetype=\"image/jp2\"
+        size=\"770433\">\n        <imageData height=\"2368\" width=\"1708\"/>\n      </file>\n
+        \   </resource>\n    <resource id=\"bb582xs1304_3\" sequence=\"3\" type=\"image\">\n
+        \     <label>Image of media (2 of 2)</label>\n      <file id=\"bb582xs1304_img_2.jp2\"
+        mimetype=\"image/jp2\" size=\"557708\">\n        <imageData height=\"1380\"
+        width=\"2111\"/>\n      </file>\n    </resource>\n  </contentMetadata>\n  <rightsMetadata>\n
+        \   <access type=\"discover\">\n      <machine>\n        <world/>\n      </machine>\n
+        \   </access>\n    <access type=\"read\">\n      <machine>\n        <group>Stanford</group>\n
+        \     </machine>\n    </access>\n    <use>\n      <human type=\"useAndReproduction\">This
+        APO is for Stanford only access.  So PURLs should be published, and files
+        should be shelved, but anything other than thumbnails shouldn't be available
+        off campus.</human>\n      <human type=\"creativeCommons\">Attribution Non-commercial,
+        No Derivatives 3.0 Unported</human>\n      <machine type=\"creativeCommons\">by-nc-nd</machine>\n
+        \   </use>\n    <copyright>\n      <human/>\n    </copyright>\n  </rightsMetadata>\n
+        \ <rdf:RDF xmlns:fedora-model=\"info:fedora/fedora-system:def/model#\" xmlns:hydra=\"http://projecthydra.org/ns/relations#\"
+        xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n    <rdf:Description
+        rdf:about=\"info:fedora/druid:bb582xs1304\">\n    </rdf:Description>\n  </rdf:RDF>\n
+        \ <oai_dc:dc xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:srw_dc=\"info:srw/schema/1/dc-schema\"
+        xmlns:oai_dc=\"http://www.openarchives.org/OAI/2.0/oai_dc/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
+        xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd\">\n
+        \   <dc:title>Arjay Miller. Part 3</dc:title>\n  </oai_dc:dc>\n</publicObject>\n"
+    http_version: 
+  recorded_at: Tue, 24 May 2016 17:55:37 GMT
 recorded_with: VCR 3.0.1

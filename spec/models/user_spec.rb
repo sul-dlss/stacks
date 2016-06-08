@@ -166,6 +166,33 @@ describe User do
       end
     end
 
+    context 'location based' do
+      let(:rights_xml) do
+        <<-XML
+        <rightsMetadata>
+            <access type="read">
+              <machine>
+                <location>location1</location>
+              </machine>
+            </access>
+          </rightsMetadata>
+        XML
+      end
+      context 'an anonymous user from a configured location' do
+        let(:user) { User.new(ip_address: 'ip.address2') }
+        it { is_expected.to be_able_to(:download, file) }
+        it { is_expected.to be_able_to(:download, image) }
+        it { is_expected.to be_able_to(:download, media) }
+      end
+
+      context 'an anonymous user not in the configured location' do
+        let(:user) { User.new(ip_address: 'some.unknown.ip') }
+        it { is_expected.not_to be_able_to(:download, file) }
+        it { is_expected.not_to be_able_to(:download, image) }
+        it { is_expected.not_to be_able_to(:download, media) }
+      end
+    end
+
     context 'app user' do
       let(:user) { User.new(id: 'a', app_user: true) }
 
@@ -336,6 +363,12 @@ describe User do
   describe '#token' do
     it 'is a value' do
       expect(subject.token).not_to be_blank
+    end
+  end
+
+  describe '#location' do
+    it 'is the string representation of the ApprovedLocation' do
+      expect(User.new(ip_address: 'ip.address1').location).to eq 'location1'
     end
   end
 end

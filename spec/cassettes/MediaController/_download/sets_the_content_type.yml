@@ -19,13 +19,13 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Thu, 28 Apr 2016 04:16:39 GMT
+      - Mon, 23 May 2016 21:08:49 GMT
       Server:
       - Apache/2.2.15 (CentOS)
       Cache-Control:
       - max-age=0, private, must-revalidate
       Etag:
-      - '"e5d4a72920936917c4da84987fab72ad"'
+      - '"fa8f99bd868d5fceedecb1e580f71799"'
       X-Frame-Options:
       - SAMEORIGIN
       X-Xss-Protection:
@@ -33,15 +33,15 @@ http_interactions:
       X-Content-Type-Options:
       - nosniff
       X-Runtime:
-      - '0.011358'
+      - '0.013280'
       X-Request-Id:
-      - ee4c43bd-ad0e-4a14-aee4-a35149ee7d69
+      - 3b7003f0-a144-49aa-853d-826cfa1db50d
       X-Powered-By:
       - Phusion Passenger 5.0.22
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
       Last-Modified:
-      - Fri, 25 Sep 2015 19:12:26 GMT
+      - Fri, 13 May 2016 17:29:42 GMT
       Status:
       - 200 OK
       Transfer-Encoding:
@@ -51,14 +51,16 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<publicObject id=\"druid:bb582xs1304\"
-        published=\"2015-09-25T12:12:24-07:00\">\n  <identityMetadata>\n    <sourceId
-        source=\"sul\">SC0659_b02_16</sourceId>\n    <objectId>druid:bb582xs1304</objectId>\n
-        \   <objectCreator>DOR</objectCreator>\n    <objectLabel>Arjay Miller, part
-        3</objectLabel>\n    <objectType>item</objectType>\n    <adminPolicy>druid:yf767bj4831</adminPolicy>\n
-        \   <otherId name=\"label\"/>\n    <otherId name=\"uuid\">fb13f19e-4f1c-11e4-86f9-0050569b3c3c</otherId>\n
+        published=\"2016-05-13T17:29:40Z\" publishVersion=\"dor-services/5.5.0\">\n
+        \ <identityMetadata>\n    <sourceId source=\"sul\">SC0659_b02_16</sourceId>\n
+        \   <objectId>druid:bb582xs1304</objectId>\n    <objectCreator>DOR</objectCreator>\n
+        \   <objectLabel>Arjay Miller, part 3</objectLabel>\n    <objectType>item</objectType>\n
+        \   <adminPolicy>druid:yf767bj4831</adminPolicy>\n    <otherId name=\"label\"/>\n
+        \   <otherId name=\"uuid\">fb13f19e-4f1c-11e4-86f9-0050569b3c3c</otherId>\n
         \   <tag>Process : Content Type : File</tag>\n    <tag>Project : SC0659 gsb
         : betacam sp</tag>\n    <tag>SMPL : video : ua</tag>\n    <tag>JIRA : DIGREQ-748</tag>\n
         \   <tag>Registered By : gwillard</tag>\n    <tag>Remediated By : 4.21.4</tag>\n
+        \   <displayType>file</displayType>\n    <release to=\"Searchworks\">true</release>\n
         \ </identityMetadata>\n  <contentMetadata objectId=\"bb582xs1304\" type=\"media\">\n
         \   <resource sequence=\"1\" id=\"bb582xs1304_1\" type=\"video\">\n      <label>Tape
         1</label>\n      <file id=\"bb582xs1304_sl.mp4\" mimetype=\"video/mp4\" size=\"152643219\">\n
@@ -95,7 +97,8 @@ http_interactions:
         University. Libraries. Department of Special Collections and University Archives
         SC0659 http://purl.stanford.edu/bb582xs1304</dc:relation>\n    <dc:language>eng</dc:language>\n
         \   <dc:relation type=\"collection\">Stanford University, Graduate School
-        of Business, oral history collection, 1974-1999</dc:relation>\n  </oai_dc:dc>\n</publicObject>\n"
-    http_version:
-  recorded_at: Thu, 28 Apr 2016 04:16:39 GMT
+        of Business, oral history collection, 1974-1999</dc:relation>\n  </oai_dc:dc>\n
+        \ <releaseData>\n    <release to=\"Searchworks\">true</release>\n  </releaseData>\n</publicObject>\n"
+    http_version: 
+  recorded_at: Mon, 23 May 2016 21:08:59 GMT
 recorded_with: VCR 3.0.1

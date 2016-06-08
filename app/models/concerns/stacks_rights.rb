@@ -5,14 +5,20 @@ module StacksRights
     rights.world_unrestricted_file? file_name
   end
 
+  # Returns [<Boolean>, <String>]: whether a file-level world node exists, and the value of its rule attribute
+  #   If a world node does not exist for this file, then object-level world rights are returned
   def world_rights
     rights.world_rights_for_file file_name
   end
 
+  # Returns [<Boolean>, <String>]: whether a file-level group/stanford node exists, and the value of its rule attribute
+  #   If a group/stanford node does not exist for this file, then object-level group/stanford rights are returned
   def stanford_only_rights
     rights.stanford_only_rights_for_file file_name
   end
 
+  # Returns true if the file is stanford-only readable AND has no rule attribute
+  #   If a stanford node does not exist for this file, then object-level stanford rights are returned
   def stanford_only_unrestricted?
     rights.stanford_only_unrestricted_file? file_name
   end
@@ -21,8 +27,22 @@ module StacksRights
     world_unrestricted? || stanford_only_unrestricted?
   end
 
+  # Returns [<Boolean>, <String>]: whether a file-level agent node exists, and the value of its rule attribute
+  #   If an agent node does not exist for this file, then object-level agent rights are returned
   def agent_rights(agent)
     rights.agent_rights_for_file file_name, agent
+  end
+
+  # Returns true if a given file has any location restrictions.
+  #   Falls back to the object-level behavior if none at file level.
+  def restricted_by_location?
+    rights.restricted_by_location?(file_name)
+  end
+
+  # Returns [<Boolean>, <String>]: whether a file-level location exists, and the value of its rule attribute
+  #   If a location node does not exist for this file, then object-level location rights are returned
+  def location_rights(location)
+    rights.location_rights_for_file(file_name, location)
   end
 
   def rights
