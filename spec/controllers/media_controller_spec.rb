@@ -221,7 +221,7 @@ describe MediaController, vcr: { record: :new_episodes } do
         body = JSON.parse(response.body)
         expect(body).to have_key('service')
         expect(body['service']['@id']).to match(/^https?:/)
-        expect(body['service']['label']).to eq 'Stanford-affiliated? Login to view'
+        expect(body['service']['label']).to eq 'Stanford-affiliated? Login to play'
       end
     end
   end

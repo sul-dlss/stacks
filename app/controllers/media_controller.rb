@@ -67,7 +67,7 @@ class MediaController < ApplicationController
       { status: :must_authenticate,
         service: {
           '@id' => iiif_auth_api_url,
-          'label' => 'Stanford-affiliated? Login to view'
+          'label' => 'Stanford-affiliated? Login to play'
         }
       }
     end
