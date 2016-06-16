@@ -143,29 +143,98 @@ describe MediaController, vcr: { record: :new_episodes } do
   describe '#auth_check' do
     let(:id) { 'abc123' }
     let(:file_name) { 'some_file.mp4' }
+
+    it 'returns JSON from hash_for_auth_check' do
+      test_hash = { foo: :bar }
+      expect(controller).to receive(:hash_for_auth_check).and_return(test_hash)
+      get :auth_check, id: id, file_name: file_name, format: :js
+      body = JSON.parse(response.body)
+      expect(body).to eq('foo' => 'bar')
+    end
+
     context 'success' do
       before { allow(controller).to receive(:can?).and_return(true) }
-
       it 'returns json that indicates a successful auth check' do
         get :auth_check, id: id, file_name: file_name, format: :js
         body = JSON.parse(response.body)
         expect(body).to eq('status' => 'success')
       end
     end
+  end
 
-    context 'must authenticate' do
-      it 'returns json that indicates the user must authenticate' do
-        get :auth_check, id: id, file_name: file_name, format: :js
-        body = JSON.parse(response.body)
-        expect(body['status']).to eq 'must_authenticate'
+  describe '#hash_for_auth_check' do
+    context 'cancan authorizes' do
+      before { allow(controller).to receive(:can?).and_return(true) }
+      it 'returns hash with status of success' do
+        expect(controller.send(:hash_for_auth_check)).to eq(status: :success)
       end
-
-      it 'indicates where the client can authenticate' do
-        get :auth_check, id: id, file_name: file_name, format: :js
-        body = JSON.parse(response.body)
-        expect(body).to have_key('service')
-        expect(body['service']['@id']).to match(/^https?:/)
-        expect(body['service']['label']).to eq 'Stanford-affiliated? Login to play'
+    end
+    context 'cancan does NOT authorize' do
+      context "stanford restricted, no location restriction, and user not webauthed" do
+        before(:each) do
+          allow(controller).to receive(:can?).and_return(false)
+          sms = double('StacksMediaStream')
+          allow(sms).to receive(:stanford_only_rights).and_return(true, '')
+          allow(sms).to receive(:restricted_by_location?).and_return(false)
+          allow(sms).to receive(:location_rights).and_return(false)
+          allow(controller).to receive(:current_media).and_return sms
+        end
+        it 'hash with status :must_authenticate' do
+          expect(controller.send(:hash_for_auth_check)[:status]).to eq :must_authenticate
+        end
+        it 'hash indicates where/if the user can authenticate' do
+          result_hash = controller.send(:hash_for_auth_check)
+          expect(result_hash).to have_key(:service)
+          expect(result_hash[:service]['@id']).to match(/^https?:/)
+          expect(result_hash[:service]['label']).to eq 'Stanford-affiliated? Login to play'
+        end
+      end
+      context 'location restricted, no stanford restriction' do
+        before(:each) do
+          allow(controller).to receive(:can?).and_return(false)
+          sms = double('StacksMediaStream')
+          allow(sms).to receive(:stanford_only_rights).and_return(false, '')
+          allow(sms).to receive(:restricted_by_location?).and_return(true)
+          allow(sms).to receive(:location_rights).and_return(false) # user not in loc
+          allow(controller).to receive(:current_media).and_return sms
+        end
+        it 'hash with status :location_restricted' do
+          expect(controller.send(:hash_for_auth_check)[:status]).to eq :location_restricted
+        end
+        it 'hash indicates where to find location info' do
+          messages = controller.send(:hash_for_auth_check)['label']
+          expect(messages.size).to eq 2
+          expect(messages[0]).to eq 'Restricted media cannot be played in your location.'
+          expect(messages[1]).to eq 'See Access conditions for more information.'
+        end
+      end
+      context 'location restrictions and stanford restriction on current_media' do
+        before(:each) do
+          allow(controller).to receive(:can?).and_return(false)
+          sms = double('StacksMediaStream')
+          allow(sms).to receive(:stanford_only_rights).and_return(true, '')
+          allow(sms).to receive(:restricted_by_location?).and_return(true)
+          allow(sms).to receive(:location_rights).and_return(false) # user not in loc
+          allow(controller).to receive(:current_media).and_return sms
+        end
+        it 'hash with status :stanford_restricted, :location_restricted' do
+          status = controller.send(:hash_for_auth_check)[:status]
+          expect(status.size).to eq 2
+          expect(status[0]).to eq :stanford_restricted
+          expect(status[1]).to eq :location_restricted
+        end
+        it 'hash has where/if the user can authenticate' do
+          result_hash = controller.send(:hash_for_auth_check)
+          expect(result_hash).to have_key(:service)
+          expect(result_hash[:service]['@id']).to match(/^https?:/)
+          expect(result_hash[:service]['label']).to eq 'Stanford-affiliated? Login to play'
+        end
+        it 'hash indicates where to find location info' do
+          messages = controller.send(:hash_for_auth_check)['label']
+          expect(messages.size).to eq 2
+          expect(messages[0]).to eq 'Limited access for non-Stanford guests.'
+          expect(messages[1]).to eq 'See Access conditions for more information.'
+        end
       end
     end
   end

@@ -38,9 +38,10 @@ class MediaController < ApplicationController
     end
   end
 
+  # jsonp response
   def auth_check
     respond_to do |format|
-      format.js { render json: json_for_media_auth, callback: allowed_params[:callback] }
+      format.js { render json: hash_for_auth_check, callback: allowed_params[:callback] }
     end
   end
 
@@ -64,16 +65,50 @@ class MediaController < ApplicationController
     end
   end
 
-  def json_for_media_auth
+  def hash_for_auth_check
     if can? :read, current_media
       { status: :success }
     else
-      { status: :must_authenticate,
-        service: {
-          '@id' => iiif_auth_api_url,
-          'label' => 'Stanford-affiliated? Login to play'
+      stanford_restricted, _rule = current_media.stanford_only_rights
+      location_restricted = current_media.restricted_by_location?
+      user_in_location, _rule = current_media.location_rights(current_user.location)
+      could_authenticate = stanford_restricted && !current_user.webauth_user
+      could_relocate = location_restricted && !user_in_location
+
+      # TODO: ask Jessie if we should be following naming conventions or what for our keys
+      if could_authenticate && could_relocate
+        {
+          status: [
+            :stanford_restricted,
+            :location_restricted
+          ],
+          service: {
+            '@id' => iiif_auth_api_url,
+            'label' => 'Stanford-affiliated? Login to play'
+          },
+          'label' => [
+            'Limited access for non-Stanford guests.',
+            'See Access conditions for more information.'
+          ]
         }
-      }
+      elsif could_authenticate && !location_restricted
+        {
+          # TODO: ask Jessie if this should/could be stanford_restricted
+          status: :must_authenticate,
+          service: {
+            '@id' => iiif_auth_api_url,
+            'label' => 'Stanford-affiliated? Login to play'
+          }
+        }
+      elsif location_restricted && !user_in_location
+        {
+          status: :location_restricted,
+          'label' => [
+            'Restricted media cannot be played in your location.',
+            'See Access conditions for more information.'
+          ]
+        }
+      end
     end
   end
 
