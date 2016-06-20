@@ -37,6 +37,7 @@ RSpec.describe "Authentication for Media requests", type: :request do
       allow(sms).to receive(:location_rights).and_return([false, ''])
       allow(sms).to receive(:stanford_only_rights).and_return([false, ''])
       allow(sms).to receive(:agent_rights).and_return([false, ''])
+      allow(sms).to receive(:world_rights).and_return([false, ''])
       sms
     end
     let!(:sms_loc_and_stanford) do
@@ -52,6 +53,7 @@ RSpec.describe "Authentication for Media requests", type: :request do
       allow(sms).to receive(:restricted_by_location?).and_return(true)
       allow(sms).to receive(:location_rights).and_return([false, ''])
       allow(sms).to receive(:agent_rights).and_return([false, ''])
+      allow(sms).to receive(:world_rights).and_return([false, ''])
       sms
     end
     # NOTE:  stanford only + location rights tested under location context
@@ -170,6 +172,8 @@ RSpec.describe "Authentication for Media requests", type: :request do
       sms = StacksMediaStream.new(id: druid, file_name: filename, format: format)
       allow(sms).to receive(:restricted_by_location?).and_return(true)
       allow(sms).to receive(:location_rights).and_return([true, ''])
+      allow(sms).to receive(:stanford_only_rights).and_return([false, ''])
+      allow(sms).to receive(:world_rights).and_return([false, ''])
       sms
     end
     let!(:sms_user_not_in_loc) do
@@ -178,6 +182,7 @@ RSpec.describe "Authentication for Media requests", type: :request do
       allow(sms).to receive(:location_rights).and_return([false, ''])
       allow(sms).to receive(:stanford_only_rights).and_return([false, ''])
       allow(sms).to receive(:agent_rights).and_return([false, ''])
+      allow(sms).to receive(:world_rights).and_return([false, ''])
       sms
     end
     let!(:sms_loc_and_stanford) do
@@ -185,6 +190,7 @@ RSpec.describe "Authentication for Media requests", type: :request do
       allow(sms).to receive(:stanford_only_rights).and_return([true, ''])
       allow(sms).to receive(:restricted_by_location?).and_return(true)
       allow(sms).to receive(:location_rights).and_return([true, ''])
+      allow(sms).to receive(:world_rights).and_return([false, ''])
       sms
     end
     let!(:sms_user_not_in_loc_and_stanford) do
@@ -193,6 +199,7 @@ RSpec.describe "Authentication for Media requests", type: :request do
       allow(sms).to receive(:restricted_by_location?).and_return(true)
       allow(sms).to receive(:location_rights).and_return([false, ''])
       allow(sms).to receive(:agent_rights).and_return([false, ''])
+      allow(sms).to receive(:world_rights).and_return([false, ''])
       sms
     end
     # NOTE:  stanford only + location rights tested under location context

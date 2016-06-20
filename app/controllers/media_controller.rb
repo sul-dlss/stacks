@@ -75,7 +75,7 @@ class MediaController < ApplicationController
       could_authenticate = stanford_restricted && !current_user.webauth_user
       could_relocate = location_restricted && !user_in_location
 
-      # TODO: ask Jessie if we should be following naming conventions or what for our keys
+      # TODO: ask Jessie if we should be following naming conventions for our keys
       if could_authenticate && could_relocate
         {
           status: [
@@ -100,7 +100,7 @@ class MediaController < ApplicationController
             'label' => 'Stanford-affiliated? Login to play'
           }
         }
-      elsif location_restricted && !user_in_location
+      elsif could_relocate
         {
           status: :location_restricted,
           'label' => [
