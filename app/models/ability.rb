@@ -1,6 +1,5 @@
 ##
 # User authentication
-# rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 class Ability
   include CanCan::Ability
 
@@ -122,4 +121,3 @@ class Ability
     end
   end
 end
-# rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity

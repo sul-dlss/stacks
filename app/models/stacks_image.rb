@@ -54,7 +54,6 @@ class StacksImage < StacksFile
 
   private
 
-  # rubocop:disable Metrics/AbcSize
   def explicit_tile_dimensions
     dim = size.delete('!').split(',', 2)
 
@@ -66,7 +65,6 @@ class StacksImage < StacksFile
 
     dim.map(&:to_i)
   end
-  # rubocop:enable Metrics/AbcSize
 
   def scaled_tile_dimensions
     scale = case size

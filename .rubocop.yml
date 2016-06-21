@@ -20,6 +20,8 @@ Metrics/LineLength:
     - 'spec/requests/file_auth_request_spec.rb'
     - 'spec/requests/iiif_auth_request_spec.rb'
     - 'spec/requests/media_auth_request_spec.rb'
+    - 'spec/routing/iiif_routing_spec.rb'
+    - 'spec/routing/legacy_image_api_spec.rb'
 
 Style/EmptyLinesAroundBlockBody:
   Exclude:
