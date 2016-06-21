@@ -25,10 +25,26 @@ RSpec.describe "Authentication for Media requests", type: :request do
       allow(sms).to receive(:world_rights).and_return([false, ''])
       sms
     end
+    let!(:sms_stanford_only_no_download) do
+      sms = StacksMediaStream.new(id: druid, file_name: filename, format: format)
+      allow(sms).to receive(:stanford_only_rights).and_return([true, 'no-download'])
+      allow(sms).to receive(:restricted_by_location?).and_return(false)
+      allow(sms).to receive(:location_rights).and_return([false, ''])
+      allow(sms).to receive(:agent_rights).and_return([false, ''])
+      allow(sms).to receive(:world_unrestricted?).and_return(false)
+      allow(sms).to receive(:world_rights).and_return([false, ''])
+      sms
+    end
     let!(:sms_location_only) do
       sms = StacksMediaStream.new(id: druid, file_name: filename, format: format)
       allow(sms).to receive(:restricted_by_location?).and_return(true)
       allow(sms).to receive(:location_rights).and_return([true, ''])
+      sms
+    end
+    let!(:sms_location_only_no_download) do
+      sms = StacksMediaStream.new(id: druid, file_name: filename, format: format)
+      allow(sms).to receive(:restricted_by_location?).and_return(true)
+      allow(sms).to receive(:location_rights).and_return([true, 'no-download'])
       sms
     end
     let!(:sms_user_not_in_loc) do
@@ -85,6 +101,12 @@ RSpec.describe "Authentication for Media requests", type: :request do
         get "/media/#{druid}/#{filename}.#{format}"
         expect(response).to redirect_to(auth_media_download_url(id: druid, file_name: filename, format: format))
       end
+      it 'blocks when stanford webauth and rule is no-download' do
+        allow_any_instance_of(MediaController).to receive(:current_user).and_return(user_webauth_stanford_no_loc)
+        allow_any_instance_of(MediaController).to receive(:current_media).and_return(sms_stanford_only_no_download)
+        get "/media/#{druid}/#{filename}.#{format}"
+        expect(response).to have_http_status(403)
+      end
     end
     context 'location' do
       context 'not stanford qualified in any way' do
@@ -98,6 +120,12 @@ RSpec.describe "Authentication for Media requests", type: :request do
         it 'blocks when user not in location' do
           allow_any_instance_of(MediaController).to receive(:current_user).and_return(user_no_loc_webauth)
           allow_any_instance_of(MediaController).to receive(:current_media).and_return(sms_user_not_in_loc)
+          get "/media/#{druid}/#{filename}.#{format}"
+          expect(response).to have_http_status(403)
+        end
+        it 'blocks when user in location and rule is no-download' do
+          allow_any_instance_of(MediaController).to receive(:current_user).and_return(user_loc_no_webauth)
+          allow_any_instance_of(MediaController).to receive(:current_media).and_return(sms_location_only_no_download)
           get "/media/#{druid}/#{filename}.#{format}"
           expect(response).to have_http_status(403)
         end
@@ -168,10 +196,28 @@ RSpec.describe "Authentication for Media requests", type: :request do
       allow(sms).to receive(:world_rights).and_return([false, ''])
       sms
     end
+    let!(:sms_stanford_only_no_download) do
+      sms = StacksMediaStream.new(id: druid, file_name: filename, format: format)
+      allow(sms).to receive(:stanford_only_rights).and_return([true, 'no-download'])
+      allow(sms).to receive(:restricted_by_location?).and_return(false)
+      allow(sms).to receive(:location_rights).and_return([false, ''])
+      allow(sms).to receive(:agent_rights).and_return([false, ''])
+      allow(sms).to receive(:world_unrestricted?).and_return(false)
+      allow(sms).to receive(:world_rights).and_return([false, ''])
+      sms
+    end
     let!(:sms_location_only) do
       sms = StacksMediaStream.new(id: druid, file_name: filename, format: format)
       allow(sms).to receive(:restricted_by_location?).and_return(true)
       allow(sms).to receive(:location_rights).and_return([true, ''])
+      allow(sms).to receive(:stanford_only_rights).and_return([false, ''])
+      allow(sms).to receive(:world_rights).and_return([false, ''])
+      sms
+    end
+    let!(:sms_location_only_no_download) do
+      sms = StacksMediaStream.new(id: druid, file_name: filename, format: format)
+      allow(sms).to receive(:restricted_by_location?).and_return(true)
+      allow(sms).to receive(:location_rights).and_return([true, 'no-download'])
       allow(sms).to receive(:stanford_only_rights).and_return([false, ''])
       allow(sms).to receive(:world_rights).and_return([false, ''])
       sms
@@ -217,6 +263,12 @@ RSpec.describe "Authentication for Media requests", type: :request do
           get "/media/#{druid}/#{filename}/stream.#{format}"
           expect(response).to have_http_status(403)
         end
+        it 'no-download allows when user webauthed and authorized' do
+          allow_any_instance_of(MediaController).to receive(:current_user).and_return(user_webauth_stanford_no_loc)
+          allow_any_instance_of(MediaController).to receive(:current_media).and_return(sms_stanford_only_no_download)
+          get "/media/#{druid}/#{filename}/stream.#{format}"
+          expect(response.location).to match(%r{http://streaming-server.com.*})
+        end
       end
       it "prompts for webauth when user not webauthed" do
         allow_any_instance_of(MediaController).to receive(:current_user).and_return(user_loc_no_webauth)
@@ -238,6 +290,12 @@ RSpec.describe "Authentication for Media requests", type: :request do
           allow_any_instance_of(MediaController).to receive(:current_media).and_return(sms_user_not_in_loc)
           get "/media/#{druid}/#{filename}/stream.#{format}"
           expect(response).to have_http_status(403)
+        end
+        it 'no-download allows when user in location' do
+          allow_any_instance_of(MediaController).to receive(:current_user).and_return(user_loc_no_webauth)
+          allow_any_instance_of(MediaController).to receive(:current_media).and_return(sms_location_only_no_download)
+          get "/media/#{druid}/#{filename}/stream.#{format}"
+          expect(response.location).to match(%r{http://streaming-server.com.*})
         end
       end
       context 'OR stanford' do
