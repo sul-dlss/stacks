@@ -48,7 +48,6 @@ describe User do
             </rightsMetadata>
           EOF
         end
-
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
         it { is_expected.to be_able_to(:download, media) }
@@ -66,7 +65,6 @@ describe User do
           </rightsMetadata>
           EOF
         end
-
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
         it { is_expected.to be_able_to(:download, media) }
@@ -124,7 +122,6 @@ describe User do
             </rightsMetadata>
           EOF
         end
-
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
         it { is_expected.to be_able_to(:download, media) }
@@ -142,7 +139,6 @@ describe User do
           </rightsMetadata>
           EOF
         end
-
         it { is_expected.not_to be_able_to(:download, file) }
         it { is_expected.not_to be_able_to(:download, image) }
         it { is_expected.not_to be_able_to(:download, media) }
@@ -252,7 +248,6 @@ describe User do
             </rightsMetadata>
           EOF
         end
-
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
         it { is_expected.to be_able_to(:download, media) }
@@ -271,7 +266,6 @@ describe User do
           </rightsMetadata>
           EOF
         end
-
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
         it { is_expected.to be_able_to(:download, media) }
@@ -289,7 +283,6 @@ describe User do
           </rightsMetadata>
           EOF
         end
-
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
         it { is_expected.to be_able_to(:download, media) }
@@ -327,7 +320,6 @@ describe User do
           </rightsMetadata>
           EOF
         end
-
         it { is_expected.not_to be_able_to(:download, file) }
         it { is_expected.not_to be_able_to(:download, image) }
         it { is_expected.not_to be_able_to(:download, media) }
@@ -345,7 +337,6 @@ describe User do
           </rightsMetadata>
           EOF
         end
-
         it { is_expected.to be_able_to(:read, thumbnail) }
         it { is_expected.to be_able_to(:read, square_thumbnail) }
         it { is_expected.not_to be_able_to(:read, image) }
