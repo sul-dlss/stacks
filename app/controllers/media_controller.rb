@@ -69,46 +69,11 @@ class MediaController < ApplicationController
     if can? :read, current_media
       { status: :success }
     else
-      stanford_restricted, _rule = current_media.stanford_only_rights
-      location_restricted = current_media.restricted_by_location?
-      user_in_location, _rule = current_media.location_rights(current_user.location)
-      could_authenticate = stanford_restricted && !current_user.webauth_user
-      could_relocate = location_restricted && !user_in_location
-
-      # TODO: ask Jessie if we should be following naming conventions for our keys
-      if could_authenticate && could_relocate
-        {
-          status: [
-            :stanford_restricted,
-            :location_restricted
-          ],
-          service: {
-            '@id' => iiif_auth_api_url,
-            'label' => 'Stanford-affiliated? Login to play'
-          },
-          'label' => [
-            'Limited access for non-Stanford guests.',
-            'See Access conditions for more information.'
-          ]
-        }
-      elsif could_authenticate && !location_restricted
-        {
-          # TODO: ask Jessie if this should/could be stanford_restricted
-          status: :must_authenticate,
-          service: {
-            '@id' => iiif_auth_api_url,
-            'label' => 'Stanford-affiliated? Login to play'
-          }
-        }
-      elsif could_relocate
-        {
-          status: :location_restricted,
-          'label' => [
-            'Restricted media cannot be played in your location.',
-            'See Access conditions for more information.'
-          ]
-        }
-      end
+      MediaAuthenticationJSON.new(
+        user: current_user,
+        media: current_media,
+        auth_url: iiif_auth_api_url
+      )
     end
   end
 
