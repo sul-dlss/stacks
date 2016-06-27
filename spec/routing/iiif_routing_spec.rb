@@ -1,6 +1,5 @@
 require 'rails_helper'
 
-# rubocop:disable Metrics/LineLength
 describe 'IIIF routes' do
   describe 'iiif image api requests' do
     it 'routes to #show' do
@@ -71,4 +70,3 @@ describe 'IIIF routes' do
     end
   end
 end
-# rubocop:enable Metrics/LineLength

@@ -143,29 +143,21 @@ describe MediaController, vcr: { record: :new_episodes } do
   describe '#auth_check' do
     let(:id) { 'abc123' }
     let(:file_name) { 'some_file.mp4' }
+
+    it 'returns JSON from hash_for_auth_check' do
+      test_hash = { foo: :bar }
+      expect(controller).to receive(:hash_for_auth_check).and_return(test_hash)
+      get :auth_check, id: id, file_name: file_name, format: :js
+      body = JSON.parse(response.body)
+      expect(body).to eq('foo' => 'bar')
+    end
+
     context 'success' do
       before { allow(controller).to receive(:can?).and_return(true) }
-
       it 'returns json that indicates a successful auth check' do
         get :auth_check, id: id, file_name: file_name, format: :js
         body = JSON.parse(response.body)
         expect(body).to eq('status' => 'success')
-      end
-    end
-
-    context 'must authenticate' do
-      it 'returns json that indicates the user must authenticate' do
-        get :auth_check, id: id, file_name: file_name, format: :js
-        body = JSON.parse(response.body)
-        expect(body['status']).to eq 'must_authenticate'
-      end
-
-      it 'indicates where the client can authenticate' do
-        get :auth_check, id: id, file_name: file_name, format: :js
-        body = JSON.parse(response.body)
-        expect(body).to have_key('service')
-        expect(body['service']['@id']).to match(/^https?:/)
-        expect(body['service']['label']).to eq 'Stanford-affiliated? Login to play'
       end
     end
   end

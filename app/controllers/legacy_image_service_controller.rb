@@ -42,7 +42,6 @@ class LegacyImageServiceController < ApplicationController
     }
   end
 
-  # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength
   def iiif_size
     case
     when zoom
@@ -70,9 +69,7 @@ class LegacyImageServiceController < ApplicationController
       'full'
     end
   end
-  # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength
 
-  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def iiif_region
     case
     when region && zoom
@@ -87,7 +84,6 @@ class LegacyImageServiceController < ApplicationController
       'full'
     end
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   def identifier_params
     { id: id, file_name: file_name }

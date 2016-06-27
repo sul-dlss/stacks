@@ -48,7 +48,6 @@ describe User do
             </rightsMetadata>
           EOF
         end
-
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
         it { is_expected.to be_able_to(:download, media) }
@@ -66,13 +65,12 @@ describe User do
           </rightsMetadata>
           EOF
         end
-
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
         it { is_expected.to be_able_to(:download, media) }
       end
 
-      context 'with a tile of a no-download file' do
+      context 'with read rights but not download' do
         let(:rights_xml) do
           <<-EOF.strip_heredoc
           <rightsMetadata>
@@ -84,10 +82,11 @@ describe User do
           </rightsMetadata>
           EOF
         end
-        it { is_expected.to be_able_to(:read, tile) }
         it { is_expected.not_to be_able_to(:read, file) }
+        it { is_expected.to be_able_to(:read, tile) }
         it { is_expected.not_to be_able_to(:read, image) }
-        it { is_expected.not_to be_able_to(:read, media) }
+        it { is_expected.to be_able_to(:read, media) }
+        it { is_expected.not_to be_able_to(:download, media) }
       end
     end
 
@@ -123,7 +122,6 @@ describe User do
             </rightsMetadata>
           EOF
         end
-
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
         it { is_expected.to be_able_to(:download, media) }
@@ -141,13 +139,12 @@ describe User do
           </rightsMetadata>
           EOF
         end
-
         it { is_expected.not_to be_able_to(:download, file) }
         it { is_expected.not_to be_able_to(:download, image) }
         it { is_expected.not_to be_able_to(:download, media) }
       end
 
-      context 'with a tile of a no-download file' do
+      context 'with read rights but not download' do
         let(:rights_xml) do
           <<-EOF.strip_heredoc
           <rightsMetadata>
@@ -159,10 +156,11 @@ describe User do
           </rightsMetadata>
           EOF
         end
-        it { is_expected.not_to be_able_to(:read, tile) }
         it { is_expected.not_to be_able_to(:read, file) }
+        it { is_expected.not_to be_able_to(:read, tile) }
         it { is_expected.not_to be_able_to(:read, image) }
         it { is_expected.not_to be_able_to(:read, media) }
+        it { is_expected.not_to be_able_to(:download, media) }
       end
     end
 
@@ -190,6 +188,30 @@ describe User do
         it { is_expected.not_to be_able_to(:download, file) }
         it { is_expected.not_to be_able_to(:download, image) }
         it { is_expected.not_to be_able_to(:download, media) }
+      end
+
+      context 'with media that allows read but not download' do
+        let(:rights_xml) do
+          <<-EOF.strip_heredoc
+          <rightsMetadata>
+            <access type="read">
+              <machine>
+                <location rule="no-download">location1</location>
+              </machine>
+            </access>
+          </rightsMetadata>
+          EOF
+        end
+        context 'an anonymous user from a configured location' do
+          let(:user) { User.new(ip_address: 'ip.address2') }
+          it { is_expected.to be_able_to(:read, media) }
+          it { is_expected.not_to be_able_to(:download, media) }
+        end
+        context 'an anonymous user not in the configured location' do
+          let(:user) { User.new(ip_address: 'some.unknown.ip') }
+          it { is_expected.not_to be_able_to(:read, media) }
+          it { is_expected.not_to be_able_to(:download, media) }
+        end
       end
     end
 
@@ -226,7 +248,6 @@ describe User do
             </rightsMetadata>
           EOF
         end
-
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
         it { is_expected.to be_able_to(:download, media) }
@@ -245,7 +266,6 @@ describe User do
           </rightsMetadata>
           EOF
         end
-
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
         it { is_expected.to be_able_to(:download, media) }
@@ -263,7 +283,6 @@ describe User do
           </rightsMetadata>
           EOF
         end
-
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
         it { is_expected.to be_able_to(:download, media) }
@@ -281,8 +300,8 @@ describe User do
           </rightsMetadata>
           EOF
         end
-        it { is_expected.to be_able_to(:read, tile) }
         it { is_expected.not_to be_able_to(:read, file) }
+        it { is_expected.to be_able_to(:read, tile) }
         it { is_expected.not_to be_able_to(:read, image) }
         it { is_expected.not_to be_able_to(:read, media) }
       end
@@ -301,7 +320,6 @@ describe User do
           </rightsMetadata>
           EOF
         end
-
         it { is_expected.not_to be_able_to(:download, file) }
         it { is_expected.not_to be_able_to(:download, image) }
         it { is_expected.not_to be_able_to(:download, media) }
@@ -319,14 +337,13 @@ describe User do
           </rightsMetadata>
           EOF
         end
-
         it { is_expected.to be_able_to(:read, thumbnail) }
         it { is_expected.to be_able_to(:read, square_thumbnail) }
         it { is_expected.not_to be_able_to(:read, image) }
         it { is_expected.not_to be_able_to(:read, media) }
       end
 
-      context 'with a tile of a no-download file' do
+      context 'with read rights but not download' do
         let(:rights_xml) do
           <<-EOF.strip_heredoc
           <rightsMetadata>
@@ -338,10 +355,11 @@ describe User do
           </rightsMetadata>
           EOF
         end
-        it { is_expected.to be_able_to(:read, tile) }
         it { is_expected.not_to be_able_to(:read, file) }
+        it { is_expected.to be_able_to(:read, tile) }
         it { is_expected.not_to be_able_to(:read, image) }
-        it { is_expected.not_to be_able_to(:read, media) }
+        it { is_expected.to be_able_to(:read, media) }
+        it { is_expected.not_to be_able_to(:download, media) }
       end
     end
   end

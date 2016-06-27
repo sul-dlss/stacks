@@ -31,7 +31,6 @@ describe StacksImage do
     end
   end
 
-  # rubocop:disable Style/Semicolon
   describe '#tile?' do
     it 'must specify a region' do
       expect(subject.tap { |x| x.region = '0,0,1,1'; x.size = '256,256' }).to be_a_tile
@@ -66,7 +65,6 @@ describe StacksImage do
       expect(subject.tap { |x| x.region = '0,0,800,600'; x.size = 'pct:50' }.tile_dimensions).to eq [400, 300]
     end
   end
-  # rubocop:enable Style/Semicolon
 
   describe '#region_dimensions' do
     it 'uses the image dimensions' do

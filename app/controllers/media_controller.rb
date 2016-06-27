@@ -38,9 +38,10 @@ class MediaController < ApplicationController
     end
   end
 
+  # jsonp response
   def auth_check
     respond_to do |format|
-      format.js { render json: json_for_media_auth, callback: allowed_params[:callback] }
+      format.js { render json: hash_for_auth_check, callback: allowed_params[:callback] }
     end
   end
 
@@ -64,16 +65,15 @@ class MediaController < ApplicationController
     end
   end
 
-  def json_for_media_auth
+  def hash_for_auth_check
     if can? :read, current_media
       { status: :success }
     else
-      { status: :must_authenticate,
-        service: {
-          '@id' => iiif_auth_api_url,
-          'label' => 'Stanford-affiliated? Login to play'
-        }
-      }
+      MediaAuthenticationJSON.new(
+        user: current_user,
+        media: current_media,
+        auth_url: iiif_auth_api_url
+      )
     end
   end
 

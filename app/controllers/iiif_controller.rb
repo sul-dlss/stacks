@@ -1,6 +1,5 @@
 ##
 # API for delivering IIIF-compatible images and image tiles
-# rubocop:disable Metrics/ClassLength
 class IiifController < ApplicationController
   before_action :load_image
   before_action :add_iiif_profile_header
@@ -96,7 +95,6 @@ class IiifController < ApplicationController
     @image ||= StacksImage.new(stacks_image_params)
   end
 
-  # rubocop:disable Metrics/MethodLength
   def image_info
     info = current_image.info do |md|
       if can? :download, current_image
@@ -124,7 +122,6 @@ class IiifController < ApplicationController
 
     info
   end
-  # rubocop:enable Metrics/MethodLength
 
   def stacks_image_params
     allowed_params.slice(:region, :size, :rotation, :quality, :format).merge(identifier_params).merge(canonical_params)
@@ -148,4 +145,3 @@ class IiifController < ApplicationController
     headers['Link'] = '<http://iiif.io/api/image/2/level1.json>;rel="profile"'
   end
 end
-# rubocop:enable Metrics/ClassLength

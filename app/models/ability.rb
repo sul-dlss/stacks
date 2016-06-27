@@ -1,6 +1,5 @@
 ##
 # User authentication
-# rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 class Ability
   include CanCan::Ability
 
@@ -51,6 +50,20 @@ class Ability
       f.restricted_by_location? && (!user_in_location || !rule.blank?)
     end
 
+    # media download rights exclude when rule is no-download
+    # stanford restricted, read, but no download
+    cannot :download, StacksMediaStream do |f|
+      stanford_only_rights, rule = f.stanford_only_rights
+      stanford_only_rights && rule == 'no-download'
+    end
+
+    # media download rights exclude when rule is no-download
+    # world restricted, read, but no download
+    cannot :download, StacksMediaStream do |f|
+      world_rights_defined, rule = f.world_rights
+      world_rights_defined && rule == 'no-download'
+    end
+
     can :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
       val, rule = f.stanford_only_rights
 
@@ -73,6 +86,21 @@ class Ability
       can? :download, f
     end
 
+    can :read, StacksMediaStream do |f|
+      user_in_location, _rule = f.location_rights(user.location)
+      f.restricted_by_location? && user_in_location
+    end
+
+    can :read, StacksMediaStream do |f|
+      stanford_only_rights, _rule = f.stanford_only_rights
+      stanford_only_rights && user.stanford?
+    end
+
+    can :read, StacksMediaStream do |f|
+      world_rights_defined, _rule = f.world_rights
+      world_rights_defined
+    end
+
     can :read, StacksImage, &:thumbnail?
 
     can :read, StacksImage do |f|
@@ -93,4 +121,3 @@ class Ability
     end
   end
 end
-# rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity

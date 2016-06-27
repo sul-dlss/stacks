@@ -43,11 +43,9 @@ class ApplicationController < ActionController::Base
     cookies[:bearer_token]
   end
 
-  # rubocop:disable Style/PredicateName
   def has_bearer_cookie?
     bearer_cookie.present?
   end
-  # rubocop:enable Style/PredicateName
 
   def bearer_cookie_user
     authorization_request = bearer_cookie.to_s
