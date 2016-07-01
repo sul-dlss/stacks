@@ -39,3 +39,6 @@ user:
   locations:
     spec:
       - an.ip.address
+
+cors:
+  allow_origin_url: 'https://embed.stanford.edu'
