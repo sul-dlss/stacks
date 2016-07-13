@@ -6,7 +6,7 @@ describe IiifTokenController do
       get :create, format: :js
     end
 
-    let(:user) { nil }
+    let(:user) { User.new(anonymous_locatable_user: true) }
 
     before do
       allow(controller).to receive(:current_user).and_return(user)
@@ -35,7 +35,7 @@ describe IiifTokenController do
       end
     end
 
-    context 'without a user' do
+    context 'with an anonymous user' do
       it 'returns the error response' do
         expect(subject.status).to eq 401
 
