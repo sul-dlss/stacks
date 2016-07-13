@@ -3,10 +3,14 @@
 class User
   include ActiveModel::Model
 
-  attr_accessor :id, :webauth_user, :app_user, :token_user, :ldap_groups, :ip_address
+  attr_accessor :id, :webauth_user, :anonymous_locatable_user, :app_user, :token_user, :ldap_groups, :ip_address
 
   def webauth_user?
     webauth_user
+  end
+
+  def anonymous_locatable_user?
+    anonymous_locatable_user
   end
 
   def stanford?
