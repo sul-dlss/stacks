@@ -42,5 +42,11 @@ describe ApplicationController do
         expect(subject).to be_a_webauth_user
       end
     end
+
+    context 'with no other credentials' do
+      it 'is an anonymous locatable user' do
+        expect(subject).to be_an_anonymous_locatable_user
+      end
+    end
   end
 end

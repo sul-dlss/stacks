@@ -62,7 +62,8 @@ class ApplicationController < ActionController::Base
   end
 
   def anonymous_locatable_user
-    User.new(ip_address: request.remote_ip)
+    User.new(ip_address: request.remote_ip,
+             anonymous_locatable_user: true)
   end
 
   def rescue_can_can(exception)

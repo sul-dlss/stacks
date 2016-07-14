@@ -1,7 +1,7 @@
 # API to create IIIF Authentication access tokens
 class IiifTokenController < ApplicationController
   def create
-    token = mint_bearer_token if current_user
+    token = mint_bearer_token unless current_user.anonymous_locatable_user?
 
     write_bearer_token_cookie(token) if token
 
