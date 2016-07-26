@@ -2,6 +2,8 @@
 # API for delivering streaming media via stacks
 class MediaController < ApplicationController
   before_action :load_media
+  before_action :set_origin_header, except: [:auth_check, :stream]
+  before_action :set_cors_headers, only: [:auth_check, :stream]
 
   rescue_from ActionController::MissingFile do
     render text: 'File not found', status: :not_found
@@ -46,6 +48,17 @@ class MediaController < ApplicationController
   end
 
   private
+
+  # We do not rely on the web server to set Access-Control-Allow-Origin for *any* /media request,
+  # so we set it manually ourselves.
+  def set_origin_header
+    response.headers['Access-Control-Allow-Origin'] = '*'
+  end
+
+  def set_cors_headers
+    response.headers['Access-Control-Allow-Origin'] = Settings.cors.allow_origin_url
+    response.headers['Access-Control-Allow-Credentials'] = 'true'
+  end
 
   def allowed_params
     params.permit(:action, :callback, :id, :file_name, :format, :stacks_token, :user_ip)
