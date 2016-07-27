@@ -7,7 +7,7 @@ purl:
 
 stream:
   # max_token_age is specified in seconds
-  max_token_age: 1
+  max_token_age: 45
   url: http://streaming-server.com:1935/stuff
   # streaming media file extensions we support
   video:
