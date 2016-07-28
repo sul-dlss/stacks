@@ -1,8 +1,9 @@
 require 'rails_helper'
 
-describe FileController, vcr: { record: :new_episodes } do
+describe FileController do
   before do
     controller.instance_variable_set(:@file, file)
+    stub_rights_xml(world_readable_rights_xml)
   end
 
   let(:file) { StacksFile.new(id: 'xf680rd3068', file_name: 'xf680rd3068_1.jp2') }
