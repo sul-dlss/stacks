@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe LegacyImageServiceController, :vcr do
+describe LegacyImageServiceController do
   describe 'Precast sizes' do
     context 'squares' do
       it 'works' do
