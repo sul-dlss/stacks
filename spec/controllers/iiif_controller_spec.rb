@@ -1,5 +1,22 @@
 require 'rails_helper'
 
+##
+# A stub metadata class that mimics
+# some of the underlying IIIF logic
+# in the Djatoka gem for testing purposes
+class StubMetadataObject
+  # Turn block assignments into a hash
+  def info
+    opts = OpenStruct.new
+    yield(opts) if block_given?
+    opts.to_h
+  end
+
+  def maybe_downloadable?
+    false
+  end
+end
+
 describe IiifController do
   before do
     allow_any_instance_of(StacksImage).to receive(:valid?).and_return(true)
@@ -82,6 +99,37 @@ describe IiifController do
       subject
       info = JSON.parse(controller.response_body.first)
       expect(info['tiles'].first).to include 'width' => 1024, 'height' => 1024
+    end
+  end
+
+  describe '#image_info' do
+    let(:stub_metadata_object) { StubMetadataObject.new }
+    let(:image_info) { controller.send(:image_info) }
+    before do
+      allow(controller).to receive(:current_image).and_return(stub_metadata_object)
+    end
+
+    # This is kind of a round-about way to test this,
+    # but the actual logic that we're depending on
+    # here is buried in the djatoka gem
+    describe 'height/width' do
+      context 'when the image is downloadable' do
+        before do
+          allow(controller).to receive(:can?).with(:download, stub_metadata_object).and_return(true)
+        end
+
+        it 'the tile height/width is 1024' do
+          expect(image_info[:tile_height]).to eq 1024
+          expect(image_info[:tile_width]).to eq 1024
+        end
+      end
+
+      context 'when the image is not downloadable' do
+        it 'the tile height/width is 256' do
+          expect(image_info[:tile_height]).to eq 256
+          expect(image_info[:tile_width]).to eq 256
+        end
+      end
     end
   end
 end
