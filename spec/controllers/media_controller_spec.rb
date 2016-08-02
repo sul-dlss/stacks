@@ -143,7 +143,7 @@ describe MediaController do
   end
 
   describe '#auth_check' do
-    let(:id) { 'abc123' }
+    let(:id) { 'bd786fy6312' }
     let(:file_name) { 'some_file.mp4' }
 
     it 'returns JSON from hash_for_auth_check' do
@@ -156,10 +156,11 @@ describe MediaController do
 
     context 'success' do
       before { allow(controller).to receive(:can?).and_return(true) }
-      it 'returns json that indicates a successful auth check' do
+      it 'returns json that indicates a successful auth check (including token)' do
         get :auth_check, id: id, file_name: file_name, format: :js
         body = JSON.parse(response.body)
-        expect(body).to eq('status' => 'success')
+        expect(body['status']).to eq('success')
+        expect(body['token']).to match(/^[a-zA-Z0-9]+=+-+[a-zA-Z0-9]+$/)
       end
     end
   end
