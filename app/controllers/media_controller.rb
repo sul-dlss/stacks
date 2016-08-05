@@ -80,7 +80,7 @@ class MediaController < ApplicationController
 
   def hash_for_auth_check
     if can? :read, current_media
-      { status: :success }
+      { status: :success, token: encrypted_token }
     else
       MediaAuthenticationJSON.new(
         user: current_user,
