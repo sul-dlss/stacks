@@ -41,13 +41,15 @@ class Ability
       val && rule.blank?
     end
 
-    # location based rights exclude when NOT matching the location condition
-    #   (all other rights include when matching conditions)
-    cannot :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
-      user_in_location, rule = f.location_rights(user.location)
+    if Settings.features.location_auth
+      # location based rights exclude when NOT matching the location condition
+      #   (all other rights include when matching conditions)
+      cannot :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
+        user_in_location, rule = f.location_rights(user.location)
 
-      # location OR stanford, not location AND stanford
-      f.restricted_by_location? && (!user_in_location || !rule.blank?)
+        # location OR stanford, not location AND stanford
+        f.restricted_by_location? && (!user_in_location || !rule.blank?)
+      end
     end
 
     # media download rights exclude when rule is no-download
@@ -76,19 +78,23 @@ class Ability
       val && rule.blank? && user.app_user?
     end
 
-    can :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
-      val, rule = f.location_rights(user.location)
+    if Settings.features.location_auth
+      can :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
+        val, rule = f.location_rights(user.location)
 
-      val && rule.blank? && f.restricted_by_location?
+        val && rule.blank? && f.restricted_by_location?
+      end
     end
 
     can :read, [StacksFile, StacksImage, StacksMediaStream] do |f|
       can? :download, f
     end
 
-    can :read, StacksMediaStream do |f|
-      user_in_location, _rule = f.location_rights(user.location)
-      f.restricted_by_location? && user_in_location
+    if Settings.features.location_auth
+      can :read, StacksMediaStream do |f|
+        user_in_location, _rule = f.location_rights(user.location)
+        f.restricted_by_location? && user_in_location
+      end
     end
 
     can :read, StacksMediaStream do |f|
