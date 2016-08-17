@@ -28,8 +28,4 @@ class WebauthController < ApplicationController
   def login_media_download
     redirect_to media_path(params.symbolize_keys)
   end
-
-  def login_media_stream
-    redirect_to media_stream_path(params.symbolize_keys)
-  end
 end

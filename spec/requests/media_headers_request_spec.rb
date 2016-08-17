@@ -32,14 +32,6 @@ RSpec.describe "CORS headers for Media requests", type: :request do
     end
   end
 
-  context "#stream" do
-    it 'sets the correct CORS headers' do
-      get "/media/#{druid}/#{filename}/stream", format: 'm3u8'
-      expect(verify_cors_headers(response.headers['Access-Control-Allow-Origin'],
-                                 response.headers['Access-Control-Allow-Credentials'])).to be_truthy
-    end
-  end
-
   context "#auth_check" do
     it 'sets the correct CORS headers' do
       get "/media/#{druid}/#{filename}/auth_check", format: :js
