@@ -23,7 +23,7 @@ set :log_level, :info
 # set :pty, true
 
 # Default value for :linked_files is []
-set :linked_files, %w{config/secrets.yml config/initializers/squash.rb}
+set :linked_files, %w{config/honeybadger.yml config/secrets.yml}
 
 # Default value for linked_dirs is []
 set :linked_dirs, %w(config/settings log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system)
@@ -34,4 +34,5 @@ set :linked_dirs, %w(config/settings log tmp/pids tmp/cache tmp/sockets vendor/b
 # Default value for keep_releases is 5
 # set :keep_releases, 5
 
-before 'deploy:publishing', 'squash:write_revision'
+# honeybadger_env otherwise defaults to rails_env
+set :honeybadger_env, fetch(:stage)

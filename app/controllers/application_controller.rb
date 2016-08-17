@@ -1,8 +1,5 @@
 # :nodoc:
 class ApplicationController < ActionController::Base
-  include Squash::Ruby::ControllerMethods
-  enable_squash_client
-
   include ActionController::HttpAuthentication::Basic
   include ActionController::HttpAuthentication::Bearer
 
