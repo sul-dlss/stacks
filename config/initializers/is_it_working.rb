@@ -3,13 +3,17 @@ Rails.configuration.middleware.use(IsItWorking::Handler) do |h|
   h.check :url, get: Settings.purl.url
   h.check :url, get: Settings.stacks.djatoka_url + '?rft_id=/&svc_id=info:lanl-repo/svc/ping&url_ver=Z39.88-2004'
 
-  # if stream_url is down, keep returning status 200 from here for load-balancer check,
-  #   but expose failure in html and nagios check
   h.check :non_crucial do |status|
-    optional_status = IsItWorking::Status.new('')
-    IsItWorking::UrlCheck.new(get: Settings.stream.url).call(optional_status)
-    optional_status.messages.each do |x|
-      status.ok "#{'FAIL: ' unless x.ok?}#{x.message} (Media viewer uses this for streaming content)"
-    end
+    non_crucial_url_check(Settings.stream.url, status, 'For streaming content in media viewer')
+  end
+end
+
+# even if url doesn't return 2xx or 304, return status 200 here
+#  (for load-balancer check) but expose failure in message text (for nagios check and humans)
+def non_crucial_url_check(url, return_status, info)
+  non_crucial_status = IsItWorking::Status.new('')
+  IsItWorking::UrlCheck.new(get: url).call(non_crucial_status)
+  non_crucial_status.messages.each do |x|
+    return_status.ok "#{'FAIL: ' unless x.ok?}#{x.message} (#{info})"
   end
 end
