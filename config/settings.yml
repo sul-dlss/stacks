@@ -8,14 +8,6 @@ purl:
 stream:
   # max_token_age is specified in seconds
   max_token_age: 45
-  url: http://streaming-server.com:1935/stuff
-  # streaming media file extensions we support
-  video:
-    - mov
-    - mp4
-    - mpeg
-  audio:
-    - mp3
 
 # non-IIIF images
 legacy:

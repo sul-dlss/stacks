@@ -39,35 +39,6 @@ describe MediaController do
     end
   end
 
-  describe '#stream' do
-    let(:streaming_base_url) { Settings.stream.url }
-    let(:encrypted_token) { 'encrypted_token_value' }
-    let(:streaming_url_query_str) { "stacks_token=#{encrypted_token}" }
-    subject { get :stream, id: 'bb582xs1304', file_name: 'bb582xs1304_sl.mp4', format: 'm3u8' }
-
-    it 'redirects m3u8 format to streaming server mp4 prefix with playlist.m3u8' do
-      allow(controller).to receive(:encrypted_token).and_return encrypted_token
-      streaming_url_path = '/bb/582/xs/1304/mp4:bb582xs1304_sl.mp4/playlist.m3u8'
-      expect(subject).to redirect_to "#{streaming_base_url}#{streaming_url_path}?#{streaming_url_query_str}"
-    end
-
-    it 'redirects mpd format to streaming server mp4 prefix with manifest.mpd' do
-      allow(controller).to receive(:encrypted_token).and_return encrypted_token
-      get :stream, id: 'bb582xs1304', file_name: 'bb582xs1304_sl.mp4', format: 'mpd'
-      streaming_url_path = '/bb/582/xs/1304/mp4:bb582xs1304_sl.mp4/manifest.mpd'
-      expect(response).to redirect_to "#{streaming_base_url}#{streaming_url_path}?#{streaming_url_query_str}"
-    end
-
-    context 'additional params' do
-      subject { get :stream, id: 'xf680rd3068', file_name: 'file_1.mp4', format: 'm3u8', ignored: 'a', host: 'b' }
-      it 'ignored when instantiating StacksMediaStream' do
-        subject
-        expect { assigns(:media) }.not_to raise_exception
-        expect(assigns(:media)).to be_a StacksMediaStream
-      end
-    end
-  end
-
   describe '#verify_token' do
     let(:id) { 'ab123cd4567' }
     let(:file_name) { 'interesting_video.mp4' }

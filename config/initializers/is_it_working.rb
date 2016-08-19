@@ -6,10 +6,6 @@ Rails.configuration.middleware.use(IsItWorking::Handler) do |h|
     djatoka_url_to_check = Settings.stacks.djatoka_url + '?rft_id=/&svc_id=info:lanl-repo/svc/ping&url_ver=Z39.88-2004'
     non_crucial_url_check(djatoka_url_to_check, status, 'For image content in image viewer')
   end
-
-  h.check :non_crucial do |status|
-    non_crucial_url_check(Settings.stream.url, status, 'For streaming content in media viewer')
-  end
 end
 
 # even if url doesn't return 2xx or 304, return status 200 here

@@ -56,72 +56,10 @@ describe 'Media routes' do
     end
   end
 
-  context '#stream: filename with' do
-    it 'format suffix' do
-      expect(get: '/media/oo000oo0000/aa666aa1234.mp4/stream.m3u8').to route_to(
-        'media#stream', id: 'oo000oo0000', file_name: 'aa666aa1234.mp4', format: 'm3u8')
-      expect(get: '/media/oo000oo0000/aa666aa1234.mp4/stream.mpd').to route_to(
-        'media#stream', id: 'oo000oo0000', file_name: 'aa666aa1234.mp4', format: 'mpd')
-      expect(get: '/media/oo000oo0000/aa666aa1234.mov/stream.m3u8').to route_to(
-        'media#stream', id: 'oo000oo0000', file_name: 'aa666aa1234.mov', format: 'm3u8')
-    end
-
-    it 'chars not requiring URI escaping' do
-      filename = "(no_escape_needed):;=&$*.-_+!,~'.mp4"
-      expect(get: "/media/oo000oo0000/#{filename}/stream.m3u8").to route_to(
-        'media#stream', id: 'oo000oo0000', file_name: filename, format: 'm3u8')
-    end
-
-    it 'multiple dots ok' do
-      filename = 'foo.bar.foo.bar.mp4'
-      expect(get: "/media/oo000oo0000/#{filename}/stream.m3u8").to route_to(
-        'media#stream', id: 'oo000oo0000', file_name: filename, format: 'm3u8')
-    end
-
-    it 'some chars requiring URI escaping' do
-      filename = 'escape_needed {} @#^ %|"`.mp4'
-      expect(get: "/media/oo000oo0000/#{URI.escape(filename)}/stream.m3u8").to route_to(
-        'media#stream', id: 'oo000oo0000', file_name: filename, format: 'm3u8')
-    end
-
-    it 'square brackets must be url escaped' do
-      filename = 'foo[brackets].bar.mp4'
-      escaped_filename = 'foo%5Bbrackets%5D.bar.mp4' # URI.escape doesn't do square brackets
-      expect(get: "/media/oo000oo0000/#{escaped_filename}/stream.m3u8").to route_to(
-        'media#stream', id: 'oo000oo0000', file_name: filename, format: 'm3u8')
-    end
-
-    it 'question mark must be url escaped' do
-      filename = 'foo?.mp4'
-      escaped_filename = 'foo%3F.mp4' # URI.escape doesn't do question mark
-      expect(get: "/media/oo000oo0000/#{escaped_filename}/stream.m3u8").to route_to(
-        'media#stream', id: 'oo000oo0000', file_name: filename, format: 'm3u8')
-    end
-
-    it 'ü must be url escaped' do
-      skip('problem writing test:  ü decodes to \xC3\xBC')
-      filename = "fü.mp4"
-      escaped_filename = URI.escape(filename) # becomes %C3%BC
-      expect(get: "/media/oo000oo0000/#{escaped_filename}/stream.m3u8").to route_to(
-        'media#stream', id: 'oo000oo0000', file_name: filename, format: 'm3u8')
-    end
-
-    it '%20 in actual name (from ck155rf0207)' do
-      skip('problem writing test:  %20 becomes space, over-aggressive param decoding?')
-      filename = 'ARSCJ%202008.foo.bar.mp4'
-      expect(get: "/media/oo000oo0000/#{URI.escape(filename)}/stream.m3u8").to route_to(
-        'media#stream', id: 'oo000oo0000', file_name: filename, format: 'm3u8')
-    end
-  end
-
   describe 'authorization' do
     it 'download routes to #login_media_download' do
       expect(get: '/media/auth/id/filename.mp4').to route_to(
         'webauth#login_media_download', id: 'id', file_name: 'filename', format: 'mp4')
-    end
-    it 'stream routes to #login_media_stream' do
-      expect(get: '/media/auth/id/filename.mp4/stream.m3u8').to route_to(
-        'webauth#login_media_stream', id: 'id', file_name: 'filename.mp4', format: 'm3u8')
     end
   end
 

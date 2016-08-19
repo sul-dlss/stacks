@@ -2,8 +2,8 @@
 # API for delivering streaming media via stacks
 class MediaController < ApplicationController
   before_action :load_media
-  before_action :set_origin_header, except: [:auth_check, :stream]
-  before_action :set_cors_headers, only: [:auth_check, :stream]
+  before_action :set_origin_header, except: [:auth_check]
+  before_action :set_cors_headers, only: [:auth_check]
 
   rescue_from ActionController::MissingFile do
     render text: 'File not found', status: :not_found
@@ -15,18 +15,6 @@ class MediaController < ApplicationController
 
     self.content_type = Mime::Type.lookup_by_extension(allowed_params[:format]).to_s
     send_file current_media.path
-  end
-
-  def stream
-    authorize! :read, current_media # May raise CanCan::AccessDenied which is rescued by rescue_can_can
-    respond_to do |format|
-      format.m3u8 do
-        redirect_to "#{current_media.to_playlist_url}?stacks_token=#{encrypted_token}"
-      end
-      format.mpd do
-        redirect_to "#{current_media.to_manifest_url}?stacks_token=#{encrypted_token}"
-      end
-    end
   end
 
   def verify_token
@@ -71,11 +59,7 @@ class MediaController < ApplicationController
   def rescue_can_can(exception)
     stanford_restricted, _rule = current_media.stanford_only_rights
     return super unless stanford_restricted && !current_user.webauth_user?
-    if allowed_params['action'] == 'stream'
-      redirect_to auth_media_stream_url(allowed_params.symbolize_keys)
-    else
-      redirect_to auth_media_download_url(allowed_params.symbolize_keys)
-    end
+    redirect_to auth_media_download_url(allowed_params.symbolize_keys)
   end
 
   def hash_for_auth_check
