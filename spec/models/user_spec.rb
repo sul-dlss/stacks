@@ -33,6 +33,7 @@ describe User do
         end
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
+        it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:download, media) }
       end
 
@@ -50,6 +51,7 @@ describe User do
         end
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
+        it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:download, media) }
       end
 
@@ -67,6 +69,7 @@ describe User do
         end
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
+        it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:download, media) }
       end
 
@@ -85,7 +88,7 @@ describe User do
         it { is_expected.not_to be_able_to(:read, file) }
         it { is_expected.to be_able_to(:read, tile) }
         it { is_expected.not_to be_able_to(:read, image) }
-        it { is_expected.to be_able_to(:read, media) }
+        it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.not_to be_able_to(:download, media) }
       end
     end
@@ -107,6 +110,7 @@ describe User do
         end
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
+        it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:download, media) }
       end
 
@@ -124,6 +128,7 @@ describe User do
         end
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
+        it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:download, media) }
       end
 
@@ -141,6 +146,7 @@ describe User do
         end
         it { is_expected.not_to be_able_to(:download, file) }
         it { is_expected.not_to be_able_to(:download, image) }
+        it { is_expected.not_to be_able_to(:stream, media) }
         it { is_expected.not_to be_able_to(:download, media) }
       end
 
@@ -159,7 +165,7 @@ describe User do
         it { is_expected.not_to be_able_to(:read, file) }
         it { is_expected.not_to be_able_to(:read, tile) }
         it { is_expected.not_to be_able_to(:read, image) }
-        it { is_expected.not_to be_able_to(:read, media) }
+        it { is_expected.not_to be_able_to(:stream, media) }
         it { is_expected.not_to be_able_to(:download, media) }
       end
     end
@@ -180,6 +186,7 @@ describe User do
         let(:user) { User.new(ip_address: 'ip.address2') }
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
+        it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:download, media) }
       end
 
@@ -187,6 +194,7 @@ describe User do
         let(:user) { User.new(ip_address: 'some.unknown.ip') }
         it { is_expected.not_to be_able_to(:download, file) }
         it { is_expected.not_to be_able_to(:download, image) }
+        it { is_expected.not_to be_able_to(:stream, media) }
         it { is_expected.not_to be_able_to(:download, media) }
       end
 
@@ -204,12 +212,12 @@ describe User do
         end
         context 'an anonymous user from a configured location' do
           let(:user) { User.new(ip_address: 'ip.address2') }
-          it { is_expected.to be_able_to(:read, media) }
+          it { is_expected.to be_able_to(:stream, media) }
           it { is_expected.not_to be_able_to(:download, media) }
         end
         context 'an anonymous user not in the configured location' do
           let(:user) { User.new(ip_address: 'some.unknown.ip') }
-          it { is_expected.not_to be_able_to(:read, media) }
+          it { is_expected.not_to be_able_to(:stream, media) }
           it { is_expected.not_to be_able_to(:download, media) }
         end
       end
@@ -232,6 +240,7 @@ describe User do
         end
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
+        it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:download, media) }
       end
 
@@ -250,6 +259,7 @@ describe User do
         end
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
+        it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:download, media) }
       end
 
@@ -268,6 +278,7 @@ describe User do
         end
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
+        it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:download, media) }
       end
 
@@ -285,6 +296,7 @@ describe User do
         end
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
+        it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:download, media) }
       end
 
@@ -303,7 +315,8 @@ describe User do
         it { is_expected.not_to be_able_to(:read, file) }
         it { is_expected.to be_able_to(:read, tile) }
         it { is_expected.not_to be_able_to(:read, image) }
-        it { is_expected.not_to be_able_to(:read, media) }
+        it { is_expected.not_to be_able_to(:stream, media) }
+        it { is_expected.not_to be_able_to(:download, media) }
       end
     end
 
@@ -322,6 +335,7 @@ describe User do
         end
         it { is_expected.not_to be_able_to(:download, file) }
         it { is_expected.not_to be_able_to(:download, image) }
+        it { is_expected.not_to be_able_to(:stream, media) }
         it { is_expected.not_to be_able_to(:download, media) }
       end
 
@@ -340,6 +354,7 @@ describe User do
         it { is_expected.to be_able_to(:read, thumbnail) }
         it { is_expected.to be_able_to(:read, square_thumbnail) }
         it { is_expected.not_to be_able_to(:read, image) }
+        it { is_expected.not_to be_able_to(:stream, media) }
         it { is_expected.not_to be_able_to(:read, media) }
       end
 
@@ -358,7 +373,7 @@ describe User do
         it { is_expected.not_to be_able_to(:read, file) }
         it { is_expected.to be_able_to(:read, tile) }
         it { is_expected.not_to be_able_to(:read, image) }
-        it { is_expected.to be_able_to(:read, media) }
+        it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.not_to be_able_to(:download, media) }
       end
     end

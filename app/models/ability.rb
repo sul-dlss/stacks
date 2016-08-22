@@ -89,21 +89,28 @@ class Ability
       can? :download, f
     end
 
-    # For StacksMediaStream 'read' effectively means stream
-    # so we need to allow reading of StacksMediaStream regardless of rules
+    # Alias 'stream' to 'read' for StacksMediaStream so
+    # we can set streaming specific authorization rules
+    can :stream, StacksMediaStream do |f|
+      can? :read, f
+    end
+
+    # To enable streaming of non-downloadable content we can
+    # override the World, Location, and Stanford rights for
+    # streaming regarldess of the rule applied in rights
     if Settings.features.location_auth
-      can :read, StacksMediaStream do |f|
+      can :stream, StacksMediaStream do |f|
         user_in_location, _rule = f.location_rights(user.location)
         f.restricted_by_location? && user_in_location
       end
     end
 
-    can :read, StacksMediaStream do |f|
+    can :stream, StacksMediaStream do |f|
       stanford_only_rights, _rule = f.stanford_only_rights
       stanford_only_rights && user.stanford?
     end
 
-    can :read, StacksMediaStream do |f|
+    can :stream, StacksMediaStream do |f|
       world_rights_defined, _rule = f.world_rights
       world_rights_defined
     end
