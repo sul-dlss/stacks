@@ -30,14 +30,6 @@ describe WebauthController do
     end
   end
 
-  describe '#login_media_download' do
-    subject { get :login_media_download, id: 'bb582xs1304', file_name: 'bb582xs1304_sl', format: 'mp4' }
-
-    it 'returns the user to the media download action' do
-      expect(subject).to redirect_to media_url(controller.params.symbolize_keys)
-    end
-  end
-
   describe 'with a failed login' do
     subject { get :login_file, id: 'xf680rd3068', file_name: 'xf680rd3068_1.jp2' }
 

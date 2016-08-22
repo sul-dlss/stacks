@@ -24,8 +24,4 @@ class WebauthController < ApplicationController
   def login_iiif
     redirect_to iiif_path(params.symbolize_keys)
   end
-
-  def login_media_download
-    redirect_to media_path(params.symbolize_keys)
-  end
 end
