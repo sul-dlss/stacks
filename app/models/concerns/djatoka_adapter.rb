@@ -38,7 +38,7 @@ module DjatokaAdapter
   def url
     djatoka_region.url
   rescue Djatoka::IiifInvalidParam => e
-    Squash::Ruby.notify e
+    Honeybadger.notify e
     nil
   end
 
