@@ -9,14 +9,6 @@ class MediaController < ApplicationController
     render text: 'File not found', status: :not_found
   end
 
-  def download
-    authorize! :download, current_media
-    expires_in 10.minutes
-
-    self.content_type = Mime::Type.lookup_by_extension(allowed_params[:format]).to_s
-    send_file current_media.path
-  end
-
   def verify_token
     # the media service calling verify_token provides the end-user IP address,
     # as we care about the (user) IP address that made a request to the media service with the
@@ -52,18 +44,8 @@ class MediaController < ApplicationController
     params.permit(:action, :callback, :id, :file_name, :format, :stacks_token, :user_ip)
   end
 
-  # called when a CanCan::AccessDenied error is raised, typically by authorize!
-  #   Should only be here if
-  #   a)  access not allowed (send to super)  OR
-  #   b)  need user to login to determine if access allowed
-  def rescue_can_can(exception)
-    stanford_restricted, _rule = current_media.stanford_only_rights
-    return super unless stanford_restricted && !current_user.webauth_user?
-    redirect_to auth_media_download_url(allowed_params.symbolize_keys)
-  end
-
   def hash_for_auth_check
-    if can? :read, current_media
+    if can? :stream, current_media
       { status: :success, token: encrypted_token }
     else
       MediaAuthenticationJSON.new(

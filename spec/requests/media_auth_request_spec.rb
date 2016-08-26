@@ -2,17 +2,11 @@ require 'rails_helper'
 
 RSpec.describe "Authentication for Media requests", type: :request do
 
-  let(:allowed_loc) { 'ip.address1' }
   let(:user_no_loc_no_webauth) { User.new }
-  let(:user_no_loc_webauth) { User.new(webauth_user: true) }
-  let(:user_loc_no_webauth) { User.new(ip_address: allowed_loc) }
-  let(:user_webauth_no_stanford_no_loc) { User.new(webauth_user: true) }
   let(:user_webauth_stanford_no_loc) { User.new(webauth_user: true, ldap_groups: %w(stanford:stanford)) }
-  let(:user_webauth_stanford_loc) { User.new(webauth_user: true, ldap_groups: %w(stanford:stanford), ip_address: allowed_loc) }
-  let(:user_webauth_no_stanford_loc) { User.new(webauth_user: true, ip_address: allowed_loc) }
   let(:druid) { 'bb582xs1304' }
 
-  context "#download" do
+  describe "#auth_check" do
     let(:filename) { 'file' }
     let(:format) { 'mp4' }
     let!(:sms_stanford_only) do
@@ -25,28 +19,6 @@ RSpec.describe "Authentication for Media requests", type: :request do
       allow(sms).to receive(:world_rights).and_return([false, ''])
       sms
     end
-    let!(:sms_stanford_only_no_download) do
-      sms = StacksMediaStream.new(id: druid, file_name: filename, format: format)
-      allow(sms).to receive(:stanford_only_rights).and_return([true, 'no-download'])
-      allow(sms).to receive(:restricted_by_location?).and_return(false)
-      allow(sms).to receive(:location_rights).and_return([false, ''])
-      allow(sms).to receive(:agent_rights).and_return([false, ''])
-      allow(sms).to receive(:world_unrestricted?).and_return(false)
-      allow(sms).to receive(:world_rights).and_return([false, ''])
-      sms
-    end
-    let!(:sms_location_only) do
-      sms = StacksMediaStream.new(id: druid, file_name: filename, format: format)
-      allow(sms).to receive(:restricted_by_location?).and_return(true)
-      allow(sms).to receive(:location_rights).and_return([true, ''])
-      sms
-    end
-    let!(:sms_location_only_no_download) do
-      sms = StacksMediaStream.new(id: druid, file_name: filename, format: format)
-      allow(sms).to receive(:restricted_by_location?).and_return(true)
-      allow(sms).to receive(:location_rights).and_return([true, 'no-download'])
-      sms
-    end
     let!(:sms_user_not_in_loc) do
       sms = StacksMediaStream.new(id: druid, file_name: filename, format: format)
       allow(sms).to receive(:restricted_by_location?).and_return(true)
@@ -56,128 +28,36 @@ RSpec.describe "Authentication for Media requests", type: :request do
       allow(sms).to receive(:world_rights).and_return([false, ''])
       sms
     end
-    let!(:sms_loc_and_stanford) do
-      sms = StacksMediaStream.new(id: druid, file_name: filename, format: format)
-      allow(sms).to receive(:stanford_only_rights).and_return([true, ''])
-      allow(sms).to receive(:restricted_by_location?).and_return(true)
-      allow(sms).to receive(:location_rights).and_return([true, ''])
-      sms
-    end
-    let!(:sms_user_not_in_loc_and_stanford) do
-      sms = StacksMediaStream.new(id: druid, file_name: filename, format: format)
-      allow(sms).to receive(:stanford_only_rights).and_return([true, ''])
-      allow(sms).to receive(:restricted_by_location?).and_return(true)
-      allow(sms).to receive(:location_rights).and_return([false, ''])
-      allow(sms).to receive(:agent_rights).and_return([false, ''])
-      allow(sms).to receive(:world_rights).and_return([false, ''])
-      sms
-    end
-    # NOTE:  stanford only + location rights tested under location context
-    context 'stanford only (no location qualifications)' do
-      context 'webauthed user' do
-        it 'allows when user webauthed and authorized' do
-          allow_any_instance_of(MediaController).to receive(:current_user).and_return(user_webauth_stanford_no_loc)
-          allow_any_instance_of(MediaController).to receive(:current_media).and_return(sms_stanford_only)
-          expect_any_instance_of(MediaController).to receive(:send_file).with(sms_stanford_only.path).and_call_original
-          get "/media/#{druid}/#{filename}.#{format}"
-          expect(response.content_type).to eq('video/mp4')
-        end
-        it 'blocks when user webauthed but NOT authorized' do
-          allow_any_instance_of(MediaController).to receive(:current_user).and_return(user_webauth_no_stanford_no_loc)
-          allow_any_instance_of(MediaController).to receive(:current_media).and_return(sms_stanford_only)
-          get "/media/#{druid}/#{filename}.#{format}"
-          expect(response).to have_http_status(403)
-        end
-      end
-      it "prompts for webauth when user not webauthed and not in loc" do
-        allow_any_instance_of(MediaController).to receive(:current_user).and_return(user_no_loc_no_webauth)
-        allow_any_instance_of(MediaController).to receive(:current_media).and_return(sms_stanford_only)
-        get "/media/#{druid}/#{filename}.#{format}"
-        expect(response).to redirect_to(auth_media_download_url(id: druid, file_name: filename, format: format))
-      end
-      it "prompts for webauth when user not webauthed and in loc" do
-        allow_any_instance_of(MediaController).to receive(:current_user).and_return(user_loc_no_webauth)
-        allow_any_instance_of(MediaController).to receive(:current_media).and_return(sms_stanford_only)
-        get "/media/#{druid}/#{filename}.#{format}"
-        expect(response).to redirect_to(auth_media_download_url(id: druid, file_name: filename, format: format))
-      end
-      it 'blocks when stanford webauth and rule is no-download' do
+
+    context 'when the user can read/stream the file' do
+      it 'gets the success JSON and a token' do
         allow_any_instance_of(MediaController).to receive(:current_user).and_return(user_webauth_stanford_no_loc)
-        allow_any_instance_of(MediaController).to receive(:current_media).and_return(sms_stanford_only_no_download)
-        get "/media/#{druid}/#{filename}.#{format}"
-        expect(response).to have_http_status(403)
+        allow_any_instance_of(MediaController).to receive(:current_media).and_return(sms_stanford_only)
+        get "/media/#{druid}/#{filename}.#{format}/auth_check.js"
+        body = JSON.parse(response.body)
+        expect(body['status']).to eq 'success'
+        expect(body['token']).to match(/^[a-zA-Z0-9]+/)
       end
     end
-    context 'location' do
-      context 'not stanford qualified in any way' do
-        it 'allows when user in location' do
-          allow_any_instance_of(MediaController).to receive(:current_user).and_return(user_loc_no_webauth)
-          allow_any_instance_of(MediaController).to receive(:current_media).and_return(sms_location_only)
-          expect_any_instance_of(MediaController).to receive(:send_file).with(sms_location_only.path).and_call_original
-          get "/media/#{druid}/#{filename}.#{format}"
-          expect(response.content_type).to eq('video/mp4')
-        end
-        it 'blocks when user not in location' do
-          allow_any_instance_of(MediaController).to receive(:current_user).and_return(user_no_loc_webauth)
-          allow_any_instance_of(MediaController).to receive(:current_media).and_return(sms_user_not_in_loc)
-          get "/media/#{druid}/#{filename}.#{format}"
-          expect(response).to have_http_status(403)
-        end
-        it 'blocks when user in location and rule is no-download' do
-          allow_any_instance_of(MediaController).to receive(:current_user).and_return(user_loc_no_webauth)
-          allow_any_instance_of(MediaController).to receive(:current_media).and_return(sms_location_only_no_download)
-          get "/media/#{druid}/#{filename}.#{format}"
-          expect(response).to have_http_status(403)
+
+    context 'when the user cannot read/stream the file' do
+      context 'stanford restricted' do
+        it 'indicates that the object is restricted in the json' do
+          allow_any_instance_of(MediaController).to receive(:current_user).and_return(user_no_loc_no_webauth)
+          allow_any_instance_of(MediaController).to receive(:current_media).and_return(sms_stanford_only)
+          get "/media/#{druid}/#{filename}.#{format}/auth_check.js"
+          body = JSON.parse(response.body)
+          expect(body['status']).to eq(['stanford_restricted'])
         end
       end
-      context 'OR stanford' do
-        context 'user webauthed' do
-          context 'authorized' do
-            it 'allows when user in location' do
-              allow_any_instance_of(MediaController).to receive(:current_user).and_return(user_webauth_stanford_loc)
-              allow_any_instance_of(MediaController).to receive(:current_media).and_return(sms_loc_and_stanford)
-              expect_any_instance_of(MediaController).to receive(:send_file).with(sms_loc_and_stanford.path).and_call_original
-              get "/media/#{druid}/#{filename}.#{format}"
-              expect(response.content_type).to eq('video/mp4')
-            end
-            it 'allows when user not in location' do
-              allow_any_instance_of(MediaController).to receive(:current_user).and_return(user_webauth_stanford_no_loc)
-              allow_any_instance_of(MediaController).to receive(:current_media).and_return(sms_user_not_in_loc_and_stanford)
-              expect_any_instance_of(MediaController).to receive(:send_file).with(sms_user_not_in_loc_and_stanford.path).and_call_original
-              get "/media/#{druid}/#{filename}.#{format}"
-              expect(response.content_type).to eq('video/mp4')
-            end
-          end
-          context 'NOT authorized' do
-            it 'allows when in location' do
-              allow_any_instance_of(MediaController).to receive(:current_user).and_return(user_webauth_no_stanford_loc)
-              allow_any_instance_of(MediaController).to receive(:current_media).and_return(sms_loc_and_stanford)
-              expect_any_instance_of(MediaController).to receive(:send_file).with(sms_loc_and_stanford.path).and_call_original
-              get "/media/#{druid}/#{filename}.#{format}"
-              expect(response.content_type).to eq('video/mp4')
-            end
-            it 'blocks when not in location' do
-              allow_any_instance_of(MediaController).to receive(:current_user).and_return(user_webauth_no_stanford_no_loc)
-              allow_any_instance_of(MediaController).to receive(:current_media).and_return(sms_user_not_in_loc_and_stanford)
-              get "/media/#{druid}/#{filename}.#{format}"
-              expect(response).to have_http_status(403)
-            end
-          end
-        end
-        context 'user NOT webauthed' do
-          it 'allows when in location (no webauth prompt)' do
-            allow_any_instance_of(MediaController).to receive(:current_user).and_return(user_loc_no_webauth)
-            allow_any_instance_of(MediaController).to receive(:current_media).and_return(sms_loc_and_stanford)
-            expect_any_instance_of(MediaController).to receive(:send_file).with(sms_loc_and_stanford.path).and_call_original
-            get "/media/#{druid}/#{filename}.#{format}"
-            expect(response.content_type).to eq('video/mp4')
-          end
-          it 'prompts for webauth when not in location' do
-            allow_any_instance_of(MediaController).to receive(:current_user).and_return(user_no_loc_no_webauth)
-            allow_any_instance_of(MediaController).to receive(:current_media).and_return(sms_user_not_in_loc_and_stanford)
-            get "/media/#{druid}/#{filename}.#{format}"
-            expect(response).to redirect_to(auth_media_download_url(id: druid, file_name: filename, format: format))
-          end
+
+      context 'location restricted' do
+        it 'incicates that the object is location restricted in the json' do
+          allow_any_instance_of(MediaController).to receive(:current_user).and_return(user_no_loc_no_webauth)
+          allow_any_instance_of(MediaController).to receive(:current_media).and_return(sms_user_not_in_loc)
+          get "/media/#{druid}/#{filename}.#{format}/auth_check.js"
+          body = JSON.parse(response.body)
+          expect(body['status']).to eq(['location_restricted'])
         end
       end
     end

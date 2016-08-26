@@ -4,41 +4,6 @@ describe MediaController do
   let(:video) { StacksMediaStream.new(id: 'bb582xs1304', file_name: 'bb582xs1304_sl', format: 'mp4') }
   before { stub_rights_xml(world_readable_rights_xml) }
 
-  describe '#download' do
-    subject { get :download, id: 'bb582xs1304', file_name: 'bb582xs1304_sl', format: 'mp4' }
-
-    it 'sends the video url to the user' do
-      expect(controller).to receive(:send_file).with(video.path).and_call_original
-      subject
-    end
-
-    it 'loads the video' do
-      subject
-      expect(assigns(:media)).to be_a StacksMediaStream
-    end
-
-    it 'sets the content type' do
-      subject
-      expect(controller.content_type).to eq 'video/mp4'
-    end
-
-    context 'additional params' do
-      subject { get :download, id: 'xf680rd3068', file_name: 'xf680rd3068_1', format: 'mp4', ignored: 'a', host: 'b' }
-      it 'ignored when instantiating StacksMediaStream' do
-        subject
-        expect { assigns(:media) }.not_to raise_exception
-        expect(assigns(:media)).to be_a StacksMediaStream
-      end
-    end
-
-    context 'for a missing file' do
-      it 'returns a 404 Not Found' do
-        allow(controller).to receive(:send_file).with(video.path).and_raise ActionController::MissingFile
-        expect(subject.status).to eq 404
-      end
-    end
-  end
-
   describe '#verify_token' do
     let(:id) { 'ab123cd4567' }
     let(:file_name) { 'interesting_video.mp4' }

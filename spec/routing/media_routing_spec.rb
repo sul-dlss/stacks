@@ -1,65 +1,53 @@
 require 'rails_helper'
 
 describe 'Media routes' do
-  it 'download' do
-    expect(get: '/media/oo000oo0000/aa666aa1234.mp4').to route_to(
-      'media#download', id: 'oo000oo0000', file_name: 'aa666aa1234', format: 'mp4')
-  end
-
-  context '#download: filename with' do
+  context '#verify_token: filename with' do
     it 'chars not requiring URI escaping' do
-      filename = "(no_escape_needed):;=&$*-_+!,~'"
-      expect(get: "/media/oo000oo0000/#{filename}.mp4").to route_to(
-        'media#download', id: 'oo000oo0000', file_name: filename, format: 'mp4')
+      filename = "(no_escape_needed):;=&$*-_+!,~'.mp4"
+      expect(get: "/media/oo000oo0000/#{filename}/verify_token").to route_to(
+        'media#verify_token', id: 'oo000oo0000', file_name: filename)
     end
 
     it 'some chars requiring URI escaping' do
-      filename = 'escape_needed {} @#^ %|"`'
-      expect(get: "/media/oo000oo0000/#{URI.escape(filename)}.mp4").to route_to(
-        'media#download', id: 'oo000oo0000', file_name: filename, format: 'mp4')
+      filename = 'escape_needed {} @#^ %|"`.mp4'
+      expect(get: "/media/oo000oo0000/#{URI.escape(filename)}/verify_token").to route_to(
+        'media#verify_token', id: 'oo000oo0000', file_name: filename)
     end
 
     it 'multiple dots - all but last must be url escaped' do
-      filename = 'foo.bar.foo.bar'
-      escaped_filename = 'foo%2Ebar%2Efoo%2Ebar' # URI.escape doesn't do periods
-      expect(get: "/media/oo000oo0000/#{escaped_filename}.mp4").to route_to(
-        'media#download', id: 'oo000oo0000', file_name: filename, format: 'mp4')
+      filename = 'foo.bar.foo.bar.mp4'
+      escaped_filename = 'foo%2Ebar%2Efoo%2Ebar.mp4' # URI.escape doesn't do periods
+      expect(get: "/media/oo000oo0000/#{escaped_filename}/verify_token").to route_to(
+        'media#verify_token', id: 'oo000oo0000', file_name: filename)
     end
 
     it 'square brackets must be url escaped' do
-      filename = 'foo[brackets]bar'
-      escaped_filename = 'foo%5Bbrackets%5Dbar' # URI.escape doesn't do square brackets
-      expect(get: "/media/oo000oo0000/#{escaped_filename}.mp4").to route_to(
-        'media#download', id: 'oo000oo0000', file_name: filename, format: 'mp4')
+      filename = 'foo[brackets]bar.mp4'
+      escaped_filename = 'foo%5Bbrackets%5Dbar.mp4' # URI.escape doesn't do square brackets
+      expect(get: "/media/oo000oo0000/#{escaped_filename}/verify_token").to route_to(
+        'media#verify_token', id: 'oo000oo0000', file_name: filename)
     end
 
     it 'question mark must be url escaped' do
-      filename = 'foo?'
-      escaped_filename = 'foo%3F' # URI.escape doesn't do question mark
-      expect(get: "/media/oo000oo0000/#{escaped_filename}.mp4").to route_to(
-        'media#download', id: 'oo000oo0000', file_name: filename, format: 'mp4')
+      filename = 'foo?.mp4'
+      escaped_filename = 'foo%3F.mp4' # URI.escape doesn't do question mark
+      expect(get: "/media/oo000oo0000/#{escaped_filename}/verify_token").to route_to(
+        'media#verify_token', id: 'oo000oo0000', file_name: filename)
     end
 
     it 'ü must be url escaped' do
       skip('problem writing test:  ü decodes to \xC3\xBC')
-      filename = "fü"
+      filename = "fü.mp4"
       escaped_filename = URI.escape(filename) # becomes %C3%BC
-      expect(get: "/media/oo000oo0000/#{escaped_filename}.mp4").to route_to(
-        'media#download', id: 'oo000oo0000', file_name: filename, format: 'mp4')
+      expect(get: "/media/oo000oo0000/#{escaped_filename}/verify_token").to route_to(
+        'media#verify_token', id: 'oo000oo0000', file_name: filename)
     end
 
     it '%20 in actual name (from ck155rf0207)' do
       skip('problem writing test:  %20 becomes space, over-aggressive param decoding?')
-      filename = 'ARSCJ%202008.foo.bar'
-      expect(get: "/media/oo000oo0000/#{URI.escape(filename)}.mp4").to route_to(
-        'media#download', id: 'oo000oo0000', file_name: filename, format: 'mp4')
-    end
-  end
-
-  describe 'authorization' do
-    it 'download routes to #login_media_download' do
-      expect(get: '/media/auth/id/filename.mp4').to route_to(
-        'webauth#login_media_download', id: 'id', file_name: 'filename', format: 'mp4')
+      filename = 'ARSCJ%202008.foo.bar.mp4'
+      expect(get: "/media/oo000oo0000/#{URI.escape(filename)}/verify_token").to route_to(
+        'media#verify_token', id: 'oo000oo0000', file_name: filename)
     end
   end
 

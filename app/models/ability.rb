@@ -46,22 +46,21 @@ class Ability
       #   (all other rights include when matching conditions)
       cannot :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
         user_in_location, rule = f.location_rights(user.location)
-
         # location OR stanford, not location AND stanford
         f.restricted_by_location? && (!user_in_location || !rule.blank?)
       end
     end
 
-    # media download rights exclude when rule is no-download
+    # download rights exclude when rule is no-download
     # stanford restricted, read, but no download
-    cannot :download, StacksMediaStream do |f|
+    cannot :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
       stanford_only_rights, rule = f.stanford_only_rights
       stanford_only_rights && rule == 'no-download'
     end
 
-    # media download rights exclude when rule is no-download
+    # download rights exclude when rule is no-download
     # world restricted, read, but no download
-    cannot :download, StacksMediaStream do |f|
+    cannot :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
       world_rights_defined, rule = f.world_rights
       world_rights_defined && rule == 'no-download'
     end
@@ -90,19 +89,28 @@ class Ability
       can? :download, f
     end
 
+    # Alias 'stream' to 'read' for StacksMediaStream so
+    # we can set streaming specific authorization rules
+    can :stream, StacksMediaStream do |f|
+      can? :read, f
+    end
+
+    # To enable streaming of non-downloadable content we can
+    # override the World, Location, and Stanford rights for
+    # streaming regarldess of the rule applied in rights
     if Settings.features.location_auth
-      can :read, StacksMediaStream do |f|
+      can :stream, StacksMediaStream do |f|
         user_in_location, _rule = f.location_rights(user.location)
         f.restricted_by_location? && user_in_location
       end
     end
 
-    can :read, StacksMediaStream do |f|
+    can :stream, StacksMediaStream do |f|
       stanford_only_rights, _rule = f.stanford_only_rights
       stanford_only_rights && user.stanford?
     end
 
-    can :read, StacksMediaStream do |f|
+    can :stream, StacksMediaStream do |f|
       world_rights_defined, _rule = f.world_rights
       world_rights_defined
     end
