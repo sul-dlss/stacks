@@ -22,9 +22,9 @@ class MediaController < ApplicationController
 
   # jsonp response
   def auth_check
-    respond_to do |format|
-      format.js { render json: hash_for_auth_check, callback: allowed_params[:callback] }
-    end
+    # IE 11 and Edge on Windows 10 doesn't request the correct format. So just hardcode
+    # JSON as the return format since that's what we always do.
+    render json: hash_for_auth_check, callback: allowed_params[:callback]
   end
 
   private
