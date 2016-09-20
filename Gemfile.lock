@@ -169,6 +169,7 @@ GEM
     nokogiri (1.6.8)
       mini_portile2 (~> 2.1.0)
       pkg-config (~> 1.1.7)
+    okcomputer (1.11.1)
     parser (2.3.1.2)
       ast (~> 2.2)
     pkg-config (1.1.7)
@@ -331,6 +332,7 @@ DEPENDENCIES
   is_it_working
   jbuilder (~> 2.0)
   jquery-rails
+  okcomputer
   poltergeist
   pry-byebug
   rails (= 4.2.7.1)
