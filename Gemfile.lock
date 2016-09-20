@@ -138,7 +138,7 @@ GEM
     globalid (0.3.7)
       activesupport (>= 4.1.0)
     hashie (3.4.4)
-    honeybadger (2.6.0)
+    honeybadger (2.6.1)
     hurley (0.2)
     i18n (0.7.0)
     is_it_working (1.1.0)
