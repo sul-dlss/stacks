@@ -27,12 +27,7 @@ end
 OkComputer::Registry.register 'ruby_version', OkComputer::RubyVersionCheck.new
 # TODO: add app version check when okcomputer works with cap 3 (see http://github.com/sportngin/okcomputer#112)
 
-# Check the memcache servers used by Rails.cache
-if Rails.cache.respond_to? :stats
-  OkComputer::Registry.register 'rails_cache', OkComputer::CacheCheck.new
-else
-  OkComputer::Registry.register 'rails_cache', OkComputer::GenericCacheCheck.new
-end
+OkComputer::Registry.register 'rails_cache', OkComputer::GenericCacheCheck.new
 
 OkComputer::Registry.register 'stacks_mounted_dir',
   DirectoryCheck.new(Settings.stacks.storage_root, read: true, write: true)
