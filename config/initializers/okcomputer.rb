@@ -34,9 +34,8 @@ else
   OkComputer::Registry.register 'rails_cache', OkComputer::GenericCacheCheck.new
 end
 
-# checks for the first part of a druid tree on the stacks mount
 OkComputer::Registry.register 'stacks_mounted_dir',
-  DirectoryCheck.new(File.join(Settings.stacks.storage_root, 'bb'), read: true, write: true)
+  DirectoryCheck.new(Settings.stacks.storage_root, read: true, write: true)
 
 OkComputer::Registry.register 'purl_url', OkComputer::HttpCheck.new(Settings.purl.url)
 
