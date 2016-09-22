@@ -24,6 +24,7 @@ require 'capistrano/deploy'
 require 'capistrano/rails'
 require 'capistrano/passenger'
 require 'capistrano/honeybadger'
+require 'capistrano/shared_configs'
 require 'dlss/capistrano'
 
 # Loads custom tasks from `lib/capistrano/tasks' if you have any defined.

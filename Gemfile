@@ -74,10 +74,10 @@ end
 # Use Capistrano for deployment
 group :deployment do
   gem 'capistrano', '~> 3.0'
-  gem 'capistrano-rvm'
   gem 'capistrano-bundler'
   gem 'capistrano-rails'
   gem 'capistrano-passenger'
+  gem 'capistrano-shared_configs'
   gem 'dlss-capistrano'
 end
 
