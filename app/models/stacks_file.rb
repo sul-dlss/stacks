@@ -15,12 +15,6 @@ class StacksFile
     path && File.exist?(path)
   end
 
-  def valid?
-    # FIXME: image_exist? is defined in app/models/concerns/djatoka_adapter.rb,
-    #  which is included in StacksImage, but is probably undefined here
-    image_exist?
-  end
-
   def mtime
     @mtime ||= File.mtime(path) if file_exist?
   end
