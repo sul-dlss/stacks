@@ -139,7 +139,6 @@ GEM
     honeybadger (2.6.1)
     hurley (0.2)
     i18n (0.7.0)
-    is_it_working (1.1.0)
     jbuilder (2.6.0)
       activesupport (>= 3.0.0, < 5.1)
       multi_json (~> 1.2)
@@ -327,7 +326,6 @@ DEPENDENCIES
   factory_girl_rails
   honeybadger
   hurley
-  is_it_working
   jbuilder (~> 2.0)
   jquery-rails
   okcomputer

@@ -86,8 +86,6 @@ gem 'honeybadger'
 
 # Use okcomputer to monitor the application
 gem 'okcomputer'
-# TODO: remove is_it_working after load balancer and nagios are switched to okcomputer mount point
-gem 'is_it_working' # for application monitoring
 
 gem 'bootstrap-sass'
 gem 'sul_styles'
