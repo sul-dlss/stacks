@@ -4,7 +4,7 @@ class FileController < ApplicationController
   before_action :load_file
 
   rescue_from ActionController::MissingFile do
-    render text: 'File not found', status: :not_found
+    render plain: 'File not found', status: :not_found
   end
 
   def show
@@ -30,7 +30,7 @@ class FileController < ApplicationController
   def rescue_can_can(exception)
     stanford_restricted, _rule = current_file.stanford_only_rights
     if stanford_restricted && !current_user.webauth_user?
-      redirect_to auth_file_url(allowed_params.symbolize_keys)
+      redirect_to auth_file_url(allowed_params.to_h.symbolize_keys)
     else
       super
     end

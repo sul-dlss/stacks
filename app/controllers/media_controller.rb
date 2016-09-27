@@ -6,7 +6,7 @@ class MediaController < ApplicationController
   before_action :set_cors_headers, only: [:auth_check]
 
   rescue_from ActionController::MissingFile do
-    render text: 'File not found', status: :not_found
+    render plain: 'File not found', status: :not_found
   end
 
   def verify_token
@@ -14,9 +14,9 @@ class MediaController < ApplicationController
     # as we care about the (user) IP address that made a request to the media service with the
     # stacks_token, not the IP address of the service checking the stacks_token.
     if token_valid? allowed_params[:stacks_token], id, file_name, allowed_params[:user_ip]
-      render text: 'valid token', status: :ok
+      render plain: 'valid token', status: :ok
     else
-      render text: 'invalid token', status: :forbidden
+      render plain: 'invalid token', status: :forbidden
     end
   end
 

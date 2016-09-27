@@ -18,10 +18,10 @@ class WebauthController < ApplicationController
   # TODO: can't think of a reasonable way to do strong params here
 
   def login_file
-    redirect_to file_path(params.symbolize_keys)
+    redirect_to file_path(params.to_unsafe_h.symbolize_keys)
   end
 
   def login_iiif
-    redirect_to iiif_path(params.symbolize_keys)
+    redirect_to iiif_path(params.to_unsafe_h.symbolize_keys)
   end
 end

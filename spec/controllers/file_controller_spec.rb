@@ -9,7 +9,7 @@ describe FileController do
   let(:file) { StacksFile.new(id: 'xf680rd3068', file_name: 'xf680rd3068_1.jp2') }
 
   describe '#show' do
-    subject { get :show, id: 'xf680rd3068', file_name: 'xf680rd3068_1.jp2' }
+    subject { get :show, params: { id: 'xf680rd3068', file_name: 'xf680rd3068_1.jp2' } }
 
     before do
       allow(file).to receive_messages(exist?: true, mtime: Time.zone.now, path: File.join(Rails.root, 'Gemfile'))
@@ -21,7 +21,10 @@ describe FileController do
     end
 
     context 'additional params' do
-      subject { get :show, id: 'xf680rd3068', file_name: 'xf680rd3068_1.jp2', ignored: 'ignored', host: 'host' }
+      subject do
+        get :show, params: { id: 'xf680rd3068', file_name: 'xf680rd3068_1.jp2', ignored: 'ignored', host: 'host' }
+      end
+
       it 'ignored when instantiating StacksFile' do
         expect { assigns(:file) }.not_to raise_exception
         expect(assigns(:file)).to be_a StacksFile
