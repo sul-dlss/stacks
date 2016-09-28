@@ -35,5 +35,5 @@ user:
 cors:
   allow_origin_url: 'https://embed.stanford.edu'
 features:
-  streaming_media: false
-  location_auth: false
+  streaming_media: true
+  location_auth: true
