@@ -32,7 +32,7 @@ OkComputer::Registry.register 'rails_cache', OkComputer::GenericCacheCheck.new
 OkComputer::Registry.register 'stacks_mounted_dir',
   DirectoryCheck.new(Settings.stacks.storage_root, read: true, write: true)
 
-OkComputer::Registry.register 'purl_url', OkComputer::HttpCheck.new(Settings.purl.url)
+OkComputer::Registry.register 'purl_url', OkComputer::HttpCheck.new(Settings.purl.url + "status/default.json")
 
 # ------------------------------------------------------------------------------
 
