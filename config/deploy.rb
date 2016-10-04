@@ -2,7 +2,7 @@
 lock '3.6.0'
 
 set :application, 'digital_stacks'
-set :repo_url, 'https://github.com/sul-dlss/digital_stacks_rails.git'
+set :repo_url, 'https://github.com/sul-dlss/stacks.git'
 
 # Default branch is :master
 ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
