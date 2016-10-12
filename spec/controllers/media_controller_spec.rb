@@ -63,7 +63,7 @@ describe MediaController do
 
       it 'rejects a token that is too old' do
         expired_timestamp = (StacksMediaToken.max_token_age + 2.seconds).ago
-        expect(token).to receive(:timestamp).and_return(expired_timestamp)
+        allow_any_instance_of(StacksMediaToken).to receive(:timestamp).and_return(expired_timestamp)
         get :verify_token, params: valid_token
         expect(response.body).to eq 'invalid token'
         expect(response.status).to eq 403
