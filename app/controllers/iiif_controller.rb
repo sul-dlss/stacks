@@ -5,7 +5,7 @@ class IiifController < ApplicationController
   before_action :add_iiif_profile_header
 
   rescue_from ActionController::MissingFile do
-    render text: 'File not found', status: :not_found
+    render plain: 'File not found', status: :not_found
   end
 
   before_action only: :show do
@@ -62,7 +62,7 @@ class IiifController < ApplicationController
   def rescue_can_can(exception)
     stanford_restricted, _rule = current_image.stanford_only_rights
     if stanford_restricted && !current_user.webauth_user?
-      redirect_to auth_iiif_url(allowed_params.symbolize_keys.tap { |x| x[:identifier] = escaped_identifier })
+      redirect_to auth_iiif_url(allowed_params.to_h.symbolize_keys.tap { |x| x[:identifier] = escaped_identifier })
     else
       super
     end

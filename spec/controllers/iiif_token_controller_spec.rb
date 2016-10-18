@@ -14,7 +14,7 @@ describe IiifTokenController do
 
     context 'HTML format' do
       subject do
-        get :create, format: :html
+        get :create, params: { format: :html }
       end
 
       it 'redirects to JSON' do

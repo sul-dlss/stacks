@@ -41,7 +41,7 @@ describe IiifController do
     end
 
     subject do
-      get :show, iiif_params
+      get :show, params: iiif_params
     end
 
     it 'loads the image' do
@@ -59,7 +59,7 @@ describe IiifController do
     end
 
     context 'additional params' do
-      subject { get :show, iiif_params.merge(ignored: 'ignored', host: 'host') }
+      subject { get :show, params: iiif_params.merge(ignored: 'ignored', host: 'host') }
       it 'ignored when instantiating StacksImage' do
         subject
         expect { assigns(:image) }.not_to raise_exception
@@ -73,7 +73,7 @@ describe IiifController do
     end
 
     context 'with the download flag set' do
-      subject { get :show, iiif_params.merge(download: true) }
+      subject { get :show, params: iiif_params.merge(download: true) }
 
       it 'sets the content-disposition header to attachment' do
         expect(subject.headers['Content-Disposition']).to start_with 'attachment'
@@ -86,7 +86,7 @@ describe IiifController do
   end
 
   describe '#metadata' do
-    subject { get :metadata, identifier: 'nr349ct7889%2Fnr349ct7889_00_0001' }
+    subject { get :metadata, params: { identifier: 'nr349ct7889%2Fnr349ct7889_00_0001' } }
 
     it 'provides iiif info.json responses' do
       subject

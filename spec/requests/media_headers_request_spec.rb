@@ -20,14 +20,14 @@ RSpec.describe "CORS headers for Media requests", type: :request do
     let(:encrypted_token) { token.to_encrypted_string }
 
     it 'sets the Access-Control-Allow-Origin header correctly' do
-      get "/media/#{druid}/#{filename}/verify_token", stacks_token: encrypted_token, user_ip: ip_address
+      get "/media/#{druid}/#{filename}/verify_token", params: { stacks_token: encrypted_token, user_ip: ip_address }
       expect(verify_origin_header(response.headers['Access-Control-Allow-Origin'])).to be_truthy
     end
   end
 
   context "#auth_check" do
     it 'sets the correct CORS headers' do
-      get "/media/#{druid}/#{filename}/auth_check", format: :js
+      get "/media/#{druid}/#{filename}/auth_check", params: { format: :js }
       expect(verify_cors_headers(response.headers['Access-Control-Allow-Origin'],
                                  response.headers['Access-Control-Allow-Credentials'])).to be_truthy
     end
