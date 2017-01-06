@@ -108,17 +108,19 @@ class IiifController < ApplicationController
 
     info['sizes'] = [{ width: 400, height: 400 }] unless current_image.maybe_downloadable?
 
-    info['service'] = {
-      '@id' => iiif_auth_api_url,
-      'profile' => 'http://iiif.io/api/auth/0/login',
-      'label' => 'Stanford-affiliated? Login to view',
-      'service' => [
-        {
-          '@id' => iiif_token_api_url,
-          'profile' => 'http://iiif.io/api/auth/0/token'
-        }
-      ]
-    } unless anonymous_ability.can? :download, current_image
+    unless anonymous_ability.can? :download, current_image
+      info['service'] = {
+        '@id' => iiif_auth_api_url,
+        'profile' => 'http://iiif.io/api/auth/0/login',
+        'label' => 'Stanford-affiliated? Login to view',
+        'service' => [
+          {
+            '@id' => iiif_token_api_url,
+            'profile' => 'http://iiif.io/api/auth/0/token'
+          }
+        ]
+      }
+    end
 
     info
   end
