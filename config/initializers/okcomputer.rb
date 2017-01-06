@@ -7,21 +7,6 @@ OkComputer.mount_at = 'status'
 OkComputer.check_in_parallel = true
 OkComputer::Registry.deregister "database" # don't check (unused) ActiveRecord database conn
 
-# TODO: remove DirectoryCheck here after there is comparable functionality in okcomputer
-class DirectoryCheck < OkComputer::Check
-  attr_reader :path, :options
-  def initialize(path, options = {})
-    @path = Pathname(path.to_s)
-    @options = options
-  end
-
-  def check
-    mark_message "Directory check for #{path}: #{options.inspect}"
-    mark_failure if options[:read] && !path.readable?
-    mark_failure if options[:write] && !path.writable?
-  end
-end
-
 # REQUIRED checks, required to pass for /status/all
 #  individual checks also avail at /status/<name-of-check>
 OkComputer::Registry.register 'ruby_version', OkComputer::RubyVersionCheck.new
@@ -30,7 +15,7 @@ OkComputer::Registry.register 'ruby_version', OkComputer::RubyVersionCheck.new
 OkComputer::Registry.register 'rails_cache', OkComputer::GenericCacheCheck.new
 
 OkComputer::Registry.register 'stacks_mounted_dir',
-  DirectoryCheck.new(Settings.stacks.storage_root, read: true, write: true)
+  OkComputer::DirectoryCheck.new(Settings.stacks.storage_root)
 
 OkComputer::Registry.register 'purl_url', OkComputer::HttpCheck.new(Settings.purl.url + "status/default.json")
 
