@@ -1,15 +1,11 @@
 ##
 # Djatoka-backed implementation of StacksImage delivery
 module DjatokaAdapter
+  # @return [IO]
   def response
-    return to_enum(:response) unless block_given?
-
     benchmark "Fetch #{url}" do
-      client.get(url) do |req|
-        req.on_body do |_, chunk|
-          yield chunk
-        end
-      end
+      # HTTP::Response#body does response streaming
+      HTTP.get(url).body
     end
   end
 
@@ -64,9 +60,5 @@ module DjatokaAdapter
 
   def resolver
     @resolver ||= Djatoka::Resolver.new(Settings.stacks.djatoka_url)
-  end
-
-  def client
-    @client ||= Hurley::Client.new
   end
 end

@@ -83,7 +83,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
     end
 
     before(:each) do
-      allow_any_instance_of(Hurley::Client).to receive(:get)
+      allow(HTTP).to receive(:get).and_return(instance_double(HTTP::Response, body: StringIO.new))
     end
 
     # NOTE:  stanford only + location rights tested under location context

@@ -5,8 +5,8 @@
 # are not stubbing a 3rd party class.
 module StubRightsXML
   def stub_rights_xml(xml)
-    allow(Hurley).to receive(:get).and_return(
-      double('HurleyResponse', body: xml)
+    allow(HTTP).to receive(:get).and_return(
+      instance_double(HTTP::Response, body: xml)
     )
   end
 end

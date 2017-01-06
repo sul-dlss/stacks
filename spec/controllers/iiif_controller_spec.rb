@@ -21,6 +21,7 @@ describe IiifController do
   before do
     allow_any_instance_of(StacksImage).to receive(:valid?).and_return(true)
     allow_any_instance_of(StacksImage).to receive(:exist?).and_return(true)
+    allow_any_instance_of(StacksImage).to receive(:response).and_return(StringIO.new)
     allow_any_instance_of(DjatokaMetadata).to receive(:as_json).and_return(
       '@context' => [],
       'tiles' => [{ 'width' => 1024, 'height' => 1024 }]

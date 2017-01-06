@@ -54,7 +54,7 @@ module StacksRights
   def rights_xml
     Rails.cache.fetch("stacks_file/#{druid}-#{etag}/rights_xml", expires_in: 10.minutes) do
       benchmark "Fetching public xml for #{druid}" do
-        Hurley.get(Settings.purl.url + "/#{druid}.xml").body
+        Faraday.get(Settings.purl.url + "/#{druid}.xml").body
       end
     end
   end
