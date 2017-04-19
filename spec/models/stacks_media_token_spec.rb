@@ -37,6 +37,10 @@ describe StacksMediaToken do
       expect(subject.send(:token_valid?, id, file_name, '192.168.1.101')).to eq false
     end
 
+    it 'returns true if the last IP address in a comma delimited string matches' do
+      expect(subject.send(:token_valid?, id, file_name, "192.168.1.101, #{user_ip}")).to eq true
+    end
+
     it 'returns false if the token is too old' do
       expired_timestamp = (StacksMediaToken.max_token_age + 2.seconds).ago
       allow(subject).to receive(:timestamp).and_return(expired_timestamp)

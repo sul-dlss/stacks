@@ -55,7 +55,7 @@ class StacksMediaToken
   def initialize(id, file_name, user_ip)
     @id = id
     @file_name = file_name
-    @user_ip = user_ip
+    @user_ip = last_ip_address(user_ip)
     @timestamp = Time.zone.now
     validate
   end
@@ -116,7 +116,11 @@ class StacksMediaToken
   # become stale, and should not be cached.
   def token_valid?(expected_id, expected_file_name, expected_user_ip)
     # max_token_age returns a duration.  calling `.ago` on it returns a date which we can check against for expiry.
-    id == expected_id && file_name == expected_file_name && user_ip == expected_user_ip &&
+    id == expected_id && file_name == expected_file_name && user_ip == last_ip_address(expected_user_ip) &&
       (timestamp >= self.class.max_token_age.ago)
+  end
+
+  def last_ip_address(ip)
+    Array.wrap(ip.split(',')).map(&:strip).last
   end
 end
