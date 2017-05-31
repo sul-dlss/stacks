@@ -103,7 +103,9 @@ class StacksMediaToken
   private_class_method :create_from_encrypted_string
 
   def self.encryptor
-    ActiveSupport::MessageEncryptor.new(Rails.application.secrets.secret_key_base)
+    salt = 'media'
+    key = ActiveSupport::KeyGenerator.new(Rails.application.secrets.secret_key_base).generate_key(salt, 32)
+    ActiveSupport::MessageEncryptor.new(key)
   end
   private_class_method :encryptor
 
