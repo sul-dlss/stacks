@@ -4,8 +4,13 @@ class ApplicationController < ActionController::Base
   include ActionController::HttpAuthentication::Bearer
 
   rescue_from CanCan::AccessDenied, with: :rescue_can_can
+  before_action :set_origin_header
 
   private
+
+  def set_origin_header
+    response.headers['Access-Control-Allow-Origin'] = '*'
+  end
 
   def current_user
     @current_user ||= if has_basic_credentials?(request)
