@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
 
   rescue_from CanCan::AccessDenied, with: :rescue_can_can
 
-  protected
+  private
 
   def current_user
     @current_user ||= if has_basic_credentials?(request)
