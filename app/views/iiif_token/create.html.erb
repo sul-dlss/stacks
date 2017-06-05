@@ -1,0 +1,10 @@
+<html>
+<body>
+<script>
+    window.parent.postMessage(
+      <%= @message.to_json.html_safe %>,
+      <%= @origin.to_json.html_safe %>
+    );
+</script>
+</body>
+</html>
