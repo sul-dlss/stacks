@@ -2,7 +2,6 @@
 # API for delivering streaming media via stacks
 class MediaController < ApplicationController
   before_action :load_media
-  before_action :set_origin_header, except: [:auth_check]
   before_action :set_cors_headers, only: [:auth_check]
 
   rescue_from ActionController::MissingFile do
@@ -29,12 +28,11 @@ class MediaController < ApplicationController
 
   private
 
-  # We do not rely on the web server to set Access-Control-Allow-Origin for *any* /media request,
-  # so we set it manually ourselves.
-  def set_origin_header
-    response.headers['Access-Control-Allow-Origin'] = '*'
-  end
-
+  # In order for media authentication to work, the wowza server must have
+  # Access-Control-Allow-Credentials header set (which is set by default when CORS is enabled in wowza),
+  # which means that Access-Control-Allow-Origin cannot be set to * (wowza default) and instead
+  # needs to specify a host (e.g. the embed server of choice, presumably used in purl with
+  # particular stacks). This means that only the specified host will be granted credentialed requests.
   def set_cors_headers
     response.headers['Access-Control-Allow-Origin'] = Settings.cors.allow_origin_url
     response.headers['Access-Control-Allow-Credentials'] = 'true'
