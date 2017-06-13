@@ -95,6 +95,13 @@ describe IiifController do
       expect(controller.response_body.first).to match('@context')
     end
 
+    it 'asserts level1 IIIF compliance' do
+      subject
+      info = JSON.parse(controller.response_body.first)
+      expect(info['profile']).to eq 'http://iiif.io/api/image/2/level1'
+      expect(controller.headers['Link']).to eq '<http://iiif.io/api/image/2/level1.json>;rel="profile"'
+    end
+
     it 'includes a recommended tile size' do
       allow(controller).to receive(:can?).and_return(true)
       subject

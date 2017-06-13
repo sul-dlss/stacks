@@ -10,3 +10,4 @@ Mime::Type.register 'video/quicktime', :mov
 Mime::Type.register 'audio/x-mpeg-3', :mp3
 Mime::Type.register 'video/mp4', :mp4
 Mime::Type.register 'image/webp', :webp
+Mime::Type.register 'application/ld+json', :jsonld
