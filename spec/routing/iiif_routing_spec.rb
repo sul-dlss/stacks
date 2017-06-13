@@ -13,24 +13,24 @@ describe 'IIIF routes' do
     context '#show: identifier with' do
       it 'chars not requiring URI escaping' do
         identifier = "(no_escape_needed):;=&$*.-_+!,~'.ext"
-        expect(get: "/image/iiif/#{identifier}").to route_to('iiif#show', identifier: identifier)
+        expect(get: "/image/iiif/#{identifier}/info.json").to route_to('iiif#metadata', identifier: identifier)
       end
 
       it 'some chars requiring URI escaping' do
         identifier = 'escape_needed {} @#^ %|"`.ext'
-        expect(get: "/image/iiif/#{URI.escape(identifier)}").to route_to('iiif#show', identifier: identifier)
+        expect(get: "/image/iiif/#{URI.escape(identifier)}/info.json").to route_to('iiif#metadata', identifier: identifier)
       end
 
       it 'square brackets must be url escaped' do
         identifier = 'foo[brackets].bar.pdf'
         escaped_identifier = 'foo%5Bbrackets%5D.bar.pdf' # URI.escape doesn't do square brackets
-        expect(get: "/image/iiif/#{escaped_identifier}").to route_to('iiif#show', identifier: identifier)
+        expect(get: "/image/iiif/#{escaped_identifier}/info.json").to route_to('iiif#metadata', identifier: identifier)
       end
 
       it 'question mark must be url escaped' do
         identifier = 'foo?.pdf'
         escaped_identifier = 'foo%3F.pdf' # URI.escape doesn't do question mark
-        expect(get: "/image/iiif/#{escaped_identifier}").to route_to('iiif#show', identifier: identifier)
+        expect(get: "/image/iiif/#{escaped_identifier}/info.json").to route_to('iiif#metadata', identifier: identifier)
       end
 
       it 'ü must be url escaped' do
