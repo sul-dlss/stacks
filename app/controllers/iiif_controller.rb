@@ -35,9 +35,9 @@ class IiifController < ApplicationController
     expires_in 10.minutes, public: false
     return unless stale?(cache_headers)
     authorize! :read_metadata, current_image
-
-    self.content_type = 'application/json'
-    self.response_body = JSON.pretty_generate(image_info)
+    respond_to do |format|
+      format.any(:json, :jsonld) { render json: JSON.pretty_generate(image_info) }
+    end
   end
 
   def metadata_options
