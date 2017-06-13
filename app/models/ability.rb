@@ -91,6 +91,9 @@ class Ability
 
       val, _rule = f.agent_rights(user.id)
       next true if val && user.app_user?
+
+      val, _rule = f.location_rights(user.location)
+      next true if val
     end
   end
 end
