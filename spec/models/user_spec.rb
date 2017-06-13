@@ -315,7 +315,7 @@ describe User do
         it { is_expected.not_to be_able_to(:read, file) }
         it { is_expected.to be_able_to(:read, tile) }
         it { is_expected.not_to be_able_to(:read, image) }
-        it { is_expected.not_to be_able_to(:stream, media) }
+        it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.not_to be_able_to(:download, media) }
       end
     end
