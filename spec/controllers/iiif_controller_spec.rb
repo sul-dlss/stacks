@@ -139,18 +139,26 @@ describe IiifController do
       end
 
       context 'when the image is not downloadable' do
+        let(:auth_service) { image_info['service'] }
         it 'the tile height/width is 256' do
           expect(image_info[:tile_height]).to eq 256
           expect(image_info[:tile_width]).to eq 256
         end
 
         it 'advertises an authentication service' do
-          expect(image_info['service']).to be_present
-          expect(image_info['service']['profile']).to eq 'http://iiif.io/api/auth/1/login'
-          expect(image_info['service']['@id']).to eq iiif_auth_api_url
+          expect(auth_service).to be_present
+          expect(auth_service['profile']).to eq 'http://iiif.io/api/auth/1/login'
+          expect(auth_service['@id']).to eq iiif_auth_api_url
 
-          expect(image_info['service']['service'].first['profile']).to eq 'http://iiif.io/api/auth/1/token'
-          expect(image_info['service']['service'].first['@id']).to eq iiif_token_api_url
+          expect(auth_service['service'].first['profile']).to eq 'http://iiif.io/api/auth/1/token'
+          expect(auth_service['service'].first['@id']).to eq iiif_token_api_url
+        end
+
+        it 'advertises a logout service' do
+          logout_service = auth_service['service'].find { |x| x['profile'] == 'http://iiif.io/api/auth/1/logout' }
+          expect(logout_service['profile']).to eq 'http://iiif.io/api/auth/1/logout'
+          expect(logout_service['@id']).to eq logout_url
+          expect(logout_service['label']).to eq 'Logout'
         end
       end
     end
