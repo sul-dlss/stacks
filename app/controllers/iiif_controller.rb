@@ -106,6 +106,8 @@ class IiifController < ApplicationController
       end
     end
 
+    info['profile'] = 'http://iiif.io/api/image/2/level1'
+
     info['sizes'] = [{ width: 400, height: 400 }] unless current_image.maybe_downloadable?
 
     unless anonymous_ability.can? :download, current_image
