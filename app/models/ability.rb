@@ -33,56 +33,15 @@ class Ability
 
     # Note:  rule.blank?  means it's allowed (e.g. 'no-download' would be a value)
 
-    can :download, [StacksFile, StacksImage, StacksMediaStream], &:world_unrestricted?
-
+    can :download, [StacksFile, StacksImage, StacksMediaStream], &:world_downloadable?
     can :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
-      val, rule = f.world_rights
-
-      val && rule.blank?
+      f.stanford_only_downloadable? && user.stanford?
     end
-
-    if Settings.features.location_auth
-      # location based rights exclude when NOT matching the location condition
-      #   (all other rights include when matching conditions)
-      cannot :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
-        user_in_location, rule = f.location_rights(user.location)
-        # location OR stanford, not location AND stanford
-        f.restricted_by_location? && (!user_in_location || !rule.blank?)
-      end
-    end
-
-    # download rights exclude when rule is no-download
-    # stanford restricted, read, but no download
-    cannot :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
-      stanford_only_rights, rule = f.stanford_only_rights
-      stanford_only_rights && rule == 'no-download'
-    end
-
-    # download rights exclude when rule is no-download
-    # world restricted, read, but no download
-    cannot :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
-      world_rights_defined, rule = f.world_rights
-      world_rights_defined && rule == 'no-download'
-    end
-
     can :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
-      val, rule = f.stanford_only_rights
-
-      (val && rule.blank?) && user.stanford?
+      f.agent_downloadable?(user.id)
     end
-
     can :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
-      val, rule = f.agent_rights(user.id)
-
-      val && rule.blank? && user.app_user?
-    end
-
-    if Settings.features.location_auth
-      can :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
-        val, rule = f.location_rights(user.location)
-
-        val && rule.blank? && f.restricted_by_location?
-      end
+      f.location_downloadable?(user.location)
     end
 
     can :read, [StacksFile, StacksImage, StacksMediaStream] do |f|
