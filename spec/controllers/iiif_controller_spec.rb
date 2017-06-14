@@ -15,6 +15,10 @@ class StubMetadataObject
   def maybe_downloadable?
     false
   end
+
+  def stanford_restricted?
+    stanford_only_rights.first
+  end
 end
 
 describe IiifController do
