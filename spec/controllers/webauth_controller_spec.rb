@@ -7,6 +7,15 @@ describe WebauthController do
     allow(controller).to receive(:current_user).and_return(user)
   end
 
+  describe '#logout' do
+    render_views
+
+    it 'gives directions for quitting the browser session' do
+      get :logout
+      expect(response.body).to match(/Your single sign-on cookie has been deleted./)
+    end
+  end
+
   describe '#login_file' do
     subject { get :login_file, params: params }
     let(:params) { { id: 'xf680rd3068', file_name: 'xf680rd3068_1.jp2' } }

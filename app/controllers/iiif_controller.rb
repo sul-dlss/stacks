@@ -119,6 +119,11 @@ class IiifController < ApplicationController
           {
             '@id' => iiif_token_api_url,
             'profile' => 'http://iiif.io/api/auth/1/token'
+          },
+          {
+            '@id' => logout_url,
+            'profile' => 'http://iiif.io/api/auth/1/logout',
+            'label' => 'Logout'
           }
         ]
       }

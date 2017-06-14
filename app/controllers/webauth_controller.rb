@@ -14,6 +14,12 @@ class WebauthController < ApplicationController
     end
   end
 
+  def logout
+    respond_to do |format|
+      format.html
+    end
+  end
+
   # TODO: we may want one method for all the below, with a referer param to know where to redirect
   # TODO: can't think of a reasonable way to do strong params here
 
