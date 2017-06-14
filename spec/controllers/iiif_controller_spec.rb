@@ -12,12 +12,28 @@ class StubMetadataObject
     opts.to_h
   end
 
+  def restricted_by_location?
+    false
+  end
+
   def maybe_downloadable?
     false
   end
 
   def stanford_restricted?
     stanford_only_rights.first
+  end
+
+  def stanford_only_rights
+    [false, nil]
+  end
+
+  def location_rights(_location)
+    [false, nil]
+  end
+
+  def restricted_locations
+    []
   end
 end
 
@@ -160,6 +176,11 @@ describe IiifController do
 
       context 'when the image is not downloadable' do
         let(:auth_service) { image_info['service'] }
+
+        before do
+          allow(stub_metadata_object).to receive(:stanford_only_rights).and_return([true, nil])
+        end
+
         it 'the tile height/width is 256' do
           expect(image_info[:tile_height]).to eq 256
           expect(image_info[:tile_width]).to eq 256
@@ -179,6 +200,53 @@ describe IiifController do
           expect(logout_service['profile']).to eq 'http://iiif.io/api/auth/1/logout'
           expect(logout_service['@id']).to eq logout_url
           expect(logout_service['label']).to eq 'Logout'
+        end
+      end
+
+      context 'when the image is location-restricted' do
+        let(:location_service) { image_info['service'] }
+
+        before do
+          allow(stub_metadata_object).to receive(:restricted_by_location?).and_return(true)
+          allow(stub_metadata_object).to receive(:restricted_locations).and_return([:spec])
+        end
+
+        context 'and the user is not in that location' do
+          it 'advertises an authentication service' do
+            location_restriction_msg = 'Restricted content cannot be accessed from your location'
+            expect(location_service).to be_present
+            expect(location_service['profile']).to eq 'http://iiif.io/api/auth/1/external'
+            expect(location_service['label']).to eq 'External Authentication Required'
+            expect(location_service['failureHeader']).to eq 'Restricted Material'
+            expect(location_service['failureDescription']).to eq location_restriction_msg
+          end
+        end
+
+        context 'and the user is in that location' do
+          before do
+            allow(stub_metadata_object).to receive(:location_rights).and_return([true, nil])
+          end
+
+          it 'does not advertise an authentication service' do
+            expect(location_service).not_to be_present
+          end
+        end
+      end
+
+      context 'when the item has location and stanford-only rights' do
+        before do
+          allow(stub_metadata_object).to receive(:stanford_only_rights).and_return([true, nil])
+          allow(stub_metadata_object).to receive(:restricted_by_location?).and_return(true)
+          allow(stub_metadata_object).to receive(:restricted_locations).and_return([:spec])
+        end
+
+        it 'advertises support for both login and external authentication' do
+          expect(image_info['service']).to be_present
+          expect(image_info['service'].length).to eq 2
+          expect(image_info['service'].map { |x| x['profile'] }).to match_array [
+            'http://iiif.io/api/auth/1/login',
+            'http://iiif.io/api/auth/1/external'
+          ]
         end
       end
     end

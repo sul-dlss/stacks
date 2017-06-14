@@ -56,6 +56,14 @@ module StacksRights
     rights.restricted_by_location?(file_name)
   end
 
+  def restricted_locations
+    if rights.file[file_name]
+      rights.file[file_name].location.keys
+    else
+      rights.obj_lvl.location.keys
+    end
+  end
+
   # Returns [<Boolean>, <String>]: whether a file-level location exists, and the value of its rule attribute
   #   If a location node does not exist for this file, then object-level location rights are returned
   def location_rights(location)
