@@ -27,7 +27,7 @@ class ApplicationController < ActionController::Base
   end
 
   def anonymous_ability
-    @anonymous_ability ||= Ability.new(nil)
+    @anonymous_ability ||= Ability.new(anonymous_locatable_user)
   end
 
   def basic_auth_user
