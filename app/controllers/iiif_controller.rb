@@ -110,7 +110,7 @@ class IiifController < ApplicationController
 
     info['sizes'] = [{ width: 400, height: 400 }] unless current_image.maybe_downloadable?
 
-    unless anonymous_ability.can? :download, current_image
+    if anonymous_ability.cannot? :download, current_image
       info['service'] = {
         '@id' => iiif_auth_api_url,
         'profile' => 'http://iiif.io/api/auth/1/login',
