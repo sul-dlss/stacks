@@ -106,7 +106,12 @@ class IiifController < ApplicationController
       end
     end
 
-    info['profile'] = 'http://iiif.io/api/image/2/level1'
+    info['profile'] =
+      if can? :download, current_image
+        'http://iiif.io/api/image/2/level1'
+      else
+        ['http://iiif.io/api/image/2/level1', { 'maxWidth' => 400 }]
+      end
 
     info['sizes'] = [{ width: 400, height: 400 }] unless current_image.maybe_downloadable?
 

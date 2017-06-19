@@ -87,6 +87,10 @@ describe IiifController do
   end
 
   describe '#metadata' do
+    before do
+      allow(controller).to receive(:can?).with(:download, an_instance_of(StacksImage)).and_return(true)
+    end
+
     subject { get :metadata, params: { identifier: 'nr349ct7889%2Fnr349ct7889_00_0001' } }
 
     it 'provides iiif info.json responses' do
@@ -103,10 +107,22 @@ describe IiifController do
     end
 
     it 'includes a recommended tile size' do
-      allow(controller).to receive(:can?).and_return(true)
       subject
       info = JSON.parse(controller.response_body.first)
       expect(info['tiles'].first).to include 'width' => 1024, 'height' => 1024
+    end
+
+    context 'image is not downloadable' do
+      before do
+        allow(controller).to receive(:can?).with(:download, an_instance_of(StacksImage)).and_return(false)
+      end
+
+      it 'asserts level1 IIIF compliance, and augments the default profile with maxWidth' do
+        subject
+        info = JSON.parse(controller.response_body.first)
+        expect(info['profile']).to eq ['http://iiif.io/api/image/2/level1', { 'maxWidth' => 400 }]
+        expect(controller.headers['Link']).to eq '<http://iiif.io/api/image/2/level1.json>;rel="profile"'
+      end
     end
   end
 
