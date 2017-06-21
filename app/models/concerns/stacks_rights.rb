@@ -5,6 +5,10 @@ module StacksRights
     rights.world_unrestricted_file? file_name
   end
 
+  def world_downloadable?
+    rights.world_downloadable_file? file_name
+  end
+
   # Returns [<Boolean>, <String>]: whether a file-level world node exists, and the value of its rule attribute
   #   If a world node does not exist for this file, then object-level world rights are returned
   def world_rights
@@ -15,6 +19,10 @@ module StacksRights
   #   If a group/stanford node does not exist for this file, then object-level group/stanford rights are returned
   def stanford_only_rights
     rights.stanford_only_rights_for_file file_name
+  end
+
+  def stanford_only_downloadable?
+    rights.stanford_only_downloadable_file? file_name
   end
 
   # Returns true if the file is stanford-only readable AND has no rule attribute
@@ -33,6 +41,11 @@ module StacksRights
     rights.agent_rights_for_file file_name, agent
   end
 
+  def agent_downloadable?(agent)
+    value, rule = agent_rights(agent)
+    value && (rule.nil? || rule != Dor::RightsAuth::NO_DOWNLOAD_RULE)
+  end
+
   # Returns true if a given file has any location restrictions.
   #   Falls back to the object-level behavior if none at file level.
   def restricted_by_location?
@@ -43,6 +56,11 @@ module StacksRights
   #   If a location node does not exist for this file, then object-level location rights are returned
   def location_rights(location)
     rights.location_rights_for_file(file_name, location)
+  end
+
+  def location_downloadable?(location)
+    value, rule = location_rights(location)
+    value && (rule.nil? || rule != Dor::RightsAuth::NO_DOWNLOAD_RULE)
   end
 
   def rights

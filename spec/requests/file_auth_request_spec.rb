@@ -15,44 +15,69 @@ RSpec.describe "Authentication for File requests", type: :request do
   context "#show" do
     let!(:sf_stanford_only) do
       sf = StacksFile.new(id: druid, file_name: filename)
-      allow(sf).to receive(:stanford_only_rights).and_return([true, ''])
-      allow(sf).to receive(:location_rights).and_return([false, ''])
-      allow(sf).to receive(:restricted_by_location?).and_return(false)
-      allow(sf).to receive(:agent_rights).and_return([false, ''])
-      allow(sf).to receive(:world_rights).and_return([false, ''])
-      allow(sf).to receive(:world_unrestricted?).and_return(false)
+      allow(sf).to receive(:rights_xml).and_return <<-EOF
+        <rightsMetadata>
+          <access type="read">
+            <machine>
+              <group>Stanford</group>
+            </machine>
+          </access>
+        </rightsMetadata>
+      EOF
       sf
     end
     let!(:sf_loc_only) do
       sf = StacksFile.new(id: druid, file_name: filename)
-      allow(sf).to receive(:restricted_by_location?).and_return(true)
-      allow(sf).to receive(:location_rights).and_return([true, ''])
-      allow(sf).to receive(:stanford_only_rights).and_return([false, ''])
-      allow(sf).to receive(:agent_rights).and_return([false, ''])
+      allow(sf).to receive(:rights_xml).and_return <<-EOF
+        <rightsMetadata>
+          <access type="read">
+            <machine>
+              <location>location1</location>
+            </machine>
+          </access>
+        </rightsMetadata>
+      EOF
       sf
     end
     let!(:sf_user_not_in_loc) do
       sf = StacksFile.new(id: druid, file_name: filename)
-      allow(sf).to receive(:restricted_by_location?).and_return(true)
-      allow(sf).to receive(:location_rights).and_return([false, ''])
-      allow(sf).to receive(:stanford_only_rights).and_return([false, ''])
-      allow(sf).to receive(:agent_rights).and_return([false, ''])
+      allow(sf).to receive(:rights_xml).and_return <<-EOF
+        <rightsMetadata>
+          <access type="read">
+            <machine>
+              <location>location-other</location>
+            </machine>
+          </access>
+        </rightsMetadata>
+      EOF
       sf
     end
     let!(:sf_loc_and_stanford) do
       sf = StacksFile.new(id: druid, file_name: filename)
-      allow(sf).to receive(:stanford_only_rights).and_return([true, ''])
-      allow(sf).to receive(:location_rights).and_return([true, ''])
-      allow(sf).to receive(:restricted_by_location?).and_return(true)
-      allow(sf).to receive(:agent_rights).and_return([false, ''])
+      allow(sf).to receive(:rights_xml).and_return <<-EOF
+        <rightsMetadata>
+          <access type="read">
+            <machine>
+              <group>Stanford</group>
+              <location>location1</location>
+            </machine>
+          </access>
+        </rightsMetadata>
+      EOF
       sf
     end
     let!(:sf_user_not_in_loc_and_stanford) do
       sf = StacksFile.new(id: druid, file_name: filename)
-      allow(sf).to receive(:stanford_only_rights).and_return([true, ''])
-      allow(sf).to receive(:restricted_by_location?).and_return(true)
-      allow(sf).to receive(:location_rights).and_return([false, ''])
-      allow(sf).to receive(:agent_rights).and_return([false, ''])
+      allow(sf).to receive(:rights_xml).and_return <<-EOF
+        <rightsMetadata>
+          <access type="read">
+            <machine>
+              <group>Stanford</group>
+              <location>location-other</location>
+            </machine>
+          </access>
+        </rightsMetadata>
+      EOF
       sf
     end
 

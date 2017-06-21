@@ -16,7 +16,7 @@ describe User do
       allow_any_instance_of(StacksImage).to receive(:rights_xml).and_return(rights_xml)
     end
 
-    context 'stanford webauth user' do
+    context 'for a stanford webauth user' do
       let(:user) { User.new(id: 'a', webauth_user: true, ldap_groups: %w(stanford:stanford)) }
 
       context 'with an unrestricted file' do
@@ -93,7 +93,7 @@ describe User do
       end
     end
 
-    context 'non-stanford webauth user' do
+    context 'for a non-stanford webauth user' do
       let(:user) { User.new(id: 'a', webauth_user: true, ldap_groups: %w(stanford:sponsored)) }
 
       context 'with an unrestricted file' do
@@ -170,7 +170,7 @@ describe User do
       end
     end
 
-    context 'location based' do
+    context 'for location-based access restrictions' do
       let(:rights_xml) do
         <<-XML
         <rightsMetadata>
@@ -182,7 +182,7 @@ describe User do
           </rightsMetadata>
         XML
       end
-      context 'an anonymous user from a configured location' do
+      context 'with an anonymous user from a configured location' do
         let(:user) { User.new(ip_address: 'ip.address2') }
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
@@ -190,7 +190,7 @@ describe User do
         it { is_expected.to be_able_to(:download, media) }
       end
 
-      context 'an anonymous user not in the configured location' do
+      context 'with an anonymous user not in the configured location' do
         let(:user) { User.new(ip_address: 'some.unknown.ip') }
         it { is_expected.not_to be_able_to(:download, file) }
         it { is_expected.not_to be_able_to(:download, image) }
@@ -210,12 +210,12 @@ describe User do
           </rightsMetadata>
           EOF
         end
-        context 'an anonymous user from a configured location' do
+        context 'for an anonymous user from a configured location' do
           let(:user) { User.new(ip_address: 'ip.address2') }
           it { is_expected.to be_able_to(:stream, media) }
           it { is_expected.not_to be_able_to(:download, media) }
         end
-        context 'an anonymous user not in the configured location' do
+        context 'for an anonymous user not in the configured location' do
           let(:user) { User.new(ip_address: 'some.unknown.ip') }
           it { is_expected.not_to be_able_to(:stream, media) }
           it { is_expected.not_to be_able_to(:download, media) }
@@ -223,7 +223,7 @@ describe User do
       end
     end
 
-    context 'app user' do
+    context 'for an app user' do
       let(:user) { User.new(id: 'a', app_user: true) }
 
       context 'with an unrestricted file' do
@@ -300,7 +300,7 @@ describe User do
         it { is_expected.to be_able_to(:download, media) }
       end
 
-      context 'with a tile of a no-download file' do
+      context 'accessing a tile of a no-download file' do
         let(:rights_xml) do
           <<-EOF.strip_heredoc
           <rightsMetadata>
@@ -315,12 +315,12 @@ describe User do
         it { is_expected.not_to be_able_to(:read, file) }
         it { is_expected.to be_able_to(:read, tile) }
         it { is_expected.not_to be_able_to(:read, image) }
-        it { is_expected.not_to be_able_to(:stream, media) }
+        it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.not_to be_able_to(:download, media) }
       end
     end
 
-    context 'anonymous user' do
+    context 'for an anonymous user' do
       context 'with an stanford-only file' do
         let(:rights_xml) do
           <<-EOF.strip_heredoc

@@ -19,119 +19,60 @@ class Ability
     # here are :read, :create, :update and :destroy.
     #
     # The second argument is the resource the user can perform the action on.
-    # If you pass :all it will apply to every resource. Otherwise pass a Ruby
+    # If you pass :all, it will apply to every resource. Otherwise, pass a Ruby
     # class of the resource.
     #
     # The third argument is an optional hash of conditions to further filter the
-    # objects.
-    # For example, here the user can only update published articles.
-    #
+    # objects. For example, here the user can only update published articles.
     #   can :update, Article, :published => true
+    #
+    # The block argument takes as a parameter an instance of the object for which
+    # permission is being checked. If the block returns true, the user is granted that
+    # ability, otherwise the user is denied that ability. The block is only evaluated
+    # for instances of objects, *not* for classes. If a class is passed to a `can?` or a
+    # `cannot?` that's defined by a block, that check will *always* grant permission.
     #
     # See the wiki for details:
     # https://github.com/CanCanCommunity/cancancan/wiki/Defining-Abilities
+    # https://github.com/CanCanCommunity/cancancan/wiki/Defining-Abilities-with-Blocks
 
-    # Note:  rule.blank?  means it's allowed (e.g. 'no-download' would be a value)
-
-    can :download, [StacksFile, StacksImage, StacksMediaStream], &:world_unrestricted?
-
+    can :download, [StacksFile, StacksImage, StacksMediaStream], &:world_downloadable?
     can :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
-      val, rule = f.world_rights
-
-      val && rule.blank?
+      f.stanford_only_downloadable? && user.stanford?
     end
-
-    if Settings.features.location_auth
-      # location based rights exclude when NOT matching the location condition
-      #   (all other rights include when matching conditions)
-      cannot :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
-        user_in_location, rule = f.location_rights(user.location)
-        # location OR stanford, not location AND stanford
-        f.restricted_by_location? && (!user_in_location || !rule.blank?)
-      end
-    end
-
-    # download rights exclude when rule is no-download
-    # stanford restricted, read, but no download
-    cannot :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
-      stanford_only_rights, rule = f.stanford_only_rights
-      stanford_only_rights && rule == 'no-download'
-    end
-
-    # download rights exclude when rule is no-download
-    # world restricted, read, but no download
-    cannot :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
-      world_rights_defined, rule = f.world_rights
-      world_rights_defined && rule == 'no-download'
-    end
-
     can :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
-      val, rule = f.stanford_only_rights
-
-      (val && rule.blank?) && user.stanford?
+      f.agent_downloadable?(user.id)
     end
-
     can :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
-      val, rule = f.agent_rights(user.id)
-
-      val && rule.blank? && user.app_user?
-    end
-
-    if Settings.features.location_auth
-      can :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
-        val, rule = f.location_rights(user.location)
-
-        val && rule.blank? && f.restricted_by_location?
-      end
+      f.location_downloadable?(user.location)
     end
 
     can :read, [StacksFile, StacksImage, StacksMediaStream] do |f|
       can? :download, f
     end
-
-    # Alias 'stream' to 'read' for StacksMediaStream so
-    # we can set streaming specific authorization rules
-    can :stream, StacksMediaStream do |f|
-      can? :read, f
-    end
-
-    # To enable streaming of non-downloadable content we can
-    # override the World, Location, and Stanford rights for
-    # streaming regarldess of the rule applied in rights
-    if Settings.features.location_auth
-      can :stream, StacksMediaStream do |f|
-        user_in_location, _rule = f.location_rights(user.location)
-        f.restricted_by_location? && user_in_location
-      end
-    end
-
-    can :stream, StacksMediaStream do |f|
-      stanford_only_rights, _rule = f.stanford_only_rights
-      stanford_only_rights && user.stanford?
-    end
-
-    can :stream, StacksMediaStream do |f|
-      world_rights_defined, _rule = f.world_rights
-      world_rights_defined
-    end
-
     can :read, StacksImage, &:thumbnail?
-
     can :read, StacksImage do |f|
       f.tile? && can?(:access, f)
     end
 
+    can :stream, StacksMediaStream do |f|
+      can? :access, f
+    end
+
     can :read_metadata, StacksImage
 
-    can :access, StacksImage do |f|
-      val, _rule = f.world_rights
-      next true if val
+    can :access, [StacksImage, StacksFile, StacksMediaStream] do |f|
+      world_rights_defined, _rule = f.world_rights
+      next true if world_rights_defined
 
-      val, _rule = f.stanford_only_rights
-      next true if val && user.stanford?
+      stanford_only_rights_defined, _rule = f.stanford_only_rights
+      next true if stanford_only_rights_defined && user.stanford?
 
-      val, _rule = f.agent_rights(user.id)
-      next true if val && user.app_user?
+      agent_rights_defined, _rule = f.agent_rights(user.id)
+      next true if agent_rights_defined && user.app_user?
+
+      location_rights_defined, _rule = f.location_rights(user.location)
+      next true if location_rights_defined
     end
   end
 end
