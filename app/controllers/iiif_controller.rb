@@ -60,8 +60,12 @@ class IiifController < ApplicationController
   #   a)  access not allowed (send to super)  OR
   #   b)  need user to login to determine if access allowed
   def rescue_can_can(exception)
-    if current_image.stanford_restricted? && !current_user.webauth_user?
+    if current_image.stanford_restricted? &&
+       !current_user.webauth_user? &&
+       !(current_image.tile? || current_image.thumbnail?)
       redirect_to auth_iiif_url(allowed_params.to_h.symbolize_keys.tap { |x| x[:identifier] = escaped_identifier })
+    elsif current_image.tile? || current_image.thumbnail?
+      head :unauthorized
     else
       super
     end

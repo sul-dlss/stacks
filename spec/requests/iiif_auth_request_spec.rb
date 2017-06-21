@@ -104,10 +104,18 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
         end
       end
       it "prompts for webauth when user not webauthed" do
+        allow(si_stanford_only).to receive(:tile?).and_return(false)
         allow_any_instance_of(IiifController).to receive(:current_user).and_return(user_no_loc_no_webauth)
         allow_any_instance_of(IiifController).to receive(:current_image).and_return(si_stanford_only)
         get "/image/iiif/#{druid}%2F#{filename}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
         expect(response).to redirect_to(auth_iiif_url(identifier: identifier, format: format))
+      end
+      it "blocks when user requested a tile but is not webauthed" do
+        allow(si_stanford_only).to receive(:tile?).and_return(true)
+        allow_any_instance_of(IiifController).to receive(:current_user).and_return(user_no_loc_no_webauth)
+        allow_any_instance_of(IiifController).to receive(:current_image).and_return(si_stanford_only)
+        get "/image/iiif/#{druid}%2F#{filename}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
+        expect(response).to have_http_status(401)
       end
     end
     context 'location' do
@@ -123,7 +131,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
           allow_any_instance_of(IiifController).to receive(:current_user).and_return(user_no_loc_no_webauth)
           allow_any_instance_of(IiifController).to receive(:current_image).and_return(si_user_not_in_loc)
           get "/image/iiif/#{druid}%2F#{filename}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
-          expect(response).to have_http_status(403)
+          expect(response).to have_http_status(401)
         end
       end
       context 'OR stanford' do
@@ -156,7 +164,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
               allow_any_instance_of(IiifController).to receive(:current_user).and_return(user_webauth_no_stanford_no_loc)
               allow_any_instance_of(IiifController).to receive(:current_image).and_return(si_user_not_in_loc_and_stanford)
               get "/image/iiif/#{druid}%2F#{filename}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
-              expect(response).to have_http_status(403)
+              expect(response).to have_http_status(401)
             end
           end
         end
@@ -169,6 +177,8 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
             expect(response.content_type).to eq('image/jpeg')
           end
           it 'prompts for webauth when not in location' do
+            allow(si_user_not_in_loc_and_stanford).to receive(:tile?).and_return(false)
+            allow(si_user_not_in_loc_and_stanford).to receive(:thumbnail?).and_return(false)
             allow_any_instance_of(IiifController).to receive(:current_user).and_return(user_no_loc_no_webauth)
             allow_any_instance_of(IiifController).to receive(:current_image).and_return(si_user_not_in_loc_and_stanford)
             get "/image/iiif/#{druid}%2F#{filename}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
