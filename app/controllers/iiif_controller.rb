@@ -60,8 +60,7 @@ class IiifController < ApplicationController
   #   a)  access not allowed (send to super)  OR
   #   b)  need user to login to determine if access allowed
   def rescue_can_can(exception)
-    stanford_restricted, _rule = current_image.stanford_only_rights
-    if stanford_restricted && !current_user.webauth_user?
+    if current_image.stanford_restricted? && !current_user.webauth_user?
       redirect_to auth_iiif_url(allowed_params.to_h.symbolize_keys.tap { |x| x[:identifier] = escaped_identifier })
     else
       super
@@ -115,23 +114,41 @@ class IiifController < ApplicationController
 
     info['sizes'] = [{ width: 400, height: 400 }] unless current_image.maybe_downloadable?
 
+    services = []
     if anonymous_ability.cannot? :download, current_image
-      info['service'] = {
-        '@id' => iiif_auth_api_url,
-        'profile' => 'http://iiif.io/api/auth/1/login',
-        'label' => 'Stanford-affiliated? Login to view',
-        'service' => [
-          {
-            '@id' => iiif_token_api_url,
-            'profile' => 'http://iiif.io/api/auth/1/token'
-          },
-          {
-            '@id' => logout_url,
-            'profile' => 'http://iiif.io/api/auth/1/logout',
-            'label' => 'Logout'
-          }
-        ]
-      }
+      if current_image.stanford_restricted?
+        services << {
+          '@id' => iiif_auth_api_url,
+          'profile' => 'http://iiif.io/api/auth/1/login',
+          'label' => 'Stanford-affiliated? Login to view',
+          'service' => [
+            {
+              '@id' => iiif_token_api_url,
+              'profile' => 'http://iiif.io/api/auth/1/token'
+            },
+            {
+              '@id' => logout_url,
+              'profile' => 'http://iiif.io/api/auth/1/logout',
+              'label' => 'Logout'
+            }
+          ]
+        }
+      end
+
+      if current_image.restricted_by_location? && !current_image.location_rights(current_user.location).first
+        services << {
+          'profile' => 'http://iiif.io/api/auth/1/external',
+          'label' => 'External Authentication Required',
+          'failureHeader' => 'Restricted Material',
+          'failureDescription' => 'Restricted content cannot be accessed from your location'
+        }
+      end
+    end
+
+    if services.one?
+      info['service'] = services.first
+    elsif services.any?
+      info['service'] = services
     end
 
     info

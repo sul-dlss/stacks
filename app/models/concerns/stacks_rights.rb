@@ -15,6 +15,10 @@ module StacksRights
     rights.world_rights_for_file file_name
   end
 
+  def stanford_restricted?
+    stanford_only_rights.first
+  end
+
   # Returns [<Boolean>, <String>]: whether a file-level group/stanford node exists, and the value of its rule attribute
   #   If a group/stanford node does not exist for this file, then object-level group/stanford rights are returned
   def stanford_only_rights
@@ -50,6 +54,14 @@ module StacksRights
   #   Falls back to the object-level behavior if none at file level.
   def restricted_by_location?
     rights.restricted_by_location?(file_name)
+  end
+
+  def restricted_locations
+    if rights.file[file_name]
+      rights.file[file_name].location.keys
+    else
+      rights.obj_lvl.location.keys
+    end
   end
 
   # Returns [<Boolean>, <String>]: whether a file-level location exists, and the value of its rule attribute

@@ -7,6 +7,7 @@ RSpec.describe 'IIIF API' do
                                  mtime: Time.zone.now,
                                  world_unrestricted?: true,
                                  world_rights: true,
+                                 stanford_restricted?: false,
                                  stanford_only_rights: false)
   end
   it 'redirects base uri requests to the info.json document' do
