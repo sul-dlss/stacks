@@ -19,24 +19,6 @@ describe User do
     context 'for a stanford webauth user' do
       let(:user) { User.new(id: 'a', webauth_user: true, ldap_groups: %w(stanford:stanford)) }
 
-      context 'with an unrestricted file' do
-        let(:rights_xml) do
-          <<-EOF.strip_heredoc
-          <rightsMetadata>
-              <access type="read">
-                <machine>
-                  <world/>
-                </machine>
-              </access>
-            </rightsMetadata>
-          EOF
-        end
-        it { is_expected.to be_able_to(:download, file) }
-        it { is_expected.to be_able_to(:download, image) }
-        it { is_expected.to be_able_to(:stream, media) }
-        it { is_expected.to be_able_to(:download, media) }
-      end
-
       context 'with a world-readable file' do
         let(:rights_xml) do
           <<-EOF.strip_heredoc
@@ -95,24 +77,6 @@ describe User do
 
     context 'for a non-stanford webauth user' do
       let(:user) { User.new(id: 'a', webauth_user: true, ldap_groups: %w(stanford:sponsored)) }
-
-      context 'with an unrestricted file' do
-        let(:rights_xml) do
-          <<-EOF.strip_heredoc
-          <rightsMetadata>
-              <access type="read">
-                <machine>
-                  <world/>
-                </machine>
-              </access>
-            </rightsMetadata>
-          EOF
-        end
-        it { is_expected.to be_able_to(:download, file) }
-        it { is_expected.to be_able_to(:download, image) }
-        it { is_expected.to be_able_to(:stream, media) }
-        it { is_expected.to be_able_to(:download, media) }
-      end
 
       context 'with a world-readable file' do
         let(:rights_xml) do
