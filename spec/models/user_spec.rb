@@ -37,7 +37,7 @@ describe User do
         it { is_expected.to be_able_to(:download, media) }
       end
 
-      context 'with an world-readable file' do
+      context 'with a world-readable file' do
         let(:rights_xml) do
           <<-EOF.strip_heredoc
           <rightsMetadata>
@@ -55,7 +55,7 @@ describe User do
         it { is_expected.to be_able_to(:download, media) }
       end
 
-      context 'with an stanford-only file' do
+      context 'with a stanford-only file' do
         let(:rights_xml) do
           <<-EOF.strip_heredoc
           <rightsMetadata>
@@ -114,7 +114,7 @@ describe User do
         it { is_expected.to be_able_to(:download, media) }
       end
 
-      context 'with an world-readable file' do
+      context 'with a world-readable file' do
         let(:rights_xml) do
           <<-EOF.strip_heredoc
           <rightsMetadata>
@@ -132,7 +132,7 @@ describe User do
         it { is_expected.to be_able_to(:download, media) }
       end
 
-      context 'with an stanford-only file' do
+      context 'with a stanford-only file' do
         let(:rights_xml) do
           <<-EOF.strip_heredoc
           <rightsMetadata>
@@ -244,7 +244,7 @@ describe User do
         it { is_expected.to be_able_to(:download, media) }
       end
 
-      context 'with an world-readable file' do
+      context 'with a world-readable file' do
         let(:rights_xml) do
           <<-EOF.strip_heredoc
           <rightsMetadata>
@@ -263,7 +263,7 @@ describe User do
         it { is_expected.to be_able_to(:download, media) }
       end
 
-      context 'with an stanford-only file' do
+      context 'with a stanford-only file' do
         let(:rights_xml) do
           <<-EOF.strip_heredoc
           <rightsMetadata>
@@ -321,7 +321,7 @@ describe User do
     end
 
     context 'for an anonymous user' do
-      context 'with an stanford-only file' do
+      context 'with a stanford-only file' do
         let(:rights_xml) do
           <<-EOF.strip_heredoc
           <rightsMetadata>
