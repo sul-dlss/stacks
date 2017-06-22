@@ -82,11 +82,7 @@ module StacksRights
   private
 
   def rights_xml
-    Rails.cache.fetch("stacks_file/#{druid}-#{etag}/rights_xml", expires_in: 10.minutes) do
-      benchmark "Fetching public xml for #{druid}" do
-        Faraday.get(Settings.purl.url + "/#{druid}.xml").body
-      end
-    end
+    Purl.public_xml(druid, etag)
   end
 
   def logger
