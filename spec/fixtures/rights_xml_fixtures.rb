@@ -12,4 +12,18 @@ module RightsXMLFixtures
       </publicObject>
     XML
   end
+
+  def stanford_restricted_rights_xml
+    <<-XML
+      <publicObject>
+        <rightsMetadata>
+          <access type="read">
+            <machine>
+              <group>Stanford</group>
+            </machine>
+          </access>
+        </rightsMetadata>
+      </publicObject>
+    XML
+  end
 end

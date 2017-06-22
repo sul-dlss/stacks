@@ -2,14 +2,15 @@ require 'rails_helper'
 
 RSpec.describe 'IIIF API' do
   let(:stacks_image) do
-    instance_double(StacksImage, exist?: true,
-                                 etag: 'etag',
-                                 mtime: Time.zone.now,
-                                 world_unrestricted?: true,
-                                 world_rights: true,
-                                 stanford_restricted?: false,
-                                 stanford_only_rights: false)
+    StacksImage.new
   end
+
+  before do
+    allow(stacks_image).to receive_messages(exist?: true, etag: 'etag', mtime: Time.zone.now, info: {})
+    allow(StacksImage).to receive(:new).with(hash_including(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001'))
+      .and_return(stacks_image)
+  end
+
   it 'redirects base uri requests to the info.json document' do
     get '/image/iiif/abc'
 
@@ -18,10 +19,26 @@ RSpec.describe 'IIIF API' do
   end
 
   it 'handles JSON-LD requests' do
-    allow(StacksImage).to receive(:new).with(hash_including(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001'))
-      .and_return(stacks_image)
     get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json', headers: { HTTP_ACCEPT: 'application/ld+json' }
 
     expect(response.content_type).to eq 'application/ld+json'
+  end
+
+  context 'for stanford-restricted documents' do
+    before do
+      stub_rights_xml(stanford_restricted_rights_xml)
+    end
+    it 'redirects requests to the degraded info.json' do
+      get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json'
+
+      expect(response).to redirect_to('/image/iiif/degraded_nr349ct7889%252Fnr349ct7889_00_0001/info.json')
+      expect(response.headers['Cache-Control']).to match(/max-age=0/)
+    end
+
+    it 'serves a degraded info.json description for the original file' do
+      get '/image/iiif/degraded_nr349ct7889%2Fnr349ct7889_00_0001/info.json'
+
+      expect(controller.send(:identifier_params)).to include id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001'
+    end
   end
 end
