@@ -167,7 +167,7 @@ class IiifController < ApplicationController
   end
 
   def canonical_params
-    { canonical_url: iiif_base_url(identifier: escaped_identifier, host: request.host_with_port) }
+    { canonical_url: request.original_url }
   end
 
   # kludge to get around Rails' overzealous URL escaping
