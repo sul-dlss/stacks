@@ -1,7 +1,7 @@
 # API to create IIIF Authentication access tokens
 class IiifTokenController < ApplicationController
   def create
-    token = mint_bearer_token unless current_user.anonymous_locatable_user?
+    token = mint_bearer_token if token_eligible_user?
 
     write_bearer_token_cookie(token) if token
 
@@ -23,6 +23,13 @@ class IiifTokenController < ApplicationController
   end
 
   private
+
+  # An authenticated user can retrieve a token if they are logged in with webauth, as an
+  # app-user, or are accessing material from a location-specific kiosk.
+  # Other anonymous users are not eligible.
+  def token_eligible_user?
+    current_user.token_user? || current_user.webauth_user? || current_user.app_user? || current_user.location?
+  end
 
   # Handle IIIF Authentication 1.0 browser-based client application requests
   # See {http://iiif.io/api/auth/1.0/#interaction-for-browser-based-client-applications}

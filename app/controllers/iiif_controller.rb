@@ -142,12 +142,18 @@ class IiifController < ApplicationController
         }
       end
 
-      if current_image.restricted_by_location? && !current_image.location_rights(current_user.location).first
+      if current_image.restricted_by_location?
         services << {
           'profile' => 'http://iiif.io/api/auth/1/external',
           'label' => 'External Authentication Required',
           'failureHeader' => 'Restricted Material',
-          'failureDescription' => 'Restricted content cannot be accessed from your location'
+          'failureDescription' => 'Restricted content cannot be accessed from your location',
+          'service' => [
+            {
+              '@id' => iiif_token_api_url,
+              'profile' => 'http://iiif.io/api/auth/1/token'
+            }
+          ]
         }
       end
     end
