@@ -25,6 +25,7 @@ Rails.application.routes.draw do
     get '/image/iiif/:identifier', to: redirect('/image/iiif/%{identifier}/info.json', status: 303), as: :iiif_base
     get '/image/iiif/:identifier/:region/:size/:rotation/:quality' => 'iiif#show', as: :iiif
     get '/image/iiif/:identifier/info.json' => 'iiif#metadata', as: :iiif_metadata
+    get '/image/iiif/:identifier/degraded/info.json' => 'iiif#metadata', as: :iiif_degraded_metadata, defaults: { degraded: true }
     match '/image/iiif/:identifier/info.json' => 'iiif#metadata_options', via: [:options]
     get '/image/iiif/app/:identifier/:region/:size/:rotation/:quality' => 'webauth#login_iiif'
     get '/image/iiif/auth/:identifier/:region/:size/:rotation/:quality' => 'webauth#login_iiif', as: :auth_iiif
