@@ -33,8 +33,16 @@ describe User do
         end
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
-        it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:download, media) }
+        it { is_expected.to be_able_to(:read, file) }
+        it { is_expected.to be_able_to(:read, image) }
+        it { is_expected.to be_able_to(:read, media) }
+        it { is_expected.to be_able_to(:read, tile) }
+        it { is_expected.to be_able_to(:stream, media) }
+        it { is_expected.to be_able_to(:access, file) }
+        it { is_expected.to be_able_to(:read_metadata, image) }
+        it { is_expected.to be_able_to(:read, thumbnail) }
+        it { is_expected.to be_able_to(:read, square_thumbnail) }
       end
 
       context 'with a stanford-only file' do
@@ -51,8 +59,16 @@ describe User do
         end
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
-        it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:download, media) }
+        it { is_expected.to be_able_to(:read, file) }
+        it { is_expected.to be_able_to(:read, image) }
+        it { is_expected.to be_able_to(:read, media) }
+        it { is_expected.to be_able_to(:read, tile) }
+        it { is_expected.to be_able_to(:stream, media) }
+        it { is_expected.to be_able_to(:access, file) }
+        it { is_expected.to be_able_to(:read_metadata, image) }
+        it { is_expected.to be_able_to(:read, thumbnail) }
+        it { is_expected.to be_able_to(:read, square_thumbnail) }
       end
 
       context 'with read rights but not download' do
@@ -67,11 +83,18 @@ describe User do
           </rightsMetadata>
           EOF
         end
-        it { is_expected.not_to be_able_to(:read, file) }
-        it { is_expected.to be_able_to(:read, tile) }
-        it { is_expected.not_to be_able_to(:read, image) }
-        it { is_expected.to be_able_to(:stream, media) }
+        it { is_expected.not_to be_able_to(:download, file) }
+        it { is_expected.not_to be_able_to(:download, image) }
         it { is_expected.not_to be_able_to(:download, media) }
+        it { is_expected.not_to be_able_to(:read, file) }
+        it { is_expected.not_to be_able_to(:read, image) }
+        it { is_expected.not_to be_able_to(:read, media) }
+        it { is_expected.to be_able_to(:read, tile) }
+        it { is_expected.to be_able_to(:stream, media) }
+        it { is_expected.to be_able_to(:access, file) }
+        it { is_expected.to be_able_to(:read_metadata, image) }
+        it { is_expected.to be_able_to(:read, thumbnail) }
+        it { is_expected.to be_able_to(:read, square_thumbnail) }
       end
     end
 
@@ -92,8 +115,16 @@ describe User do
         end
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
-        it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:download, media) }
+        it { is_expected.to be_able_to(:read, file) }
+        it { is_expected.to be_able_to(:read, image) }
+        it { is_expected.to be_able_to(:read, media) }
+        it { is_expected.to be_able_to(:read, tile) }
+        it { is_expected.to be_able_to(:stream, media) }
+        it { is_expected.to be_able_to(:access, file) }
+        it { is_expected.to be_able_to(:read_metadata, image) }
+        it { is_expected.to be_able_to(:read, thumbnail) }
+        it { is_expected.to be_able_to(:read, square_thumbnail) }
       end
 
       context 'with a stanford-only file' do
@@ -110,8 +141,16 @@ describe User do
         end
         it { is_expected.not_to be_able_to(:download, file) }
         it { is_expected.not_to be_able_to(:download, image) }
-        it { is_expected.not_to be_able_to(:stream, media) }
         it { is_expected.not_to be_able_to(:download, media) }
+        it { is_expected.not_to be_able_to(:read, file) }
+        it { is_expected.not_to be_able_to(:read, image) }
+        it { is_expected.not_to be_able_to(:read, media) }
+        it { is_expected.not_to be_able_to(:read, tile) }
+        it { is_expected.not_to be_able_to(:stream, media) }
+        it { is_expected.not_to be_able_to(:access, file) }
+        it { is_expected.to be_able_to(:read_metadata, image) }
+        it { is_expected.to be_able_to(:read, thumbnail) }
+        it { is_expected.to be_able_to(:read, square_thumbnail) }
       end
 
       context 'with read rights but not download' do
@@ -126,11 +165,18 @@ describe User do
           </rightsMetadata>
           EOF
         end
-        it { is_expected.not_to be_able_to(:read, file) }
-        it { is_expected.not_to be_able_to(:read, tile) }
-        it { is_expected.not_to be_able_to(:read, image) }
-        it { is_expected.not_to be_able_to(:stream, media) }
+        it { is_expected.not_to be_able_to(:download, file) }
+        it { is_expected.not_to be_able_to(:download, image) }
         it { is_expected.not_to be_able_to(:download, media) }
+        it { is_expected.not_to be_able_to(:read, file) }
+        it { is_expected.not_to be_able_to(:read, image) }
+        it { is_expected.not_to be_able_to(:read, media) }
+        it { is_expected.not_to be_able_to(:read, tile) }
+        it { is_expected.not_to be_able_to(:stream, media) }
+        it { is_expected.not_to be_able_to(:access, file) }
+        it { is_expected.to be_able_to(:read_metadata, image) }
+        it { is_expected.to be_able_to(:read, thumbnail) }
+        it { is_expected.to be_able_to(:read, square_thumbnail) }
       end
     end
 
@@ -150,16 +196,32 @@ describe User do
         let(:user) { User.new(ip_address: 'ip.address2') }
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
-        it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:download, media) }
+        it { is_expected.to be_able_to(:read, file) }
+        it { is_expected.to be_able_to(:read, image) }
+        it { is_expected.to be_able_to(:read, media) }
+        it { is_expected.to be_able_to(:read, tile) }
+        it { is_expected.to be_able_to(:stream, media) }
+        it { is_expected.to be_able_to(:access, file) }
+        it { is_expected.to be_able_to(:read_metadata, image) }
+        it { is_expected.to be_able_to(:read, thumbnail) }
+        it { is_expected.to be_able_to(:read, square_thumbnail) }
       end
 
       context 'with an anonymous user not in the configured location' do
         let(:user) { User.new(ip_address: 'some.unknown.ip') }
         it { is_expected.not_to be_able_to(:download, file) }
         it { is_expected.not_to be_able_to(:download, image) }
-        it { is_expected.not_to be_able_to(:stream, media) }
         it { is_expected.not_to be_able_to(:download, media) }
+        it { is_expected.not_to be_able_to(:read, file) }
+        it { is_expected.not_to be_able_to(:read, image) }
+        it { is_expected.not_to be_able_to(:read, media) }
+        it { is_expected.not_to be_able_to(:read, tile) }
+        it { is_expected.not_to be_able_to(:stream, media) }
+        it { is_expected.not_to be_able_to(:access, file) }
+        it { is_expected.to be_able_to(:read_metadata, image) }
+        it { is_expected.to be_able_to(:read, thumbnail) }
+        it { is_expected.to be_able_to(:read, square_thumbnail) }
       end
 
       context 'with media that allows read but not download' do
@@ -176,13 +238,33 @@ describe User do
         end
         context 'for an anonymous user from a configured location' do
           let(:user) { User.new(ip_address: 'ip.address2') }
-          it { is_expected.to be_able_to(:stream, media) }
+          it { is_expected.not_to be_able_to(:download, file) }
+          it { is_expected.not_to be_able_to(:download, image) }
           it { is_expected.not_to be_able_to(:download, media) }
+          it { is_expected.not_to be_able_to(:read, file) }
+          it { is_expected.not_to be_able_to(:read, image) }
+          it { is_expected.not_to be_able_to(:read, media) }
+          it { is_expected.to be_able_to(:read, tile) }
+          it { is_expected.to be_able_to(:stream, media) }
+          it { is_expected.to be_able_to(:access, file) }
+          it { is_expected.to be_able_to(:read_metadata, image) }
+          it { is_expected.to be_able_to(:read, thumbnail) }
+          it { is_expected.to be_able_to(:read, square_thumbnail) }
         end
         context 'for an anonymous user not in the configured location' do
           let(:user) { User.new(ip_address: 'some.unknown.ip') }
-          it { is_expected.not_to be_able_to(:stream, media) }
+          it { is_expected.not_to be_able_to(:download, file) }
+          it { is_expected.not_to be_able_to(:download, image) }
           it { is_expected.not_to be_able_to(:download, media) }
+          it { is_expected.not_to be_able_to(:read, file) }
+          it { is_expected.not_to be_able_to(:read, image) }
+          it { is_expected.not_to be_able_to(:read, media) }
+          it { is_expected.not_to be_able_to(:read, tile) }
+          it { is_expected.not_to be_able_to(:stream, media) }
+          it { is_expected.not_to be_able_to(:access, file) }
+          it { is_expected.to be_able_to(:read_metadata, image) }
+          it { is_expected.to be_able_to(:read, thumbnail) }
+          it { is_expected.to be_able_to(:read, square_thumbnail) }
         end
       end
     end
@@ -204,8 +286,16 @@ describe User do
         end
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
-        it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:download, media) }
+        it { is_expected.to be_able_to(:read, file) }
+        it { is_expected.to be_able_to(:read, image) }
+        it { is_expected.to be_able_to(:read, media) }
+        it { is_expected.to be_able_to(:read, tile) }
+        it { is_expected.to be_able_to(:stream, media) }
+        it { is_expected.to be_able_to(:access, file) }
+        it { is_expected.to be_able_to(:read_metadata, image) }
+        it { is_expected.to be_able_to(:read, thumbnail) }
+        it { is_expected.to be_able_to(:read, square_thumbnail) }
       end
 
       context 'with a world-readable file that also has agent rights' do
@@ -223,8 +313,16 @@ describe User do
         end
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
-        it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:download, media) }
+        it { is_expected.to be_able_to(:read, file) }
+        it { is_expected.to be_able_to(:read, image) }
+        it { is_expected.to be_able_to(:read, media) }
+        it { is_expected.to be_able_to(:read, tile) }
+        it { is_expected.to be_able_to(:stream, media) }
+        it { is_expected.to be_able_to(:access, file) }
+        it { is_expected.to be_able_to(:read_metadata, image) }
+        it { is_expected.to be_able_to(:read, thumbnail) }
+        it { is_expected.to be_able_to(:read, square_thumbnail) }
       end
 
       context 'with a stanford-restricted file that also has agent rights' do
@@ -242,8 +340,16 @@ describe User do
         end
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
-        it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:download, media) }
+        it { is_expected.to be_able_to(:read, file) }
+        it { is_expected.to be_able_to(:read, image) }
+        it { is_expected.to be_able_to(:read, media) }
+        it { is_expected.to be_able_to(:read, tile) }
+        it { is_expected.to be_able_to(:stream, media) }
+        it { is_expected.to be_able_to(:access, file) }
+        it { is_expected.to be_able_to(:read_metadata, image) }
+        it { is_expected.to be_able_to(:read, thumbnail) }
+        it { is_expected.to be_able_to(:read, square_thumbnail) }
       end
 
       context 'with an agent-only file' do
@@ -260,8 +366,16 @@ describe User do
         end
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
-        it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:download, media) }
+        it { is_expected.to be_able_to(:read, file) }
+        it { is_expected.to be_able_to(:read, image) }
+        it { is_expected.to be_able_to(:read, media) }
+        it { is_expected.to be_able_to(:read, tile) }
+        it { is_expected.to be_able_to(:stream, media) }
+        it { is_expected.to be_able_to(:access, file) }
+        it { is_expected.to be_able_to(:read_metadata, image) }
+        it { is_expected.to be_able_to(:read, thumbnail) }
+        it { is_expected.to be_able_to(:read, square_thumbnail) }
       end
 
       context 'with an agent-only file with a no-download rule' do
@@ -276,11 +390,18 @@ describe User do
           </rightsMetadata>
           EOF
         end
-        it { is_expected.not_to be_able_to(:read, file) }
-        it { is_expected.to be_able_to(:read, tile) }
-        it { is_expected.not_to be_able_to(:read, image) }
-        it { is_expected.to be_able_to(:stream, media) }
+        it { is_expected.not_to be_able_to(:download, file) }
+        it { is_expected.not_to be_able_to(:download, image) }
         it { is_expected.not_to be_able_to(:download, media) }
+        it { is_expected.not_to be_able_to(:read, file) }
+        it { is_expected.not_to be_able_to(:read, image) }
+        it { is_expected.not_to be_able_to(:read, media) }
+        it { is_expected.to be_able_to(:read, tile) }
+        it { is_expected.to be_able_to(:stream, media) }
+        it { is_expected.to be_able_to(:access, file) }
+        it { is_expected.to be_able_to(:read_metadata, image) }
+        it { is_expected.to be_able_to(:read, thumbnail) }
+        it { is_expected.to be_able_to(:read, square_thumbnail) }
       end
     end
 
@@ -299,8 +420,16 @@ describe User do
         end
         it { is_expected.not_to be_able_to(:download, file) }
         it { is_expected.not_to be_able_to(:download, image) }
-        it { is_expected.not_to be_able_to(:stream, media) }
         it { is_expected.not_to be_able_to(:download, media) }
+        it { is_expected.not_to be_able_to(:read, file) }
+        it { is_expected.not_to be_able_to(:read, image) }
+        it { is_expected.not_to be_able_to(:read, media) }
+        it { is_expected.not_to be_able_to(:read, tile) }
+        it { is_expected.not_to be_able_to(:stream, media) }
+        it { is_expected.not_to be_able_to(:access, file) }
+        it { is_expected.to be_able_to(:read_metadata, image) }
+        it { is_expected.to be_able_to(:read, thumbnail) }
+        it { is_expected.to be_able_to(:read, square_thumbnail) }
       end
 
       context 'with a an unreadable file' do
@@ -315,11 +444,18 @@ describe User do
           </rightsMetadata>
           EOF
         end
+        it { is_expected.not_to be_able_to(:download, file) }
+        it { is_expected.not_to be_able_to(:download, image) }
+        it { is_expected.not_to be_able_to(:download, media) }
+        it { is_expected.not_to be_able_to(:read, file) }
+        it { is_expected.not_to be_able_to(:read, image) }
+        it { is_expected.not_to be_able_to(:read, media) }
+        it { is_expected.not_to be_able_to(:read, tile) }
+        it { is_expected.not_to be_able_to(:stream, media) }
+        it { is_expected.not_to be_able_to(:access, file) }
+        it { is_expected.to be_able_to(:read_metadata, image) }
         it { is_expected.to be_able_to(:read, thumbnail) }
         it { is_expected.to be_able_to(:read, square_thumbnail) }
-        it { is_expected.not_to be_able_to(:read, image) }
-        it { is_expected.not_to be_able_to(:stream, media) }
-        it { is_expected.not_to be_able_to(:read, media) }
       end
 
       context 'with read rights but not download' do
@@ -334,11 +470,18 @@ describe User do
           </rightsMetadata>
           EOF
         end
-        it { is_expected.not_to be_able_to(:read, file) }
-        it { is_expected.to be_able_to(:read, tile) }
-        it { is_expected.not_to be_able_to(:read, image) }
-        it { is_expected.to be_able_to(:stream, media) }
+        it { is_expected.not_to be_able_to(:download, file) }
+        it { is_expected.not_to be_able_to(:download, image) }
         it { is_expected.not_to be_able_to(:download, media) }
+        it { is_expected.not_to be_able_to(:read, file) }
+        it { is_expected.not_to be_able_to(:read, image) }
+        it { is_expected.not_to be_able_to(:read, media) }
+        it { is_expected.to be_able_to(:read, tile) }
+        it { is_expected.to be_able_to(:stream, media) }
+        it { is_expected.to be_able_to(:access, file) }
+        it { is_expected.to be_able_to(:read_metadata, image) }
+        it { is_expected.to be_able_to(:read, thumbnail) }
+        it { is_expected.to be_able_to(:read, square_thumbnail) }
       end
     end
   end
