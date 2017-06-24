@@ -208,7 +208,7 @@ describe User do
         it { is_expected.to be_able_to(:download, media) }
       end
 
-      context 'with a world-readable file' do
+      context 'with a world-readable file that also has agent rights' do
         let(:rights_xml) do
           <<-EOF.strip_heredoc
           <rightsMetadata>
@@ -227,7 +227,7 @@ describe User do
         it { is_expected.to be_able_to(:download, media) }
       end
 
-      context 'with a stanford-only file' do
+      context 'with a stanford-restricted file that also has agent rights' do
         let(:rights_xml) do
           <<-EOF.strip_heredoc
           <rightsMetadata>
@@ -264,7 +264,7 @@ describe User do
         it { is_expected.to be_able_to(:download, media) }
       end
 
-      context 'accessing a tile of a no-download file' do
+      context 'with an agent-only file with a no-download rule' do
         let(:rights_xml) do
           <<-EOF.strip_heredoc
           <rightsMetadata>
@@ -303,7 +303,7 @@ describe User do
         it { is_expected.not_to be_able_to(:download, media) }
       end
 
-      context 'with a thumbnail of an unreadable file' do
+      context 'with a an unreadable file' do
         let(:rights_xml) do
           <<-EOF.strip_heredoc
           <rightsMetadata>
