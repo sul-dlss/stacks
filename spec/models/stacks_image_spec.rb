@@ -61,6 +61,40 @@ describe StacksImage do
       expect(subject.tap { |x| x.region = '0,0,800,600'; x.size = 'full' }.tile_dimensions).to eq [800, 600]
     end
 
+    context 'for requests with "max" size' do
+      let(:ability) { instance_double(Ability) }
+      let(:permissive_ability) do
+        ability.tap { |x| allow(x).to receive(:can?).with(:download, subject).and_return(true) }
+      end
+      let(:restricted_ability) do
+        ability.tap { |x| allow(x).to receive(:can?).with(:download, subject).and_return(false) }
+      end
+
+      it 'returns the full image for unrestricted images' do
+        subject.region = '0,0,800,600'
+        subject.size = 'max'
+        subject.current_ability = permissive_ability
+
+        expect(subject.tile_dimensions).to eq [800, 600]
+      end
+
+      it 'limits users to thumbnail sizes for restricted images' do
+        subject.region = 'full'
+        subject.size = 'max'
+        subject.current_ability = restricted_ability
+
+        expect(subject.tile_dimensions).to eq [400, 400]
+      end
+
+      it 'limits users to a maximum tiles size for restricted images' do
+        subject.region = '0,0,800,600'
+        subject.size = 'max'
+        subject.current_ability = restricted_ability
+
+        expect(subject.tile_dimensions).to eq [512, 512]
+      end
+    end
+
     it 'handles percentages' do
       expect(subject.tap { |x| x.region = '0,0,800,600'; x.size = 'pct:50' }.tile_dimensions).to eq [400, 300]
     end
