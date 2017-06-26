@@ -96,6 +96,32 @@ describe User do
         it { is_expected.to be_able_to(:read, thumbnail) }
         it { is_expected.to be_able_to(:read, square_thumbnail) }
       end
+
+      context 'with a file with no read access' do
+        let(:rights_xml) do
+          <<-EOF.strip_heredoc
+          <rightsMetadata>
+            <access type="read">
+              <machine>
+                <none/>
+              </machine>
+            </access>
+          </rightsMetadata>
+          EOF
+        end
+        it { is_expected.not_to be_able_to(:download, file) }
+        it { is_expected.not_to be_able_to(:download, image) }
+        it { is_expected.not_to be_able_to(:download, media) }
+        it { is_expected.not_to be_able_to(:read, file) }
+        it { is_expected.not_to be_able_to(:read, image) }
+        it { is_expected.not_to be_able_to(:read, media) }
+        it { is_expected.not_to be_able_to(:read, tile) }
+        it { is_expected.not_to be_able_to(:stream, media) }
+        it { is_expected.not_to be_able_to(:access, file) }
+        it { is_expected.to be_able_to(:read_metadata, image) }
+        it { is_expected.to be_able_to(:read, thumbnail) }
+        it { is_expected.to be_able_to(:read, square_thumbnail) }
+      end
     end
 
     context 'for a non-stanford webauth user' do
@@ -406,6 +432,32 @@ describe User do
     end
 
     context 'for an anonymous user' do
+      context 'with a world-readable file' do
+        let(:rights_xml) do
+          <<-EOF.strip_heredoc
+          <rightsMetadata>
+              <access type="read">
+                <machine>
+                  <world/>
+                </machine>
+              </access>
+            </rightsMetadata>
+          EOF
+        end
+        it { is_expected.to be_able_to(:download, file) }
+        it { is_expected.to be_able_to(:download, image) }
+        it { is_expected.to be_able_to(:download, media) }
+        it { is_expected.to be_able_to(:read, file) }
+        it { is_expected.to be_able_to(:read, image) }
+        it { is_expected.to be_able_to(:read, media) }
+        it { is_expected.to be_able_to(:read, tile) }
+        it { is_expected.to be_able_to(:stream, media) }
+        it { is_expected.to be_able_to(:access, file) }
+        it { is_expected.to be_able_to(:read_metadata, image) }
+        it { is_expected.to be_able_to(:read, thumbnail) }
+        it { is_expected.to be_able_to(:read, square_thumbnail) }
+      end
+
       context 'with a stanford-only file' do
         let(:rights_xml) do
           <<-EOF.strip_heredoc
@@ -482,6 +534,233 @@ describe User do
         it { is_expected.to be_able_to(:read_metadata, image) }
         it { is_expected.to be_able_to(:read, thumbnail) }
         it { is_expected.to be_able_to(:read, square_thumbnail) }
+      end
+    end
+
+    describe 'for multiple read access declarations' do
+      context 'with stanford read access and location based read access with download restriction' do
+        let(:rights_xml) do
+          <<-EOF.strip_heredoc
+          <rightsMetadata>
+            <access type="read">
+              <machine>
+                <group>Stanford</group>
+              </machine>
+              <machine>
+                <location rule="no-download">location1</location>
+              </machine>
+            </access>
+          </rightsMetadata>
+          EOF
+        end
+
+        context 'for a stanford webauth user at an unknown location' do
+          let(:user) { User.new(id: 'a', webauth_user: true, ldap_groups: %w(stanford:stanford)) }
+
+          it { is_expected.to be_able_to(:download, file) }
+          it { is_expected.to be_able_to(:download, image) }
+          it { is_expected.to be_able_to(:download, media) }
+          it { is_expected.to be_able_to(:read, file) }
+          it { is_expected.to be_able_to(:read, image) }
+          it { is_expected.to be_able_to(:read, media) }
+          it { is_expected.to be_able_to(:read, tile) }
+          it { is_expected.to be_able_to(:stream, media) }
+          it { is_expected.to be_able_to(:access, file) }
+          it { is_expected.to be_able_to(:read_metadata, image) }
+          it { is_expected.to be_able_to(:read, thumbnail) }
+          it { is_expected.to be_able_to(:read, square_thumbnail) }
+        end
+
+        context 'for an anonymous user from a configured location' do
+          let(:user) { User.new(ip_address: 'ip.address1') }
+
+          it { is_expected.not_to be_able_to(:download, file) }
+          it { is_expected.not_to be_able_to(:download, image) }
+          it { is_expected.not_to be_able_to(:download, media) }
+          it { is_expected.not_to be_able_to(:read, file) }
+          it { is_expected.not_to be_able_to(:read, image) }
+          it { is_expected.not_to be_able_to(:read, media) }
+          it { is_expected.to be_able_to(:read, tile) }
+          it { is_expected.to be_able_to(:stream, media) }
+          it { is_expected.to be_able_to(:access, file) }
+          it { is_expected.to be_able_to(:read_metadata, image) }
+          it { is_expected.to be_able_to(:read, thumbnail) }
+          it { is_expected.to be_able_to(:read, square_thumbnail) }
+        end
+
+        context 'for a stanford webauth user from a configured location' do
+          let(:user) do
+            User.new(id: 'a', webauth_user: true, ldap_groups: %w(stanford:stanford), ip_address: 'ip.address1')
+          end
+
+          it { is_expected.to be_able_to(:download, file) }
+          it { is_expected.to be_able_to(:download, image) }
+          it { is_expected.to be_able_to(:download, media) }
+          it { is_expected.to be_able_to(:read, file) }
+          it { is_expected.to be_able_to(:read, image) }
+          it { is_expected.to be_able_to(:read, media) }
+          it { is_expected.to be_able_to(:read, tile) }
+          it { is_expected.to be_able_to(:stream, media) }
+          it { is_expected.to be_able_to(:access, file) }
+          it { is_expected.to be_able_to(:read_metadata, image) }
+          it { is_expected.to be_able_to(:read, thumbnail) }
+          it { is_expected.to be_able_to(:read, square_thumbnail) }
+        end
+
+        context 'for a non-stanford webauth user from a configured location' do
+          let(:user) do
+            User.new(id: 'a', webauth_user: true, ldap_groups: %w(stanford:sponsored), ip_address: 'ip.address1')
+          end
+
+          it { is_expected.not_to be_able_to(:download, file) }
+          it { is_expected.not_to be_able_to(:download, image) }
+          it { is_expected.not_to be_able_to(:download, media) }
+          it { is_expected.not_to be_able_to(:read, file) }
+          it { is_expected.not_to be_able_to(:read, image) }
+          it { is_expected.not_to be_able_to(:read, media) }
+          it { is_expected.to be_able_to(:read, tile) }
+          it { is_expected.to be_able_to(:stream, media) }
+          it { is_expected.to be_able_to(:access, file) }
+          it { is_expected.to be_able_to(:read_metadata, image) }
+          it { is_expected.to be_able_to(:read, thumbnail) }
+          it { is_expected.to be_able_to(:read, square_thumbnail) }
+        end
+
+        context 'for a non-stanford webauth user from an unknown location' do
+          let(:user) do
+            User.new(id: 'a', webauth_user: true, ldap_groups: %w(stanford:sponsored), ip_address: 'another.unknown.ip')
+          end
+
+          it { is_expected.not_to be_able_to(:download, file) }
+          it { is_expected.not_to be_able_to(:download, image) }
+          it { is_expected.not_to be_able_to(:download, media) }
+          it { is_expected.not_to be_able_to(:read, file) }
+          it { is_expected.not_to be_able_to(:read, image) }
+          it { is_expected.not_to be_able_to(:read, media) }
+          it { is_expected.not_to be_able_to(:read, tile) }
+          it { is_expected.not_to be_able_to(:stream, media) }
+          it { is_expected.not_to be_able_to(:access, file) }
+          it { is_expected.to be_able_to(:read_metadata, image) }
+          it { is_expected.to be_able_to(:read, thumbnail) }
+          it { is_expected.to be_able_to(:read, square_thumbnail) }
+        end
+      end
+
+      context 'with two locations configured for read access, including one with a no-download rule' do
+        let(:rights_xml) do
+          <<-EOF.strip_heredoc
+          <rightsMetadata>
+            <access type="read">
+              <machine>
+                <location rule="no-download">location1</location>
+              </machine>
+              <machine>
+                <location>location2</location>
+              </machine>
+            </access>
+          </rightsMetadata>
+          EOF
+        end
+
+        context 'for an anonymous user user from the first configured location' do
+          let(:user) { User.new(ip_address: 'ip.address2') }
+
+          it { is_expected.not_to be_able_to(:download, file) }
+          it { is_expected.not_to be_able_to(:download, image) }
+          it { is_expected.not_to be_able_to(:download, media) }
+          it { is_expected.not_to be_able_to(:read, file) }
+          it { is_expected.not_to be_able_to(:read, image) }
+          it { is_expected.not_to be_able_to(:read, media) }
+          it { is_expected.to be_able_to(:read, tile) }
+          it { is_expected.to be_able_to(:stream, media) }
+          it { is_expected.to be_able_to(:access, file) }
+          it { is_expected.to be_able_to(:read_metadata, image) }
+          it { is_expected.to be_able_to(:read, thumbnail) }
+          it { is_expected.to be_able_to(:read, square_thumbnail) }
+        end
+
+        context 'for an anonymous user user from the second configured location' do
+          let(:user) { User.new(ip_address: 'ip.address4') }
+
+          it { is_expected.to be_able_to(:download, file) }
+          it { is_expected.to be_able_to(:download, image) }
+          it { is_expected.to be_able_to(:download, media) }
+          it { is_expected.to be_able_to(:read, file) }
+          it { is_expected.to be_able_to(:read, image) }
+          it { is_expected.to be_able_to(:read, media) }
+          it { is_expected.to be_able_to(:read, tile) }
+          it { is_expected.to be_able_to(:stream, media) }
+          it { is_expected.to be_able_to(:access, file) }
+          it { is_expected.to be_able_to(:read_metadata, image) }
+          it { is_expected.to be_able_to(:read, thumbnail) }
+          it { is_expected.to be_able_to(:read, square_thumbnail) }
+        end
+
+        context 'for an anonymous user user from an unrecognized location' do
+          let(:user) { User.new(ip_address: 'another.unknown.ip') }
+
+          it { is_expected.not_to be_able_to(:download, file) }
+          it { is_expected.not_to be_able_to(:download, image) }
+          it { is_expected.not_to be_able_to(:download, media) }
+          it { is_expected.not_to be_able_to(:read, file) }
+          it { is_expected.not_to be_able_to(:read, image) }
+          it { is_expected.not_to be_able_to(:read, media) }
+          it { is_expected.not_to be_able_to(:read, tile) }
+          it { is_expected.not_to be_able_to(:stream, media) }
+          it { is_expected.not_to be_able_to(:access, file) }
+          it { is_expected.to be_able_to(:read_metadata, image) }
+          it { is_expected.to be_able_to(:read, thumbnail) }
+          it { is_expected.to be_able_to(:read, square_thumbnail) }
+        end
+      end
+
+      context 'with world (no-download), and full access for stanford users' do
+        let(:rights_xml) do
+          <<-EOF.strip_heredoc
+          <rightsMetadata>
+            <access type="read">
+              <machine>
+                <world rule="no-download"/>
+              </machine>
+              <machine>
+                <group>Stanford</group>
+              </machine>
+            </access>
+          </rightsMetadata>
+          EOF
+        end
+
+        context 'for an anonymous user' do
+          it { is_expected.not_to be_able_to(:download, file) }
+          it { is_expected.not_to be_able_to(:download, image) }
+          it { is_expected.not_to be_able_to(:download, media) }
+          it { is_expected.not_to be_able_to(:read, file) }
+          it { is_expected.not_to be_able_to(:read, image) }
+          it { is_expected.not_to be_able_to(:read, media) }
+          it { is_expected.to be_able_to(:read, tile) }
+          it { is_expected.to be_able_to(:stream, media) }
+          it { is_expected.to be_able_to(:access, file) }
+          it { is_expected.to be_able_to(:read_metadata, image) }
+          it { is_expected.to be_able_to(:read, thumbnail) }
+          it { is_expected.to be_able_to(:read, square_thumbnail) }
+        end
+
+        context 'for a stanford webauth user' do
+          let(:user) { User.new(id: 'a', webauth_user: true, ldap_groups: %w(stanford:stanford)) }
+
+          it { is_expected.to be_able_to(:download, file) }
+          it { is_expected.to be_able_to(:download, image) }
+          it { is_expected.to be_able_to(:download, media) }
+          it { is_expected.to be_able_to(:read, file) }
+          it { is_expected.to be_able_to(:read, image) }
+          it { is_expected.to be_able_to(:read, media) }
+          it { is_expected.to be_able_to(:read, tile) }
+          it { is_expected.to be_able_to(:stream, media) }
+          it { is_expected.to be_able_to(:access, file) }
+          it { is_expected.to be_able_to(:read_metadata, image) }
+          it { is_expected.to be_able_to(:read, thumbnail) }
+          it { is_expected.to be_able_to(:read, square_thumbnail) }
+        end
       end
     end
   end
