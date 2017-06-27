@@ -7,7 +7,9 @@ class StacksImage < StacksFile
 
   def tile_dimensions
     if size =~ /^!?\d*,\d*$/
-      explicit_tile_dimensions
+      explicit_tile_dimensions(size)
+    elsif size == 'max'
+      max_tile_dimensions
     elsif region_dimensions
       scaled_tile_dimensions
     else
@@ -54,8 +56,8 @@ class StacksImage < StacksFile
 
   private
 
-  def explicit_tile_dimensions
-    dim = size.delete('!').split(',', 2)
+  def explicit_tile_dimensions(requested_size)
+    dim = requested_size.delete('!').split(',', 2)
 
     if dim[0].blank? || dim[1].blank?
       rdim = region_dimensions
@@ -77,6 +79,16 @@ class StacksImage < StacksFile
             end
 
     region_dimensions.map { |i| i * scale }
+  end
+
+  def max_tile_dimensions
+    if current_ability.can? :download, self
+      region_dimensions
+    elsif region =~ /^(\d+),(\d+),(\d+),(\d+)$/
+      explicit_tile_dimensions('!512,512')
+    else
+      explicit_tile_dimensions('!400,400')
+    end
   end
 
   def explicit_region_dimensions

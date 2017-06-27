@@ -91,7 +91,7 @@ class IiifController < ApplicationController
   end
 
   def load_image
-    @image ||= StacksImage.new(stacks_image_params)
+    @image ||= StacksImage.new(stacks_image_params.merge(current_ability: current_ability))
   end
 
   def image_info
