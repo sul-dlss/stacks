@@ -44,7 +44,7 @@ class Ability
       f.stanford_only_downloadable? && user.stanford?
     end
     can :download, StacksFile do |f|
-      f.agent_downloadable?(user.id)
+      f.agent_downloadable?(user.id) && user.app_user?
     end
     can :download, StacksFile do |f|
       f.location_downloadable?(user.location)
