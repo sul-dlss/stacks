@@ -1,5 +1,11 @@
 require 'rails_helper'
 
+# These specs are a rather integration-y approach to testing ability.rb, since they rely
+# on the dor-rights-auth parsing that actually gets used in the real world.  Essentially
+# a giant truth table for the various combinations of object rights, object types, and user
+# types that permission checking might deal with.  This is not a comprehensive listing of
+# all possible permutations, but it should cover all the basics, and a number of representitive
+# corner cases.  This is in lieu of the more unit test style of an ability_spec.rb.
 describe User do
   describe 'abilities' do
     subject(:ability) { Ability.new(user) }
