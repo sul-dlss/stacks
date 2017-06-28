@@ -6,3 +6,6 @@ user:
     location1:
       - ip.address1
       - ip.address2
+    location2:
+      - ip.address3
+      - ip.address4

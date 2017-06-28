@@ -36,18 +36,21 @@ class Ability
     # https://github.com/CanCanCommunity/cancancan/wiki/Defining-Abilities
     # https://github.com/CanCanCommunity/cancancan/wiki/Defining-Abilities-with-Blocks
 
-    can :download, [StacksFile, StacksImage, StacksMediaStream], &:world_downloadable?
-    can :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
+    # NOTE: the below ability definitions which reference StacksFile also implicitly
+    # cover StacksImage and StacksMediaStream, and any other subclasses of StacksFile.
+
+    can :download, StacksFile, &:world_downloadable?
+    can :download, StacksFile do |f|
       f.stanford_only_downloadable? && user.stanford?
     end
-    can :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
-      f.agent_downloadable?(user.id)
+    can :download, StacksFile do |f|
+      f.agent_downloadable?(user.id) && user.app_user?
     end
-    can :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
+    can :download, StacksFile do |f|
       f.location_downloadable?(user.location)
     end
 
-    can :read, [StacksFile, StacksImage, StacksMediaStream] do |f|
+    can :read, StacksFile do |f|
       can? :download, f
     end
     can :read, StacksImage, &:thumbnail?
@@ -61,7 +64,7 @@ class Ability
 
     can :read_metadata, StacksImage
 
-    can :access, [StacksImage, StacksFile, StacksMediaStream] do |f|
+    can :access, StacksFile do |f|
       world_rights_defined, _rule = f.world_rights
       next true if world_rights_defined
 
