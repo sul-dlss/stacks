@@ -32,9 +32,16 @@ class IiifController < ApplicationController
   ##
   # IIIF info.json endpoint
   def metadata
-    expires_in 10.minutes, public: false
     return unless stale?(cache_headers)
+
+    if degraded? && !degraded_identifier?
+      redirect_to iiif_metadata_url(identifier: degraded_identifier)
+      return
+    end
+
+    expires_in 10.minutes, public: false
     authorize! :read_metadata, current_image
+
     respond_to do |format|
       format.any(:json, :jsonld) { render json: JSON.pretty_generate(image_info) }
     end
@@ -60,7 +67,7 @@ class IiifController < ApplicationController
   #   a)  access not allowed (send to super)  OR
   #   b)  need user to login to determine if access allowed
   def rescue_can_can(exception)
-    if current_image.stanford_restricted? && !current_user.webauth_user?
+    if degraded?
       redirect_to auth_iiif_url(allowed_params.to_h.symbolize_keys.tap { |x| x[:identifier] = escaped_identifier })
     else
       super
@@ -160,6 +167,8 @@ class IiifController < ApplicationController
 
   def identifier_params
     id, file_name = escaped_identifier.split('%2F')
+    id.sub!(/^degraded_/, '')
+
     { id: id, file_name: file_name }
   end
 
@@ -172,7 +181,19 @@ class IiifController < ApplicationController
     allowed_params[:identifier].sub('/', '%2F')
   end
 
+  def degraded_identifier
+    "degraded_#{escaped_identifier}"
+  end
+
+  def degraded_identifier?
+    escaped_identifier.starts_with? 'degraded'
+  end
+
   def add_iiif_profile_header
     headers['Link'] = '<http://iiif.io/api/image/2/level1.json>;rel="profile"'
+  end
+
+  def degraded?
+    !can?(:download, current_image) && current_image.stanford_restricted? && !current_user.webauth_user?
   end
 end

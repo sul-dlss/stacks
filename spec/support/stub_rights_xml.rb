@@ -5,9 +5,7 @@
 # are not stubbing a 3rd party class.
 module StubRightsXML
   def stub_rights_xml(xml)
-    allow(HTTP).to receive(:get).and_return(
-      instance_double(HTTP::Response, body: xml)
-    )
+    allow(Purl).to receive(:public_xml).and_return(xml)
   end
 end
 
