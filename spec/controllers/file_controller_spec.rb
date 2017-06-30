@@ -16,7 +16,7 @@ describe FileController do
     end
 
     it 'sends the file to the user' do
-      expect(controller).to receive(:send_file).with(file.path).and_call_original
+      expect(controller).to receive(:send_file).with(file.path, disposition: :inline).and_call_original
       subject
     end
 
@@ -32,7 +32,7 @@ describe FileController do
     end
 
     it 'missing file returns 404 Not Found' do
-      expect(controller).to receive(:send_file).with(file.path).and_raise ActionController::MissingFile
+      expect(controller).to receive(:send_file).and_raise ActionController::MissingFile
       expect(subject.status).to eq 404
     end
   end

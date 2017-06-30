@@ -12,7 +12,7 @@ class FileController < ApplicationController
     authorize! :read, current_file
     expires_in 10.minutes
 
-    send_file current_file.path
+    send_file current_file.path, disposition: :inline
   end
 
   private
