@@ -87,7 +87,7 @@ RSpec.describe "Authentication for File requests", type: :request do
         it 'allows when user webauthed and authorized' do
           allow_any_instance_of(FileController).to receive(:current_user).and_return(user_webauth_stanford_no_loc)
           allow_any_instance_of(FileController).to receive(:current_file).and_return(sf_stanford_only)
-          expect_any_instance_of(FileController).to receive(:send_file).with(sf_stanford_only.path).and_call_original
+          expect_any_instance_of(FileController).to receive(:send_file).with(sf_stanford_only.path, disposition: :inline).and_call_original
           get "/file/#{druid}/#{filename}"
         end
         it 'blocks when user webauthed but NOT authorized' do
@@ -109,7 +109,7 @@ RSpec.describe "Authentication for File requests", type: :request do
         it 'allows when user in location' do
           allow_any_instance_of(FileController).to receive(:current_user).and_return(user_loc_no_webauth)
           allow_any_instance_of(FileController).to receive(:current_file).and_return(sf_loc_only)
-          expect_any_instance_of(FileController).to receive(:send_file).with(sf_loc_only.path).and_call_original
+          expect_any_instance_of(FileController).to receive(:send_file).with(sf_loc_only.path, disposition: :inline).and_call_original
           get "/file/#{druid}/#{filename}"
         end
         it 'blocks when user not in location' do
@@ -125,13 +125,13 @@ RSpec.describe "Authentication for File requests", type: :request do
             it 'allows when user in location' do
               allow_any_instance_of(FileController).to receive(:current_user).and_return(user_webauth_stanford_loc)
               allow_any_instance_of(FileController).to receive(:current_file).and_return(sf_loc_and_stanford)
-              expect_any_instance_of(FileController).to receive(:send_file).with(sf_loc_and_stanford.path).and_call_original
+              expect_any_instance_of(FileController).to receive(:send_file).with(sf_loc_and_stanford.path, disposition: :inline).and_call_original
               get "/file/#{druid}/#{filename}"
             end
             it 'allows when user not in location' do
               allow_any_instance_of(FileController).to receive(:current_user).and_return(user_webauth_stanford_no_loc)
               allow_any_instance_of(FileController).to receive(:current_file).and_return(sf_user_not_in_loc_and_stanford)
-              expect_any_instance_of(FileController).to receive(:send_file).with(sf_user_not_in_loc_and_stanford.path).and_call_original
+              expect_any_instance_of(FileController).to receive(:send_file).with(sf_user_not_in_loc_and_stanford.path, disposition: :inline).and_call_original
               get "/file/#{druid}/#{filename}"
             end
           end
@@ -139,7 +139,7 @@ RSpec.describe "Authentication for File requests", type: :request do
             it 'allows when in location' do
               allow_any_instance_of(FileController).to receive(:current_user).and_return(user_webauth_no_stanford_loc)
               allow_any_instance_of(FileController).to receive(:current_file).and_return(sf_loc_and_stanford)
-              expect_any_instance_of(FileController).to receive(:send_file).with(sf_loc_and_stanford.path).and_call_original
+              expect_any_instance_of(FileController).to receive(:send_file).with(sf_loc_and_stanford.path, disposition: :inline).and_call_original
               get "/file/#{druid}/#{filename}"
             end
             it 'blocks when not in location' do
@@ -154,7 +154,7 @@ RSpec.describe "Authentication for File requests", type: :request do
           it 'allows when in location (no webauth prompt)' do
             allow_any_instance_of(FileController).to receive(:current_user).and_return(user_loc_no_webauth)
             allow_any_instance_of(FileController).to receive(:current_file).and_return(sf_loc_and_stanford)
-            expect_any_instance_of(FileController).to receive(:send_file).with(sf_loc_and_stanford.path).and_call_original
+            expect_any_instance_of(FileController).to receive(:send_file).with(sf_loc_and_stanford.path, disposition: :inline).and_call_original
             get "/file/#{druid}/#{filename}"
           end
           it 'prompts for webauth when not in location' do
