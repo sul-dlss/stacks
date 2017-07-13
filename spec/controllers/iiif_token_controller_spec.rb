@@ -11,7 +11,7 @@ describe IiifTokenController do
     end
 
     context 'browser-based interaction' do
-      let(:user) { User.new id: 'xyz' }
+      let(:user) { User.new id: 'xyz', webauth_user: true }
 
       subject do
         get :create, params: { origin: 'http://example.edu/', messageId: '1' }
@@ -64,7 +64,7 @@ describe IiifTokenController do
       end
 
       context 'with a user' do
-        let(:user) { User.new id: 'xyz' }
+        let(:user) { User.new id: 'xyz', webauth_user: true }
 
         it 'returns the token response' do
           expect(subject.status).to eq 200

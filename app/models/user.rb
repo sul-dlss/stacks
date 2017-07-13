@@ -33,14 +33,18 @@ class User
     ApprovedLocation.new(self).to_s
   end
 
-  def self.from_token(token, _options = {})
+  def location?
+    location.present?
+  end
+
+  def self.from_token(token, additional_attributes = {})
     attributes, timestamp = encryptor.decrypt_and_verify(token)
 
-    User.new(attributes.merge(token_user: true)) if timestamp >= 1.hour.ago
+    User.new(attributes.merge(token_user: true).merge(additional_attributes)) if timestamp >= 1.hour.ago
   end
 
   def token
-    self.class.encryptor.encrypt_and_sign([{ id: id, ldap_groups: ldap_groups }, Time.zone.now])
+    self.class.encryptor.encrypt_and_sign([{ id: id, ldap_groups: ldap_groups, ip_address: ip_address }, Time.zone.now])
   end
 
   def self.encryptor
