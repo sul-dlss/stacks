@@ -33,8 +33,7 @@ module DjatokaAdapter
 
   def url
     djatoka_region.url
-  rescue Djatoka::IiifInvalidParam => e
-    Honeybadger.notify e
+  rescue Djatoka::IiifInvalidParam
     nil
   end
 
