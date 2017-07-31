@@ -128,6 +128,7 @@ class IiifController < ApplicationController
           '@id' => iiif_auth_api_url,
           'profile' => 'http://iiif.io/api/auth/1/login',
           'label' => 'Stanford-affiliated? Login to view',
+          'confirmLabel' => 'Login',
           'service' => [
             {
               '@id' => iiif_token_api_url,
@@ -146,6 +147,7 @@ class IiifController < ApplicationController
         services << {
           'profile' => 'http://iiif.io/api/auth/1/external',
           'label' => 'External Authentication Required',
+          'confirmLabel' => 'Login',
           'failureHeader' => 'Restricted Material',
           'failureDescription' => 'Restricted content cannot be accessed from your location',
           'service' => [
