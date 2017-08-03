@@ -223,7 +223,6 @@ describe IiifController do
           expect(location_service).to be_present
           expect(location_service['profile']).to eq 'http://iiif.io/api/auth/1/external'
           expect(location_service['label']).to eq 'External Authentication Required'
-          expect(location_service['confirmLabel']).to eq 'Login'
           expect(location_service['failureHeader']).to eq 'Restricted Material'
           expect(location_service['failureDescription']).to eq location_restriction_msg
           expect(location_service['service'].first['profile']).to eq 'http://iiif.io/api/auth/1/token'
