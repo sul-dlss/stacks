@@ -151,7 +151,6 @@ class IiifController < ApplicationController
         services << {
           'profile' => 'http://iiif.io/api/auth/1/external',
           'label' => 'External Authentication Required',
-          'confirmLabel' => 'Login',
           'failureHeader' => 'Restricted Material',
           'failureDescription' => 'Restricted content cannot be accessed from your location',
           'service' => [
