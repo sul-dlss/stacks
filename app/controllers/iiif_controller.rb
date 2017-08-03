@@ -127,8 +127,12 @@ class IiifController < ApplicationController
         services << {
           '@id' => iiif_auth_api_url,
           'profile' => 'http://iiif.io/api/auth/1/login',
-          'label' => 'Stanford-affiliated? Login to view',
+          'label' => 'Log in to access all available features.',
           'confirmLabel' => 'Login',
+          'failureHeader' => 'Unable to authenticate',
+          'failureDescription' => 'The authentication service cannot be reached'\
+            '. If your browser is configured to block pop-up windows, try allow'\
+            'ing pop-up windows for this site before attempting to log in again.',
           'service' => [
             {
               '@id' => iiif_token_api_url,
