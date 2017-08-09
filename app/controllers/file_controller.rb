@@ -12,13 +12,18 @@ class FileController < ApplicationController
     authorize! :read, current_file
     expires_in 10.minutes
 
-    send_file current_file.path, disposition: :inline
+    send_file current_file.path, disposition: disposition
   end
 
   private
 
+  def disposition
+    return :attachment if allowed_params[:download]
+    :inline
+  end
+
   def allowed_params
-    params.permit(:id, :file_name)
+    params.permit(:id, :file_name, :download)
   end
   # the args needed for StacksFile.new happen to be the same as allowed_params
   alias stacks_file_params allowed_params
