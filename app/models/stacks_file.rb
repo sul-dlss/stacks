@@ -5,7 +5,7 @@ class StacksFile
   include ActiveSupport::Benchmarkable
   include StacksRights
 
-  attr_accessor :id, :file_name, :current_ability
+  attr_accessor :id, :file_name, :current_ability, :download
 
   def exist?
     file_exist?

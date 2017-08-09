@@ -20,6 +20,11 @@ describe FileController do
       subject
     end
 
+    it 'sets disposition attachment with download param' do
+      expect(controller).to receive(:send_file).with(file.path, disposition: :attachment).and_call_original
+      get :show, params: { id: 'xf680rd3068', file_name: 'xf680rd3068_1.jp2', download: 'any' }
+    end
+
     context 'additional params' do
       subject do
         get :show, params: { id: 'xf680rd3068', file_name: 'xf680rd3068_1.jp2', ignored: 'ignored', host: 'host' }
