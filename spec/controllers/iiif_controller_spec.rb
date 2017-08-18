@@ -188,6 +188,7 @@ describe IiifController do
 
         it 'advertises an authentication service' do
           expect(auth_service).to be_present
+          expect(auth_service['@context']).to eq 'http://iiif.io/api/auth/1/context.json'
           expect(auth_service['profile']).to eq 'http://iiif.io/api/auth/1/login'
           expect(auth_service['@id']).to eq iiif_auth_api_url
 
@@ -221,6 +222,7 @@ describe IiifController do
         it 'advertises an authentication service' do
           location_restriction_msg = 'Restricted content cannot be accessed from your location'
           expect(location_service).to be_present
+          expect(location_service['@context']).to eq 'http://iiif.io/api/auth/1/context.json'
           expect(location_service['profile']).to eq 'http://iiif.io/api/auth/1/external'
           expect(location_service['label']).to eq 'External Authentication Required'
           expect(location_service['failureHeader']).to eq 'Restricted Material'
