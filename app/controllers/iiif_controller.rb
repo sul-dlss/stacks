@@ -125,6 +125,7 @@ class IiifController < ApplicationController
     if anonymous_ability.cannot? :download, current_image
       if current_image.stanford_restricted?
         services << {
+          '@context' => 'http://iiif.io/api/auth/1/context.json',
           '@id' => iiif_auth_api_url,
           'profile' => 'http://iiif.io/api/auth/1/login',
           'label' => 'Log in to access all available features.',
@@ -149,6 +150,7 @@ class IiifController < ApplicationController
 
       if current_image.restricted_by_location?
         services << {
+          '@context' => 'http://iiif.io/api/auth/1/context.json',
           'profile' => 'http://iiif.io/api/auth/1/external',
           'label' => 'External Authentication Required',
           'failureHeader' => 'Restricted Material',
