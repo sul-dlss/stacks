@@ -45,7 +45,7 @@ class DjatokaMetadata
   private
 
   def fetch_metadata
-    with_retries(:max_tries => 3, :rescue => [Errno::ECONNRESET, Errno::ECONNREFUSED, Net::ReadTimeout]) do
+    with_retries(max_tries: 3, rescue: [Errno::ECONNRESET, Errno::ECONNREFUSED, Net::ReadTimeout]) do
       benchmark "Fetching djatoka metadata for #{@stacks_file_path}" do
         resolver = Djatoka::Resolver.new(Settings.stacks.djatoka_url)
         resolver.metadata(@stacks_file_path).perform
