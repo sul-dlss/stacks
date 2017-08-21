@@ -38,7 +38,7 @@ module DjatokaAdapter
   end
 
   def djatoka_region
-    @djatoka_region ||= with_retries(:max_tries => 3, :rescue => [Errno::ECONNRESET, Errno::ECONNREFUSED]) do
+    @djatoka_region ||= with_retries(:max_tries => 3, :rescue => [Errno::ECONNRESET, Errno::ECONNREFUSED, Net::ReadTimeout]) do
       iiif_req = Djatoka::IiifRequest.new(resolver, djatoka_path)
       iiif_req.region(region)
               .size(size)
