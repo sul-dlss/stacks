@@ -38,7 +38,7 @@ module DjatokaAdapter
   end
 
   def djatoka_region
-    @djatoka_region ||= begin
+    @djatoka_region ||= with_retries(max_tries: 3, rescue: exceptions_to_retry) do
       iiif_req = Djatoka::IiifRequest.new(resolver, djatoka_path)
       iiif_req.region(region)
               .size(size)
@@ -59,5 +59,9 @@ module DjatokaAdapter
 
   def resolver
     @resolver ||= Djatoka::Resolver.new(Settings.stacks.djatoka_url)
+  end
+
+  def exceptions_to_retry
+    [Errno::ECONNRESET, Errno::ECONNREFUSED, Net::ReadTimeout]
   end
 end
