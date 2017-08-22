@@ -52,4 +52,12 @@ class User
     key = ActiveSupport::KeyGenerator.new(Rails.application.secrets.secret_key_base).generate_key(salt, 32)
     ActiveSupport::MessageEncryptor.new(key)
   end
+
+  def self.stanford_generic_user
+    new(
+      id: 'fake',
+      webauth_user: true,
+      ldap_groups: Settings.user.stanford_groups
+    )
+  end
 end

@@ -108,10 +108,11 @@ describe IiifController do
 
   describe '#metadata' do
     before do
+      allow(controller).to receive(:can?).with(:access, an_instance_of(StacksImage)).and_return(true)
       allow(controller).to receive(:can?).with(:download, an_instance_of(StacksImage)).and_return(true)
     end
 
-    subject { get :metadata, params: { identifier: 'nr349ct7889%2Fnr349ct7889_00_0001' } }
+    subject { get :metadata, params: { identifier: 'nr349ct7889%2Fnr349ct7889_00_0001', format: :json } }
 
     it 'provides iiif info.json responses' do
       subject
@@ -134,6 +135,8 @@ describe IiifController do
 
     context 'image is not downloadable' do
       before do
+        # This is needed as we are really just testing #image_info and not the #degraded? logic
+        allow(controller).to receive(:degraded?).and_return(false)
         allow(controller).to receive(:can?).with(:download, an_instance_of(StacksImage)).and_return(false)
       end
 
