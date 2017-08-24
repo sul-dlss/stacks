@@ -67,7 +67,7 @@ class IiifController < ApplicationController
   #   a)  access not allowed (send to super)  OR
   #   b)  need user to login to determine if access allowed
   def rescue_can_can(exception)
-    if degraded?
+    if degraded? && !current_user.webauth_user?
       redirect_to auth_iiif_url(allowed_params.to_h.symbolize_keys.tap { |x| x[:identifier] = escaped_identifier })
     else
       super
@@ -206,7 +206,10 @@ class IiifController < ApplicationController
     headers['Link'] = '<http://iiif.io/api/image/2/level1.json>;rel="profile"'
   end
 
+  # We consider an image to be degraded if the user isn't current able to download it, but if they
+  # login as a stanford user, they will be able to.
   def degraded?
-    !can?(:download, current_image) && current_image.stanford_restricted? && !current_user.webauth_user?
+    !can?(:access, current_image) && generic_stanford_webauth_ability.can?(:access, current_image) ||
+      !can?(:download, current_image) && generic_stanford_webauth_ability.can?(:download, current_image)
   end
 end

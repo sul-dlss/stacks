@@ -49,6 +49,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
       si = StacksImage.new(params_hash)
       allow(si).to receive(:restricted_by_location?).and_return(true)
       allow(si).to receive(:location_rights).and_return([false, ''])
+      allow(si).to receive(:stanford_only_downloadable?).and_return(false)
       allow(si).to receive(:stanford_only_rights).and_return([false, ''])
       allow(si).to receive(:agent_rights).and_return([false, ''])
       allow(si).to receive(:world_rights).and_return([false, ''])
