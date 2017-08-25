@@ -1,7 +1,7 @@
 # :nodoc:
 class ApplicationController < ActionController::Base
   include ActionController::HttpAuthentication::Basic
-  include ActionController::HttpAuthentication::Bearer
+  include ActionController::HttpAuthentication::Token
 
   rescue_from CanCan::AccessDenied, with: :rescue_can_can
   before_action :set_origin_header
@@ -42,7 +42,7 @@ class ApplicationController < ActionController::Base
   end
 
   def bearer_auth_user
-    token_user(*bearer_token_and_options(request))
+    token_user(*token_and_options(request))
   end
 
   def bearer_cookie
@@ -53,9 +53,13 @@ class ApplicationController < ActionController::Base
     bearer_cookie.present?
   end
 
+  def has_bearer_credentials?(request)
+    request.authorization.present? && (auth_scheme(request) == 'Bearer')
+  end
+
   def bearer_cookie_user
     authorization_request = bearer_cookie.to_s
-    params = bearer_token_params_from authorization_request
+    params = token_params_from authorization_request
     token_and_options = [params.shift[1], Hash[params].with_indifferent_access]
     token_user(*token_and_options)
   end
