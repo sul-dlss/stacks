@@ -35,6 +35,10 @@ class StubMetadataObject
   def restricted_locations
     []
   end
+
+  def image_width; end
+
+  def image_height; end
 end
 
 describe IiifController do
@@ -163,6 +167,7 @@ describe IiifController do
       context 'when the image is downloadable' do
         before do
           allow(controller).to receive(:can?).with(:download, stub_metadata_object).and_return(true)
+          allow(controller).to receive(:can?).with(:access, stub_metadata_object).and_return(true)
           allow(controller.send(:anonymous_ability)).to receive(:can?)
             .with(:download, stub_metadata_object).and_return(true)
         end
@@ -211,6 +216,25 @@ describe IiifController do
           expect(logout_service['profile']).to eq 'http://iiif.io/api/auth/1/logout'
           expect(logout_service['@id']).to eq logout_url
           expect(logout_service['label']).to eq 'Logout'
+        end
+      end
+
+      context 'when the image is not accessible' do
+        context 'width > height' do
+          it 'tile height/width' do
+            expect(stub_metadata_object).to receive(:image_width).and_return 1600
+            expect(stub_metadata_object).to receive(:image_height).and_return 400
+            expect(image_info['height']).to eq 100
+            expect(image_info['width']).to eq 400
+          end
+        end
+        context 'height > width' do
+          it 'tile height/width' do
+            expect(stub_metadata_object).to receive(:image_width).and_return 400
+            expect(stub_metadata_object).to receive(:image_height).and_return 1600
+            expect(image_info['height']).to eq 400
+            expect(image_info['width']).to eq 100
+          end
         end
       end
 

@@ -6,7 +6,14 @@ RSpec.describe 'IIIF API' do
   end
 
   before do
-    allow(stacks_image).to receive_messages(exist?: true, etag: 'etag', mtime: Time.zone.now, info: {})
+    allow(stacks_image).to receive_messages(
+      exist?: true,
+      etag: 'etag',
+      mtime: Time.zone.now,
+      info: {},
+      image_width: 0,
+      image_height: 0
+    )
     allow(StacksImage).to receive(:new).with(hash_including(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001'))
       .and_return(stacks_image)
   end
