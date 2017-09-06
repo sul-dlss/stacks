@@ -2,6 +2,7 @@
 # Images in the image stacks
 class StacksImage < StacksFile
   include DjatokaAdapter
+  include Scientist
 
   attr_accessor :canonical_url, :size, :region, :rotation, :quality, :format
 
@@ -51,7 +52,9 @@ class StacksImage < StacksFile
   end
 
   def valid?
-    image_valid?
+    science "stacks-image-valid?" do |experiment|
+      experiment.use { image_valid? }
+    end
   end
 
   private
