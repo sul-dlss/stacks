@@ -4,8 +4,6 @@ class IiifController < ApplicationController
   before_action :load_image
   before_action :add_iiif_profile_header
 
-  THUMBNAIL_LONGEDGE_MAX = 400
-
   rescue_from ActionController::MissingFile do
     render plain: 'File not found', status: :not_found
   end
@@ -103,7 +101,6 @@ class IiifController < ApplicationController
     @image ||= StacksImage.new(stacks_image_params.merge(current_ability: current_ability))
   end
 
-  # rubocop:disable Metrics/MethodLength
   def image_info
     info = current_image.info do |md|
       if can? :download, current_image
@@ -115,35 +112,14 @@ class IiifController < ApplicationController
       end
     end
 
-    ##
-    # This is an incredibly horrible hack which forces us to be at the mercy of
-    # implementation details of a IIIF client. When we are in a degraded state,
-    # we are giving back resized width/height so that a viewer can appropriately
-    # display the degraded view.
-    unless can? :access, current_image
-      dimmensions = [current_image.image_width.to_f, current_image.image_height.to_f]
-      max = dimmensions.max
-      min = dimmensions.min
-      scale = min / max
-      h_scale = max == dimmensions.last ? 1 : scale
-      w_scale = max == dimmensions.first ? 1 : scale
-      info['height'] = (THUMBNAIL_LONGEDGE_MAX * h_scale).ceil
-      info['width'] = (THUMBNAIL_LONGEDGE_MAX * w_scale).ceil
-    end
-
     info['profile'] =
       if can? :download, current_image
         'http://iiif.io/api/image/2/level1'
       else
-        ['http://iiif.io/api/image/2/level1', { 'maxWidth' => THUMBNAIL_LONGEDGE_MAX }]
+        ['http://iiif.io/api/image/2/level1', { 'maxWidth' => 400 }]
       end
 
-    unless current_image.maybe_downloadable?
-      info['sizes'] = [{
-        width: THUMBNAIL_LONGEDGE_MAX,
-        height: THUMBNAIL_LONGEDGE_MAX
-      }]
-    end
+    info['sizes'] = [{ width: 400, height: 400 }] unless current_image.maybe_downloadable?
 
     services = []
     if anonymous_ability.cannot? :download, current_image
@@ -197,7 +173,6 @@ class IiifController < ApplicationController
 
     info
   end
-  # rubocop:enable Metrics/MethodLength
 
   def stacks_image_params
     allowed_params.slice(:region, :size, :rotation, :quality, :format).merge(identifier_params).merge(canonical_params)
