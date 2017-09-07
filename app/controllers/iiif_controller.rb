@@ -1,5 +1,8 @@
 ##
 # API for delivering IIIF-compatible images and image tiles
+
+require 'byebug'
+
 class IiifController < ApplicationController
   before_action :load_image
   before_action :add_iiif_profile_header
@@ -19,6 +22,7 @@ class IiifController < ApplicationController
   ##
   # Image delivery, streamed from the image server backend
   def show
+    byebug
     return unless stale?(cache_headers)
     authorize! :read, current_image
     expires_in 10.minutes, public: anonymous_ability.can?(:read, current_image)

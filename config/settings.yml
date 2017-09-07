@@ -1,6 +1,6 @@
 stacks:
   storage_root: /stacks
-  djatoka_url: 'http://localhost:8080/resolver'
+  djatoka_url: 'http://stacks.stanford.edu:8080/resolver'
 
 purl:
   url: 'https://purl.stanford.edu/'

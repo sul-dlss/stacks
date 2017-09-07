@@ -42,4 +42,6 @@ Rails.application.routes.draw do
     get '/image/auth/:id/:file_name.:format' => 'legacy_image_service#show'
     get '/image/auth/:id/:file_name' => 'legacy_image_service#show'
   end
+
+  mount Riiif::Engine => '/image/riiif', as: 'riiif'
 end

@@ -52,8 +52,10 @@ class StacksImage < StacksFile
   end
 
   def valid?
+    byebug
     science "stacks-image-valid?" do |experiment|
       experiment.use { image_valid? }
+      experiment.try { true }
     end
   end
 
