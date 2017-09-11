@@ -30,6 +30,9 @@ Rails.application.routes.draw do
     get '/image/iiif/auth/:identifier/:region/:size/:rotation/:quality' => 'webauth#login_iiif', as: :auth_iiif
   end
 
+  # As of Sept 2017, the legacy service was still used by Revs and Bassi Verati/FRDA
+  # It's also likely used by other applications too.
+  # The LegacyImageService is just a facade that redirects to the appropriate IIIF URI
   constraints file_name: %r{[^/]+}, format: %r{(jpg|png|gif|jp2)}, size: %r{(#{Settings.legacy.sizes.join('|')})} do
     get '/image/:id/(:file_name)_:size(.:format)' => 'legacy_image_service#show'
     get '/image/:id/:file_name.:format' => 'legacy_image_service#show'
