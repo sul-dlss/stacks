@@ -14,7 +14,6 @@ Rails.application.routes.draw do
     end
   end
 
-  get '/image/iiif' => 'stacks#iiif'
   root 'stacks#index'
 
   get '/auth/iiif' => 'webauth#login', as: :iiif_auth_api
