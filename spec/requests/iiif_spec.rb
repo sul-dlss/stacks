@@ -1,14 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe 'IIIF API' do
-  let(:stacks_image) do
-    StacksImage.new
-  end
-
   before do
-    allow(stacks_image).to receive_messages(exist?: true, etag: 'etag', mtime: Time.zone.now, info: {})
-    allow(StacksImage).to receive(:new).with(hash_including(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001'))
-      .and_return(stacks_image)
+    allow_any_instance_of(StacksImage).to receive_messages(exist?: true, etag: 'etag', mtime: Time.zone.now, info: {})
   end
 
   it 'redirects base uri requests to the info.json document' do

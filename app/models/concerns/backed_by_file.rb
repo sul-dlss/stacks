@@ -11,5 +11,5 @@ module BackedByFile
   end
 
   delegate :id, :id=, :file_name, :file_name=, :etag, :druid, :mtime,
-           :current_ability, :current_ability=, to: :file
+           to: :file
 end

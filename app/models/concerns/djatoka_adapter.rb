@@ -11,6 +11,7 @@ module DjatokaAdapter
     end
   end
 
+  # The block gets passed to https://github.com/jronallo/djatoka/blob/master/lib/djatoka/metadata.rb#L98
   def info(&block)
     metadata.as_json(&block)
   end
@@ -56,7 +57,7 @@ module DjatokaAdapter
   end
 
   def djatoka_path
-    "file://#{file.path}"
+    "file://#{path}"
   end
 
   def resolver

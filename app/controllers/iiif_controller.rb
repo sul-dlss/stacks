@@ -102,7 +102,10 @@ class IiifController < ApplicationController
   end
 
   def load_image
-    @image ||= model.new(stacks_image_params.merge(current_ability: current_ability))
+    @image ||= begin
+                 img = model.new(stacks_image_params)
+                 can?(:download, img) ? img : img.restricted
+               end
   end
 
   def image_info
@@ -116,12 +119,7 @@ class IiifController < ApplicationController
       end
     end
 
-    info['profile'] =
-      if can? :download, current_image
-        'http://iiif.io/api/image/2/level1'
-      else
-        ['http://iiif.io/api/image/2/level1', { 'maxWidth' => 400 }]
-      end
+    info['profile'] = current_image.profile
 
     info['sizes'] = [{ width: 400, height: 400 }] unless current_image.maybe_downloadable?
 

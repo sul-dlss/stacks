@@ -6,6 +6,17 @@ class StacksImage
 
   attr_accessor :canonical_url, :size, :region, :rotation, :quality, :format
 
+  # @return [RestrictedImage] the restricted version of this image
+  def restricted
+    RestrictedImage.new(region: region,
+                        size: size,
+                        rotation: rotation,
+                        quality: quality,
+                        format: format,
+                        id: id,
+                        file_name: file_name)
+  end
+
   def tile_dimensions
     if size =~ /^!?\d*,\d*$/
       explicit_tile_dimensions(size)
@@ -16,6 +27,10 @@ class StacksImage
     else
       [Float::INFINITY, Float::INFINITY]
     end
+  end
+
+  def profile
+    'http://iiif.io/api/image/2/level1'
   end
 
   def region_dimensions
@@ -42,7 +57,10 @@ class StacksImage
   end
 
   def path
-    file.path + '.jp2' if file.path
+    @path ||= begin
+                pth = PathService.for(druid, file_name)
+                pth + '.jp2' if pth
+              end
   end
 
   def exist?
@@ -80,14 +98,9 @@ class StacksImage
     region_dimensions.map { |i| i * scale }
   end
 
+  # This is overriden in RestrictedImage
   def max_tile_dimensions
-    if current_ability.can? :download, self
-      region_dimensions
-    elsif region =~ /^(\d+),(\d+),(\d+),(\d+)$/
-      explicit_tile_dimensions('!512,512')
-    else
-      explicit_tile_dimensions('!400,400')
-    end
+    region_dimensions
   end
 
   def explicit_region_dimensions
