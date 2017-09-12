@@ -1,6 +1,7 @@
 ##
 # Images in the image stacks
-class StacksImage < StacksFile
+class StacksImage
+  include BackedByFile
   include DjatokaAdapter
 
   attr_accessor :canonical_url, :size, :region, :rotation, :quality, :format
@@ -41,9 +42,7 @@ class StacksImage < StacksFile
   end
 
   def path
-    path = super
-
-    path + '.jp2' if path
+    file.path + '.jp2' if file.path
   end
 
   def exist?

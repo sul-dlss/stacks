@@ -1,6 +1,8 @@
 ##
 # Djatoka-backed implementation of StacksImage delivery
 module DjatokaAdapter
+  include ActiveSupport::Benchmarkable
+
   # @return [IO]
   def response
     benchmark "Fetch #{url}" do
@@ -22,7 +24,7 @@ module DjatokaAdapter
   end
 
   def image_exist?
-    path && image_width > 0
+    file.path && image_width > 0
   end
 
   def image_valid?
@@ -54,7 +56,7 @@ module DjatokaAdapter
   end
 
   def djatoka_path
-    "file://#{path}"
+    "file://#{file.path}"
   end
 
   def resolver

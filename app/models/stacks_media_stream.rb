@@ -1,5 +1,6 @@
 ##
 # media stream via stacks
-class StacksMediaStream < StacksFile
+class StacksMediaStream
+  include BackedByFile
   attr_accessor :format
 end
