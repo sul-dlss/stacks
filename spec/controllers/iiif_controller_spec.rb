@@ -102,13 +102,11 @@ RSpec.describe IiifController do
       StacksImage.new(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001')
     end
     let(:image_info) { controller.send(:image_info) }
+    let(:source_info) { {} }
+
     before do
       allow(controller).to receive(:current_image).and_return(image)
-      image.define_singleton_method :info do |&block|
-        opts = OpenStruct.new
-        block.call(opts)
-        opts.to_h
-      end
+      allow(image).to receive(:info).and_return(source_info)
     end
 
     # This is kind of a round-about way to test this,
@@ -116,6 +114,8 @@ RSpec.describe IiifController do
     # here is buried in the djatoka gem
     describe 'height/width' do
       context 'when the image is downloadable' do
+        let(:source_info) { { tile_height: 1024, tile_width: 1024 } }
+
         before do
           allow(controller).to receive(:can?).with(:download, image).and_return(true)
           allow(controller.send(:anonymous_ability)).to receive(:can?)
@@ -136,6 +136,7 @@ RSpec.describe IiifController do
         let(:image) do
           RestrictedImage.new(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001')
         end
+        let(:source_info) { { tile_height: 256, tile_width: 256 } }
         let(:auth_service) { image_info['service'] }
 
         before do

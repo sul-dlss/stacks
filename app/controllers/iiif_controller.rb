@@ -109,18 +109,8 @@ class IiifController < ApplicationController
   end
 
   def image_info
-    info = current_image.info do |md|
-      if can? :download, current_image
-        md.tile_width = 1024
-        md.tile_height = 1024
-      else
-        md.tile_width = 256
-        md.tile_height = 256
-      end
-    end
-
+    info = current_image.info
     info['profile'] = current_image.profile
-
     info['sizes'] = [{ width: 400, height: 400 }] unless current_image.maybe_downloadable?
 
     services = []

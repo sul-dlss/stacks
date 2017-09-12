@@ -17,6 +17,15 @@ class StacksImage
                         file_name: file_name)
   end
 
+  # TODO: remove tight coupling to djatoka
+  # @return [Mash]
+  def info
+    djatoka_info do |md|
+      md.tile_width = 1024
+      md.tile_height = 1024
+    end
+  end
+
   def tile_dimensions
     if size =~ /^!?\d*,\d*$/
       explicit_tile_dimensions(size)

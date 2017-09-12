@@ -3,6 +3,23 @@ require 'rails_helper'
 RSpec.describe RestrictedImage do
   let(:instance) { described_class.new }
 
+  describe '#info' do
+    subject { instance.info }
+
+    before do
+      instance.define_singleton_method :djatoka_info do |&block|
+        opts = OpenStruct.new
+        block.call(opts)
+        opts.to_h
+      end
+    end
+
+    it "adds tile size to the djatoka response" do
+      expect(subject[:tile_height]).to eq 256
+      expect(subject[:tile_width]).to eq 256
+    end
+  end
+
   describe '#profile' do
     subject { instance.profile }
 
