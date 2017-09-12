@@ -50,6 +50,8 @@ class Ability
       f.location_downloadable?(user.location)
     end
 
+    cannot :download, RestrictedImage
+
     can :read, [StacksFile, StacksImage, StacksMediaStream] do |f|
       can? :download, f
     end

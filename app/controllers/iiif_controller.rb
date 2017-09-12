@@ -102,71 +102,21 @@ class IiifController < ApplicationController
   end
 
   def load_image
-    @image ||= model.new(stacks_image_params.merge(current_ability: current_ability))
+    @image ||= begin
+                 img = model.new(stacks_image_params)
+                 can?(:download, img) ? img : img.restricted
+               end
   end
 
   def image_info
-    info = current_image.info do |md|
-      if can? :download, current_image
-        md.tile_width = 1024
-        md.tile_height = 1024
-      else
-        md.tile_width = 256
-        md.tile_height = 256
-      end
-    end
-
-    info['profile'] =
-      if can? :download, current_image
-        'http://iiif.io/api/image/2/level1'
-      else
-        ['http://iiif.io/api/image/2/level1', { 'maxWidth' => 400 }]
-      end
-
+    info = current_image.info
+    info['profile'] = current_image.profile
     info['sizes'] = [{ width: 400, height: 400 }] unless current_image.maybe_downloadable?
 
     services = []
     if anonymous_ability.cannot? :download, current_image
-      if current_image.stanford_restricted?
-        services << {
-          '@context' => 'http://iiif.io/api/auth/1/context.json',
-          '@id' => iiif_auth_api_url,
-          'profile' => 'http://iiif.io/api/auth/1/login',
-          'label' => 'Log in to access all available features.',
-          'confirmLabel' => 'Login',
-          'failureHeader' => 'Unable to authenticate',
-          'failureDescription' => 'The authentication service cannot be reached'\
-            '. If your browser is configured to block pop-up windows, try allow'\
-            'ing pop-up windows for this site before attempting to log in again.',
-          'service' => [
-            {
-              '@id' => iiif_token_api_url,
-              'profile' => 'http://iiif.io/api/auth/1/token'
-            },
-            {
-              '@id' => logout_url,
-              'profile' => 'http://iiif.io/api/auth/1/logout',
-              'label' => 'Logout'
-            }
-          ]
-        }
-      end
-
-      if current_image.restricted_by_location?
-        services << {
-          '@context' => 'http://iiif.io/api/auth/1/context.json',
-          'profile' => 'http://iiif.io/api/auth/1/external',
-          'label' => 'External Authentication Required',
-          'failureHeader' => 'Restricted Material',
-          'failureDescription' => 'Restricted content cannot be accessed from your location',
-          'service' => [
-            {
-              '@id' => iiif_token_api_url,
-              'profile' => 'http://iiif.io/api/auth/1/token'
-            }
-          ]
-        }
-      end
+      services << AuthService.to_iiif(self) if current_image.stanford_restricted?
+      services << LocationService.to_iiif(self) if current_image.restricted_by_location?
     end
 
     if services.one?
