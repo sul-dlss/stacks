@@ -4,6 +4,10 @@ class IiifController < ApplicationController
   before_action :load_image
   before_action :add_iiif_profile_header
 
+  # Follow the interface of Riiif
+  class_attribute :model
+  self.model = StacksImage
+
   rescue_from ActionController::MissingFile do
     render plain: 'File not found', status: :not_found
   end
@@ -98,7 +102,7 @@ class IiifController < ApplicationController
   end
 
   def load_image
-    @image ||= StacksImage.new(stacks_image_params.merge(current_ability: current_ability))
+    @image ||= model.new(stacks_image_params.merge(current_ability: current_ability))
   end
 
   def image_info

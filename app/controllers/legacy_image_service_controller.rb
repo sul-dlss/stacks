@@ -3,6 +3,10 @@
 class LegacyImageServiceController < ApplicationController
   before_action :load_image
 
+  # Follow the interface of Riiif
+  class_attribute :model
+  self.model = StacksImage
+
   # kludge to get around Rails' overzealous URL escaping
   IDENTIFIER_SEPARATOR = 'ZZZZZZZ'.freeze
 
@@ -25,7 +29,7 @@ class LegacyImageServiceController < ApplicationController
   end
 
   def load_image
-    @image ||= StacksImage.new(stacks_image_params)
+    @image ||= model.new(stacks_image_params)
   end
 
   def stacks_image_params
