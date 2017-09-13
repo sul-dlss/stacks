@@ -17,6 +17,8 @@ describe StacksRights do
   let(:file_name) { 'abc.pdf' }
 
   describe '#restricted_locations' do
+    subject { stacks_rights.send(:restricted_locations) }
+
     let(:rights_xml) do
       <<-XML
       <rightsMetadata>
@@ -30,7 +32,7 @@ describe StacksRights do
     end
 
     it 'enumerates locations the item can be accessed' do
-      expect(subject.restricted_locations).to match_array ['location1']
+      expect(subject).to match_array ['location1']
     end
 
     context 'with file-level rights' do
@@ -53,7 +55,7 @@ describe StacksRights do
       end
 
       it 'enumerates file-level locations the item can be accessed' do
-        expect(subject.restricted_locations).to match_array ['location2']
+        expect(subject).to match_array ['location2']
       end
     end
   end
