@@ -24,13 +24,13 @@ class ImageInfoService
 
   # @return [Hash] a data structure to that expresses the info.json response
   def info
-    info = current_image.info
-    info['profile'] = current_image.profile
-    info['sizes'] = [{ width: 400, height: 400 }] unless current_image.maybe_downloadable?
+    current_image.info.tap do |info|
+      info['profile'] = current_image.profile
+      info['sizes'] = [{ width: 400, height: 400 }] unless current_image.maybe_downloadable?
 
-    service = services
-    info['service'] = service if service
-    info
+      service = services
+      info['service'] = service if service
+    end
   end
 
   # @return [String,Array<String>,NilClass] return a string if there is one service,
