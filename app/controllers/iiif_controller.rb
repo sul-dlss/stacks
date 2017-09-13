@@ -47,7 +47,9 @@ class IiifController < ApplicationController
     authorize! :read_metadata, current_image
 
     respond_to do |format|
-      format.any(:json, :jsonld) { render json: JSON.pretty_generate(image_info) }
+      format.any(:json, :jsonld) do
+        render json: image_info
+      end
     end
   end
 
@@ -57,6 +59,17 @@ class IiifController < ApplicationController
   end
 
   private
+
+  # @return [String] the info.json body
+  def image_info
+    JSON.pretty_generate(
+      ImageInfoService.info(
+        current_image,
+        anonymous_ability.can?(:download, current_image),
+        self
+      )
+    )
+  end
 
   def allowed_params
     params.permit(:region, :size, :rotation, :quality, :format, :identifier, :download)
@@ -106,26 +119,6 @@ class IiifController < ApplicationController
                  img = model.new(stacks_image_params)
                  can?(:download, img) ? img : img.restricted
                end
-  end
-
-  def image_info
-    info = current_image.info
-    info['profile'] = current_image.profile
-    info['sizes'] = [{ width: 400, height: 400 }] unless current_image.maybe_downloadable?
-
-    services = []
-    if anonymous_ability.cannot? :download, current_image
-      services << AuthService.to_iiif(self) if current_image.stanford_restricted?
-      services << LocationService.to_iiif(self) if current_image.restricted_by_location?
-    end
-
-    if services.one?
-      info['service'] = services.first
-    elsif services.any?
-      info['service'] = services
-    end
-
-    info
   end
 
   def stacks_image_params
