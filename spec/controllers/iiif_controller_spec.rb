@@ -23,7 +23,7 @@ RSpec.describe IiifController do
     before do
       allow_any_instance_of(StacksImage).to receive(:valid?).and_return(true)
       allow_any_instance_of(StacksImage).to receive(:exist?).and_return(true)
-      allow_any_instance_of(StacksImage).to receive(:response).and_return(StringIO.new)
+      allow_any_instance_of(DjatokaImage).to receive(:response).and_return(StringIO.new)
     end
     it 'loads the image' do
       subject

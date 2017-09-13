@@ -30,7 +30,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
       allow(si).to receive(:world_unrestricted?).and_return(false)
       allow(si).to receive(:valid?).and_return(true)
       allow(si).to receive(:exist?).and_return(true)
-      allow(si).to receive(:url).and_return("url")
+      allow(si.send(:image_source)).to receive(:url).and_return("url")
       si
     end
     let!(:si_loc_only) do
@@ -42,7 +42,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
       allow(si).to receive(:world_rights).and_return([false, ''])
       allow(si).to receive(:valid?).and_return(true)
       allow(si).to receive(:exist?).and_return(true)
-      allow(si).to receive(:url).and_return("url")
+      allow(si.send(:image_source)).to receive(:url).and_return("url")
       si
     end
     let!(:si_user_not_in_loc) do
@@ -55,7 +55,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
       allow(si).to receive(:world_rights).and_return([false, ''])
       allow(si).to receive(:valid?).and_return(true)
       allow(si).to receive(:exist?).and_return(true)
-      allow(si).to receive(:url).and_return("url")
+      allow(si.send(:image_source)).to receive(:url).and_return("url")
       si
     end
     let!(:si_loc_and_stanford) do
@@ -67,7 +67,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
       allow(si).to receive(:world_rights).and_return([false, ''])
       allow(si).to receive(:valid?).and_return(true)
       allow(si).to receive(:exist?).and_return(true)
-      allow(si).to receive(:url).and_return("url")
+      allow(si.send(:image_source)).to receive(:url).and_return("url")
       si
     end
     let!(:si_user_not_in_loc_and_stanford) do
@@ -79,7 +79,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
       allow(si).to receive(:world_rights).and_return([false, ''])
       allow(si).to receive(:valid?).and_return(true)
       allow(si).to receive(:exist?).and_return(true)
-      allow(si).to receive(:url).and_return("url")
+      allow(si.send(:image_source)).to receive(:url).and_return("url")
       si
     end
 

@@ -5,7 +5,7 @@ module BackedByFile
   include StacksRights
   include ActiveModel::Model
 
-  # @return [StacksFile] the file on dis that back this projection
+  # @return [StacksFile] the file on disk that back this projection
   def file
     @file ||= StacksFile.new
   end

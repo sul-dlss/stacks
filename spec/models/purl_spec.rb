@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Purl do
-  before(:each) do
+  before do
     Rails.cache.clear
   end
 
@@ -9,7 +9,7 @@ RSpec.describe Purl do
     it 'fetches the public xml' do
       allow(Faraday).to receive(:get).with('https://purl.stanford.edu/abc.xml').and_return(double(body: ''))
 
-      described_class.public_xml('abc', '123')
+      described_class.public_xml('abc')
 
       expect(Faraday).to have_received(:get).with('https://purl.stanford.edu/abc.xml')
     end

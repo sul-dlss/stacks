@@ -1,14 +1,21 @@
 # frozen_string_literal: true
 
 ##
-# Images in the image stacks
+# An image that can be delivered over the IIIF endpoint
 class StacksImage
-  include BackedByFile
-  include DjatokaAdapter
+  include StacksRights
+  include ActiveModel::Model
+
+  # TODO: file_name should be part of the id.
+  attr_accessor :id, :file_name
+  alias druid id
 
   attr_accessor :canonical_url, :size, :region, :rotation, :quality, :format
   class_attribute :info_service_class
+  class_attribute :image_source_class
+
   self.info_service_class = DjatokaInfoService
+  self.image_source_class = DjatokaImage
 
   # @return [RestrictedImage] the restricted version of this image
   def restricted
@@ -66,34 +73,40 @@ class StacksImage
     (region =~ /^(\d+),(\d+),(\d+),(\d+)$/) && w <= 512 && h <= 512
   end
 
-  def druid
-    id
-  end
-
-  def path
-    @path ||= begin
-                pth = PathService.for(druid, file_name)
-                pth + '.jp2' if pth
-              end
-  end
-
   def exist?
-    image_exist?
+    image_source.exist? && image_width > 0
   end
 
   def valid?
-    image_valid?
+    exist? && image_source.valid?
   end
+
+  delegate :image_width, :image_height, to: :info_service
+  delegate :response, :etag, :mtime, to: :image_source
 
   private
 
   # @return [InfoService]
   def info_service
-    info_service_class.new(adapter)
+    @info_service ||= info_service_class.new(self)
   end
 
-  def adapter
-    self
+  # @return [Transformation]
+  def transformation
+    IiifTransformation.new(
+      region: region,
+      size: size,
+      rotation: rotation,
+      quality: quality,
+      format: format
+    )
+  end
+
+  # @return [SourceImage]
+  def image_source
+    @image_source ||= image_source_class.new(id: id,
+                                             file_name: file_name,
+                                             transformation: transformation)
   end
 
   def explicit_tile_dimensions(requested_size)
