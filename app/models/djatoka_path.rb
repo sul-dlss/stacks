@@ -13,7 +13,7 @@ class DjatokaPath
 
   def path
     @path ||= begin
-                pth = PathService.for(@id, @file_name)
+                pth = PathService.for(@id, @filename)
                 pth + '.jp2' if pth
               end
   end
