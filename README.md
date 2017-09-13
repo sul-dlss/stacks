@@ -10,8 +10,7 @@ The Digital Stacks are the Stanford University Libraries' online systems that ho
 
 ## Requirements
 
-1. Ruby (2.2.1 or greater)
-2. Rails (4.2.0 or greater)
+* Ruby (2.2.2+ or greater)
 
 ## Installation
 
