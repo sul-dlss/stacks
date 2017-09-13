@@ -11,11 +11,6 @@ class StacksImage
   alias druid id
 
   attr_accessor :canonical_url, :size, :region, :rotation, :quality, :format
-  class_attribute :info_service_class
-  class_attribute :image_source_class
-
-  self.info_service_class = DjatokaInfoService
-  self.image_source_class = DjatokaImage
 
   # @return [RestrictedImage] the restricted version of this image
   def restricted
@@ -88,7 +83,7 @@ class StacksImage
 
   # @return [InfoService]
   def info_service
-    @info_service ||= info_service_class.new(self)
+    @info_service ||= StacksInfoServiceFactory.create(self)
   end
 
   # @return [Transformation]
@@ -104,9 +99,9 @@ class StacksImage
 
   # @return [SourceImage]
   def image_source
-    @image_source ||= image_source_class.new(id: id,
-                                             file_name: file_name,
-                                             transformation: transformation)
+    @image_source ||= StacksImageSourceFactory.create(id: id,
+                                                      file_name: file_name,
+                                                      transformation: transformation)
   end
 
   def explicit_tile_dimensions(requested_size)
