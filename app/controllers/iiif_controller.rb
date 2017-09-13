@@ -1,7 +1,6 @@
 ##
 # API for delivering IIIF-compatible images and image tiles
 class IiifController < ApplicationController
-  before_action :load_image
   before_action :add_iiif_profile_header
 
   # Follow the interface of Riiif
@@ -12,17 +11,10 @@ class IiifController < ApplicationController
     render plain: 'File not found', status: :not_found
   end
 
-  before_action only: :show do
-    raise ActionController::MissingFile, 'File Not Found' unless current_image.valid?
-  end
-
-  before_action only: :metadata do
-    raise ActionController::MissingFile, 'File Not Found' unless current_image.exist?
-  end
-
   ##
   # Image delivery, streamed from the image server backend
   def show
+    raise ActionController::MissingFile, 'File Not Found' unless current_image.valid?
     return unless stale?(cache_headers)
     authorize! :read, current_image
     expires_in 10.minutes, public: anonymous_ability.can?(:read, current_image)
@@ -36,6 +28,8 @@ class IiifController < ApplicationController
   ##
   # IIIF info.json endpoint
   def metadata
+    raise ActionController::MissingFile, 'File Not Found' unless current_image.exist?
+
     return unless stale?(cache_headers)
 
     if degraded? && !degraded_identifier?
@@ -111,10 +105,6 @@ class IiifController < ApplicationController
   end
 
   def current_image
-    @image
-  end
-
-  def load_image
     @image ||= begin
                  img = model.new(stacks_image_params)
                  can?(:download, img) ? img : img.restricted
