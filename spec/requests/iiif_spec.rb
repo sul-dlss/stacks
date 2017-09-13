@@ -2,7 +2,10 @@ require 'rails_helper'
 
 RSpec.describe 'IIIF API' do
   before do
-    allow_any_instance_of(StacksImage).to receive_messages(exist?: true, etag: 'etag', mtime: Time.zone.now, djatoka_info: {})
+    allow_any_instance_of(StacksImage).to receive_messages(exist?: true,
+                                                           etag: 'etag',
+                                                           mtime: Time.zone.now,
+                                                           djatoka_info: {})
   end
 
   it 'redirects base uri requests to the info.json document' do
