@@ -2,7 +2,6 @@
 # Images in the image stacks
 class StacksImage
   include BackedByFile
-  include DjatokaAdapter
 
   attr_accessor :canonical_url, :size, :region, :rotation, :quality, :format
 
@@ -17,10 +16,22 @@ class StacksImage
                         file_name: file_name)
   end
 
-  # TODO: remove tight coupling to djatoka
+  def image
+    @image ||= Settings.stacks[Settings.stacks.driver].image.constantize.new(path: path,
+                                                                             region: region,
+                                                                             size: size,
+                                                                             rotation: rotation,
+                                                                             quality: quality,
+                                                                             format: format)
+  end
+
+  def metadata
+    @metadata ||= image.metadata
+  end
+
   # @return [Mash]
   def info
-    djatoka_info do |md|
+    metadata.as_json do |md|
       md.tile_width = 1024
       md.tile_height = 1024
     end
@@ -72,12 +83,23 @@ class StacksImage
               end
   end
 
+  def url
+    image.display_region.url
+  rescue Djatoka::IiifInvalidParam
+    nil
+  end
+
   def exist?
-    image_exist?
+    path && metadata.width > 0
   end
 
   def valid?
-    image_valid?
+    exist? && url.present?
+  end
+
+  def response
+    # HTTP::Response#body does response streaming
+    HTTP.get(url).body
   end
 
   private

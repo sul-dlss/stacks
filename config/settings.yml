@@ -1,9 +1,9 @@
 stacks:
   storage_root: /stacks
-  djatoka_url: 'http://localhost:8080/resolver'
-  adapter:
-    djatoka:
-      module: DjatokaAdapter
+  driver: djatoka
+  djatoka:
+    image: DjatokaImage
+    url: 'http://localhost:8080/resolver'
 
 purl:
   url: 'https://purl.stanford.edu/'
