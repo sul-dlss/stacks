@@ -39,7 +39,7 @@ class DjatokaImage < SourceImage
 
   def djatoka_region
     @djatoka_region ||= with_retries(max_tries: 3, rescue: exceptions_to_retry) do
-      iiif_req = Djatoka::IiifRequest.new(resolver, djatoka_path)
+      iiif_req = Djatoka::IiifRequest.new(resolver, djatoka_path.uri)
       iiif_req.region(transformation.region)
               .size(transformation.size)
               .rotation(transformation.rotation)
@@ -54,7 +54,7 @@ class DjatokaImage < SourceImage
   end
 
   def djatoka_path
-    "file://#{path}"
+    DjatokaPath.new(id, file_name)
   end
 
   def path

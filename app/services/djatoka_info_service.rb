@@ -6,15 +6,23 @@ class DjatokaInfoService < InfoService
     @metadata ||= djatoka_metadata.as_json
   end
 
+  def image_width
+    djatoka_metadata.max_width
+  end
+
+  def image_height
+    djatoka_metadata.max_height
+  end
+
   private
 
-  delegate :canonical_url, :path, to: :image
+  delegate :canonical_url, to: :image
 
   def djatoka_metadata
-    DjatokaMetadata.find(canonical_url, djatoka_path)
+    @djatoka_metadata ||= DjatokaMetadata.find(canonical_url, djatoka_path.uri)
   end
 
   def djatoka_path
-    "file://#{path}"
+    DjatokaPath.new(id, file_name)
   end
 end
