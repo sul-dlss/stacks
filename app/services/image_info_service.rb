@@ -28,7 +28,7 @@ class ImageInfoService
       info['profile'] = current_image.profile
       info['sizes'] = [{ width: 400, height: 400 }] unless current_image.maybe_downloadable?
 
-      service = services
+      service = services unless downloadable_anonymously
       info['service'] = service if service
     end
   end
@@ -37,12 +37,9 @@ class ImageInfoService
   #    a array if there are two services or nil if there are none.
   def services
     services = []
-    unless downloadable_anonymously
-      services << AuthService.to_iiif(context) if current_image.stanford_restricted?
-      services << LocationService.to_iiif(context) if current_image.restricted_by_location?
-    end
+    services << AuthService.to_iiif(context) if current_image.stanford_restricted?
+    services << LocationService.to_iiif(context) if current_image.restricted_by_location?
     return nil if services.empty?
-    return services.first if services.one?
-    services
+    services.one? ? services.first : services
   end
 end
