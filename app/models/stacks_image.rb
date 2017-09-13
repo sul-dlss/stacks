@@ -2,9 +2,40 @@
 # Images in the image stacks
 class StacksImage
   include BackedByFile
-  include DjatokaAdapter
 
   attr_accessor :canonical_url, :size, :region, :rotation, :quality, :format
+
+  # @return [RestrictedImage] the restricted version of this image
+  def restricted
+    RestrictedImage.new(region: region,
+                        size: size,
+                        rotation: rotation,
+                        quality: quality,
+                        format: format,
+                        id: id,
+                        file_name: file_name)
+  end
+
+  def image
+    @image ||= Settings.stacks[Settings.stacks.driver].image.constantize.new(path: path,
+                                                                             region: region,
+                                                                             size: size,
+                                                                             rotation: rotation,
+                                                                             quality: quality,
+                                                                             format: format)
+  end
+
+  def metadata
+    @metadata ||= image.metadata
+  end
+
+  # @return [Mash]
+  def info
+    metadata.as_json do |md|
+      md.tile_width = 1024
+      md.tile_height = 1024
+    end
+  end
 
   def tile_dimensions
     if size =~ /^!?\d*,\d*$/
@@ -16,6 +47,10 @@ class StacksImage
     else
       [Float::INFINITY, Float::INFINITY]
     end
+  end
+
+  def profile
+    'http://iiif.io/api/image/2/level1'
   end
 
   def region_dimensions
@@ -42,15 +77,26 @@ class StacksImage
   end
 
   def path
-    file.path + '.jp2' if file.path
+    @path ||= begin
+                pth = PathService.for(druid, file_name)
+                pth + '.jp2' if pth
+              end
+  end
+
+  def url
+    image.display_region.url
   end
 
   def exist?
-    image_exist?
+    path && metadata.width > 0
   end
 
   def valid?
-    image_valid?
+    exist? && url.present?
+  end
+
+  def response
+    HTTP.get(url).body
   end
 
   private
@@ -80,14 +126,9 @@ class StacksImage
     region_dimensions.map { |i| i * scale }
   end
 
+  # This is overriden in RestrictedImage
   def max_tile_dimensions
-    if current_ability.can? :download, self
-      region_dimensions
-    elsif region =~ /^(\d+),(\d+),(\d+),(\d+)$/
-      explicit_tile_dimensions('!512,512')
-    else
-      explicit_tile_dimensions('!400,400')
-    end
+    region_dimensions
   end
 
   def explicit_region_dimensions

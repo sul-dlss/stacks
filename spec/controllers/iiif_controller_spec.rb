@@ -1,43 +1,6 @@
 require 'rails_helper'
 
-##
-# A stub metadata class that mimics
-# some of the underlying IIIF logic
-# in the Djatoka gem for testing purposes
-class StubMetadataObject
-  # Turn block assignments into a hash
-  def info
-    opts = OpenStruct.new
-    yield(opts) if block_given?
-    opts.to_h
-  end
-
-  def restricted_by_location?
-    false
-  end
-
-  def maybe_downloadable?
-    false
-  end
-
-  def stanford_restricted?
-    stanford_only_rights.first
-  end
-
-  def stanford_only_rights
-    [false, nil]
-  end
-
-  def location_rights(_location)
-    [false, nil]
-  end
-
-  def restricted_locations
-    []
-  end
-end
-
-describe IiifController do
+RSpec.describe IiifController do
   before do
     allow_any_instance_of(StacksImage).to receive(:valid?).and_return(true)
     allow_any_instance_of(StacksImage).to receive(:exist?).and_return(true)
@@ -132,28 +95,18 @@ describe IiifController do
       info = JSON.parse(controller.response_body.first)
       expect(info['tiles'].first).to include 'width' => 1024, 'height' => 1024
     end
-
-    context 'image is not downloadable' do
-      before do
-        # This is needed as we are really just testing #image_info and not the #degraded? logic
-        allow(controller).to receive(:degraded?).and_return(false)
-        allow(controller).to receive(:can?).with(:download, an_instance_of(StacksImage)).and_return(false)
-      end
-
-      it 'asserts level1 IIIF compliance, and augments the default profile with maxWidth' do
-        subject
-        info = JSON.parse(controller.response_body.first)
-        expect(info['profile']).to eq ['http://iiif.io/api/image/2/level1', { 'maxWidth' => 400 }]
-        expect(controller.headers['Link']).to eq '<http://iiif.io/api/image/2/level1.json>;rel="profile"'
-      end
-    end
   end
 
   describe '#image_info' do
-    let(:stub_metadata_object) { StubMetadataObject.new }
+    let(:image) do
+      StacksImage.new(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001')
+    end
     let(:image_info) { controller.send(:image_info) }
+    let(:source_info) { {} }
+
     before do
-      allow(controller).to receive(:current_image).and_return(stub_metadata_object)
+      allow(controller).to receive(:current_image).and_return(image)
+      allow(image).to receive(:info).and_return(source_info)
     end
 
     # This is kind of a round-about way to test this,
@@ -161,10 +114,12 @@ describe IiifController do
     # here is buried in the djatoka gem
     describe 'height/width' do
       context 'when the image is downloadable' do
+        let(:source_info) { { tile_height: 1024, tile_width: 1024 } }
+
         before do
-          allow(controller).to receive(:can?).with(:download, stub_metadata_object).and_return(true)
+          allow(controller).to receive(:can?).with(:download, image).and_return(true)
           allow(controller.send(:anonymous_ability)).to receive(:can?)
-            .with(:download, stub_metadata_object).and_return(true)
+            .with(:download, image).and_return(true)
         end
 
         it 'the tile height/width is 1024' do
@@ -178,10 +133,14 @@ describe IiifController do
       end
 
       context 'when the image is not downloadable' do
+        let(:image) do
+          RestrictedImage.new(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001')
+        end
+        let(:source_info) { { tile_height: 256, tile_width: 256 } }
         let(:auth_service) { image_info['service'] }
 
         before do
-          allow(stub_metadata_object).to receive(:stanford_only_rights).and_return([true, nil])
+          allow(image).to receive(:stanford_only_rights).and_return([true, nil])
         end
 
         it 'the tile height/width is 256' do
@@ -215,11 +174,14 @@ describe IiifController do
       end
 
       context 'when the image is location-restricted' do
+        let(:image) do
+          RestrictedImage.new(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001')
+        end
         let(:location_service) { image_info['service'] }
 
         before do
-          allow(stub_metadata_object).to receive(:restricted_by_location?).and_return(true)
-          allow(stub_metadata_object).to receive(:restricted_locations).and_return([:spec])
+          allow(image).to receive(:restricted_by_location?).and_return(true)
+          allow(image).to receive(:restricted_locations).and_return([:spec])
         end
 
         it 'advertises an authentication service' do
@@ -236,10 +198,13 @@ describe IiifController do
       end
 
       context 'when the item has location and stanford-only rights' do
+        let(:image) do
+          RestrictedImage.new(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001')
+        end
         before do
-          allow(stub_metadata_object).to receive(:stanford_only_rights).and_return([true, nil])
-          allow(stub_metadata_object).to receive(:restricted_by_location?).and_return(true)
-          allow(stub_metadata_object).to receive(:restricted_locations).and_return([:spec])
+          allow(image).to receive(:stanford_only_rights).and_return([true, nil])
+          allow(image).to receive(:restricted_by_location?).and_return(true)
+          allow(image).to receive(:restricted_locations).and_return([:spec])
         end
 
         it 'advertises support for both login and external authentication' do
