@@ -9,4 +9,6 @@ class InfoService
   end
 
   attr_reader :image
+
+  delegate :id, :file_name, to: :image
 end
