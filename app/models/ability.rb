@@ -39,25 +39,15 @@ class Ability
     # NOTE: the below ability definitions which reference StacksFile also implicitly
     # cover StacksImage and StacksMediaStream, and any other subclasses of StacksFile.
 
-    can :download, [StacksFile, StacksImage, StacksMediaStream], &:world_downloadable?
-    can :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
-      f.stanford_only_downloadable? && user.stanford?
-    end
-    can :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
-      f.agent_downloadable?(user.id) && user.app_user?
-    end
-    can :download, [StacksFile, StacksImage, StacksMediaStream] do |f|
-      f.location_downloadable?(user.location)
+    can [:download, :read], [StacksFile, StacksImage, StacksMediaStream] do |f|
+      f.readable_by?(user)
     end
 
     cannot :download, RestrictedImage
 
-    can :read, [StacksFile, StacksImage, StacksMediaStream] do |f|
-      can? :download, f
-    end
-    can :read, StacksImage, &:thumbnail?
     can :read, StacksImage do |f|
-      f.tile? && can?(:access, f)
+      f.thumbnail? ||
+        (f.tile? && can?(:access, f))
     end
 
     can :stream, StacksMediaStream do |f|
@@ -66,18 +56,9 @@ class Ability
 
     can :read_metadata, StacksImage
 
+    # Access is a lower level of privileges than read.
     can :access, [StacksFile, StacksImage, StacksMediaStream] do |f|
-      world_rights_defined, _rule = f.world_rights
-      next true if world_rights_defined
-
-      stanford_only_rights_defined, _rule = f.stanford_only_rights
-      next true if stanford_only_rights_defined && user.stanford?
-
-      agent_rights_defined, _rule = f.agent_rights(user.id)
-      next true if agent_rights_defined && user.app_user?
-
-      location_rights_defined, _rule = f.location_rights(user.location)
-      next true if location_rights_defined
+      f.accessable_by?(user)
     end
   end
 end
