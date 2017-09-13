@@ -1,11 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe 'IIIF API' do
+  let(:info_service) { instance_double(DjatokaInfoService, fetch: {}) }
   before do
     allow_any_instance_of(StacksImage).to receive_messages(exist?: true,
                                                            etag: 'etag',
                                                            mtime: Time.zone.now,
-                                                           djatoka_info: {})
+                                                           info_service: info_service)
   end
 
   it 'redirects base uri requests to the info.json document' do
@@ -48,6 +49,7 @@ RSpec.describe 'IIIF API' do
       expect(response).to have_http_status :ok
     end
   end
+
   context 'rights xml where stanford only no download' do
     before do
       stub_rights_xml(stanford_only_no_download_xml)

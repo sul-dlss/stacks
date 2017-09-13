@@ -6,17 +6,15 @@ RSpec.describe RestrictedImage do
   describe '#info' do
     subject { instance.info }
 
+    let(:info_service) { instance_double(DjatokaInfoService, fetch: {}) }
+
     before do
-      instance.define_singleton_method :djatoka_info do |&block|
-        opts = OpenStruct.new
-        block.call(opts)
-        opts.to_h
-      end
+      allow(instance).to receive(:info_service).and_return(info_service)
     end
 
     it "adds tile size to the djatoka response" do
-      expect(subject[:tile_height]).to eq 256
-      expect(subject[:tile_width]).to eq 256
+      expect(subject['tile_height']).to eq 256
+      expect(subject['tile_width']).to eq 256
     end
   end
 

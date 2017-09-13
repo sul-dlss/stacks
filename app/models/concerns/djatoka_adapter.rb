@@ -15,11 +15,14 @@ module DjatokaAdapter
   def djatoka_info(&block)
     metadata.as_json(&block)
   end
+  deprecate :djatoka_info
 
+  # TODO: ask the InfoService
   def image_width
     metadata.max_width
   end
 
+  # TODO: ask the InfoService
   def image_height
     metadata.max_height
   end
@@ -52,6 +55,7 @@ module DjatokaAdapter
     end
   end
 
+  # TODO: deprecate this?
   def metadata
     @metadata ||= DjatokaMetadata.find(canonical_url, djatoka_path)
   end

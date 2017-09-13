@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # Images in the image stacks
 class StacksImage
@@ -5,6 +7,8 @@ class StacksImage
   include DjatokaAdapter
 
   attr_accessor :canonical_url, :size, :region, :rotation, :quality, :format
+  class_attribute :info_service_class
+  self.info_service_class = DjatokaInfoService
 
   # @return [RestrictedImage] the restricted version of this image
   def restricted
@@ -17,13 +21,14 @@ class StacksImage
                         file_name: file_name)
   end
 
-  # TODO: remove tight coupling to djatoka
-  # @return [Mash]
+  # @return [Hash]
   def info
-    djatoka_info do |md|
-      md.tile_width = 1024
-      md.tile_height = 1024
-    end
+    info_service.fetch.merge(v1_tile_dimensions)
+  end
+
+  # TODO: Remove? https://github.com/sul-dlss/stacks/issues/179
+  def v1_tile_dimensions
+    { 'tile_width' => 1024, 'tile_height' => 1024 }
   end
 
   def tile_dimensions
@@ -81,6 +86,15 @@ class StacksImage
   end
 
   private
+
+  # @return [InfoService]
+  def info_service
+    info_service_class.new(adapter)
+  end
+
+  def adapter
+    self
+  end
 
   def explicit_tile_dimensions(requested_size)
     dim = requested_size.delete('!').split(',', 2)

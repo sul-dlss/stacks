@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe StacksImage do
@@ -11,17 +13,14 @@ RSpec.describe StacksImage do
   describe '#info' do
     subject { instance.info }
 
-    before do
-      instance.define_singleton_method :djatoka_info do |&block|
-        opts = OpenStruct.new
-        block.call(opts)
-        opts.to_h
-      end
-    end
+    let(:info_service) { instance_double(DjatokaInfoService, fetch: {}) }
 
+    before do
+      allow(instance).to receive(:info_service).and_return(info_service)
+    end
     it "adds tile size to the djatoka response" do
-      expect(subject[:tile_height]).to eq 1024
-      expect(subject[:tile_width]).to eq 1024
+      expect(subject['tile_height']).to eq 1024
+      expect(subject['tile_width']).to eq 1024
     end
   end
 
