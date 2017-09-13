@@ -82,10 +82,6 @@ module StacksRights
   private
 
   def rights_xml
-    Purl.public_xml(druid, etag)
-  end
-
-  def logger
-    Rails.logger
+    Purl.public_xml(druid)
   end
 end

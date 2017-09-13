@@ -35,7 +35,7 @@ class DjatokaMetadata
     metadata.height.to_i
   end
 
-  # return the image metadata
+  # @return [Djatoka::Metadata] the image metadata
   def metadata
     @metadata ||= Rails.cache.fetch("djatoka/metadata/#{@stacks_file_path}", expires_in: 10.minutes) do
       fetch_metadata
@@ -44,6 +44,7 @@ class DjatokaMetadata
 
   private
 
+  # @return [Djatoka::Metadata]
   def fetch_metadata
     with_retries(max_tries: 3, rescue: exceptions_to_retry) do
       benchmark "Fetching djatoka metadata for #{@stacks_file_path}" do

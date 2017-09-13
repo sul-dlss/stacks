@@ -10,8 +10,9 @@ class Purl
     delegate :public_xml, to: :instance
   end
 
-  def public_xml(druid, etag)
-    Rails.cache.fetch("purl/#{druid}-#{etag}/public_xml", expires_in: 10.minutes) do
+  # TODO: was etag a valid key?
+  def public_xml(druid)
+    Rails.cache.fetch("purl/#{druid}/public_xml", expires_in: 10.minutes) do
       benchmark "Fetching public xml for #{druid}" do
         Faraday.get(public_xml_url(druid)).body
       end

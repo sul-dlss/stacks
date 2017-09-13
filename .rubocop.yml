@@ -14,6 +14,9 @@ AllCops:
 Rails:
   Enabled: true
 
+Metrics/ClassLength:
+  Max: 114
+
 Metrics/LineLength:
   Max: 120
   Exclude:

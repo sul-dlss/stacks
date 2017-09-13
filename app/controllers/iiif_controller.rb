@@ -1,24 +1,20 @@
 ##
 # API for delivering IIIF-compatible images and image tiles
 class IiifController < ApplicationController
-  before_action :load_image
   before_action :add_iiif_profile_header
+
+  # Follow the interface of Riiif
+  class_attribute :model
+  self.model = StacksImage
 
   rescue_from ActionController::MissingFile do
     render plain: 'File not found', status: :not_found
   end
 
-  before_action only: :show do
-    raise ActionController::MissingFile, 'File Not Found' unless current_image.valid?
-  end
-
-  before_action only: :metadata do
-    raise ActionController::MissingFile, 'File Not Found' unless current_image.exist?
-  end
-
   ##
   # Image delivery, streamed from the image server backend
   def show
+    raise ActionController::MissingFile, 'File Not Found' unless current_image.valid?
     return unless stale?(cache_headers)
     authorize! :read, current_image
     expires_in 10.minutes, public: anonymous_ability.can?(:read, current_image)
@@ -32,6 +28,8 @@ class IiifController < ApplicationController
   ##
   # IIIF info.json endpoint
   def metadata
+    raise ActionController::MissingFile, 'File Not Found' unless current_image.exist?
+
     return unless stale?(cache_headers)
 
     if degraded? && !degraded_identifier?
@@ -43,7 +41,9 @@ class IiifController < ApplicationController
     authorize! :read_metadata, current_image
 
     respond_to do |format|
-      format.any(:json, :jsonld) { render json: JSON.pretty_generate(image_info) }
+      format.any(:json, :jsonld) do
+        render json: image_info
+      end
     end
   end
 
@@ -53,6 +53,17 @@ class IiifController < ApplicationController
   end
 
   private
+
+  # @return [String] the info.json body
+  def image_info
+    JSON.pretty_generate(
+      ImageInfoService.info(
+        current_image,
+        anonymous_ability.can?(:download, current_image),
+        self
+      )
+    )
+  end
 
   def allowed_params
     params.permit(:region, :size, :rotation, :quality, :format, :identifier, :download)
@@ -94,84 +105,10 @@ class IiifController < ApplicationController
   end
 
   def current_image
-    @image
-  end
-
-  def load_image
-    @image ||= StacksImage.new(stacks_image_params.merge(current_ability: current_ability))
-  end
-
-  def image_info
-    info = current_image.info do |md|
-      if can? :download, current_image
-        md.tile_width = 1024
-        md.tile_height = 1024
-      else
-        md.tile_width = 256
-        md.tile_height = 256
-      end
-    end
-
-    info['profile'] =
-      if can? :download, current_image
-        'http://iiif.io/api/image/2/level1'
-      else
-        ['http://iiif.io/api/image/2/level1', { 'maxWidth' => 400 }]
-      end
-
-    info['sizes'] = [{ width: 400, height: 400 }] unless current_image.maybe_downloadable?
-
-    services = []
-    if anonymous_ability.cannot? :download, current_image
-      if current_image.stanford_restricted?
-        services << {
-          '@context' => 'http://iiif.io/api/auth/1/context.json',
-          '@id' => iiif_auth_api_url,
-          'profile' => 'http://iiif.io/api/auth/1/login',
-          'label' => 'Log in to access all available features.',
-          'confirmLabel' => 'Login',
-          'failureHeader' => 'Unable to authenticate',
-          'failureDescription' => 'The authentication service cannot be reached'\
-            '. If your browser is configured to block pop-up windows, try allow'\
-            'ing pop-up windows for this site before attempting to log in again.',
-          'service' => [
-            {
-              '@id' => iiif_token_api_url,
-              'profile' => 'http://iiif.io/api/auth/1/token'
-            },
-            {
-              '@id' => logout_url,
-              'profile' => 'http://iiif.io/api/auth/1/logout',
-              'label' => 'Logout'
-            }
-          ]
-        }
-      end
-
-      if current_image.restricted_by_location?
-        services << {
-          '@context' => 'http://iiif.io/api/auth/1/context.json',
-          'profile' => 'http://iiif.io/api/auth/1/external',
-          'label' => 'External Authentication Required',
-          'failureHeader' => 'Restricted Material',
-          'failureDescription' => 'Restricted content cannot be accessed from your location',
-          'service' => [
-            {
-              '@id' => iiif_token_api_url,
-              'profile' => 'http://iiif.io/api/auth/1/token'
-            }
-          ]
-        }
-      end
-    end
-
-    if services.one?
-      info['service'] = services.first
-    elsif services.any?
-      info['service'] = services
-    end
-
-    info
+    @image ||= begin
+                 img = model.new(stacks_image_params)
+                 can?(:download, img) ? img : img.restricted
+               end
   end
 
   def stacks_image_params

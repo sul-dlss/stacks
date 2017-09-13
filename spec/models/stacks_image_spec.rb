@@ -1,8 +1,39 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-describe StacksImage do
+RSpec.describe StacksImage do
+  subject { instance }
+  let(:instance) { described_class.new }
+
   before do
-    allow(subject).to receive_messages(image_width: 800, image_height: 600)
+    allow(instance).to receive_messages(image_width: 800, image_height: 600)
+  end
+
+  describe "#info_service" do
+    subject { instance.send(:info_service) }
+    let(:instance) { described_class.new }
+    it { is_expected.to be_instance_of DjatokaInfoService }
+  end
+
+  describe '#info' do
+    subject { instance.info }
+
+    let(:info_service) { instance_double(DjatokaInfoService, fetch: {}) }
+
+    before do
+      allow(instance).to receive(:info_service).and_return(info_service)
+    end
+    it "adds tile size to the djatoka response" do
+      expect(subject['tile_height']).to eq 1024
+      expect(subject['tile_width']).to eq 1024
+    end
+  end
+
+  describe 'profile' do
+    subject { instance.profile }
+
+    it { is_expected.to eq 'http://iiif.io/api/image/2/level1' }
   end
 
   describe '#thumbnail?' do
@@ -73,25 +104,7 @@ describe StacksImage do
       it 'returns the full image for unrestricted images' do
         subject.region = '0,0,800,600'
         subject.size = 'max'
-        subject.current_ability = permissive_ability
-
         expect(subject.tile_dimensions).to eq [800, 600]
-      end
-
-      it 'limits users to thumbnail sizes for restricted images' do
-        subject.region = 'full'
-        subject.size = 'max'
-        subject.current_ability = restricted_ability
-
-        expect(subject.tile_dimensions).to eq [400, 400]
-      end
-
-      it 'limits users to a maximum tiles size for restricted images' do
-        subject.region = '0,0,800,600'
-        subject.size = 'max'
-        subject.current_ability = restricted_ability
-
-        expect(subject.tile_dimensions).to eq [512, 512]
       end
     end
 
@@ -115,35 +128,26 @@ describe StacksImage do
     end
   end
 
-  describe '#path' do
-    subject { described_class.new(id: 'ab012cd3456', file_name: 'def') }
-
-    it 'should be the pairtree path to the jp2' do
-      expect(subject.path).to eq "#{Settings.stacks.storage_root}/ab/012/cd/3456/def.jp2"
-    end
-
-    context 'with a malformed druid' do
-      subject { described_class.new(id: 'abcdef', file_name: 'def') }
-      it 'is nil' do
-        expect(subject.path).to be_nil
-      end
-    end
-  end
-
   describe '#valid?' do
-    subject { described_class.new(id: 'ab012cd3456', file_name: 'def') }
+    subject(:instance) { described_class.new(id: 'ab012cd3456', file_name: 'def') }
+    subject { instance.valid? }
 
-    it 'is valid with good parameters' do
-      subject.quality = 'default'
-      subject.region = 'full'
-      subject.size = 'full'
-      subject.format = 'jpg'
-      subject.rotation = '0'
-      expect(subject).to be_valid
+    context 'with good parameters' do
+      before do
+        instance.quality = 'default'
+        instance.region = 'full'
+        instance.size = 'full'
+        instance.format = 'jpg'
+        instance.rotation = '0'
+      end
+      it { is_expected.to be true }
     end
 
-    it 'is invalid if the IIIF parameters are invalid' do
-      expect(subject.tap { |x| x.quality = 'native' }).not_to be_valid
+    context 'when the IIIF parameters are invalid' do
+      before do
+        instance.quality = 'native'
+      end
+      it { is_expected.to be false }
     end
   end
 end
