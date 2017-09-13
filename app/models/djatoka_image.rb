@@ -50,7 +50,7 @@ class DjatokaImage < SourceImage
   end
 
   def resolver
-    @resolver ||= Djatoka::Resolver.new(Settings.stacks.djatoka_url)
+    @resolver ||= Djatoka::Resolver.new(Settings.stacks[driver].url)
   end
 
   def djatoka_path
@@ -62,6 +62,10 @@ class DjatokaImage < SourceImage
                 pth = PathService.for(id, file_name)
                 pth + '.jp2' if pth
               end
+  end
+
+  def driver
+    @driver ||= Settings.stacks.driver
   end
 
   def exceptions_to_retry

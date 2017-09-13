@@ -48,7 +48,7 @@ class DjatokaMetadata
   def fetch_metadata
     with_retries(max_tries: 3, rescue: exceptions_to_retry) do
       benchmark "Fetching djatoka metadata for #{@stacks_file_path}" do
-        resolver = Djatoka::Resolver.new(Settings.stacks.djatoka_url)
+        resolver = Djatoka::Resolver.new(Settings.stacks[driver].url)
         resolver.metadata(@stacks_file_path).perform
       end
     end
@@ -56,6 +56,10 @@ class DjatokaMetadata
 
   def logger
     Rails.logger
+  end
+
+  def driver
+    @driver ||= Settings.stacks.driver
   end
 
   def exceptions_to_retry
