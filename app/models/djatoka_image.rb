@@ -24,12 +24,9 @@ class DjatokaImage < SourceImage
 
   private
 
-  def logger
-    Rails.logger
-  end
-
   attr_reader :transformation
   delegate :id, :file_name, :etag, :druid, :mtime, to: :file
+  delegate :logger, to: Rails
 
   # @return [StacksFile] the file on disk that back this projection
   attr_reader :file
