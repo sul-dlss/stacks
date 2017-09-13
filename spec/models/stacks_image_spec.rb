@@ -10,6 +10,12 @@ RSpec.describe StacksImage do
     allow(instance).to receive_messages(image_width: 800, image_height: 600)
   end
 
+  describe "#info_service" do
+    subject { instance.send(:info_service) }
+    let(:instance) { described_class.new }
+    it { is_expected.to be_instance_of DjatokaInfoService }
+  end
+
   describe '#info' do
     subject { instance.info }
 
