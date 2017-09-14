@@ -101,7 +101,7 @@ class IiifController < ApplicationController
   end
 
   def set_attachment_content_disposition_header
-    response.headers['Content-Disposition'] = "attachment;filename=#{identifier_params[:file_name]}.#{format_param}"
+    response.headers['Content-Disposition'] = "attachment;filename=#{file_name}.#{format_param}"
   end
 
   def current_image
@@ -112,7 +112,7 @@ class IiifController < ApplicationController
   end
 
   def stacks_image_params
-    { transformation: transformation }.merge(identifier_params).merge(canonical_params)
+    { transformation: transformation }.merge(id: stacks_identifier).merge(canonical_params)
   end
 
   def transformation
@@ -124,12 +124,11 @@ class IiifController < ApplicationController
                            format: allowed_params[:format])
   end
 
-  def identifier_params
-    id, file_name = escaped_identifier.split('%2F')
-    id.sub!(/^degraded_/, '')
-
-    { id: id, file_name: file_name }
+  def stacks_identifier
+    @stacks_identifier ||= StacksIdentifier.new(escaped_identifier.sub(/^degraded_/, ''))
   end
+
+  delegate :file_name, to: :stacks_identifier
 
   def canonical_params
     { canonical_url: iiif_base_url(identifier: escaped_identifier, host: request.host_with_port) }

@@ -1,7 +1,7 @@
 # Responsible for creating a connection to an image image service
 class StacksImageSourceFactory
-  def self.create(id:, file_name:, transformation:)
-    image_source_class.new(id: id, file_name: file_name, transformation: transformation, **attributes)
+  def self.create(id:, transformation:)
+    image_source_class.new(id: id, transformation: transformation, **attributes)
   end
 
   def self.image_source_class

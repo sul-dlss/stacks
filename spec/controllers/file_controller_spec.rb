@@ -6,7 +6,8 @@ describe FileController do
     stub_rights_xml(world_readable_rights_xml)
   end
 
-  let(:file) { StacksFile.new(id: 'xf680rd3068', file_name: 'xf680rd3068_1.jp2') }
+  let(:identifier) { StacksIdentifier.new(druid: 'xf680rd3068', file_name: 'xf680rd3068_1.jp2') }
+  let(:file) { StacksFile.new(id: identifier) }
 
   describe '#show' do
     subject { get :show, params: { id: 'xf680rd3068', file_name: 'xf680rd3068_1.jp2' } }

@@ -10,6 +10,5 @@ module BackedByFile
     @file ||= StacksFile.new
   end
 
-  delegate :id, :id=, :file_name, :file_name=, :etag, :druid, :mtime,
-           to: :file
+  delegate :id, :id=, :etag, :mtime, to: :file
 end

@@ -25,8 +25,12 @@ class FileController < ApplicationController
   def allowed_params
     params.permit(:id, :file_name, :download)
   end
-  # the args needed for StacksFile.new happen to be the same as allowed_params
-  alias stacks_file_params allowed_params
+
+  def stacks_file_params
+    allowed_params.slice(:download)
+                  .merge(id: StacksIdentifier.new(druid: params[:id],
+                                                  file_name: params[:file_name]))
+  end
 
   # called when CanCan::AccessDenied error is raised, typically by authorize!
   #   Should only be here if

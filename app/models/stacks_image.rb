@@ -6,17 +6,13 @@ class StacksImage
   include StacksRights
   include ActiveModel::Model
 
-  # TODO: file_name should be part of the id.
-  attr_accessor :id, :file_name
-  alias druid id
-
+  attr_accessor :id
   attr_accessor :canonical_url, :transformation
 
   # @return [RestrictedImage] the restricted version of this image
   def restricted
     RestrictedImage.new(transformation: transformation,
                         id: id,
-                        file_name: file_name,
                         canonical_url: canonical_url)
   end
 
@@ -63,7 +59,6 @@ class StacksImage
   # @return [SourceImage]
   def image_source
     @image_source ||= StacksImageSourceFactory.create(id: id,
-                                                      file_name: file_name,
                                                       transformation: transformation)
   end
 

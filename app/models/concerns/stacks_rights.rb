@@ -26,19 +26,19 @@ module StacksRights
   # Returns true if a given file has any location restrictions.
   #   Falls back to the object-level behavior if none at file level.
   def restricted_by_location?
-    rights.restricted_by_location?(file_name)
+    rights.restricted_by_location?(id.file_name)
   end
 
   # Returns [<Boolean>, <String>]: whether a file-level group/stanford node exists, and the value of its rule attribute
   #   If a group/stanford node does not exist for this file, then object-level group/stanford rights are returned
   def stanford_only_rights
-    rights.stanford_only_rights_for_file file_name
+    rights.stanford_only_rights_for_file id.file_name
   end
 
   # Returns [<Boolean>, <String>]: whether a file-level location exists, and the value of its rule attribute
   #   If a location node does not exist for this file, then object-level location rights are returned
   def location_rights(location)
-    rights.location_rights_for_file(file_name, location)
+    rights.location_rights_for_file(id.file_name, location)
   end
 
   private
@@ -57,21 +57,21 @@ module StacksRights
   end
 
   def world_unrestricted?
-    rights.world_unrestricted_file? file_name
+    rights.world_unrestricted_file? id.file_name
   end
 
   def world_downloadable?
-    rights.world_downloadable_file? file_name
+    rights.world_downloadable_file? id.file_name
   end
 
   # Returns [<Boolean>, <String>]: whether a file-level world node exists, and the value of its rule attribute
   #   If a world node does not exist for this file, then object-level world rights are returned
   def world_rights
-    rights.world_rights_for_file file_name
+    rights.world_rights_for_file id.file_name
   end
 
   def stanford_only_downloadable?
-    rights.stanford_only_downloadable_file? file_name
+    rights.stanford_only_downloadable_file? id.file_name
   end
 
   def stanford_only_accessable?
@@ -81,13 +81,13 @@ module StacksRights
   # Returns true if the file is stanford-only readable AND has no rule attribute
   #   If a stanford node does not exist for this file, then object-level stanford rights are returned
   def stanford_only_unrestricted?
-    rights.stanford_only_unrestricted_file? file_name
+    rights.stanford_only_unrestricted_file? id.file_name
   end
 
   # Returns [<Boolean>, <String>]: whether a file-level agent node exists, and the value of its rule attribute
   #   If an agent node does not exist for this file, then object-level agent rights are returned
   def agent_rights(agent)
-    rights.agent_rights_for_file file_name, agent
+    rights.agent_rights_for_file id.file_name, agent
   end
 
   def agent_downloadable?(agent)
@@ -113,6 +113,6 @@ module StacksRights
   end
 
   def rights_xml
-    Purl.public_xml(druid)
+    Purl.public_xml(id.druid)
   end
 end

@@ -5,7 +5,7 @@ class StacksFile
   include ActiveModel::Model
   include StacksRights
 
-  attr_accessor :id, :file_name, :current_ability, :download
+  attr_accessor :id, :current_ability, :download
 
   def exist?
     file_exist?
@@ -25,7 +25,7 @@ class StacksFile
 
   def path
     @path ||= begin
-      PathService.for(druid, file_name)
+      PathService.for(id)
     end
   end
 
