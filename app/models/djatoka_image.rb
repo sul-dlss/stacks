@@ -10,14 +10,6 @@ class DjatokaImage < SourceImage
     @url = url
   end
 
-  # @return [IO]
-  def response
-    benchmark "Fetch #{image_url}" do
-      # HTTP::Response#body does response streaming
-      HTTP.get(image_url).body
-    end
-  end
-
   def exist?
     file.path.present?
   end
