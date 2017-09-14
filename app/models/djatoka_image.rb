@@ -6,14 +6,6 @@ class DjatokaImage < SourceImage
     @transformation = transformation
   end
 
-  # @return [IO]
-  def response
-    benchmark "Fetch #{url}" do
-      # HTTP::Response#body does response streaming
-      HTTP.get(url).body
-    end
-  end
-
   def exist?
     file.path.present?
   end
@@ -31,7 +23,7 @@ class DjatokaImage < SourceImage
   # @return [StacksFile] the file on disk that back this projection
   attr_reader :file
 
-  def url
+  def uri
     djatoka_region.url
   rescue Djatoka::IiifInvalidParam
     nil
