@@ -113,6 +113,33 @@ RSpec.describe StacksImage do
     end
   end
 
+  describe '#restricted' do
+    subject { image.restricted }
+    let(:image) do
+      described_class.new(attributes)
+    end
+
+    let(:attributes) do
+      { region: '0,0,800,600',
+        size: 'pct:50',
+        id: '99999',
+        file_name: 'foo',
+        canonical_url: 'http://example.com/',
+        quality: 'default',
+        rotation: '0' }
+    end
+
+    it 'passes all the parameters' do
+      expect(subject.region).to eq attributes[:region]
+      expect(subject.size).to eq attributes[:size]
+      expect(subject.id).to eq attributes[:id]
+      expect(subject.file_name).to eq attributes[:file_name]
+      expect(subject.canonical_url).to eq attributes[:canonical_url]
+      expect(subject.quality).to eq attributes[:quality]
+      expect(subject.rotation).to eq attributes[:rotation]
+    end
+  end
+
   describe '#region_dimensions' do
     it 'uses the image dimensions' do
       expect(subject.tap { |x| x.region = 'full' }.region_dimensions).to eq [800, 600]

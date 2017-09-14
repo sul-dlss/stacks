@@ -20,7 +20,8 @@ class StacksImage
                         quality: quality,
                         format: format,
                         id: id,
-                        file_name: file_name)
+                        file_name: file_name,
+                        canonical_url: canonical_url)
   end
 
   # @return [Hash]

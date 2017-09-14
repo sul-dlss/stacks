@@ -1,12 +1,17 @@
 require 'rails_helper'
 
 RSpec.describe 'IIIF API' do
-  let(:info_service) { instance_double(DjatokaInfoService, fetch: {}) }
+  let(:iiif_uri) { 'http://www.example.com/image/iiif/nr349ct7889%252Fnr349ct7889_00_0001' }
+  let(:file_uri) { 'file:///stacks/nr/349/ct/7889/nr349ct7889_00_0001.jp2' }
+  let(:djatoka_metadata) do
+    instance_double(DjatokaMetadata)
+  end
+
   before do
+    allow(DjatokaMetadata).to receive(:find).with(iiif_uri, file_uri).and_return(djatoka_metadata)
     allow_any_instance_of(StacksImage).to receive_messages(exist?: true,
                                                            etag: 'etag',
-                                                           mtime: Time.zone.now,
-                                                           info_service: info_service)
+                                                           mtime: Time.zone.now)
   end
 
   it 'redirects base uri requests to the info.json document' do
@@ -33,10 +38,14 @@ RSpec.describe 'IIIF API' do
       expect(response.headers['Cache-Control']).to match(/max-age=0/)
     end
 
-    it 'serves a degraded info.json description for the original file' do
-      get '/image/iiif/degraded_nr349ct7889%2Fnr349ct7889_00_0001/info.json'
+    context 'when connecting to the degraded url' do
+      let(:iiif_uri) { 'http://www.example.com/image/iiif/degraded_nr349ct7889%252Fnr349ct7889_00_0001' }
 
-      expect(controller.send(:identifier_params)).to include id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001'
+      it 'serves a degraded info.json description for the original file' do
+        get '/image/iiif/degraded_nr349ct7889%2Fnr349ct7889_00_0001/info.json'
+
+        expect(controller.send(:identifier_params)).to include id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001'
+      end
     end
   end
 
