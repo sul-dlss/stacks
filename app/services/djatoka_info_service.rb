@@ -2,8 +2,11 @@
 
 # Fetch image information from Djatoka
 class DjatokaInfoService < InfoService
-  def fetch
-    @metadata ||= djatoka_metadata.as_json
+  def fetch(tile_size)
+    @metadata ||= djatoka_metadata.as_json do |md|
+      md.tile_height = tile_size
+      md.tile_width = tile_size
+    end
   end
 
   def image_width

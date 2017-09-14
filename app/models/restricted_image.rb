@@ -3,9 +3,8 @@
 # The type of image that is used if a user doesn't have
 # `can? :download, stacks_image' permissions
 class RestrictedImage < StacksImage
-  # TODO: Remove? https://github.com/sul-dlss/stacks/issues/179
-  def v1_tile_dimensions
-    { 'tile_width' => 256, 'tile_height' => 256 }
+  def tile_size
+    256
   end
 
   def profile

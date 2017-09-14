@@ -4,11 +4,20 @@ RSpec.describe 'IIIF API' do
   let(:iiif_uri) { 'http://www.example.com/image/iiif/nr349ct7889%252Fnr349ct7889_00_0001' }
   let(:file_uri) { 'file:///stacks/nr/349/ct/7889/nr349ct7889_00_0001.jp2' }
   let(:djatoka_metadata) do
-    instance_double(DjatokaMetadata)
+    instance_double(Djatoka::Metadata, to_iiif_json: metadata)
   end
+  let(:metadata) do
+    JSON.pretty_generate(
+      tiles: [{ 'width' => 256, "height" => 256, "scaleFactors" => [1, 2, 4, 8, 16] }]
+    )
+  end
+  let(:resolver) { instance_double(Djatoka::Resolver, metadata: djatoka_metadata) }
 
   before do
-    allow(DjatokaMetadata).to receive(:find).with(iiif_uri, file_uri).and_return(djatoka_metadata)
+    # this is required because you can't dump a singleton (double)
+    allow(Rails.cache).to receive(:fetch).and_yield
+    allow(Djatoka::Resolver).to receive(:new).and_return(resolver)
+    allow(djatoka_metadata).to receive(:perform).and_return(djatoka_metadata)
     allow_any_instance_of(StacksImage).to receive_messages(exist?: true,
                                                            etag: 'etag',
                                                            mtime: Time.zone.now)
@@ -25,6 +34,8 @@ RSpec.describe 'IIIF API' do
     get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json', headers: { HTTP_ACCEPT: 'application/ld+json' }
 
     expect(response.content_type).to eq 'application/ld+json'
+    json = JSON.parse(response.body)
+    expect(json['tiles']).to eq [{ 'width' => 256, 'height' => 256, 'scaleFactors' => [1, 2, 4, 8, 16] }]
   end
 
   context 'for stanford-restricted documents' do

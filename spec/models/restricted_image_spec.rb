@@ -13,8 +13,8 @@ RSpec.describe RestrictedImage do
     end
 
     it "adds tile size to the djatoka response" do
-      expect(subject['tile_height']).to eq 256
-      expect(subject['tile_width']).to eq 256
+      subject
+      expect(info_service).to have_received(:fetch).with(256)
     end
   end
 
