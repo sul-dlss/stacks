@@ -54,7 +54,7 @@ class User
   end
 
   def self.stanford_generic_user
-    @stanford_generic_user ||= new(
+    new(
       id: 'fake',
       webauth_user: true,
       ldap_groups: Settings.user.stanford_groups
