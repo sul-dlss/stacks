@@ -24,9 +24,10 @@ RSpec.describe StacksImage do
     before do
       allow(instance).to receive(:info_service).and_return(info_service)
     end
+
     it "adds tile size to the djatoka response" do
-      expect(subject['tile_height']).to eq 1024
-      expect(subject['tile_width']).to eq 1024
+      subject
+      expect(info_service).to have_received(:fetch).with(1024)
     end
   end
 

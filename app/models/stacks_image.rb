@@ -26,12 +26,12 @@ class StacksImage
 
   # @return [Hash]
   def info
-    info_service.fetch.merge(v1_tile_dimensions)
+    info_service.fetch(tile_size)
   end
 
-  # TODO: Remove? https://github.com/sul-dlss/stacks/issues/179
-  def v1_tile_dimensions
-    { 'tile_width' => 1024, 'tile_height' => 1024 }
+  # this is overriden by RestrictedImage
+  def tile_size
+    1024
   end
 
   def tile_dimensions
