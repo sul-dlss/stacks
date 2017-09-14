@@ -1,10 +1,13 @@
 stacks:
   storage_root: /stacks
-  djatoka_url: 'http://localhost:8080/resolver'
   driver: djatoka
   djatoka:
-    image: DjatokaImage
-    info: DjatokaInfoService
+    image:
+      implementation: DjatokaImage
+      attributes:
+        url: 'http://localhost:8080/resolver'
+    info:
+      implementation: DjatokaInfoService
 
 purl:
   url: 'https://purl.stanford.edu/'

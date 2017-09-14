@@ -1,16 +1,17 @@
 # Represents a file on disk, and it's delivery via Djatoka
 class DjatokaImage < SourceImage
   include ActiveSupport::Benchmarkable
-  def initialize(id:, file_name:, transformation:)
+  def initialize(id:, file_name:, transformation:, url:)
     @file = StacksFile.new(id: id, file_name: file_name)
     @transformation = transformation
+    @url = url
   end
 
   # @return [IO]
   def response
-    benchmark "Fetch #{url}" do
+    benchmark "Fetch #{image_url}" do
       # HTTP::Response#body does response streaming
-      HTTP.get(url).body
+      HTTP.get(image_url).body
     end
   end
 
@@ -19,19 +20,19 @@ class DjatokaImage < SourceImage
   end
 
   def valid?
-    url.present?
+    image_url.present?
   end
 
   private
 
-  attr_reader :transformation
+  attr_reader :transformation, :url
   delegate :id, :file_name, :etag, :druid, :mtime, to: :file
   delegate :logger, to: Rails
 
   # @return [StacksFile] the file on disk that back this projection
   attr_reader :file
 
-  def url
+  def image_url
     djatoka_region.url
   rescue Djatoka::IiifInvalidParam
     nil
@@ -50,7 +51,7 @@ class DjatokaImage < SourceImage
   end
 
   def resolver
-    @resolver ||= Djatoka::Resolver.new(Settings.stacks.djatoka_url)
+    @resolver ||= Djatoka::Resolver.new(@url)
   end
 
   def djatoka_path
@@ -62,6 +63,10 @@ class DjatokaImage < SourceImage
                 pth = PathService.for(id, file_name)
                 pth + '.jp2' if pth
               end
+  end
+
+  def driver
+    @driver ||= Settings.stacks.driver
   end
 
   def exceptions_to_retry
