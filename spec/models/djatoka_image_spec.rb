@@ -6,7 +6,8 @@ RSpec.describe DjatokaImage do
   subject(:instance) do
     described_class.new(id: id,
                         file_name: 'def',
-                        transformation: nil)
+                        transformation: nil,
+                        url: 'foo')
   end
 
   let(:id) { 'ab012cd3456' }

@@ -26,6 +26,6 @@ OkComputer::Registry.register 'purl_url', OkComputer::HttpCheck.new(Settings.pur
 #   - in /status/all, these checks will display their result text, but will not affect HTTP response code
 
 # For image content in image viewer
-djatoka_url_to_check = Settings.stacks[Settings.stacks.driver].url + '?rft_id=/&svc_id=info:lanl-repo/svc/ping&url_ver=Z39.88-2004'
+djatoka_url_to_check = Settings.stacks[Settings.stacks.driver].image.attributes.url + '?rft_id=/&svc_id=info:lanl-repo/svc/ping&url_ver=Z39.88-2004'
 OkComputer::Registry.register 'imageserver_url', OkComputer::HttpCheck.new(djatoka_url_to_check)
 OkComputer.make_optional %w(imageserver_url)

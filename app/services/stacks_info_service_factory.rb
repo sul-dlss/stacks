@@ -5,7 +5,7 @@ class StacksInfoServiceFactory
   end
 
   def self.info_service_class
-    Settings.stacks[driver].info.constantize
+    Settings.stacks[driver].info.implementation.constantize
   end
   private_class_method :info_service_class
 
