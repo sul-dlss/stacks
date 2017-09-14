@@ -22,9 +22,14 @@ describe User do
       StacksMediaStream.new(file_name: 'movie.mp4').tap { |x| allow(x).to receive(:rights_xml).and_return(rights_xml) }
     end
 
-    let(:thumbnail) { StacksImage.new(region: 'full', size: '!400,400') }
-    let(:square_thumbnail) { StacksImage.new(region: 'square', size: '!400,400') }
-    let(:tile) { StacksImage.new(region: '0,0,100,100', size: '256,256') }
+    let(:thumbnail_transformation) { IiifTransformation.new(region: 'full', size: '!400,400') }
+    let(:thumbnail) { StacksImage.new(transformation: thumbnail_transformation) }
+
+    let(:square_transformation) { IiifTransformation.new(region: 'square', size: '!400,400') }
+    let(:square_thumbnail) { StacksImage.new(transformation: square_transformation) }
+
+    let(:tile_transformation) { IiifTransformation.new(region: '0,0,100,100', size: '256,256') }
+    let(:tile) { StacksImage.new(transformation: tile_transformation) }
 
     before do
       allow_any_instance_of(StacksImage).to receive(:rights_xml).and_return(rights_xml)

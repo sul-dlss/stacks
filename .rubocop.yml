@@ -15,7 +15,8 @@ Rails:
   Enabled: true
 
 Metrics/ClassLength:
-  Max: 115
+  Exclude:
+    - 'app/controllers/iiif_controller.rb'
 
 Metrics/LineLength:
   Max: 120
