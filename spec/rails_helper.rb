@@ -11,8 +11,6 @@ abort('The Rails environment is running in production mode!') if Rails.env.produ
 require 'spec_helper'
 require 'rspec/rails'
 require 'capybara/rails'
-require 'cancan/matchers'
-
 require 'fixtures/rights_xml_fixtures'
 # Add additional requires below this line. Rails is not loaded until this point!
 
