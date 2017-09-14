@@ -154,7 +154,7 @@ class IiifController < ApplicationController
   # We consider an image to be degraded if the user isn't current able to download it, but if they
   # login as a stanford user, they will be able to.
   def degraded?
-    !can?(:access, current_image) && generic_stanford_webauth_ability.can?(:access, current_image) ||
-      !can?(:download, current_image) && generic_stanford_webauth_ability.can?(:download, current_image)
+    !can?(:access, current_image) && current_image.accessable_by?(stanford_generic_user) ||
+      !can?(:download, current_image) && current_image.readable_by?(stanford_generic_user)
   end
 end

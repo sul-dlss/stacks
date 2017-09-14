@@ -15,6 +15,7 @@ RSpec.describe 'IIIF API' do
 
   before do
     # this is required because you can't dump a singleton (double)
+    stub_rights_xml(world_readable_rights_xml)
     allow(Rails.cache).to receive(:fetch).and_yield
     allow(Djatoka::Resolver).to receive(:new).and_return(resolver)
     allow(djatoka_metadata).to receive(:perform).and_return(djatoka_metadata)

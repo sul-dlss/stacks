@@ -30,8 +30,8 @@ class ApplicationController < ActionController::Base
     @anonymous_ability ||= Ability.new(anonymous_locatable_user)
   end
 
-  def generic_stanford_webauth_ability
-    @stanford_webauth_ability ||= Ability.new(User.stanford_generic_user)
+  def stanford_generic_user
+    @stanford_generic_user ||= User.stanford_generic_user
   end
 
   def basic_auth_user
