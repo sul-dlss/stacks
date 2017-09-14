@@ -1,8 +1,11 @@
 # Represents a file on disk, and it's delivery via Djatoka
 class DjatokaImage < SourceImage
   include ActiveSupport::Benchmarkable
-  def initialize(id:, file_name:, transformation:, url:)
-    @file = StacksFile.new(id: id, file_name: file_name)
+  # @param id [StacksIdentifier]
+  # @param transformation [IiifTransformation]
+  # @param url [String] the url for the djatoka resolver
+  def initialize(id:, transformation:, url:)
+    @file = StacksFile.new(id: id)
     @transformation = transformation
     @url = url
   end
@@ -26,7 +29,7 @@ class DjatokaImage < SourceImage
   private
 
   attr_reader :transformation, :url
-  delegate :id, :file_name, :etag, :druid, :mtime, to: :file
+  delegate :id, :etag, :mtime, to: :file
   delegate :logger, to: Rails
 
   # @return [StacksFile] the file on disk that back this projection
@@ -55,12 +58,12 @@ class DjatokaImage < SourceImage
   end
 
   def djatoka_path
-    DjatokaPath.new(id, file_name)
+    DjatokaPath.new(id)
   end
 
   def path
     @path ||= begin
-                pth = PathService.for(id, file_name)
+                pth = PathService.for(id)
                 pth + '.jp2' if pth
               end
   end

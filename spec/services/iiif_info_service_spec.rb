@@ -16,7 +16,10 @@ RSpec.describe IiifInfoService do
     end
     let(:downloadable_anonymously) { true }
     let(:image) do
-      StacksImage.new(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001')
+      StacksImage.new(id: identifier)
+    end
+    let(:identifier) do
+      StacksIdentifier.new(druid: 'nr349ct7889', file_name: 'nr349ct7889_00_0001')
     end
 
     let(:source_info) { {} }
@@ -56,7 +59,7 @@ RSpec.describe IiifInfoService do
 
     context 'when the image is not downloadable' do
       let(:image) do
-        RestrictedImage.new(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001')
+        RestrictedImage.new(id: identifier)
       end
       let(:downloadable_anonymously) { false }
       let(:source_info) { { tile_height: 256, tile_width: 256 } }
@@ -98,7 +101,7 @@ RSpec.describe IiifInfoService do
 
     context 'when the image is location-restricted' do
       let(:image) do
-        RestrictedImage.new(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001')
+        RestrictedImage.new(id: identifier)
       end
       let(:downloadable_anonymously) { false }
 
@@ -125,7 +128,7 @@ RSpec.describe IiifInfoService do
 
     context 'when the item has location and stanford-only rights' do
       let(:image) do
-        RestrictedImage.new(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001')
+        RestrictedImage.new(id: identifier)
       end
       let(:downloadable_anonymously) { false }
 

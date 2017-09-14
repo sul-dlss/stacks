@@ -11,10 +11,11 @@ RSpec.describe "Authentication for File requests", type: :request do
   let(:user_webauth_no_stanford_loc) { User.new(webauth_user: true, ip_address: allowed_loc) }
   let(:druid) { 'xf680rd3068' }
   let(:filename) { 'xf680rd3068_1.jp2' }
+  let(:identifier) { StacksIdentifier.new('xf680rd3068%2Fxf680rd3068_1.jp2') }
 
   context "#show" do
     let!(:sf_stanford_only) do
-      sf = StacksFile.new(id: druid, file_name: filename)
+      sf = StacksFile.new(id: identifier)
       allow(sf).to receive(:rights_xml).and_return <<-EOF
         <rightsMetadata>
           <access type="read">
@@ -27,7 +28,7 @@ RSpec.describe "Authentication for File requests", type: :request do
       sf
     end
     let!(:sf_loc_only) do
-      sf = StacksFile.new(id: druid, file_name: filename)
+      sf = StacksFile.new(id: identifier)
       allow(sf).to receive(:rights_xml).and_return <<-EOF
         <rightsMetadata>
           <access type="read">
@@ -40,7 +41,7 @@ RSpec.describe "Authentication for File requests", type: :request do
       sf
     end
     let!(:sf_user_not_in_loc) do
-      sf = StacksFile.new(id: druid, file_name: filename)
+      sf = StacksFile.new(id: identifier)
       allow(sf).to receive(:rights_xml).and_return <<-EOF
         <rightsMetadata>
           <access type="read">
@@ -53,7 +54,7 @@ RSpec.describe "Authentication for File requests", type: :request do
       sf
     end
     let!(:sf_loc_and_stanford) do
-      sf = StacksFile.new(id: druid, file_name: filename)
+      sf = StacksFile.new(id: identifier)
       allow(sf).to receive(:rights_xml).and_return <<-EOF
         <rightsMetadata>
           <access type="read">
@@ -67,7 +68,7 @@ RSpec.describe "Authentication for File requests", type: :request do
       sf
     end
     let!(:sf_user_not_in_loc_and_stanford) do
-      sf = StacksFile.new(id: druid, file_name: filename)
+      sf = StacksFile.new(id: identifier)
       allow(sf).to receive(:rights_xml).and_return <<-EOF
         <rightsMetadata>
           <access type="read">

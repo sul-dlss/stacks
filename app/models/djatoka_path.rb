@@ -1,8 +1,8 @@
 # Resolves path on disk given id and filename
 class DjatokaPath
-  def initialize(id, filename)
+  # @param id [StacksIdentifier]
+  def initialize(id)
     @id = id
-    @filename = filename
   end
 
   def uri
@@ -13,7 +13,7 @@ class DjatokaPath
 
   def path
     @path ||= begin
-                pth = PathService.for(@id, @filename)
+                pth = PathService.for(@id)
                 pth + '.jp2' if pth
               end
   end

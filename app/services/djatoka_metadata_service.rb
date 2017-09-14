@@ -26,6 +26,6 @@ class DjatokaMetadataService < MetadataService
   end
 
   def djatoka_path
-    DjatokaPath.new(id, file_name)
+    DjatokaPath.new(id)
   end
 end

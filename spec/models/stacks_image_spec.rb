@@ -101,6 +101,7 @@ RSpec.describe StacksImage do
     let(:image) do
       described_class.new(attributes)
     end
+    let(:identifier) { StacksIdentifier.new(druid: 'ab012cd3456', file_name: 'def') }
 
     let(:transformation) do
       IiifTransformation.new(
@@ -112,8 +113,7 @@ RSpec.describe StacksImage do
     end
 
     let(:attributes) do
-      { id: '99999',
-        file_name: 'foo',
+      { id: identifier,
         canonical_url: 'http://example.com/',
         transformation: transformation }
     end
@@ -121,13 +121,13 @@ RSpec.describe StacksImage do
     it 'passes all the parameters' do
       expect(subject.transformation).to eq attributes[:transformation]
       expect(subject.id).to eq attributes[:id]
-      expect(subject.file_name).to eq attributes[:file_name]
       expect(subject.canonical_url).to eq attributes[:canonical_url]
     end
   end
 
   describe '#valid?' do
-    subject(:instance) { described_class.new(id: 'ab012cd3456', file_name: 'def', transformation: transformation) }
+    let(:identifier) { StacksIdentifier.new(druid: 'ab012cd3456', file_name: 'def') }
+    let(:instance) { described_class.new(id: identifier, transformation: transformation) }
     subject { instance.valid? }
 
     context 'with good parameters' do

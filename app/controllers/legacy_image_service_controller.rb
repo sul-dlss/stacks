@@ -93,7 +93,7 @@ class LegacyImageServiceController < ApplicationController
   end
 
   def identifier_params
-    { id: id, file_name: file_name }
+    { id: [id, file_name].join('%2F') }
   end
 
   def id

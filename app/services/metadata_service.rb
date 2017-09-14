@@ -10,5 +10,5 @@ class MetadataService
 
   attr_reader :image
 
-  delegate :id, :file_name, to: :image
+  delegate :id, to: :image
 end
