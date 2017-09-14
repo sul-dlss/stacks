@@ -46,8 +46,9 @@ class Ability
     cannot :download, RestrictedImage
 
     can :read, StacksImage do |f|
-      f.thumbnail? ||
-        (f.tile? && can?(:access, f))
+      projection = f.projection
+      projection.thumbnail? ||
+        (projection.tile? && can?(:access, f))
     end
 
     can :stream, StacksMediaStream do |f|

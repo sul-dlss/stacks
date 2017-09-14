@@ -112,7 +112,16 @@ class IiifController < ApplicationController
   end
 
   def stacks_image_params
-    allowed_params.slice(:region, :size, :rotation, :quality, :format).merge(identifier_params).merge(canonical_params)
+    { transformation: transformation }.merge(identifier_params).merge(canonical_params)
+  end
+
+  def transformation
+    return unless allowed_params.key?(:size)
+    IiifTransformation.new(region: allowed_params[:region],
+                           size: allowed_params[:size],
+                           rotation: allowed_params[:rotation],
+                           quality: allowed_params[:quality],
+                           format: allowed_params[:format])
   end
 
   def identifier_params

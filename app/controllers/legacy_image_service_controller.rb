@@ -13,16 +13,19 @@ class LegacyImageServiceController < ApplicationController
   ##
   # Redirect legacy image requests to their IIIF equivalents
   def show
-    redirect_to iiif_path(identifier: "#{id}#{IDENTIFIER_SEPARATOR}#{file_name}",
-                          download: allowed_params[:download],
-                          region: @image.region,
-                          size: @image.size,
-                          rotation: @image.rotation || 0,
-                          quality: @image.quality,
-                          format: @image.format).sub(IDENTIFIER_SEPARATOR, '%2F')
+    redirect_to iiif_path(iiif_options).sub(IDENTIFIER_SEPARATOR, '%2F')
   end
 
   private
+
+  def iiif_options
+    @image.transformation
+          .to_params
+          .merge(
+            identifier: "#{id}#{IDENTIFIER_SEPARATOR}#{file_name}",
+            download: allowed_params[:download]
+          )
+  end
 
   def allowed_params
     params.permit(:id, :file_name, :download, :format, :h, :region, :rotate, :size, :w, :zoom)
@@ -33,17 +36,17 @@ class LegacyImageServiceController < ApplicationController
   end
 
   def stacks_image_params
-    iiif_params.merge(identifier_params)
+    { transformation: iiif_params }.merge(identifier_params)
   end
 
   def iiif_params
-    {
+    IiifTransformation.new(
       region: iiif_region,
-      rotation: allowed_params[:rotate],
+      rotation: allowed_params.fetch(:rotate, 0),
       quality: 'default',
       format: allowed_params[:format] || 'jpg',
       size: iiif_size
-    }
+    )
   end
 
   def iiif_size

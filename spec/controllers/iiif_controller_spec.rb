@@ -29,9 +29,9 @@ RSpec.describe IiifController do
       subject
       image = assigns(:image)
       expect(image).to be_a StacksImage
-      expect(image.region).to eq '0,640,2552,2552'
-      expect(image.size).to eq '100,100'
-      expect(image.rotation).to eq '0'
+      expect(image.transformation.region).to eq '0,640,2552,2552'
+      expect(image.transformation.size).to eq '100,100'
+      expect(image.transformation.rotation).to eq '0'
     end
 
     it 'sets the content type' do
