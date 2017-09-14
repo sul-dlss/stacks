@@ -57,7 +57,7 @@ class IiifController < ApplicationController
   # @return [String] the info.json body
   def image_info
     JSON.pretty_generate(
-      ImageInfoService.info(
+      IiifInfoService.info(
         current_image,
         anonymous_ability.can?(:download, current_image),
         self

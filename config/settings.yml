@@ -6,8 +6,8 @@ stacks:
       implementation: DjatokaImage
       attributes:
         url: 'http://localhost:8080/resolver'
-    info:
-      implementation: DjatokaInfoService
+    metadata:
+      implementation: DjatokaMetadataService
 
 purl:
   url: 'https://purl.stanford.edu/'

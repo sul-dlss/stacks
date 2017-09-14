@@ -68,7 +68,7 @@ RSpec.describe IiifController do
 
   describe '#metadata' do
     before do
-      allow(ImageInfoService).to receive(:info)
+      allow(IiifInfoService).to receive(:info)
         .with(StacksImage, false, controller)
         .and_return(height: '999')
     end

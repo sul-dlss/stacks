@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe DjatokaInfoService do
+RSpec.describe DjatokaMetadataService do
   let(:image) { StacksImage.new(id: 'nr349ct7888', file_name: 'nr349ct7889_00_0001', canonical_url: 'foo') }
   let(:service) { described_class.new image }
   let(:metadata) { instance_double(DjatokaMetadata, max_width: 999, max_height: 888) }

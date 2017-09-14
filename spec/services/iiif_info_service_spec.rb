@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe ImageInfoService do
+RSpec.describe IiifInfoService do
   describe '#info' do
     subject(:image_info) do
       described_class.info(image, downloadable_anonymously, context)

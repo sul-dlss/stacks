@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Produces iiif info.json responses
-class ImageInfoService
+class IiifInfoService
   # A helper method to instantiate and produce the json
   # @param current_image [StacksImage,RestrictedImage] the image to get the information for
   # @param downloadable_anonymously [Boolean] can the resource be downloaded anonymously?
