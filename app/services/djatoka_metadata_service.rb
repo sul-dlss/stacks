@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# Fetch image information from Djatoka
-class DjatokaInfoService < InfoService
+# Fetch metadata from Djatoka
+class DjatokaMetadataService < MetadataService
   def fetch(tile_size)
     @metadata ||= djatoka_metadata.as_json do |md|
       md.tile_height = tile_size

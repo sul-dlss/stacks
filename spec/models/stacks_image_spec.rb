@@ -13,13 +13,13 @@ RSpec.describe StacksImage do
   describe "#info_service" do
     subject { instance.send(:info_service) }
     let(:instance) { described_class.new }
-    it { is_expected.to be_instance_of DjatokaInfoService }
+    it { is_expected.to be_instance_of DjatokaMetadataService }
   end
 
   describe '#info' do
     subject { instance.info }
 
-    let(:info_service) { instance_double(DjatokaInfoService, fetch: {}) }
+    let(:info_service) { instance_double(DjatokaMetadataService, fetch: {}) }
 
     before do
       allow(instance).to receive(:info_service).and_return(info_service)

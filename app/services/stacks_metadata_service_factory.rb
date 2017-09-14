@@ -1,5 +1,5 @@
-# Responsible for creating a connection to an image image service
-class StacksInfoServiceFactory
+# Responsible for creating a connection to an image metadata service
+class StacksMetadataServiceFactory
   def self.create(image)
     info_service_class.new(image)
   end
@@ -10,7 +10,7 @@ class StacksInfoServiceFactory
   private_class_method :info_service_class
 
   def self.config
-    Settings.stacks[driver].info
+    Settings.stacks[driver].metadata
   end
   private_class_method :config
 

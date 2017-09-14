@@ -57,7 +57,7 @@ class StacksImage
 
   # @return [InfoService]
   def info_service
-    @info_service ||= StacksInfoServiceFactory.create(self)
+    @info_service ||= StacksMetadataServiceFactory.create(self)
   end
 
   # @return [SourceImage]
