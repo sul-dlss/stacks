@@ -8,6 +8,19 @@
 
 The Digital Stacks are the Stanford University Libraries' online systems that house and deliver digital resources to patrons. They work together with discovery systems (such as the catalog, library search engine, finding aids, etc.) to make up the Libraries' digital access services. Digital "stacks" is a convenient metaphor echoing the physical housing of books and other library material. For digital resources it manifests itself to users through the stacks.stanford.edu host name used for access URLs, identifying the virtual location where digital resources can be accessed.
 
+## Capabilities
+
+Stacks is responsible for providing 6 endpoints
+
+1. The stacks welcome page https://stacks.stanford.edu/
+1. A IIIF endpoint https://stacks.stanford.edu/image/iiif/:id
+1. A legacy image service https://stacks.stanford.edu/image/:id/:file_name
+(this issues redirects to the IIIF endpoint)
+1. A streaming media authentication endpoint that issues and verifies tokens
+from the media server
+1. File downloads https://stacks.stanford.edu/file/:id/:file_name
+1. Web authentication
+
 ## Requirements
 
 * Ruby (2.2.2+ or greater)
