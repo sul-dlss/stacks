@@ -34,6 +34,10 @@ class IiifMetadataService < MetadataService
   end
 
   def json
-    @json ||= JSON.parse retrieve
+    @json ||= begin
+                JSON.parse(retrieve).tap do |data|
+                  data['@id'] = @canonical_url
+                end
+              end
   end
 end

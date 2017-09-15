@@ -24,7 +24,8 @@ RSpec.describe IiifMetadataService do
   describe "#fetch" do
     subject { service.fetch(256) }
     it "returns the json" do
-      expect(subject['@id']).to eq 'https://sul-imageserver-uat.stanford.edu/cantaloupe/iiif/2/nr%2F349%2Fct%2F7889%2Fnr349ct7889_00_0001.jp2'
+      expect(subject['@id']).to eq 'foo'
+      expect(subject['width']).to eq 3832
     end
   end
 
