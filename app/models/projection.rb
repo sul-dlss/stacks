@@ -1,4 +1,4 @@
-# A projection is the result of a StacksImage put through a IiifTransformation
+# A projection is the result of a StacksImage put through a Iiif::Transformation
 class Projection
   def initialize(image, transformation)
     @image = image

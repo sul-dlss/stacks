@@ -2,7 +2,7 @@
 class IiifImage < SourceImage
   include ActiveSupport::Benchmarkable
   # @params id [StacksIdentifier]
-  # @params transformation [IiifTransformation]
+  # @params transformation [Iiif::Transformation]
   # @params base_uri [String]
   def initialize(id:, transformation:, base_uri:)
     @file = StacksFile.new(id: id)

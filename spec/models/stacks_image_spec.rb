@@ -41,7 +41,7 @@ RSpec.describe StacksImage do
     subject { StacksImage.new(transformation: transformation) }
 
     context "explicit sizes" do
-      let(:transformation) { IiifTransformation.new(size: '257,257', region: 'full') }
+      let(:transformation) { Iiif::Transformation.new(size: '257,257', region: 'full') }
 
       it 'handles explicit sizes' do
         expect(subject.tile_dimensions).to eq [257, 257]
@@ -49,7 +49,7 @@ RSpec.describe StacksImage do
     end
 
     context "height" do
-      let(:transformation) { IiifTransformation.new(size: '256,', region: '0,0,800,600') }
+      let(:transformation) { Iiif::Transformation.new(size: '256,', region: '0,0,800,600') }
 
       it 'calculates implied dimensions' do
         expect(subject.tile_dimensions).to eq [256, 192]
@@ -57,7 +57,7 @@ RSpec.describe StacksImage do
     end
 
     context "width" do
-      let(:transformation) { IiifTransformation.new(size: ',192', region: '0,0,800,600') }
+      let(:transformation) { Iiif::Transformation.new(size: ',192', region: '0,0,800,600') }
 
       it 'calculates implied dimensions' do
         expect(subject.tile_dimensions).to eq [256, 192]
@@ -65,7 +65,7 @@ RSpec.describe StacksImage do
     end
 
     context 'full dimensions' do
-      let(:transformation) { IiifTransformation.new(size: 'full', region: '0,0,800,600') }
+      let(:transformation) { Iiif::Transformation.new(size: 'full', region: '0,0,800,600') }
 
       it "calculates dimensions" do
         expect(subject.tile_dimensions).to eq [800, 600]
@@ -80,7 +80,7 @@ RSpec.describe StacksImage do
       let(:restricted_ability) do
         ability.tap { |x| allow(x).to receive(:can?).with(:download, subject).and_return(false) }
       end
-      let(:transformation) { IiifTransformation.new(size: 'max', region: '0,0,800,600') }
+      let(:transformation) { Iiif::Transformation.new(size: 'max', region: '0,0,800,600') }
 
       it 'returns the full image for unrestricted images' do
         expect(subject.tile_dimensions).to eq [800, 600]
@@ -88,7 +88,7 @@ RSpec.describe StacksImage do
     end
 
     context 'percentages' do
-      let(:transformation) { IiifTransformation.new(size: 'pct:50', region: '0,0,800,600') }
+      let(:transformation) { Iiif::Transformation.new(size: 'pct:50', region: '0,0,800,600') }
       it "returns 1/2 size" do
         expect(subject.tile_dimensions).to eq [400, 300]
       end
@@ -104,7 +104,7 @@ RSpec.describe StacksImage do
     let(:identifier) { StacksIdentifier.new(druid: 'ab012cd3456', file_name: 'def') }
 
     let(:transformation) do
-      IiifTransformation.new(
+      Iiif::Transformation.new(
         region: '0,0,800,600',
         size: 'full',
         quality: 'default',
@@ -132,7 +132,7 @@ RSpec.describe StacksImage do
 
     context 'with good parameters' do
       let(:transformation) do
-        IiifTransformation.new(size: 'full', region: 'full', quality: 'default', rotation: '0', format: 'jpg')
+        Iiif::Transformation.new(size: 'full', region: 'full', quality: 'default', rotation: '0', format: 'jpg')
       end
 
       it { is_expected.to be true }
@@ -140,7 +140,7 @@ RSpec.describe StacksImage do
 
     context 'when the IIIF parameters are invalid' do
       let(:transformation) do
-        IiifTransformation.new(quality: 'native', region: 'full', size: 'full')
+        Iiif::Transformation.new(quality: 'native', region: 'full', size: 'full')
       end
 
       it { is_expected.to be false }
