@@ -8,6 +8,8 @@ stacks:
         url: 'http://localhost:8080/resolver'
     metadata:
       implementation: DjatokaMetadataService
+    check:
+      implementation: CheckDjatoka
 
 purl:
   url: 'https://purl.stanford.edu/'
