@@ -1,13 +1,17 @@
 stacks:
   storage_root: /stacks
-  driver: djatoka
+  djatoka_url: 'http://localhost:8080/resolver'
+  driver: remote_iiif
   djatoka:
+    image: DjatokaImage
+    info: DjatokaInfoService
+  remote_iiif:
     image:
-      implementation: DjatokaImage
+      immplmentation: IiifImage
       attributes:
-        url: 'http://localhost:8080/resolver'
+        url: https://sul-imageserver-uat.stanford.edu/iiif/2/
     metadata:
-      implementation: DjatokaMetadataService
+      implementation: IiifMetadataService
 
 purl:
   url: 'https://purl.stanford.edu/'
