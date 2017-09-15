@@ -8,15 +8,11 @@ class StacksFile
   attr_accessor :id, :current_ability, :download
 
   def exist?
-    file_exist?
-  end
-
-  def file_exist?
     path && File.exist?(path)
   end
 
   def mtime
-    @mtime ||= File.mtime(path) if file_exist?
+    @mtime ||= File.mtime(path) if exist?
   end
 
   def etag
@@ -27,9 +23,5 @@ class StacksFile
     @path ||= begin
       PathService.for(id)
     end
-  end
-
-  def druid
-    id.split(':').last
   end
 end
