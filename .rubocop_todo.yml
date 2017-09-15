@@ -6,6 +6,18 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
+# Offense count: 14
+# Cop supports --auto-correct.
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+# SupportedStyles: symmetrical, new_line, same_line
+Layout/MultilineMethodCallBraceLayout:
+  Exclude:
+    - 'spec/routing/file_routing_spec.rb'
+    - 'spec/routing/media_routing_spec.rb'
+
+Lint/UriEscapeUnescape:
+  Enabled: false
+
 # Offense count: 4
 Metrics/AbcSize:
   Max: 36
@@ -28,30 +40,18 @@ Rails/OutputSafety:
   Exclude:
     - 'app/controllers/webauth_controller.rb'
 
+Rails/FilePath:
+  Enabled: false
+
 # Offense count: 2
 # Cop supports --auto-correct.
 Style/EmptyCaseCondition:
   Exclude:
     - 'app/controllers/legacy_image_service_controller.rb'
 
-# Offense count: 14
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: symmetrical, new_line, same_line
-Style/MultilineMethodCallBraceLayout:
-  Exclude:
-    - 'spec/routing/file_routing_spec.rb'
-    - 'spec/routing/media_routing_spec.rb'
 
-# Offense count: 1
-# Configuration parameters: NamePrefix, NamePrefixBlacklist, NameWhitelist.
-# NamePrefix: is_, has_, have_
-# NamePrefixBlacklist: is_, has_, have_
-# NameWhitelist: is_a?
-Style/PredicateName:
-  Exclude:
-    - 'spec/**/*'
-    - 'app/controllers/application_controller.rb'
+Style/PercentLiteralDelimiters:
+  Enabled: false
 
 # Offense count: 11
 # Cop supports --auto-correct.
@@ -59,3 +59,6 @@ Style/PredicateName:
 Style/Semicolon:
   Exclude:
     - 'spec/models/stacks_image_spec.rb'
+
+Style/SymbolArray:
+  Enabled: false
