@@ -10,27 +10,27 @@ describe 'Media routes' do
 
     it 'some chars requiring URI escaping' do
       filename = 'escape_needed {} @#^ %|"`.mp4'
-      expect(get: "/media/oo000oo0000/#{URI.escape(filename)}/verify_token").to route_to(
+      expect(get: "/media/oo000oo0000/#{ERB::Util.url_encode(filename)}/verify_token").to route_to(
         'media#verify_token', id: 'oo000oo0000', file_name: filename)
     end
 
     it 'multiple dots - all but last must be url escaped' do
       filename = 'foo.bar.foo.bar.mp4'
-      escaped_filename = 'foo%2Ebar%2Efoo%2Ebar.mp4' # URI.escape doesn't do periods
+      escaped_filename = ERB::Util.url_encode filename
       expect(get: "/media/oo000oo0000/#{escaped_filename}/verify_token").to route_to(
         'media#verify_token', id: 'oo000oo0000', file_name: filename)
     end
 
     it 'square brackets must be url escaped' do
       filename = 'foo[brackets]bar.mp4'
-      escaped_filename = 'foo%5Bbrackets%5Dbar.mp4' # URI.escape doesn't do square brackets
+      escaped_filename = ERB::Util.url_encode filename
       expect(get: "/media/oo000oo0000/#{escaped_filename}/verify_token").to route_to(
         'media#verify_token', id: 'oo000oo0000', file_name: filename)
     end
 
     it 'question mark must be url escaped' do
       filename = 'foo?.mp4'
-      escaped_filename = 'foo%3F.mp4' # URI.escape doesn't do question mark
+      escaped_filename = ERB::Util.url_encode filename
       expect(get: "/media/oo000oo0000/#{escaped_filename}/verify_token").to route_to(
         'media#verify_token', id: 'oo000oo0000', file_name: filename)
     end
@@ -38,7 +38,7 @@ describe 'Media routes' do
     it 'ü must be url escaped' do
       skip('problem writing test:  ü decodes to \xC3\xBC')
       filename = "fü.mp4"
-      escaped_filename = URI.escape(filename) # becomes %C3%BC
+      escaped_filename = ERB::Util.url_encode(filename) # becomes %C3%BC
       expect(get: "/media/oo000oo0000/#{escaped_filename}/verify_token").to route_to(
         'media#verify_token', id: 'oo000oo0000', file_name: filename)
     end
@@ -46,7 +46,7 @@ describe 'Media routes' do
     it '%20 in actual name (from ck155rf0207)' do
       skip('problem writing test:  %20 becomes space, over-aggressive param decoding?')
       filename = 'ARSCJ%202008.foo.bar.mp4'
-      expect(get: "/media/oo000oo0000/#{URI.escape(filename)}/verify_token").to route_to(
+      expect(get: "/media/oo000oo0000/#{ERB::Util.url_encode(filename)}/verify_token").to route_to(
         'media#verify_token', id: 'oo000oo0000', file_name: filename)
     end
   end

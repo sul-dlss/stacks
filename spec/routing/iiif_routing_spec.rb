@@ -18,32 +18,32 @@ describe 'IIIF routes' do
 
       it 'some chars requiring URI escaping' do
         identifier = 'escape_needed {} @#^ %|"`.ext'
-        expect(get: "/image/iiif/#{URI.escape(identifier)}/info.json").to route_to('iiif#metadata', identifier: identifier)
+        expect(get: "/image/iiif/#{ERB::Util.url_encode(identifier)}/info.json").to route_to('iiif#metadata', identifier: identifier)
       end
 
       it 'square brackets must be url escaped' do
         identifier = 'foo[brackets].bar.pdf'
-        escaped_identifier = 'foo%5Bbrackets%5D.bar.pdf' # URI.escape doesn't do square brackets
+        escaped_identifier = ERB::Util.url_encode identifier
         expect(get: "/image/iiif/#{escaped_identifier}/info.json").to route_to('iiif#metadata', identifier: identifier)
       end
 
       it 'question mark must be url escaped' do
         identifier = 'foo?.pdf'
-        escaped_identifier = 'foo%3F.pdf' # URI.escape doesn't do question mark
+        escaped_identifier = ERB::Util.url_encode(identifier)
         expect(get: "/image/iiif/#{escaped_identifier}/info.json").to route_to('iiif#metadata', identifier: identifier)
       end
 
       it 'ü must be url escaped' do
         skip('problem writing test:  ü decodes to \xC3\xBC')
         identifier = "fü.pdf"
-        escaped_identifier = URI.escape(identifier) # becomes %C3%BC
+        escaped_identifier = ERB::Util.url_encode(identifier) # becomes %C3%BC
         expect(get: "/image/iiif/#{escaped_identifier}").to route_to('iiif#show', identifier: identifier)
       end
 
       it '%20 in actual name (from ck155rf0207)' do
         skip('problem writing test:  %20 becomes space, over-aggressive param decoding?')
         identifier = 'ARSCJ%202008.foo.bar.pdf'
-        expect(get: "/image/iiif/#{URI.escape(identifier)}").to route_to('iiif#show', identifier: identifier)
+        expect(get: "/image/iiif/#{ERB::Util.url_encode(identifier)}").to route_to('iiif#show', identifier: identifier)
       end
     end
   end
