@@ -5,7 +5,7 @@ class IiifImage < SourceImage
   # @params id [StacksIdentifier]
   # @params transformation [IiifTransformation]
   # @params base_uri [String]
-  def initialize(id:, transformation:, base_uri: Settings.stacks.remote_iiif.attributes.base_uri)
+  def initialize(id:, transformation:, base_uri:)
     @file = StacksFile.new(id: id)
     @transformation = transformation
     @base_uri = base_uri
