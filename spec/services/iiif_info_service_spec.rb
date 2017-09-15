@@ -25,7 +25,9 @@ RSpec.describe IiifInfoService do
     let(:source_info) { {} }
 
     before do
-      allow(image).to receive(:info).and_return(source_info)
+      allow(image).to receive_messages(info: source_info,
+                                       maybe_downloadable?: true,
+                                       restricted_by_location?: false)
     end
 
     # This is kind of a round-about way to test this,

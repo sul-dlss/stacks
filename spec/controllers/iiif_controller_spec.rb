@@ -21,6 +21,13 @@ RSpec.describe IiifController do
       get :show, params: iiif_params
     end
     before do
+      # for the cache headers
+      allow(controller.send(:anonymous_ability)).to receive(:can?).with(:read, StacksImage).and_return(false)
+      # for authorize! in #show
+      allow(controller).to receive(:authorize!).with(:read, an_instance_of(StacksImage)).and_return(true)
+      # for current_image
+      allow(controller).to receive(:can?).with(:download, an_instance_of(StacksImage)).and_return(true)
+
       allow_any_instance_of(StacksImage).to receive(:valid?).and_return(true)
       allow_any_instance_of(StacksImage).to receive(:exist?).and_return(true)
       allow_any_instance_of(DjatokaImage).to receive(:response).and_return(StringIO.new)
@@ -68,8 +75,15 @@ RSpec.describe IiifController do
 
   describe '#metadata' do
     before do
-      allow(controller).to receive(:can?).with(:access, an_instance_of(StacksImage)).and_return(true)
+      # for the cache headers
+      allow(controller.send(:anonymous_ability)).to receive(:can?).with(:read, StacksImage).and_return(false)
+      # for info.json generation
+      allow(controller.send(:anonymous_ability)).to receive(:can?).with(:download, StacksImage).and_return(false)
+      # for current_image
       allow(controller).to receive(:can?).with(:download, an_instance_of(StacksImage)).and_return(true)
+      # for degraded?
+      allow(controller).to receive(:can?).with(:access, an_instance_of(StacksImage)).and_return(true)
+
       allow(IiifInfoService).to receive(:info)
         .with(StacksImage, false, controller)
         .and_return(height: '999')
