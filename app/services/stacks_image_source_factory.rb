@@ -5,7 +5,9 @@ class StacksImageSourceFactory
   end
 
   def self.image_source_class
-    config.implementation.constantize
+    impl_string = config.implementation
+    raise "Unable to find configuration for 'implementation' for #{driver}.image" unless impl_string
+    impl_string.constantize
   end
   private_class_method :image_source_class
 
