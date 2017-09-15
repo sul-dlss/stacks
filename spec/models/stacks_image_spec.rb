@@ -13,7 +13,7 @@ RSpec.describe StacksImage do
   describe "#info_service" do
     subject { instance.send(:info_service) }
     let(:instance) { described_class.new }
-    it { is_expected.to be_instance_of DjatokaMetadataService }
+    it { is_expected.to be_kind_of MetadataService }
   end
 
   describe '#info' do

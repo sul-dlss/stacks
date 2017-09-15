@@ -14,16 +14,18 @@ class IiifImage < SourceImage
     Faraday.head(image_url)
   end
 
-  def valid?
-    image_url.present?
-  end
+  delegate :valid?, to: :image_uri
 
   private
 
   attr_reader :transformation
 
+  def image_uri
+    @image_uri ||= Iiif::URI.new(base_uri: @base_uri, identifier: id, transformation: transformation)
+  end
+
   def image_url
-    Iiif::URI.new(base_uri: @base_uri, identifier: id, transformation: transformation).to_s
+    image_uri.to_s
   end
 
   def id

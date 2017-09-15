@@ -17,6 +17,11 @@ module Iiif
       base_uri + identifier + '/info.json'
     end
 
+    def valid?
+      return true unless transformation
+      to_image_request_uri.valid?
+    end
+
     private
 
     def to_image_request_uri

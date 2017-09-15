@@ -14,6 +14,8 @@ module Iiif
       "#{base_uri}#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
     end
 
+    delegate :valid?, to: :transformation
+
     # I think this is unnecessary in later versions https://github.com/bbatsov/rubocop/pull/3883
     # rubocop:disable Lint/UselessAccessModifier
     private

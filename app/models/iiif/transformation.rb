@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Iiif
   # A data object that describes the IIIF request
   class Transformation
@@ -17,6 +19,10 @@ module Iiif
         rotation: rotation,
         quality: quality,
         format: format }
+    end
+
+    def valid?
+      %w(color gray bitonal default).include? quality
     end
   end
 end
