@@ -6,4 +6,14 @@ class IiifMetadataService < MetadataService
   def fetch(_tile_size)
     {}
   end
+
+  # TODO: implement this
+  def image_width
+    1
+  end
+
+  # TODO: implement this
+  def image_height
+    1
+  end
 end
