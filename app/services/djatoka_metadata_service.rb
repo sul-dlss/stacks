@@ -21,13 +21,11 @@ class DjatokaMetadataService < MetadataService
 
   private
 
-  delegate :canonical_url, to: :image
-
   def djatoka_metadata
     @djatoka_metadata ||= DjatokaMetadata.find(canonical_url, djatoka_path.uri)
   end
 
   def djatoka_path
-    DjatokaPath.new(id)
+    DjatokaPath.new(image_id)
   end
 end

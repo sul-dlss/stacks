@@ -12,7 +12,9 @@ RSpec.describe StacksImage do
 
   describe "#info_service" do
     subject { instance.send(:info_service) }
-    let(:instance) { described_class.new }
+
+    let(:identifier) { StacksIdentifier.new(druid: 'ab012cd3456', file_name: 'def') }
+    let(:instance) { described_class.new(id: identifier) }
     it { is_expected.to be_kind_of MetadataService }
   end
 

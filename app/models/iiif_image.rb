@@ -29,10 +29,6 @@ class IiifImage < SourceImage
   end
 
   def id
-    @id ||= begin
-                pth = PathService.for(@file.id)
-                pth += '.jp2' if pth
-                CGI.escape(pth.sub("#{Settings.stacks.storage_root}/", ''))
-              end
+    RemoteIiifIdentifier.convert(@file.id)
   end
 end
