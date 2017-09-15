@@ -1,6 +1,7 @@
 inherit_from: .rubocop_todo.yml
 
 AllCops:
+  DisplayCopNames: true
   Exclude:
     - 'Gemfile'
     - 'bin/**/*'
@@ -13,6 +14,16 @@ AllCops:
 
 Rails:
   Enabled: true
+
+Layout/EmptyLinesAroundBlockBody:
+  Exclude:
+    - 'spec/requests/file_auth_request_spec.rb'
+    - 'spec/requests/iiif_auth_request_spec.rb'
+    - 'spec/requests/media_auth_request_spec.rb'
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
 
 Metrics/ClassLength:
   Exclude:
@@ -27,11 +38,12 @@ Metrics/LineLength:
     - 'spec/routing/iiif_routing_spec.rb'
     - 'spec/routing/legacy_image_api_spec.rb'
 
-Style/EmptyLinesAroundBlockBody:
-  Exclude:
-    - 'spec/requests/file_auth_request_spec.rb'
-    - 'spec/requests/iiif_auth_request_spec.rb'
-    - 'spec/requests/media_auth_request_spec.rb'
+Naming/HeredocDelimiterNaming:
+  Enabled: false
+
+Naming/PredicateName:
+  NamePrefix:
+    - 'is_'
 
 Style/StringLiterals:
   Enabled: false

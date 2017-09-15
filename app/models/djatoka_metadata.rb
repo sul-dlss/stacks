@@ -7,7 +7,7 @@ class DjatokaMetadata
   include ActiveSupport::Benchmarkable
 
   # instance variables
-  attr_reader :metadata, :canonical_url
+  attr_reader :canonical_url
 
   def self.find(canonical_url, file_path)
     DjatokaMetadata.new(canonical_url, file_path)
