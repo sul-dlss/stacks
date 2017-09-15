@@ -18,6 +18,8 @@ stacks:
         base_uri: https://sul-imageserver-uat.stanford.edu/cantaloupe/iiif/2/
     metadata:
       implementation: IiifMetadataService
+    check:
+      implementation: CheckIiif
 
 
 purl:
