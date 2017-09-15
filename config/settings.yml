@@ -7,7 +7,7 @@ stacks:
     info: DjatokaInfoService
   remote_iiif:
     image:
-      immplmentation: IiifImage
+      implementation: IiifImage
       attributes:
         url: https://sul-imageserver-uat.stanford.edu/iiif/2/
     metadata:
