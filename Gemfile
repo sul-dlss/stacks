@@ -77,6 +77,7 @@ group :development, :test do
 
   # Coveralls for code coverage metrics
   gem 'coveralls', require: false
+  gem 'webmock', '~> 3.0'
 end
 
 group :test do
