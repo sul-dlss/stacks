@@ -35,7 +35,7 @@ class IiifMetadataService < MetadataService
   def retrieve
     # puts "Fetching #{@url}"
     conn = HTTP.get(@url)
-    raise "There was a problem fetchin #{@url}. Server returned #{conn.code}" unless conn.code == 200
+    raise "There was a problem fetching #{@url}. Server returned #{conn.code}" unless conn.code == 200
     conn.body
   end
 
