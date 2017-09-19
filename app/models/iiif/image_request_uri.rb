@@ -1,6 +1,6 @@
 module Iiif
   # Class to represent IIIF Image Request URI
-  class ImageRequestUri < URI
+  class ImageRequestUri < Iiif::URI
     # @param base_uri [String]
     # @param identifier [String]
     # @param transformation [Transformation]
