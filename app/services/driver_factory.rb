@@ -6,8 +6,9 @@ class DriverFactory
     implementation.new(**kwargs.merge(attributes))
   end
 
+  # @return [Hash] the configured attributes from the settings yaml files
   def self.attributes
-    config.attributes
+    config.attributes || {}
   end
   private_class_method :attributes
 
