@@ -22,8 +22,9 @@ class StacksImage
   end
 
   # this is overriden by RestrictedImage
+  # nil implies whatever is best for the implementation.
   def tile_size
-    1024
+    nil
   end
 
   def tile_dimensions
