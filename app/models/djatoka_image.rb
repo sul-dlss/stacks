@@ -2,20 +2,12 @@
 class DjatokaImage < SourceImage
   include ActiveSupport::Benchmarkable
   # @param id [StacksIdentifier]
-  # @param transformation [IiifTransformation]
+  # @param transformation [Iiif::Transformation]
   # @param url [String] the url for the djatoka resolver
   def initialize(id:, transformation:, url:)
     @file = StacksFile.new(id: id)
     @transformation = transformation
     @url = url
-  end
-
-  # @return [IO]
-  def response
-    benchmark "Fetch #{image_url}" do
-      # HTTP::Response#body does response streaming
-      HTTP.get(image_url).body
-    end
   end
 
   def exist?

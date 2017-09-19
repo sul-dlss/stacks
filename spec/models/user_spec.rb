@@ -25,13 +25,13 @@ describe User do
       StacksMediaStream.new(id: media_identifier).tap { |x| allow(x).to receive(:rights_xml).and_return(rights_xml) }
     end
 
-    let(:thumbnail_transformation) { IiifTransformation.new(region: 'full', size: '!400,400') }
+    let(:thumbnail_transformation) { Iiif::Transformation.new(region: 'full', size: '!400,400') }
     let(:thumbnail) { StacksImage.new(id: image_identifier, transformation: thumbnail_transformation) }
 
-    let(:square_transformation) { IiifTransformation.new(region: 'square', size: '!400,400') }
+    let(:square_transformation) { Iiif::Transformation.new(region: 'square', size: '!400,400') }
     let(:square_thumbnail) { StacksImage.new(id: image_identifier, transformation: square_transformation) }
 
-    let(:tile_transformation) { IiifTransformation.new(region: '0,0,100,100', size: '256,256') }
+    let(:tile_transformation) { Iiif::Transformation.new(region: '0,0,100,100', size: '256,256') }
     let(:tile) { StacksImage.new(id: image_identifier, transformation: tile_transformation) }
 
     before do

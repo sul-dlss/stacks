@@ -6,8 +6,7 @@ RSpec.describe DjatokaMetadataService do
   let(:identifier) do
     StacksIdentifier.new(druid: 'nr349ct7888', file_name: 'nr349ct7889_00_0001')
   end
-  let(:image) { StacksImage.new(id: identifier, canonical_url: 'foo') }
-  let(:service) { described_class.new image }
+  let(:service) { described_class.new(image_id: identifier, canonical_url: 'foo') }
   let(:metadata) { instance_double(DjatokaMetadata, max_width: 999, max_height: 888) }
 
   before do

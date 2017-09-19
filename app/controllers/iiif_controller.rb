@@ -117,11 +117,11 @@ class IiifController < ApplicationController
 
   def transformation
     return unless allowed_params.key?(:size)
-    IiifTransformation.new(region: allowed_params[:region],
-                           size: allowed_params[:size],
-                           rotation: allowed_params[:rotation],
-                           quality: allowed_params[:quality],
-                           format: allowed_params[:format])
+    Iiif::Transformation.new(region: allowed_params[:region],
+                             size: allowed_params[:size],
+                             rotation: allowed_params[:rotation],
+                             quality: allowed_params[:quality],
+                             format: allowed_params[:format])
   end
 
   def stacks_identifier

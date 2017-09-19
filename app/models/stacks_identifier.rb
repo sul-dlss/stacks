@@ -15,5 +15,11 @@ class StacksIdentifier
     [@druid, @file_name].join('%2F')
   end
 
+  def ==(other)
+    other.class == self.class &&
+      other.druid == druid &&
+      other.file_name == file_name
+  end
+
   attr_reader :druid, :file_name
 end

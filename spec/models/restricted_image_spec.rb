@@ -30,7 +30,7 @@ RSpec.describe RestrictedImage do
     let(:instance) { described_class.new(transformation: transformation) }
 
     context "full region" do
-      let(:transformation) { IiifTransformation.new(size: 'max', region: 'full') }
+      let(:transformation) { Iiif::Transformation.new(size: 'max', region: 'full') }
 
       it 'limits users to thumbnail sizes' do
         expect(subject).to eq [400, 400]
@@ -38,7 +38,7 @@ RSpec.describe RestrictedImage do
     end
 
     context "specified region" do
-      let(:transformation) { IiifTransformation.new(size: 'max', region: '0,0,800,600') }
+      let(:transformation) { Iiif::Transformation.new(size: 'max', region: '0,0,800,600') }
 
       it 'limits users to a maximum tiles size' do
         expect(subject).to eq [512, 512]
