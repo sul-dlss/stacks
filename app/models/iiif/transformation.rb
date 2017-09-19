@@ -24,5 +24,14 @@ module Iiif
     def valid?
       %w(color gray bitonal default).include? quality
     end
+
+    def ==(other)
+      other.class == self.class &&
+        other.region == region &&
+        other.size == size &&
+        other.rotation == rotation &&
+        other.quality == quality &&
+        other.format == format
+    end
   end
 end

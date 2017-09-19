@@ -129,21 +129,27 @@ RSpec.describe StacksImage do
 
   describe '#valid?' do
     let(:identifier) { StacksIdentifier.new(druid: 'ab012cd3456', file_name: 'def') }
-    let(:instance) { described_class.new(id: identifier, transformation: transformation) }
+    let(:instance) { described_class.new(id: identifier, transformation: nil) }
     subject { instance.valid? }
 
-    context 'with good parameters' do
-      let(:transformation) do
-        Iiif::Transformation.new(size: 'full', region: 'full', quality: 'default', rotation: '0', format: 'jpg')
-      end
+    before do
+      allow(StacksImageSourceFactory).to receive(:create).and_return(source_image)
+    end
+
+    context 'when source_image exists and is valid' do
+      let(:source_image) { instance_double(SourceImage, valid?: true, exist?: true) }
 
       it { is_expected.to be true }
     end
 
-    context 'when the IIIF parameters are invalid' do
-      let(:transformation) do
-        Iiif::Transformation.new(quality: 'native', region: 'full', size: 'full')
-      end
+    context 'when source_image exists but is not valid' do
+      let(:source_image) { instance_double(SourceImage, valid?: false, exist?: true) }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when source_image does not exist' do
+      let(:source_image) { instance_double(SourceImage, exist?: false) }
 
       it { is_expected.to be false }
     end
