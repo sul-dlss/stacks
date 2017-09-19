@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe StacksMediaToken do
+RSpec.describe StacksMediaToken do
   test_start_time = Time.zone.now
   let(:id) { 'ab012cd3456' }
   let(:file_name) { 'def' }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe MediaController do
+RSpec.describe MediaController do
   let(:video) { StacksMediaStream.new(id: 'bb582xs1304', file_name: 'bb582xs1304_sl', format: 'mp4') }
   before { stub_rights_xml(world_readable_rights_xml) }
 

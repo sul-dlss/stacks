@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ApprovedLocation do
+RSpec.describe ApprovedLocation do
   subject { described_class.new(locatable) }
 
   context "when the locatable object's IP address does exist in the configuration" do

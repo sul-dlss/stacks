@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe FileController do
+RSpec.describe FileController do
   before do
     controller.instance_variable_set(:@file, file)
     stub_rights_xml(world_readable_rights_xml)

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ApplicationController do
+RSpec.describe ApplicationController do
   describe '#current_user' do
     subject { controller.send(:current_user) }
 

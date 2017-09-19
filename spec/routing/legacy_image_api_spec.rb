@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Legacy image API routes' do
+RSpec.describe 'Legacy image API routes' do
   it 'routes to #show' do
     expect(get: '/image/abc/def.png').to route_to('legacy_image_service#show', id: 'abc', file_name: 'def', format: 'png')
     expect(get: '/image/app/abc/def.png').to route_to('legacy_image_service#show', id: 'abc', file_name: 'def', format: 'png')

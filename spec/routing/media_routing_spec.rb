@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Media routes' do
+RSpec.describe 'Media routes' do
   context '#verify_token: filename with' do
     it 'chars not requiring URI escaping' do
       filename = "(no_escape_needed):;=&$*-_+!,~'.mp4"
