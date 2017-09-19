@@ -5,6 +5,7 @@ class DjatokaMetadataService < MetadataService
   # @param tile_size [Integer] the size to set the tiles (square)
   # @return [Hash] a data structure representing the IIIF info response
   def fetch(tile_size)
+    tile_size ||= 1024 # a sensible default.
     @metadata ||= djatoka_metadata.as_json do |md|
       md.tile_height = tile_size
       md.tile_width = tile_size

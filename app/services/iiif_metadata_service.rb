@@ -9,10 +9,16 @@ class IiifMetadataService < MetadataService
     @canonical_url = canonical_url
   end
 
-  # @param _tile_size [Integer] unused
+  # Get the metadata from the remote server and rewrite the tile size if required.
+  # @param tile_size [Integer,NilClass] force the tile size to this unless it's nil
   # @return [Hash] a data structure representing the IIIF info response
-  def fetch(_tile_size)
-    json
+  def fetch(tile_size)
+    return json unless tile_size
+    json.tap do |updated|
+      tiledef = updated.fetch('tiles').first
+      tiledef['height'] = tile_size
+      tiledef['width'] = tile_size
+    end
   end
 
   def image_width

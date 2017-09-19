@@ -27,9 +27,9 @@ RSpec.describe StacksImage do
       allow(instance).to receive(:info_service).and_return(info_service)
     end
 
-    it "adds tile size to the djatoka response" do
+    it "gets the info from the djatoka response" do
       subject
-      expect(info_service).to have_received(:fetch).with(1024)
+      expect(info_service).to have_received(:fetch).with(nil)
     end
   end
 
