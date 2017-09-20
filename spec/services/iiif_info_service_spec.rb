@@ -84,13 +84,13 @@ RSpec.describe IiifInfoService do
 
         expect(auth_service['service'].first['profile']).to eq 'http://iiif.io/api/auth/1/token'
         expect(auth_service['service'].first['@id']).to eq 'http://foo/token/api'
-        expect(auth_service['label']).to eq 'Log in to access all available features.'
-        expect(auth_service['confirmLabel']).to eq 'Login'
+        expect(auth_service['label']).to eq 'Stanford users: log in to access all available features.'
+        expect(auth_service['confirmLabel']).to eq 'Log in'
         expect(auth_service['failureHeader']).to eq 'Unable to authenticate'
-        expect(auth_service['failureDescription'])
-          .to eq 'The authentication service cannot be reached. If your brow'\
-          'ser is configured to block pop-up windows, try allowing pop-up wi'\
-          'ndows for this site before attempting to log in again.'
+        expect(auth_service['failureDescription']).to eq 'The authentication service cannot be reached.'
+        expect(auth_service['header']).to eq 'Stanford-affiliated? Log in to view'
+        expect(auth_service['description']).to eq 'Stanford users can click Log'\
+          ' in below to access all features.'
       end
 
       it 'advertises a logout service' do
