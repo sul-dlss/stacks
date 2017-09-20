@@ -21,7 +21,7 @@ class DjatokaMetadataTestClass
   end
 end
 
-describe DjatokaMetadata do
+RSpec.describe DjatokaMetadata do
   let(:stacks_file_path) { '/stacks/file/path' }
   let(:djatoka_metadata) { DjatokaMetadataTestClass.new }
 

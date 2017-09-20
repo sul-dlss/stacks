@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'IIIF routes' do
+RSpec.describe 'IIIF routes' do
   describe 'iiif image api requests' do
     it 'routes to #show' do
       expect(get: '/image/iiif/abc/0,0,256,256/pct:25/90/bitonal.jpg').to route_to('iiif#show', identifier: 'abc', region: '0,0,256,256', size: 'pct:25', rotation: '90', quality: 'bitonal', format: 'jpg')

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'IIIF integration tests' do
+RSpec.describe 'IIIF integration tests' do
   it 'can present bearer tokens for a valid user session' do
     # get the token as a webauth user
     allow_any_instance_of(ActionDispatch::Request).to receive(:remote_user).and_return('xyz')

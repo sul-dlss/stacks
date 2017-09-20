@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe IiifTokenController do
+RSpec.describe IiifTokenController do
   render_views
 
   describe '#create' do

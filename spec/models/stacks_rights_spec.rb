@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe StacksRights do
+RSpec.describe StacksRights do
   subject(:stacks_rights) do
     Class.new do
       attr_reader :file_name

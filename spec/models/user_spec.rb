@@ -6,7 +6,7 @@ require 'rails_helper'
 # types that permission checking might deal with.  This is not a comprehensive listing of
 # all possible permutations, but it should cover all the basics, and a number of representitive
 # corner cases.  This is in lieu of the more unit test style of an ability_spec.rb.
-describe User do
+RSpec.describe User do
   describe '#stanford?' do
     context 'with a webauth user in the appropriate workgroups' do
       it 'is a stanford user' do

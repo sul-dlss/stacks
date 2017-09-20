@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe StacksFile do
+RSpec.describe StacksFile do
   describe '#path' do
     subject { instance.path }
 

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe WebauthController do
+RSpec.describe WebauthController do
   let(:user) { User.new }
 
   before do
