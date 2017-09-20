@@ -21,6 +21,8 @@ class Projection
     case transformation.region
     when 'full', /^pct/
       scaled_region_dimensions
+    when /^pct:/
+      raise NotImplementedError, "Percent regions are not yet supported"
     when /^(\d+),(\d+),(\d+),(\d+)$/
       explicit_region_dimensions
     end
@@ -83,15 +85,8 @@ class Projection
   end
 
   def scaled_region_dimensions
-    scale = case transformation.region
-            when 'full'
-              1.0
-            when /^pct:/
-              # FIXME: This format of a percent region is 'pct:10,20,14,20'
-              transformation.region.sub(/^pct:/, '').to_f / 100
-            else
-              1.0
-            end
-    [image.image_width, image.image_height].map { |dim| dim * scale }
+    # TODO: scaling for pct regions
+    # [image.image_width, image.image_height].map { |dim| dim * scale }
+    [image.image_width, image.image_height]
   end
 end

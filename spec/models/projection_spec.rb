@@ -101,22 +101,6 @@ RSpec.describe Projection do
       end
     end
 
-    context 'for a percentage scale down' do
-      let(:transformation) { Iiif::Transformation.new(size: 'full', region: 'pct:50') }
-
-      it 'calculates percentages of the full image' do
-        expect(subject).to eq [400, 300]
-      end
-    end
-
-    context 'for a percentage scale up' do
-      let(:transformation) { Iiif::Transformation.new(size: 'full', region: 'pct:200') }
-
-      it 'calculates percentages of the full image' do
-        expect(subject).to eq [1600, 1200]
-      end
-    end
-
     context 'for an explicit region' do
       let(:transformation) { Iiif::Transformation.new(size: 'full', region: '0,1,2,3') }
 
