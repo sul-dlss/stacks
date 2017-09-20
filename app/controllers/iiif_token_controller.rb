@@ -8,7 +8,7 @@ class IiifTokenController < ApplicationController
     @message = if token
                  {
                    accessToken: token,
-                   tokenType: 'Bearer',
+                   tokenType: 'Token',
                    expiresIn: 3600
                  }
                else
