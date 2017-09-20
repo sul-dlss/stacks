@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe IiifImage do
   let(:base_uri) { 'https://imageserver.example.com/cantaloupe/iiif/2/' }
-  let(:identifier) { StacksIdentifier.new(druid: 'st808xq5141', file_name: 'st808xq5141_00_0001') }
+  let(:identifier) { StacksIdentifier.new(druid: 'st808xq5141', file_name: 'st808xq5141_00_0001.jp2') }
   let(:transformation) { Iiif::Transformation.new(size: 'full', region: 'full') }
   let(:instance) do
     described_class.new(base_uri: base_uri,

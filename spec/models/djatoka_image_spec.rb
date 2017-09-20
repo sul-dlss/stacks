@@ -10,7 +10,7 @@ RSpec.describe DjatokaImage do
   end
 
   let(:druid) { 'ab012cd3456' }
-  let(:identifier) { StacksIdentifier.new(druid: druid, file_name: 'def') }
+  let(:identifier) { StacksIdentifier.new(druid: druid, file_name: 'def.jp2') }
   let(:transformation) { nil }
 
   describe '#path' do

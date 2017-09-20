@@ -54,7 +54,7 @@ RSpec.describe IiifController do
                                                  rotation: "0",
                                                  quality: "default",
                                                  format: "jpg"),
-        id: StacksIdentifier.new(druid: "nr349ct7889", file_name: 'nr349ct7889_00_0001'),
+        id: StacksIdentifier.new(druid: "nr349ct7889", file_name: 'nr349ct7889_00_0001.jp2'),
         canonical_url: "http://test.host/image/iiif/nr349ct7889%252Fnr349ct7889_00_0001"
       )
     end

@@ -54,10 +54,7 @@ class DjatokaImage < SourceImage
   end
 
   def path
-    @path ||= begin
-                pth = PathService.for(id)
-                pth + '.jp2' if pth
-              end
+    @path ||= PathService.for(id)
   end
 
   def driver

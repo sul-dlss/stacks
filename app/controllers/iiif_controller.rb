@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # API for delivering IIIF-compatible images and image tiles
 class IiifController < ApplicationController
@@ -101,7 +103,8 @@ class IiifController < ApplicationController
   end
 
   def set_attachment_content_disposition_header
-    response.headers['Content-Disposition'] = "attachment;filename=#{file_name}.#{format_param}"
+    filename = [stacks_identifier.file_name_without_ext, format_param].join('.')
+    response.headers['Content-Disposition'] = "attachment;filename=#{filename}"
   end
 
   def current_image
@@ -126,7 +129,7 @@ class IiifController < ApplicationController
   end
 
   def stacks_identifier
-    @stacks_identifier ||= StacksIdentifier.new(escaped_identifier.sub(/^degraded_/, ''))
+    @stacks_identifier ||= StacksIdentifier.new(escaped_identifier.sub(/^degraded_/, '') + '.jp2')
   end
 
   delegate :file_name, to: :stacks_identifier
