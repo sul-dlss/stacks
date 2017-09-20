@@ -12,7 +12,7 @@ RSpec.describe 'IIIF integration tests' do
 
     # regenerate the token as a token-based user
     allow_any_instance_of(ActionDispatch::Request).to receive(:remote_user).and_return(nil)
-    page.driver.header 'Authorization', "Bearer #{data['accessToken']}"
+    page.driver.header 'Authorization', "Token #{data['accessToken']}"
 
     visit '/image/iiif/token.js'
     data = JSON.parse(page.body)
