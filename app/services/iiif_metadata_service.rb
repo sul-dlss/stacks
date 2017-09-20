@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Fetch metadata from the remote IIIF server
 class IiifMetadataService < MetadataService
   # @param image_id [StacksIdentifier]
@@ -10,14 +12,20 @@ class IiifMetadataService < MetadataService
   end
 
   # Get the metadata from the remote server and rewrite the tile size if required.
+  # Cantaloupe also doesn't send the full size as one of the 'sizes'
   # @param tile_size [Integer,NilClass] force the tile size to this unless it's nil
   # @return [Hash] a data structure representing the IIIF info response
   def fetch(tile_size)
-    return json unless tile_size
     json.tap do |updated|
-      tiledef = updated.fetch('tiles').first
-      tiledef['height'] = tile_size
-      tiledef['width'] = tile_size
+      if tile_size
+        tiledef = updated.fetch('tiles').first
+        tiledef['height'] = tile_size
+        tiledef['width'] = tile_size
+      end
+      # Add a full size for parity with our Djatoka implmentation,
+      # because Cantaloupe doesn't provide it
+      updated.fetch('sizes').push('width' => updated.fetch('width'),
+                                  'height' => updated.fetch('height'))
     end
   end
 
