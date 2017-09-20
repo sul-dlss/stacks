@@ -32,9 +32,15 @@ class StacksIdentifier
     File.basename(file_name, '.*')
   end
 
-  attr_reader :druid, :file_name, :druid_parts
+  def treeified_path
+    File.join(druid_parts[1..4], file_name)
+  end
+
+  attr_reader :druid, :file_name
 
   private
+
+  attr_reader :druid_parts
 
   def druid=(druid)
     @druid = druid.sub(/^druid:/, '')
