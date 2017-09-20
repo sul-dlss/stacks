@@ -13,7 +13,8 @@ RSpec.describe IiifMetadataService do
     'nr%2F349%2Fct%2F7889%2Fnr349ct7889_00_0001.jp2",' \
     '"width":3832,' \
     '"height":2552,' \
-    '"tiles":[{"width":1000,"height":1000,"scaleFactors":[1,2,4,8]}]}'
+    '"tiles":[{"width":1000,"height":1000,"scaleFactors":[1,2,4,8]}],' \
+    '"sizes":[{"width":1916,"height":1276}]}'
   end
   let(:response) { instance_double(HTTP::Response, code: 200, body: json) }
   before do
@@ -28,6 +29,7 @@ RSpec.describe IiifMetadataService do
       expect(subject['@id']).to eq 'foo'
       expect(subject['width']).to eq 3832
       expect(subject.fetch('tiles').first.fetch('width')).to eq 256
+      expect(subject.fetch('sizes').last.fetch('width')).to eq 3832
     end
   end
 
