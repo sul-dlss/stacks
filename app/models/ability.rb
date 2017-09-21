@@ -46,6 +46,8 @@ class Ability
     cannot :download, RestrictedImage
 
     can :read, StacksImage do |f|
+      # This is called when checking to see if the image response should be
+      # publically cacheable
       projection = f.projection
       projection.thumbnail? ||
         (projection.tile? && can?(:access, f))
@@ -58,6 +60,7 @@ class Ability
     can :read_metadata, StacksImage
 
     # Access is a lower level of privileges than read.
+    # You need access to get any info.json response.
     can :access, [StacksFile, StacksImage, StacksMediaStream] do |f|
       f.accessable_by?(user)
     end
