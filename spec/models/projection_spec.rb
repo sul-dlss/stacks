@@ -124,5 +124,13 @@ RSpec.describe Projection do
         expect(subject).to eq [2, 3]
       end
     end
+
+    context 'for an region that contains negative values' do
+      let(:transformation) { Iiif::Transformation.new(size: 'full', region: '-22832,-22832,22832,22832') }
+
+      it 'raises an error' do
+        expect { subject }.to raise_error ArgumentError
+      end
+    end
   end
 end
