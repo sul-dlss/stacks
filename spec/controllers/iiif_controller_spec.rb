@@ -1,18 +1,19 @@
 require 'rails_helper'
 
 RSpec.describe IiifController do
-  let(:image_response) { StringIO.new }
-  let(:image) do
-    instance_double(StacksImage,
-                    valid?: true,
-                    exist?: true,
-                    response: image_response,
-                    etag: nil,
-                    mtime: nil)
-  end
-
   describe '#show' do
     let(:identifier) { 'nr349ct7889%2Fnr349ct7889_00_0001' }
+    let(:image_response) { StringIO.new }
+    let(:projection) { instance_double(Projection) }
+    let(:image) do
+      instance_double(StacksImage,
+                      valid?: true,
+                      exist?: true,
+                      response: image_response,
+                      projection: projection,
+                      etag: nil,
+                      mtime: nil)
+    end
     let(:iiif_params) do
       {
         identifier: identifier,
@@ -29,9 +30,9 @@ RSpec.describe IiifController do
     end
     before do
       # for the cache headers
-      allow(controller.send(:anonymous_ability)).to receive(:can?).with(:read, image).and_return(false)
+      allow(controller.send(:anonymous_ability)).to receive(:can?).with(:read, projection).and_return(false)
       # for authorize! in #show
-      allow(controller).to receive(:authorize!).with(:read, image).and_return(true)
+      allow(controller).to receive(:authorize!).with(:read, projection).and_return(true)
       # for current_image
       allow(controller).to receive(:can?).with(:download, image).and_return(true)
       allow(StacksImage).to receive(:new).and_return(image)
@@ -92,9 +93,19 @@ RSpec.describe IiifController do
   end
 
   describe '#metadata' do
+    let(:image) do
+      instance_double(StacksImage,
+                      valid?: true,
+                      exist?: true,
+                      etag: nil,
+                      mtime: nil)
+    end
+    let(:anon_user) { instance_double(User) }
+
     before do
       # for the cache headers
-      allow(controller.send(:anonymous_ability)).to receive(:can?).with(:read, image).and_return(false)
+      allow(controller).to receive(:anonymous_locatable_user).and_return(anon_user)
+      allow(image).to receive(:accessable_by?).with(anon_user).and_return(false)
       # for info.json generation
       allow(controller.send(:anonymous_ability)).to receive(:can?).with(:download, image).and_return(false)
       # for current_image

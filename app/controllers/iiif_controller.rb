@@ -17,9 +17,9 @@ class IiifController < ApplicationController
   # Image delivery, streamed from the image server backend
   def show
     raise ActionController::MissingFile, 'File Not Found' unless current_image.valid?
-    return unless stale?(cache_headers)
-    authorize! :read, current_image
-    expires_in 10.minutes, public: anonymous_ability.can?(:read, current_image)
+    return unless stale?(cache_headers_show)
+    authorize! :read, current_image.projection
+    expires_in 10.minutes, public: anonymous_ability.can?(:read, current_image.projection)
 
     set_image_response_headers
 
@@ -32,7 +32,7 @@ class IiifController < ApplicationController
   def metadata
     raise ActionController::MissingFile, 'File Not Found' unless current_image.exist?
 
-    return unless stale?(cache_headers)
+    return unless stale?(cache_headers_metadata)
 
     if degraded? && !degraded_identifier?
       redirect_to iiif_metadata_url(identifier: degraded_identifier)
@@ -87,13 +87,22 @@ class IiifController < ApplicationController
     end
   end
 
-  def cache_headers
-    return {} unless current_image.exist?
+  # the cache headers for the metadata action
+  def cache_headers_metadata
+    cache_headers.merge(public: current_image.accessable_by?(anonymous_locatable_user))
+  end
 
+  # the cache headers for the show action
+  def cache_headers_show
+    # This is public if the image is public or the projection is a tile or a thumbnail
+    cache_headers.merge(public: anonymous_ability.can?(:read, current_image.projection))
+  end
+
+  # generic cache headers.
+  def cache_headers
     {
       etag: [current_image.etag, current_user.try(:etag)],
       last_modified: current_image.mtime,
-      public: anonymous_ability.can?(:read, current_image),
       template: false
     }
   end
