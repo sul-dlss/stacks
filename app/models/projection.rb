@@ -14,7 +14,7 @@ class Projection
   def tile?
     return false unless transformation
     width, height = tile_dimensions
-    (transformation.region =~ /^(\d+),(\d+),(\d+),(\d+)$/) && width <= 512 && height <= 512
+    absolute_region? && width <= 512 && height <= 512
   end
 
   def region_dimensions
@@ -34,7 +34,7 @@ class Projection
     if size =~ /^!?\d*,\d*$/
       explicit_tile_dimensions(size)
     elsif size == 'max'
-      yield
+      image.max_tile_dimensions
     elsif region_dimensions
       scaled_tile_dimensions
     else
@@ -49,6 +49,10 @@ class Projection
     width = width_for_aspect_ratio(height) if width.blank?
 
     [height.to_i, width.to_i]
+  end
+
+  def absolute_region?
+    transformation.region =~ /^(\d+),(\d+),(\d+),(\d+)$/
   end
 
   private

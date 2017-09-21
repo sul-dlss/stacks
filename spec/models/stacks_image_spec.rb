@@ -40,38 +40,31 @@ RSpec.describe StacksImage do
   end
 
   describe '#tile_dimensions' do
-    subject { StacksImage.new(transformation: transformation) }
+    let(:image) { StacksImage.new(transformation: transformation) }
+    subject { image.projection.tile_dimensions }
 
     context "explicit sizes" do
       let(:transformation) { Iiif::Transformation.new(size: '257,257', region: 'full') }
 
-      it 'handles explicit sizes' do
-        expect(subject.tile_dimensions).to eq [257, 257]
-      end
+      it { is_expected.to eq [257, 257] }
     end
 
     context "height" do
       let(:transformation) { Iiif::Transformation.new(size: '256,', region: '0,0,800,600') }
 
-      it 'calculates implied dimensions' do
-        expect(subject.tile_dimensions).to eq [256, 192]
-      end
+      it { is_expected.to eq [256, 192] }
     end
 
     context "width" do
       let(:transformation) { Iiif::Transformation.new(size: ',192', region: '0,0,800,600') }
 
-      it 'calculates implied dimensions' do
-        expect(subject.tile_dimensions).to eq [256, 192]
-      end
+      it { is_expected.to eq [256, 192] }
     end
 
     context 'full dimensions' do
       let(:transformation) { Iiif::Transformation.new(size: 'full', region: '0,0,800,600') }
 
-      it "calculates dimensions" do
-        expect(subject.tile_dimensions).to eq [800, 600]
-      end
+      it { is_expected.to eq [800, 600] }
     end
 
     context 'for requests with "max" size' do
@@ -84,16 +77,12 @@ RSpec.describe StacksImage do
       end
       let(:transformation) { Iiif::Transformation.new(size: 'max', region: '0,0,800,600') }
 
-      it 'returns the full image for unrestricted images' do
-        expect(subject.tile_dimensions).to eq [800, 600]
-      end
+      it { is_expected.to eq [800, 600] }
     end
 
     context 'percentages' do
       let(:transformation) { Iiif::Transformation.new(size: 'pct:50', region: '0,0,800,600') }
-      it "returns 1/2 size" do
-        expect(subject.tile_dimensions).to eq [400, 300]
-      end
+      it { is_expected.to eq [400, 300] }
     end
   end
 

@@ -27,10 +27,6 @@ class StacksImage
     nil
   end
 
-  def tile_dimensions
-    projection.tile_dimensions { max_tile_dimensions }
-  end
-
   def projection
     @projection ||= Projection.new(self, transformation)
   end
@@ -50,6 +46,11 @@ class StacksImage
   delegate :image_width, :image_height, to: :info_service
   delegate :response, :etag, :mtime, to: :image_source
 
+  # This is overriden in RestrictedImage
+  def max_tile_dimensions
+    projection.region_dimensions
+  end
+
   private
 
   # @return [InfoService]
@@ -61,10 +62,5 @@ class StacksImage
   def image_source
     @image_source ||= StacksImageSourceFactory.create(id: id,
                                                       transformation: transformation)
-  end
-
-  # This is overriden in RestrictedImage
-  def max_tile_dimensions
-    projection.region_dimensions
   end
 end

@@ -25,7 +25,7 @@ RSpec.describe RestrictedImage do
   end
 
   describe '#tile_dimensions' do
-    subject { instance.tile_dimensions }
+    subject { instance.projection.tile_dimensions }
 
     let(:instance) { described_class.new(transformation: transformation) }
 
