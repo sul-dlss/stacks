@@ -106,6 +106,7 @@ class IiifController < ApplicationController
 
   def current_image
     @image ||= begin
+                 raise ActionController::RoutingError, "invalid identifer" unless stacks_identifier.valid?
                  img = model.new(stacks_image_params)
                  can?(:download, img) ? img : img.restricted
                end

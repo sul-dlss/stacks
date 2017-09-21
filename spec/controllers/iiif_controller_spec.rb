@@ -12,9 +12,10 @@ RSpec.describe IiifController do
   end
 
   describe '#show' do
+    let(:identifier) { 'nr349ct7889%2Fnr349ct7889_00_0001' }
     let(:iiif_params) do
       {
-        identifier: 'nr349ct7889%2Fnr349ct7889_00_0001',
+        identifier: identifier,
         region: '0,640,2552,2552',
         size: '100,100',
         rotation: '0',
@@ -35,6 +36,15 @@ RSpec.describe IiifController do
       allow(controller).to receive(:can?).with(:download, image).and_return(true)
       allow(StacksImage).to receive(:new).and_return(image)
     end
+
+    context 'with a bad druid' do
+      let(:identifier) { 'nr349ct788%2Fnr349ct7889_00_0001' }
+
+      it 'raises an error' do
+        expect { subject }.to raise_error ActionController::RoutingError
+      end
+    end
+
     it 'loads the image' do
       subject
       expect(assigns(:image)).to eq image
