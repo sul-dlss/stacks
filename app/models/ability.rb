@@ -45,12 +45,10 @@ class Ability
 
     cannot :download, RestrictedImage
 
-    can :read, StacksImage do |f|
-      # This is called when checking to see if the image response should be
-      # publically cacheable
-      projection = f.projection
+    can :read, Projection do |projection|
+      # This is called when checking to see if the image response should be served
       projection.thumbnail? ||
-        (projection.tile? && can?(:access, f))
+        (projection.tile? && can?(:access, projection.image))
     end
 
     can :stream, StacksMediaStream do |f|

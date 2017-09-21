@@ -18,8 +18,8 @@ class IiifController < ApplicationController
   def show
     raise ActionController::MissingFile, 'File Not Found' unless current_image.valid?
     return unless stale?(cache_headers_show)
-    authorize! :read, current_image
-    expires_in 10.minutes, public: anonymous_ability.can?(:read, current_image)
+    authorize! :read, current_image.projection
+    expires_in 10.minutes, public: anonymous_ability.can?(:read, current_image.projection)
 
     set_image_response_headers
 
@@ -95,7 +95,7 @@ class IiifController < ApplicationController
   # the cache headers for the show action
   def cache_headers_show
     # This is public if the image is public or the projection is a tile or a thumbnail
-    cache_headers.merge(public: anonymous_ability.can?(:read, current_image))
+    cache_headers.merge(public: anonymous_ability.can?(:read, current_image.projection))
   end
 
   # generic cache headers.

@@ -55,9 +55,11 @@ class Projection
     transformation.region =~ /^(\d+),(\d+),(\d+),(\d+)$/
   end
 
+  attr_reader :image
+
   private
 
-  attr_reader :transformation, :image
+  attr_reader :transformation
 
   def height_for_aspect_ratio(width)
     rheight, rwidth = region_dimensions
