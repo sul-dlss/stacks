@@ -8,7 +8,7 @@ class IiifTokenController < ApplicationController
     @message = if token
                  {
                    accessToken: token,
-                   tokenType: 'Bearer',
+                   tokenType: 'Token',
                    expiresIn: 3600
                  }
                else
@@ -80,13 +80,12 @@ class IiifTokenController < ApplicationController
   end
 
   def mint_bearer_token
-    encode_credentials(current_user.token).sub('Bearer ', '')
+    encode_credentials(current_user.token).sub('Token ', '')
   end
 
   def write_bearer_token_cookie(token)
     # webauth users already have a webauth cookie; no additional cookie needed
     return if current_user.webauth_user?
-
     cookies[:bearer_token] = {
       value: token,
       expires: 1.hour.from_now,

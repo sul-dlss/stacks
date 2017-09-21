@@ -19,7 +19,9 @@ RSpec.describe ApplicationController do
 
     context 'with a Bearer token' do
       let(:user) { User.new(id: 'test-user', ldap_groups: ['stanford:stanford']) }
-      let(:credentials) { ActionController::HttpAuthentication::Bearer.encode_credentials(user.token) }
+      let(:credentials) do
+        ActionController::HttpAuthentication::Token.encode_credentials(user.token)
+      end
 
       before do
         request.env['HTTP_AUTHORIZATION'] = credentials
