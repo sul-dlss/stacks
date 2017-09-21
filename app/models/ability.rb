@@ -48,7 +48,7 @@ class Ability
     can :read, Projection do |projection|
       # This is called when checking to see if the image response should be served
       projection.thumbnail? ||
-        (projection.tile? && can?(:access, projection.image))
+        (projection.tile? && can?(:access, projection))
     end
 
     can :stream, StacksMediaStream do |f|
@@ -59,7 +59,7 @@ class Ability
 
     # Access is a lower level of privileges than read.
     # You need access to get any info.json response.
-    can :access, [StacksFile, StacksImage, StacksMediaStream] do |f|
+    can :access, [Projection, StacksFile, StacksImage, StacksMediaStream] do |f|
       f.accessable_by?(user)
     end
   end
