@@ -5,7 +5,6 @@ class RemoteIiifIdentifier
   # @param id [StacksIdentifier]
   # @return [String]
   def self.convert(id)
-    pth = PathService.for(id)
-    CGI.escape(pth.sub("#{Settings.stacks.storage_root}/", ''))
+    CGI.escape(id.treeified_path)
   end
 end

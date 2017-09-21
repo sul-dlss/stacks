@@ -27,4 +27,9 @@ RSpec.describe StacksIdentifier do
     subject { instance.file_name_without_ext }
     it { is_expected.to eq 'nr349ct7889_00_0001' }
   end
+
+  describe '#treeified_path' do
+    subject { instance.treeified_path }
+    it { is_expected.to eq 'nr/349/ct/7889/nr349ct7889_00_0001.jp2' }
+  end
 end
