@@ -28,6 +28,10 @@ class StacksIdentifier
     false
   end
 
+  def file_name_without_ext
+    File.basename(file_name, '.*')
+  end
+
   attr_reader :druid, :file_name, :druid_parts
 
   private
