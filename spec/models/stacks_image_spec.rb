@@ -39,53 +39,6 @@ RSpec.describe StacksImage do
     it { is_expected.to eq 'http://iiif.io/api/image/2/level1' }
   end
 
-  describe '#tile_dimensions' do
-    let(:image) { StacksImage.new(transformation: transformation) }
-    subject { image.projection.tile_dimensions }
-
-    context "explicit sizes" do
-      let(:transformation) { Iiif::Transformation.new(size: '257,257', region: 'full') }
-
-      it { is_expected.to eq [257, 257] }
-    end
-
-    context "height" do
-      let(:transformation) { Iiif::Transformation.new(size: '256,', region: '0,0,800,600') }
-
-      it { is_expected.to eq [256, 192] }
-    end
-
-    context "width" do
-      let(:transformation) { Iiif::Transformation.new(size: ',192', region: '0,0,800,600') }
-
-      it { is_expected.to eq [256, 192] }
-    end
-
-    context 'full dimensions' do
-      let(:transformation) { Iiif::Transformation.new(size: 'full', region: '0,0,800,600') }
-
-      it { is_expected.to eq [800, 600] }
-    end
-
-    context 'for requests with "max" size' do
-      let(:ability) { instance_double(Ability) }
-      let(:permissive_ability) do
-        ability.tap { |x| allow(x).to receive(:can?).with(:download, subject).and_return(true) }
-      end
-      let(:restricted_ability) do
-        ability.tap { |x| allow(x).to receive(:can?).with(:download, subject).and_return(false) }
-      end
-      let(:transformation) { Iiif::Transformation.new(size: 'max', region: '0,0,800,600') }
-
-      it { is_expected.to eq [800, 600] }
-    end
-
-    context 'percentages' do
-      let(:transformation) { Iiif::Transformation.new(size: 'pct:50', region: '0,0,800,600') }
-      it { is_expected.to eq [400, 300] }
-    end
-  end
-
   describe '#restricted' do
     subject { image.restricted }
 

@@ -34,7 +34,7 @@ class Projection
     if size =~ /^!?\d*,\d*$/
       explicit_tile_dimensions(size)
     elsif size == 'max'
-      image.max_tile_dimensions
+      image.max_tile_dimensions.call(self)
     elsif region_dimensions
       scaled_tile_dimensions
     else

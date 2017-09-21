@@ -23,26 +23,4 @@ RSpec.describe RestrictedImage do
 
     it { is_expected.to eq ['http://iiif.io/api/image/2/level1', { 'maxWidth' => 400 }] }
   end
-
-  describe '#tile_dimensions' do
-    subject { instance.projection.tile_dimensions }
-
-    let(:instance) { described_class.new(transformation: transformation) }
-
-    context "full region" do
-      let(:transformation) { Iiif::Transformation.new(size: 'max', region: 'full') }
-
-      it 'limits users to thumbnail sizes' do
-        expect(subject).to eq [400, 400]
-      end
-    end
-
-    context "specified region" do
-      let(:transformation) { Iiif::Transformation.new(size: 'max', region: '0,0,800,600') }
-
-      it 'limits users to a maximum tiles size' do
-        expect(subject).to eq [512, 512]
-      end
-    end
-  end
 end
