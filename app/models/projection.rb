@@ -23,6 +23,8 @@ class Projection
       scaled_region_dimensions
     when /^(\d+),(\d+),(\d+),(\d+)$/
       explicit_region_dimensions
+    else
+      raise ArgumentError, "Unknown region format #{transformation.region}"
     end
   end
 
