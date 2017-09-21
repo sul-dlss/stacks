@@ -12,8 +12,8 @@ RSpec.describe IiifImage do
                         transformation: transformation)
   end
 
-  describe "#id" do
-    subject { instance.send(:id) }
+  describe "#remote_id" do
+    subject { instance.send(:remote_id) }
     it { is_expected.to eq 'st%2F808%2Fxq%2F5141%2Fst808xq5141_00_0001.jp2' }
   end
 

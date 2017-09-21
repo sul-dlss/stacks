@@ -10,17 +10,11 @@ class SourceImage
     end
   end
 
-  def exist?; end
-
   def valid?; end
 
-  def etag; end
-
-  def mtime; end
-
-  # I think this is unnecessary in later versions https://github.com/bbatsov/rubocop/pull/3883
-  # rubocop:disable Lint/UselessAccessModifier
   private
+
+  attr_reader :transformation, :id
 
   delegate :logger, to: Rails
 end

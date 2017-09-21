@@ -4,10 +4,9 @@ RSpec.describe IiifController do
   describe '#show' do
     let(:identifier) { 'nr349ct7889%2Fnr349ct7889_00_0001' }
     let(:image_response) { StringIO.new }
-    let(:projection) { instance_double(Projection, response: image_response) }
+    let(:projection) { instance_double(Projection, response: image_response, valid?: true) }
     let(:image) do
       instance_double(StacksImage,
-                      valid?: true,
                       exist?: true,
                       etag: nil,
                       mtime: nil)
@@ -76,7 +75,7 @@ RSpec.describe IiifController do
     end
 
     it 'missing image returns 404 Not Found' do
-      allow(image).to receive(:valid?).and_return(false)
+      allow(projection).to receive(:valid?).and_return(false)
       expect(subject.status).to eq 404
     end
 

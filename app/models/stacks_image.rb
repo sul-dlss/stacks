@@ -32,15 +32,11 @@ class StacksImage
   end
 
   def exist?
-    image_source.exist? && image_width > 0
-  end
-
-  def valid?
-    exist? && image_source.valid?
+    file_source.exist? && image_width > 0
   end
 
   delegate :image_width, :image_height, to: :info_service
-  delegate :etag, :mtime, to: :image_source
+  delegate :etag, :mtime, to: :file_source
 
   # This is overriden in RestrictedImage
   def max_tile_dimensions
@@ -53,14 +49,13 @@ class StacksImage
 
   private
 
+  # @return [StacksFile]
+  def file_source
+    @file_source ||= StacksFile.new(id: id)
+  end
+
   # @return [InfoService]
   def info_service
     @info_service ||= StacksMetadataServiceFactory.create(image_id: id, canonical_url: canonical_url)
-  end
-
-  # @return [SourceImage]
-  def image_source
-    @image_source ||= StacksImageSourceFactory.create(id: id,
-                                                      transformation: transformation)
   end
 end
