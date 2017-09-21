@@ -10,7 +10,6 @@ RSpec.describe IiifController do
                       valid?: true,
                       exist?: true,
                       response: image_response,
-                      projection: projection,
                       etag: nil,
                       mtime: nil)
     end
@@ -35,7 +34,9 @@ RSpec.describe IiifController do
       allow(controller).to receive(:authorize!).with(:read, projection).and_return(true)
       # for current_image
       allow(controller).to receive(:can?).with(:download, image).and_return(true)
+
       allow(StacksImage).to receive(:new).and_return(image)
+      allow(image).to receive(:projection_for).with(Iiif::Transformation).and_return(projection)
     end
 
     context 'with a bad druid' do

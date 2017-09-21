@@ -27,10 +27,6 @@ class StacksImage
     nil
   end
 
-  def projection
-    @projection ||= Projection.new(self, transformation)
-  end
-
   def profile
     'http://iiif.io/api/image/2/level1'
   end
@@ -48,7 +44,11 @@ class StacksImage
 
   # This is overriden in RestrictedImage
   def max_tile_dimensions
-    projection.region_dimensions
+    ->(projection) { projection.region_dimensions }
+  end
+
+  def projection_for(transformation)
+    Projection.new(self, transformation)
   end
 
   private

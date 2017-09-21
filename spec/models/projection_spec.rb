@@ -10,6 +10,73 @@ RSpec.describe Projection do
     allow(image).to receive_messages(image_width: 800, image_height: 600)
   end
 
+  describe '#tile_dimensions' do
+    subject { instance.tile_dimensions }
+    context "for an unrestricted image" do
+      context "explicit sizes" do
+        let(:transformation) { Iiif::Transformation.new(size: '257,257', region: 'full') }
+
+        it { is_expected.to eq [257, 257] }
+      end
+
+      context "height" do
+        let(:transformation) { Iiif::Transformation.new(size: '256,', region: '0,0,800,600') }
+
+        it { is_expected.to eq [256, 192] }
+      end
+
+      context "width" do
+        let(:transformation) { Iiif::Transformation.new(size: ',192', region: '0,0,800,600') }
+
+        it { is_expected.to eq [256, 192] }
+      end
+
+      context 'full dimensions' do
+        let(:transformation) { Iiif::Transformation.new(size: 'full', region: '0,0,800,600') }
+
+        it { is_expected.to eq [800, 600] }
+      end
+
+      context 'for requests with "max" size' do
+        let(:ability) { instance_double(Ability) }
+        let(:permissive_ability) do
+          ability.tap { |x| allow(x).to receive(:can?).with(:download, subject).and_return(true) }
+        end
+        let(:restricted_ability) do
+          ability.tap { |x| allow(x).to receive(:can?).with(:download, subject).and_return(false) }
+        end
+        let(:transformation) { Iiif::Transformation.new(size: 'max', region: '0,0,800,600') }
+
+        it { is_expected.to eq [800, 600] }
+      end
+
+      context 'percentages' do
+        let(:transformation) { Iiif::Transformation.new(size: 'pct:50', region: '0,0,800,600') }
+        it { is_expected.to eq [400, 300] }
+      end
+    end
+
+    context "for a restricted image" do
+      let(:image) { RestrictedImage.new }
+
+      context "full region" do
+        let(:transformation) { Iiif::Transformation.new(size: 'max', region: 'full') }
+
+        it 'limits users to thumbnail sizes' do
+          expect(subject).to eq [400, 400]
+        end
+      end
+
+      context "specified region" do
+        let(:transformation) { Iiif::Transformation.new(size: 'max', region: '0,0,800,600') }
+
+        it 'limits users to a maximum tiles size' do
+          expect(subject).to eq [512, 512]
+        end
+      end
+    end
+  end
+
   describe '#thumbnail?' do
     subject { instance.thumbnail? }
 
