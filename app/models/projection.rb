@@ -1,60 +1,53 @@
 # A projection is the result of a StacksImage put through a Iiif::Transformation
 class Projection
+  THUMBNAIL_BOUNDS = Iiif::Dimension.new(width: 400, height: 800)
+  TILE_BOUNDS = Iiif::Dimension.new(width: 512, height: 512)
+
   def initialize(image, transformation)
     @image = image
     @transformation = transformation
   end
 
   def thumbnail?
-    return false unless transformation
-    width, height = tile_dimensions
-    %w(full square).include?(transformation.region) && width <= 400 && height <= 800
+    (transformation.region.is_a?(Iiif::Region::Full) ||
+    transformation.region.is_a?(Iiif::Region::Square)) &&
+      tile_dimensions.enclosed_by?(THUMBNAIL_BOUNDS)
   end
 
   def tile?
-    return false unless transformation
-    width, height = tile_dimensions
-    absolute_region? && width <= 512 && height <= 512
+    absolute_region? && tile_dimensions.enclosed_by?(TILE_BOUNDS)
   end
 
   def region_dimensions
     case transformation.region
-    when 'full', /^pct/
+    when Iiif::Region::Full
       scaled_region_dimensions
-    when /^pct:/
+    when Iiif::Region::Percent
       raise NotImplementedError, "Percent regions are not yet supported"
-    when /^(\d+),(\d+),(\d+),(\d+)$/
-      explicit_region_dimensions
+    when Iiif::Region::Absolute
+      transformation.region.dimensions
     else
       raise ArgumentError, "Unknown region format #{transformation.region}"
     end
   end
 
-  # pass a block with the max dimensions
-  def tile_dimensions
-    size = transformation.size
-    if size =~ /^!?\d*,\d*$/
-      explicit_tile_dimensions(size)
-    elsif size == 'max'
-      image.max_tile_dimensions.call(self)
-    elsif region_dimensions
-      scaled_tile_dimensions
-    else
-      [Float::INFINITY, Float::INFINITY]
-    end
-  end
-
   def explicit_tile_dimensions(requested_size)
-    height, width = requested_size.delete('!').split(',', 2)
+    height = if requested_size.is_a?(Iiif::Size::Width)
+               requested_size.height_for_aspect_ratio(region_dimensions.aspect)
+             else
+               requested_size.height
+             end
 
-    height = height_for_aspect_ratio(width) if height.blank?
-    width = width_for_aspect_ratio(height) if width.blank?
-
-    [height.to_i, width.to_i]
+    width = if requested_size.is_a?(Iiif::Size::Height)
+              requested_size.width_for_aspect_ratio(region_dimensions.aspect)
+            else
+              requested_size.width
+            end
+    Iiif::Dimension.new(width: width, height: height)
   end
 
   def absolute_region?
-    transformation.region =~ /^(\d+),(\d+),(\d+),(\d+)$/
+    transformation.region.instance_of? Iiif::Region::Absolute
   end
 
   delegate :accessable_by?, to: :image
@@ -63,38 +56,27 @@ class Projection
 
   attr_reader :transformation, :image
 
-  def height_for_aspect_ratio(width)
-    rheight, rwidth = region_dimensions
-    (rheight / rwidth.to_f) * width.to_i
-  end
-
-  def width_for_aspect_ratio(height)
-    rheight, rwidth = region_dimensions
-    (rwidth / rheight.to_f) * height.to_i
-  end
-
-  def scaled_tile_dimensions
+  # @return [Iiif::Dimension]
+  def tile_dimensions
     size = transformation.size
-    scale = case size
-            when 'full'
-              1.0
-            when /^pct:/
-              size.sub(/^pct:/, '').to_f / 100
-            else
-              1.0
-            end
-
-    region_dimensions.map { |dimension| dimension * scale }
+    case size
+    when Iiif::Size::Percent
+      scaled_tile_dimensions(size.scale)
+    when Iiif::Size::Max, Iiif::Size::Full
+      image.max_tile_dimensions.call(self)
+    else
+      explicit_tile_dimensions(size)
+    end
   end
 
-  def explicit_region_dimensions
-    match = transformation.region.match(/^(\d+),(\d+),(\d+),(\d+)$/)
-    [match[3], match[4]].map(&:to_i)
+  # @param scale [Float] scale factor between 0 and 1
+  # @return [Iiif::Dimension]
+  def scaled_tile_dimensions(scale)
+    region_dimensions.scale(scale)
   end
 
   def scaled_region_dimensions
-    # TODO: scaling for pct regions
-    # [image.image_width, image.image_height].map { |dim| dim * scale }
-    [image.image_width, image.image_height]
+    # TODO: scaling for Region::Percent
+    Iiif::Dimension.new(width: image.image_width, height: image.image_height)
   end
 end
