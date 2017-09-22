@@ -40,7 +40,7 @@ class StacksImage
   end
 
   delegate :image_width, :image_height, to: :info_service
-  delegate :response, :etag, :mtime, to: :image_source
+  delegate :etag, :mtime, to: :image_source
 
   # This is overriden in RestrictedImage
   def max_tile_dimensions
