@@ -33,13 +33,13 @@ class Projection
 
   def explicit_tile_dimensions(requested_size)
     height = if requested_size.is_a?(Iiif::Size::Width)
-               height_for_aspect_ratio(requested_size.width)
+               requested_size.height_for_aspect_ratio(region_dimensions.aspect)
              else
                requested_size.height
              end
 
     width = if requested_size.is_a?(Iiif::Size::Height)
-              width_for_aspect_ratio(requested_size.height)
+              requested_size.width_for_aspect_ratio(region_dimensions.aspect)
             else
               requested_size.width
             end
@@ -67,16 +67,6 @@ class Projection
     else
       explicit_tile_dimensions(size)
     end
-  end
-
-  def height_for_aspect_ratio(width)
-    region = region_dimensions
-    (region.height / region.width.to_f) * width
-  end
-
-  def width_for_aspect_ratio(height)
-    region = region_dimensions
-    (region.width / region.height.to_f) * height
   end
 
   # @param scale [Float] scale factor between 0 and 1

@@ -22,5 +22,9 @@ module Iiif
     def ==(other)
       width == other.width && height == other.height
     end
+
+    def aspect
+      Rational(width, height)
+    end
   end
 end

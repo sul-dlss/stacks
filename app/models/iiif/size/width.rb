@@ -10,6 +10,11 @@ module Iiif
       end
 
       attr_reader :width
+
+      # @param ratio [Rational] the aspect ratio
+      def height_for_aspect_ratio(ratio)
+        (width / ratio).round
+      end
     end
   end
 end
