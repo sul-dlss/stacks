@@ -39,7 +39,7 @@ class Ability
     # NOTE: the below ability definitions which reference StacksFile also implicitly
     # cover StacksImage and StacksMediaStream, and any other subclasses of StacksFile.
 
-    can [:download, :read], [StacksFile, StacksImage, StacksMediaStream] do |f|
+    can [:download, :read], [StacksFile, StacksImage, Projection, StacksMediaStream] do |f|
       f.readable_by?(user)
     end
 

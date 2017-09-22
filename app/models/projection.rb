@@ -50,7 +50,7 @@ class Projection
     transformation.region.instance_of? Iiif::Region::Absolute
   end
 
-  delegate :accessable_by?, to: :image
+  delegate :accessable_by?, :readable_by?, to: :image
 
   private
 
