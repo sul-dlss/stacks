@@ -38,7 +38,7 @@ RSpec.describe 'IIIF API' do
   end
 
   it 'handles JSON-LD requests' do
-    get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json', headers: { HTTP_ACCEPT: 'application/ld+json' }
+    get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001.jp2/info.json', headers: { HTTP_ACCEPT: 'application/ld+json' }
 
     expect(response.content_type).to eq 'application/ld+json'
     json = JSON.parse(response.body)
@@ -51,9 +51,9 @@ RSpec.describe 'IIIF API' do
     end
 
     it 'redirects requests to the degraded info.json' do
-      get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json'
+      get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001.jp2/info.json'
       expect(response).to have_http_status :redirect
-      expect(response).to redirect_to('/image/iiif/degraded_nr349ct7889%252Fnr349ct7889_00_0001/info.json')
+      expect(response).to redirect_to('/image/iiif/degraded_nr349ct7889%252Fnr349ct7889_00_0001.jp2/info.json')
       expect(response.headers['Cache-Control']).to match(/max-age=0/)
     end
 
@@ -71,7 +71,7 @@ RSpec.describe 'IIIF API' do
       stub_rights_xml(world_no_download_xml)
     end
     it 'serves up regular info.json (no degraded)' do
-      get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json'
+      get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001.jp2/info.json'
       expect(response).to have_http_status :ok
     end
   end
@@ -81,9 +81,9 @@ RSpec.describe 'IIIF API' do
       stub_rights_xml(stanford_only_no_download_xml)
     end
     it 'redirects to degraded version' do
-      get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json'
+      get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001.jp2/info.json'
       expect(response).to have_http_status :redirect
-      expect(response).to redirect_to('/image/iiif/degraded_nr349ct7889%252Fnr349ct7889_00_0001/info.json')
+      expect(response).to redirect_to('/image/iiif/degraded_nr349ct7889%252Fnr349ct7889_00_0001.jp2/info.json')
     end
   end
 end

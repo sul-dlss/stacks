@@ -27,7 +27,7 @@ RSpec.describe "It proxies image requests to a remote IIIF server (canteloupe)" 
   end
 
   it 'returns an image' do
-    get '/image/iiif/nr349ct7889%2Fimage/full/max/0/default.jpg'
+    get '/image/iiif/nr349ct7889%2Fimage.jp2/full/max/0/default.jpg'
     expect(response.body).to eq 'image contents'
   end
 end

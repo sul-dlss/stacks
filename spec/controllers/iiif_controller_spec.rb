@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe IiifController do
   describe '#show' do
-    let(:identifier) { 'nr349ct7889%2Fnr349ct7889_00_0001' }
+    let(:identifier) { 'nr349ct7889%2Fnr349ct7889_00_0001.jp2' }
     let(:image_response) { StringIO.new }
     let(:projection) { instance_double(Projection, response: image_response, valid?: true) }
     let(:image) do
@@ -51,12 +51,22 @@ RSpec.describe IiifController do
       end
     end
 
+    context "when the file name doesn't have an extension" do
+      let(:identifier) { 'nr349ct7889%2Fnr349ct7889_00_0001' }
+      it 'redirects to the url with an extension' do
+        subject
+        expect(response).to redirect_to(
+          'http://test.host/image/iiif/nr349ct7889%252Fnr349ct7889_00_0001.jp2/0,640,2552,2552/100,100/0/default.jpg'
+        )
+      end
+    end
+
     it 'loads the image' do
       subject
       expect(assigns(:image)).to eq image
       expect(StacksImage).to have_received(:new).with(
         id: StacksIdentifier.new(druid: "nr349ct7889", file_name: 'nr349ct7889_00_0001.jp2'),
-        canonical_url: "http://test.host/image/iiif/nr349ct7889%252Fnr349ct7889_00_0001"
+        canonical_url: "http://test.host/image/iiif/nr349ct7889%252Fnr349ct7889_00_0001.jp2"
       )
     end
 
@@ -93,41 +103,55 @@ RSpec.describe IiifController do
   end
 
   describe '#metadata' do
-    let(:image) do
-      instance_double(StacksImage,
-                      valid?: true,
-                      exist?: true,
-                      etag: nil,
-                      mtime: nil)
-    end
-    let(:anon_user) { instance_double(User) }
+    context "when the file name doesn't have an extension" do
+      let(:identifier) { 'nr349ct7889%2Fnr349ct7889_00_0001' }
 
-    before do
-      # for the cache headers
-      allow(controller).to receive(:anonymous_locatable_user).and_return(anon_user)
-      allow(image).to receive(:accessable_by?).with(anon_user).and_return(false)
-      # for info.json generation
-      allow(controller.send(:anonymous_ability)).to receive(:can?).with(:download, image).and_return(false)
-      # for current_image
-      allow(controller).to receive(:can?).with(:download, image).and_return(true)
-      # for degraded?
-      allow(controller).to receive(:can?).with(:access, image).and_return(true)
-      # In the metadata method itself
-      allow(controller).to receive(:authorize!).with(:read_metadata, image).and_return(true)
-
-      allow(StacksImage).to receive(:new).and_return(image)
-
-      allow(IiifInfoService).to receive(:info)
-        .with(image, false, controller)
-        .and_return(height: '999')
+      it 'redirects to the url with an extension' do
+        get :metadata, params: { identifier: identifier, format: :json }
+        expect(response).to redirect_to(
+          'http://test.host/image/iiif/nr349ct7889%252Fnr349ct7889_00_0001.jp2/info.json'
+        )
+      end
     end
 
-    it 'provides iiif info.json responses' do
-      get :metadata, params: { identifier: 'nr349ct7889%2Fnr349ct7889_00_0001', format: :json }
-      expect(controller.content_type).to eq 'application/json'
-      expect(response).to be_successful
-      expect(controller.response_body.first).to eq "{\n  \"height\": \"999\"\n}"
-      expect(controller.headers['Link']).to eq '<http://iiif.io/api/image/2/level2.json>;rel="profile"'
+    context "on the happy path" do
+      let(:identifier) { 'nr349ct7889%2Fnr349ct7889_00_0001.jp2' }
+      let(:image) do
+        instance_double(StacksImage,
+                        valid?: true,
+                        exist?: true,
+                        etag: nil,
+                        mtime: nil)
+      end
+      let(:anon_user) { instance_double(User) }
+
+      before do
+        # for the cache headers
+        allow(controller).to receive(:anonymous_locatable_user).and_return(anon_user)
+        allow(image).to receive(:accessable_by?).with(anon_user).and_return(false)
+        # for info.json generation
+        allow(controller.send(:anonymous_ability)).to receive(:can?).with(:download, image).and_return(false)
+        # for current_image
+        allow(controller).to receive(:can?).with(:download, image).and_return(true)
+        # for degraded?
+        allow(controller).to receive(:can?).with(:access, image).and_return(true)
+        # In the metadata method itself
+        allow(controller).to receive(:authorize!).with(:read_metadata, image).and_return(true)
+
+        allow(StacksImage).to receive(:new).and_return(image)
+
+        allow(IiifInfoService).to receive(:info)
+          .with(image, false, controller)
+          .and_return(height: '999')
+      end
+
+      it 'provides iiif info.json responses' do
+        get :metadata, params: { identifier: identifier, format: :json }
+        expect(controller.content_type).to eq 'application/json'
+        expect(response).to be_successful
+        expect(controller.response_body.first).to eq "{\n  \"height\": \"999\"\n}"
+        expect(controller.headers['Link']).to eq '<http://iiif.io/api/image/2/level2.json>;rel="profile"'
+      end
     end
   end
 end

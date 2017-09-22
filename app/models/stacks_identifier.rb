@@ -32,6 +32,10 @@ class StacksIdentifier
     File.basename(file_name, '.*')
   end
 
+  def has_file_name_extension?
+    File.extname(file_name).present?
+  end
+
   def treeified_path
     File.join(druid_parts[1..4], file_name)
   end
