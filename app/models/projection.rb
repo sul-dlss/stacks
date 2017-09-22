@@ -50,6 +50,10 @@ class Projection
     transformation.region.instance_of? Iiif::Region::Absolute
   end
 
+  def valid?
+    image.exist? && image_source.valid?
+  end
+
   delegate :accessable_by?, :readable_by?, :id, to: :image
   delegate :response, to: :image_source
 

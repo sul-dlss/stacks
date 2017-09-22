@@ -191,4 +191,34 @@ RSpec.describe Projection do
       end
     end
   end
+
+  describe '#valid?' do
+    let(:options) { { size: 'max', region: 'full' } }
+    subject { instance.valid? }
+
+    before do
+      allow(StacksImageSourceFactory).to receive(:create).and_return(source_image)
+      allow(StacksFile).to receive(:new).and_return(file)
+    end
+
+    context 'when file exists and transformation is valid' do
+      let(:file) { instance_double(StacksFile, exist?: true) }
+      let(:source_image) { instance_double(SourceImage, valid?: true) }
+      it { is_expected.to be true }
+    end
+
+    context 'when file exists but transformation is not valid' do
+      let(:file) { instance_double(StacksFile, exist?: true) }
+      let(:source_image) { instance_double(SourceImage, valid?: false) }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when file does not exist' do
+      let(:file) { instance_double(StacksFile, exist?: false) }
+      let(:source_image) { instance_double(SourceImage) }
+
+      it { is_expected.to be false }
+    end
+  end
 end

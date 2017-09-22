@@ -29,9 +29,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
       allow(si).to receive(:world_rights).and_return([false, ''])
       allow(si).to receive(:world_downloadable?).and_return(false)
       allow(si).to receive(:world_unrestricted?).and_return(false)
-      allow(si).to receive(:valid?).and_return(true)
       allow(si).to receive(:exist?).and_return(true)
-      allow(si.send(:image_source)).to receive(:image_url).and_return("image_url")
       si
     end
     let!(:si_loc_only) do
@@ -41,9 +39,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
       allow(si).to receive(:stanford_only_rights).and_return([false, ''])
       allow(si).to receive(:agent_rights).and_return([false, ''])
       allow(si).to receive(:world_rights).and_return([false, ''])
-      allow(si).to receive(:valid?).and_return(true)
       allow(si).to receive(:exist?).and_return(true)
-      allow(si.send(:image_source)).to receive(:image_url).and_return("image_url")
       si
     end
     let!(:si_user_not_in_loc) do
@@ -55,9 +51,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
       allow(si).to receive(:agent_rights).and_return([false, ''])
       allow(si).to receive(:world_downloadable?).and_return(false)
       allow(si).to receive(:world_rights).and_return([false, ''])
-      allow(si).to receive(:valid?).and_return(true)
       allow(si).to receive(:exist?).and_return(true)
-      allow(si.send(:image_source)).to receive(:image_url).and_return("image_url")
       si
     end
     let!(:si_loc_and_stanford) do
@@ -67,9 +61,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
       allow(si).to receive(:restricted_by_location?).and_return(true)
       allow(si).to receive(:agent_rights).and_return([false, ''])
       allow(si).to receive(:world_rights).and_return([false, ''])
-      allow(si).to receive(:valid?).and_return(true)
       allow(si).to receive(:exist?).and_return(true)
-      allow(si.send(:image_source)).to receive(:image_url).and_return("image_url")
       si
     end
     let!(:si_user_not_in_loc_and_stanford) do
@@ -81,13 +73,12 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
       allow(si).to receive(:world_downloadable?).and_return(false)
       allow(si).to receive(:stanford_only_downloadable?).and_return(false)
       allow(si).to receive(:world_rights).and_return([false, ''])
-      allow(si).to receive(:valid?).and_return(true)
       allow(si).to receive(:exist?).and_return(true)
-      allow(si.send(:image_source)).to receive(:image_url).and_return("image_url")
       si
     end
 
     before(:each) do
+      allow_any_instance_of(Projection).to receive(:valid?).and_return(true)
       allow(HTTP).to receive(:get).and_return(instance_double(HTTP::Response, body: StringIO.new))
     end
 

@@ -5,30 +5,24 @@ class IiifImage < SourceImage
   # @params transformation [Iiif::Transformation]
   # @params base_uri [String]
   def initialize(id:, transformation:, base_uri:)
-    @file = StacksFile.new(id: id)
+    @id = id
     @transformation = transformation
     @base_uri = base_uri
-  end
-
-  def exist?
-    Faraday.head(image_url)
   end
 
   delegate :valid?, to: :image_uri
 
   private
 
-  attr_reader :transformation
-
   def image_uri
-    @image_uri ||= Iiif::URI.new(base_uri: @base_uri, identifier: id, transformation: transformation)
+    @image_uri ||= Iiif::URI.new(base_uri: @base_uri, identifier: remote_id, transformation: transformation)
   end
 
   def image_url
     image_uri.to_s
   end
 
-  def id
-    RemoteIiifIdentifier.convert(@file.id)
+  def remote_id
+    RemoteIiifIdentifier.convert(id)
   end
 end

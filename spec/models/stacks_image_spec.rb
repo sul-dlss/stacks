@@ -68,32 +68,4 @@ RSpec.describe StacksImage do
       expect(subject.canonical_url).to eq attributes[:canonical_url]
     end
   end
-
-  describe '#valid?' do
-    let(:identifier) { StacksIdentifier.new(druid: 'ab012cd3456', file_name: 'def') }
-    let(:instance) { described_class.new(id: identifier, transformation: nil) }
-    subject { instance.valid? }
-
-    before do
-      allow(StacksImageSourceFactory).to receive(:create).and_return(source_image)
-    end
-
-    context 'when source_image exists and is valid' do
-      let(:source_image) { instance_double(SourceImage, valid?: true, exist?: true) }
-
-      it { is_expected.to be true }
-    end
-
-    context 'when source_image exists but is not valid' do
-      let(:source_image) { instance_double(SourceImage, valid?: false, exist?: true) }
-
-      it { is_expected.to be false }
-    end
-
-    context 'when source_image does not exist' do
-      let(:source_image) { instance_double(SourceImage, exist?: false) }
-
-      it { is_expected.to be false }
-    end
-  end
 end

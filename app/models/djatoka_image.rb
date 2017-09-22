@@ -1,17 +1,13 @@
-# Represents a file on disk, and it's delivery via Djatoka
+# Represents a file delivered via Djatoka
 class DjatokaImage < SourceImage
   include ActiveSupport::Benchmarkable
   # @param id [StacksIdentifier]
   # @param transformation [Iiif::Transformation]
   # @param url [String] the url for the djatoka resolver
   def initialize(id:, transformation:, url:)
-    @file = StacksFile.new(id: id)
+    @id = id
     @transformation = transformation
     @url = url
-  end
-
-  def exist?
-    file.path.present?
   end
 
   def valid?
@@ -20,12 +16,7 @@ class DjatokaImage < SourceImage
 
   private
 
-  attr_reader :transformation, :url
-  delegate :id, :etag, :mtime, to: :file
-  delegate :logger, to: Rails
-
-  # @return [StacksFile] the file on disk that back this projection
-  attr_reader :file
+  attr_reader :url
 
   def image_url
     djatoka_region.url
