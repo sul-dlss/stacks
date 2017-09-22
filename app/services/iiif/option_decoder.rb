@@ -19,22 +19,21 @@ module Iiif
     ##
     # @return [Transformation]
     def decode
-      validate_format!(@options.fetch(:format, 'jpg'))
       Iiif::Transformation.new(region: decode_region(@options.delete(:region)),
                                size: decode_size(@options.delete(:size)),
                                quality: decode_quality(@options[:quality]),
                                rotation: decode_rotation(@options[:rotation]),
-                               format: @options[:format])
+                               format: decode_format(@options[:format]))
     end
 
     def decode_quality(quality)
-      return if quality.nil? || %w(default color).include?(quality)
-      return quality if %w(bitonal grey).include?(quality)
+      return quality if %w(bitonal grey default color).include?(quality)
+      return 'default' if quality.nil?
       raise InvalidAttributeError, "Unsupported quality: #{quality}"
     end
 
     def decode_rotation(rotation)
-      return if rotation.nil? || rotation == '0'
+      return 0 if rotation.nil? || rotation == '0'
       begin
         Float(rotation)
       rescue ArgumentError
@@ -42,8 +41,10 @@ module Iiif
       end
     end
 
-    def validate_format!(format)
-      raise InvalidAttributeError, "Unsupported format: #{format}" unless OUTPUT_FORMATS.include?(format)
+    def decode_format(format)
+      format ||= 'jpg'
+      return format if OUTPUT_FORMATS.include?(format)
+      raise InvalidAttributeError, "Unsupported format: #{format}"
     end
 
     # rubocop:disable Metrics/AbcSize

@@ -11,6 +11,10 @@ module Iiif
       end
 
       attr_reader :height, :width
+
+      def to_s
+        "!#{width},#{height}"
+      end
     end
   end
 end

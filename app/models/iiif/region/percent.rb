@@ -14,6 +14,10 @@ module Iiif
       end
 
       attr_reader :x_pct, :y_pct, :width_pct, :height_pct
+
+      def to_s
+        "pct:#{x_pct},#{y_pct},#{width_pct},#{height_pct}"
+      end
     end
   end
 end

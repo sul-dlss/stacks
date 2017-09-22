@@ -15,6 +15,10 @@ module Iiif
       def scale
         percentage / 100
       end
+
+      def to_s
+        "pct:#{percentage}"
+      end
     end
   end
 end
