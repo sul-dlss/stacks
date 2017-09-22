@@ -28,8 +28,8 @@ module Iiif
     end
 
     def decode_quality(quality)
-      return if quality.nil? || %w(default color).include?(quality)
-      return quality if %w(bitonal grey).include?(quality)
+      return quality if %w(bitonal grey default color).include?(quality)
+      return 'default' if quality.nil?
       raise InvalidAttributeError, "Unsupported quality: #{quality}"
     end
 
