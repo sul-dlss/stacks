@@ -13,10 +13,14 @@ module Iiif
         @height = height
       end
 
-      attr_reader :width, :height
+      attr_reader :offset_x, :offset_y, :width, :height
 
       def dimensions
         Dimension.new(width: width, height: height)
+      end
+
+      def to_s
+        "pct:#{offset_x},#{offset_y},#{width},#{height}"
       end
     end
   end

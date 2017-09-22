@@ -15,6 +15,10 @@ module Iiif
       def height_for_aspect_ratio(ratio)
         (width / ratio).round
       end
+
+      def to_s
+        "#{width},"
+      end
     end
   end
 end
