@@ -142,8 +142,6 @@ class IiifController < ApplicationController
     @stacks_identifier ||= StacksIdentifier.new(escaped_identifier.sub(/^degraded_/, '') + '.jp2')
   end
 
-  delegate :file_name, to: :stacks_identifier
-
   def canonical_params
     { canonical_url: iiif_base_url(identifier: escaped_identifier, host: request.host_with_port) }
   end
