@@ -4,12 +4,11 @@ RSpec.describe IiifController do
   describe '#show' do
     let(:identifier) { 'nr349ct7889%2Fnr349ct7889_00_0001' }
     let(:image_response) { StringIO.new }
-    let(:projection) { instance_double(Projection) }
+    let(:projection) { instance_double(Projection, response: image_response) }
     let(:image) do
       instance_double(StacksImage,
                       valid?: true,
                       exist?: true,
-                      response: image_response,
                       etag: nil,
                       mtime: nil)
     end

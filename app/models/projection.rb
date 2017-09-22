@@ -50,7 +50,8 @@ class Projection
     transformation.region.instance_of? Iiif::Region::Absolute
   end
 
-  delegate :accessable_by?, :readable_by?, to: :image
+  delegate :accessable_by?, :readable_by?, :id, to: :image
+  delegate :response, to: :image_source
 
   private
 
@@ -78,5 +79,11 @@ class Projection
   def scaled_region_dimensions
     # TODO: scaling for Region::Percent
     Iiif::Dimension.new(width: image.image_width, height: image.image_height)
+  end
+
+  # @return [SourceImage]
+  def image_source
+    @image_source ||= StacksImageSourceFactory.create(id: id,
+                                                      transformation: transformation)
   end
 end
