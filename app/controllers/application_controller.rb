@@ -42,7 +42,8 @@ class ApplicationController < ActionController::Base
   end
 
   def bearer_auth_user
-    token_user(*token_and_options(request))
+    token, options = token_and_options(request)
+    token_user(token, options)
   end
 
   def bearer_cookie
