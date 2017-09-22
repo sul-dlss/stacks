@@ -15,9 +15,8 @@ module Iiif
 
       attr_reader :width, :height
 
-      # TODO: Dimension object?
       def dimensions
-        [width, height]
+        Dimension.new(width: width, height: height)
       end
     end
   end
