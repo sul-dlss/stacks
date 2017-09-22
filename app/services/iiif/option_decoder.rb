@@ -46,6 +46,7 @@ module Iiif
       raise InvalidAttributeError, "Unsupported format: #{format}" unless OUTPUT_FORMATS.include?(format)
     end
 
+    # rubocop:disable Metrics/AbcSize
     def decode_region(region)
       if region.nil? || region == 'full'
         Iiif::Region::Full.new
@@ -80,6 +81,6 @@ module Iiif
         raise InvalidAttributeError, "Invalid size: #{size}"
       end
     end
-    # rubocop:enable Metrics/PerceivedComplexity, Metrics/AbcSize
+    # rubocop:enable Metrics/AbcSize
   end
 end
