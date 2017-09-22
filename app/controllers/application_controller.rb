@@ -42,7 +42,8 @@ class ApplicationController < ActionController::Base
   end
 
   def bearer_auth_user
-    token_user(*token_and_options(request))
+    token, _options = token_and_options(request)
+    token_user(token)
   end
 
   def bearer_cookie
@@ -60,11 +61,13 @@ class ApplicationController < ActionController::Base
   def bearer_cookie_user
     authorization_request = bearer_cookie.to_s
     params = token_params_from authorization_request
-    token_and_options = [params.shift[1], Hash[params].with_indifferent_access]
-    token_user(*token_and_options)
+    token = params.shift[1]
+    token_user(token)
   end
 
-  def token_user(token, _options = {})
+  def token_user(token)
+    return unless token
+
     User.from_token(token, ip_address: request.remote_ip)
   end
 
