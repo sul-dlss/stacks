@@ -21,6 +21,9 @@ Layout/EmptyLinesAroundBlockBody:
     - 'spec/requests/iiif_auth_request_spec.rb'
     - 'spec/requests/media_auth_request_spec.rb'
 
+Lint/AssignmentInCondition:
+  Enabled: false
+
 Metrics/BlockLength:
   Exclude:
     - 'spec/**/*'

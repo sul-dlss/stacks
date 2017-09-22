@@ -8,7 +8,9 @@ class Projection
   def thumbnail?
     return false unless transformation
     width, height = tile_dimensions
-    %w(full square).include?(transformation.region) && width <= 400 && height <= 800
+    (transformation.region.is_a?(Iiif::Region::Full) ||
+    transformation.region.is_a?(Iiif::Region::Square)) &&
+      width <= 400 && height <= 800
   end
 
   def tile?
@@ -19,42 +21,34 @@ class Projection
 
   def region_dimensions
     case transformation.region
-    when 'full', /^pct/
+    when Iiif::Region::Full
       scaled_region_dimensions
-    when /^pct:/
+    when Iiif::Region::Percent
       raise NotImplementedError, "Percent regions are not yet supported"
-    when /^(\d+),(\d+),(\d+),(\d+)$/
-      explicit_region_dimensions
+    when Iiif::Region::Absolute
+      transformation.region.dimensions
     else
       raise ArgumentError, "Unknown region format #{transformation.region}"
     end
   end
 
-  # pass a block with the max dimensions
-  def tile_dimensions
-    size = transformation.size
-    if size =~ /^!?\d*,\d*$/
-      explicit_tile_dimensions(size)
-    elsif size == 'max'
-      image.max_tile_dimensions.call(self)
-    elsif region_dimensions
-      scaled_tile_dimensions
-    else
-      [Float::INFINITY, Float::INFINITY]
-    end
-  end
-
   def explicit_tile_dimensions(requested_size)
-    height, width = requested_size.delete('!').split(',', 2)
+    height = if requested_size.is_a?(Iiif::Size::Width)
+               height_for_aspect_ratio(requested_size.width)
+             else
+               requested_size.height
+             end
 
-    height = height_for_aspect_ratio(width) if height.blank?
-    width = width_for_aspect_ratio(height) if width.blank?
-
-    [height.to_i, width.to_i]
+    width = if requested_size.is_a?(Iiif::Size::Height)
+              width_for_aspect_ratio(requested_size.height)
+            else
+              requested_size.width
+            end
+    [width, height]
   end
 
   def absolute_region?
-    transformation.region =~ /^(\d+),(\d+),(\d+),(\d+)$/
+    transformation.region.instance_of? Iiif::Region::Absolute
   end
 
   delegate :accessable_by?, to: :image
@@ -63,33 +57,30 @@ class Projection
 
   attr_reader :transformation, :image
 
+  def tile_dimensions
+    size = transformation.size
+    case size
+    when Iiif::Size::Percent
+      scaled_tile_dimensions(size.scale)
+    when Iiif::Size::Max, Iiif::Size::Full
+      image.max_tile_dimensions.call(self)
+    else
+      explicit_tile_dimensions(size)
+    end
+  end
+
   def height_for_aspect_ratio(width)
-    rheight, rwidth = region_dimensions
-    (rheight / rwidth.to_f) * width.to_i
+    rwidth, rheight = region_dimensions
+    (rheight / rwidth.to_f) * width
   end
 
   def width_for_aspect_ratio(height)
-    rheight, rwidth = region_dimensions
-    (rwidth / rheight.to_f) * height.to_i
+    rwidth, rheight = region_dimensions
+    (rwidth / rheight.to_f) * height
   end
 
-  def scaled_tile_dimensions
-    size = transformation.size
-    scale = case size
-            when 'full'
-              1.0
-            when /^pct:/
-              size.sub(/^pct:/, '').to_f / 100
-            else
-              1.0
-            end
-
+  def scaled_tile_dimensions(scale)
     region_dimensions.map { |dimension| dimension * scale }
-  end
-
-  def explicit_region_dimensions
-    match = transformation.region.match(/^(\d+),(\d+),(\d+),(\d+)$/)
-    [match[3], match[4]].map(&:to_i)
   end
 
   def scaled_region_dimensions

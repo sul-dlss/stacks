@@ -11,28 +11,28 @@ RSpec.describe Projection do
   end
 
   describe '#tile_dimensions' do
-    subject { instance.tile_dimensions }
+    subject { instance.send(:tile_dimensions) }
     context "for an unrestricted image" do
       context "explicit sizes" do
-        let(:transformation) { Iiif::Transformation.new(size: '257,257', region: 'full') }
+        let(:transformation) { Iiif::OptionDecoder.decode(size: '257,257', region: 'full') }
 
         it { is_expected.to eq [257, 257] }
       end
 
       context "height" do
-        let(:transformation) { Iiif::Transformation.new(size: '256,', region: '0,0,800,600') }
+        let(:transformation) { Iiif::OptionDecoder.decode(size: '256,', region: '0,0,800,600') }
 
         it { is_expected.to eq [256, 192] }
       end
 
       context "width" do
-        let(:transformation) { Iiif::Transformation.new(size: ',192', region: '0,0,800,600') }
+        let(:transformation) { Iiif::OptionDecoder.decode(size: ',192', region: '0,0,800,600') }
 
         it { is_expected.to eq [256, 192] }
       end
 
       context 'full dimensions' do
-        let(:transformation) { Iiif::Transformation.new(size: 'full', region: '0,0,800,600') }
+        let(:transformation) { Iiif::OptionDecoder.decode(size: 'full', region: '0,0,800,600') }
 
         it { is_expected.to eq [800, 600] }
       end
@@ -45,13 +45,13 @@ RSpec.describe Projection do
         let(:restricted_ability) do
           ability.tap { |x| allow(x).to receive(:can?).with(:download, subject).and_return(false) }
         end
-        let(:transformation) { Iiif::Transformation.new(size: 'max', region: '0,0,800,600') }
+        let(:transformation) { Iiif::OptionDecoder.decode(size: 'max', region: '0,0,800,600') }
 
         it { is_expected.to eq [800, 600] }
       end
 
       context 'percentages' do
-        let(:transformation) { Iiif::Transformation.new(size: 'pct:50', region: '0,0,800,600') }
+        let(:transformation) { Iiif::OptionDecoder.decode(size: 'pct:50', region: '0,0,800,600') }
         it { is_expected.to eq [400, 300] }
       end
     end
@@ -60,7 +60,7 @@ RSpec.describe Projection do
       let(:image) { RestrictedImage.new }
 
       context "full region" do
-        let(:transformation) { Iiif::Transformation.new(size: 'max', region: 'full') }
+        let(:transformation) { Iiif::OptionDecoder.decode(size: 'max', region: 'full') }
 
         it 'limits users to thumbnail sizes' do
           expect(subject).to eq [400, 400]
@@ -68,7 +68,7 @@ RSpec.describe Projection do
       end
 
       context "specified region" do
-        let(:transformation) { Iiif::Transformation.new(size: 'max', region: '0,0,800,600') }
+        let(:transformation) { Iiif::OptionDecoder.decode(size: 'max', region: '0,0,800,600') }
 
         it 'limits users to a maximum tiles size' do
           expect(subject).to eq [512, 512]
@@ -81,79 +81,79 @@ RSpec.describe Projection do
     subject { instance.thumbnail? }
 
     context "when equal to 400 on both edges" do
-      let(:transformation) { Iiif::Transformation.new(size: '400,400', region: 'full') }
+      let(:transformation) { Iiif::OptionDecoder.decode(size: '400,400', region: 'full') }
 
       it { is_expected.to be true }
     end
 
     context "when equal to 400 on height" do
-      let(:transformation) { Iiif::Transformation.new(size: '400,', region: 'full') }
+      let(:transformation) { Iiif::OptionDecoder.decode(size: '400,', region: 'full') }
 
       it { is_expected.to be true }
     end
 
     context "when bigger than 400 on one edges" do
-      let(:transformation) { Iiif::Transformation.new(size: '401,400', region: 'full') }
+      let(:transformation) { Iiif::OptionDecoder.decode(size: '401,400', region: 'full') }
 
       it { is_expected.to be false }
     end
 
     context "when bigger than to 400 on height" do
-      let(:transformation) { Iiif::Transformation.new(size: '401,', region: 'full') }
+      let(:transformation) { Iiif::OptionDecoder.decode(size: '401,', region: 'full') }
 
       it { is_expected.to be false }
     end
 
     context "when scaled short edge is bigger than to 400" do
       # calculated long edge is 533px
-      let(:transformation) { Iiif::Transformation.new(size: ',400', region: 'full') }
+      let(:transformation) { Iiif::OptionDecoder.decode(size: ',400', region: 'full') }
 
       it { is_expected.to be false }
     end
 
     context "when the transformation doesn't select the full region" do
-      let(:transformation) { Iiif::Transformation.new(region: '0,0,1,1', size: 'full') }
+      let(:transformation) { Iiif::OptionDecoder.decode(region: '0,0,1,1', size: 'full') }
 
       it { is_expected.to be false }
     end
   end
 
   describe '#tile?' do
-    let(:transformation) { Iiif::Transformation.new(size: 'full', region: 'full') }
+    let(:transformation) { Iiif::OptionDecoder.decode(size: 'full', region: 'full') }
     subject { instance.tile? }
 
     context 'when an absolute region is specified' do
-      let(:transformation) { Iiif::Transformation.new(size: 'full', region: '0,0,1,1') }
+      let(:transformation) { Iiif::OptionDecoder.decode(size: 'full', region: '0,0,1,1') }
       it { is_expected.to be true }
     end
 
     context 'when a full region is specified' do
-      let(:transformation) { Iiif::Transformation.new(size: 'full', region: 'full') }
+      let(:transformation) { Iiif::OptionDecoder.decode(size: 'full', region: 'full') }
       it { is_expected.to be_falsey }
     end
 
     context "when it is smaller than 512px on long edge scaled width & height" do
-      let(:transformation) { Iiif::Transformation.new(size: '256,256', region: '0,0,256,256') }
+      let(:transformation) { Iiif::OptionDecoder.decode(size: '256,256', region: '0,0,256,256') }
       it { is_expected.to be true }
     end
 
     context "when it is smaller than 512px on long edge scaled height" do
-      let(:transformation) { Iiif::Transformation.new(size: '256,', region: '0,0,256,256') }
+      let(:transformation) { Iiif::OptionDecoder.decode(size: '256,', region: '0,0,256,256') }
       it { is_expected.to be true }
     end
 
     context "when it is smaller than 512px on long edge scaled height" do
-      let(:transformation) { Iiif::Transformation.new(size: ',256', region: '0,0,256,256') }
+      let(:transformation) { Iiif::OptionDecoder.decode(size: ',256', region: '0,0,256,256') }
       it { is_expected.to be true }
     end
 
     context "when it is larger than 512px on long edge scaled width & height" do
-      let(:transformation) { Iiif::Transformation.new(size: '513,513', region: '0,0,1,1') }
+      let(:transformation) { Iiif::OptionDecoder.decode(size: '513,513', region: '0,0,1,1') }
       it { is_expected.to be false }
     end
 
     context "when it is larger than 512px on long edge scaled width" do
-      let(:transformation) { Iiif::Transformation.new(size: ',513', region: '0,0,800,600') }
+      let(:transformation) { Iiif::OptionDecoder.decode(size: ',513', region: '0,0,800,600') }
       it { is_expected.to be false }
     end
   end
@@ -161,7 +161,7 @@ RSpec.describe Projection do
   describe '#region_dimensions' do
     subject { instance.region_dimensions }
     context 'for a full region' do
-      let(:transformation) { Iiif::Transformation.new(size: 'full', region: 'full') }
+      let(:transformation) { Iiif::OptionDecoder.decode(size: 'full', region: 'full') }
 
       it 'uses the image dimensions' do
         expect(subject).to eq [800, 600]
@@ -169,7 +169,7 @@ RSpec.describe Projection do
     end
 
     context 'for an explicit region' do
-      let(:transformation) { Iiif::Transformation.new(size: 'full', region: '0,1,2,3') }
+      let(:transformation) { Iiif::OptionDecoder.decode(size: 'full', region: '0,1,2,3') }
 
       it 'handles explicit region requests' do
         expect(subject).to eq [2, 3]
@@ -177,10 +177,10 @@ RSpec.describe Projection do
     end
 
     context 'for an region that contains negative values' do
-      let(:transformation) { Iiif::Transformation.new(size: 'full', region: '-22832,-22832,22832,22832') }
+      let(:transformation) { Iiif::OptionDecoder.decode(size: 'full', region: '-22832,-22832,22832,22832') }
 
       it 'raises an error' do
-        expect { subject }.to raise_error ArgumentError
+        expect { subject }.to raise_error Iiif::InvalidAttributeError
       end
     end
   end

@@ -13,6 +13,8 @@ RSpec.describe IiifController do
                       etag: nil,
                       mtime: nil)
     end
+    let(:transformation) { double }
+
     let(:iiif_params) do
       {
         identifier: identifier,
@@ -27,6 +29,7 @@ RSpec.describe IiifController do
     subject do
       get :show, params: iiif_params
     end
+
     before do
       # for the cache headers
       allow(controller.send(:anonymous_ability)).to receive(:can?).with(:read, projection).and_return(false)
@@ -35,8 +38,11 @@ RSpec.describe IiifController do
       # for current_image
       allow(controller).to receive(:can?).with(:download, image).and_return(true)
 
+      allow(Iiif::OptionDecoder).to receive(:decode)
+        .with(ActionController::Parameters)
+        .and_return(transformation)
       allow(StacksImage).to receive(:new).and_return(image)
-      allow(image).to receive(:projection_for).with(Iiif::Transformation).and_return(projection)
+      allow(image).to receive(:projection_for).with(transformation).and_return(projection)
     end
 
     context 'with a bad druid' do
@@ -51,11 +57,6 @@ RSpec.describe IiifController do
       subject
       expect(assigns(:image)).to eq image
       expect(StacksImage).to have_received(:new).with(
-        transformation: Iiif::Transformation.new(region: "0,640,2552,2552",
-                                                 size: "100,100",
-                                                 rotation: "0",
-                                                 quality: "default",
-                                                 format: "jpg"),
         id: StacksIdentifier.new(druid: "nr349ct7889", file_name: 'nr349ct7889_00_0001.jp2'),
         canonical_url: "http://test.host/image/iiif/nr349ct7889%252Fnr349ct7889_00_0001"
       )
