@@ -12,7 +12,7 @@ RSpec.describe 'Ability', type: :model do
   let(:file) do
     StacksFile.new(id: file_identifier).tap { |x| allow(x).to receive(:rights_xml).and_return(rights_xml) }
   end
-  let(:image_identifier) { StacksIdentifier.new(druid: 'xxxxxxx', file_name: 'image.jpg') }
+  let(:image_identifier) { StacksIdentifier.new(druid: 'yx350pf4616', file_name: 'image.jpg') }
   let(:image) do
     StacksImage.new(id: image_identifier).tap { |x| allow(x).to receive(:rights_xml).and_return(rights_xml) }
   end
@@ -28,8 +28,12 @@ RSpec.describe 'Ability', type: :model do
   let(:tile_transformation) { Iiif::OptionDecoder.decode(region: '0,0,100,100', size: '256,256') }
   let(:tile) { Projection.new(image, tile_transformation) }
 
+  let(:big_transform) { Iiif::OptionDecoder.decode(region: 'full', size: '748,') }
+  let(:big_image) { Projection.new(image, big_transform) }
+
   before do
     allow_any_instance_of(StacksImage).to receive(:rights_xml).and_return(rights_xml)
+    allow(image).to receive_messages(image_width: 11_957, image_height: 15_227)
   end
 
   context 'for a stanford webauth user' do
@@ -59,6 +63,7 @@ RSpec.describe 'Ability', type: :model do
       it { is_expected.to be_able_to(:read_metadata, image) }
       it { is_expected.to be_able_to(:read, thumbnail) }
       it { is_expected.to be_able_to(:read, square_thumbnail) }
+      it { is_expected.to be_able_to(:read, big_image) }
     end
 
     context 'with a stanford-only file' do
@@ -85,6 +90,7 @@ RSpec.describe 'Ability', type: :model do
       it { is_expected.to be_able_to(:read_metadata, image) }
       it { is_expected.to be_able_to(:read, thumbnail) }
       it { is_expected.to be_able_to(:read, square_thumbnail) }
+      it { is_expected.to be_able_to(:read, big_image) }
     end
 
     context 'with read rights but not download' do
@@ -105,6 +111,7 @@ RSpec.describe 'Ability', type: :model do
       it { is_expected.not_to be_able_to(:read, file) }
       it { is_expected.not_to be_able_to(:read, image) }
       it { is_expected.not_to be_able_to(:read, media) }
+      it { is_expected.not_to be_able_to(:read, big_image) }
       it { is_expected.to be_able_to(:read, tile) }
       it { is_expected.to be_able_to(:stream, media) }
       it { is_expected.to be_able_to(:access, file) }
