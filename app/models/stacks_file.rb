@@ -20,8 +20,6 @@ class StacksFile
   end
 
   def path
-    @path ||= begin
-      PathService.for(id)
-    end
+    @path ||= PathService.for(id)
   end
 end
