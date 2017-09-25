@@ -48,7 +48,7 @@ RSpec.describe StacksImage do
     let(:identifier) { StacksIdentifier.new(druid: 'ab012cd3456', file_name: 'def') }
 
     let(:transformation) do
-      Iiif::Transformation.new(
+      IIIF::Image::Transformation.new(
         region: '0,0,800,600',
         size: 'full',
         quality: 'default',

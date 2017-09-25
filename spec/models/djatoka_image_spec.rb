@@ -30,7 +30,7 @@ RSpec.describe DjatokaImage do
     subject { instance.valid? }
     context 'with good parameters' do
       let(:transformation) do
-        Iiif::Transformation.new(size: 'full', region: 'full', quality: 'default', rotation: '0', format: 'jpg')
+        IIIF::Image::Transformation.new(size: 'full', region: 'full', quality: 'default', rotation: '0', format: 'jpg')
       end
 
       it { is_expected.to be true }
@@ -38,7 +38,7 @@ RSpec.describe DjatokaImage do
 
     context 'when the IIIF parameters are invalid' do
       let(:transformation) do
-        Iiif::Transformation.new(quality: 'native', region: 'full', size: 'full')
+        IIIF::Image::Transformation.new(quality: 'native', region: 'full', size: 'full')
       end
 
       it { is_expected.to be false }

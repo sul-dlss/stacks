@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe Projection do
   let(:image) { StacksImage.new }
   let(:instance) { described_class.new(image, transformation) }
-  let(:transformation) { Iiif::OptionDecoder.decode(options) }
+  let(:transformation) { IIIF::Image::OptionDecoder.decode(options) }
 
   before do
     allow(image).to receive_messages(image_width: 800, image_height: 600)
@@ -18,25 +18,25 @@ RSpec.describe Projection do
       context "explicit sizes" do
         let(:options) { { size: '257,257', region: 'full' } }
 
-        it { is_expected.to eq Iiif::Dimension.new(width: 257, height: 257) }
+        it { is_expected.to eq IIIF::Image::Dimension.new(width: 257, height: 257) }
       end
 
       context "width" do
         let(:options) { { size: '256,', region: '0,0,800,600' } }
 
-        it { is_expected.to eq Iiif::Dimension.new(width: 256, height: 192) }
+        it { is_expected.to eq IIIF::Image::Dimension.new(width: 256, height: 192) }
       end
 
       context "height" do
         let(:options) { { size: ',192', region: '0,0,800,600' } }
 
-        it { is_expected.to eq Iiif::Dimension.new(width: 256, height: 192) }
+        it { is_expected.to eq IIIF::Image::Dimension.new(width: 256, height: 192) }
       end
 
       context 'full dimensions' do
         let(:options) { { size: 'full', region: '0,0,800,600' } }
 
-        it { is_expected.to eq Iiif::Dimension.new(width: 800, height: 600) }
+        it { is_expected.to eq IIIF::Image::Dimension.new(width: 800, height: 600) }
       end
 
       context 'for requests with "max" size' do
@@ -49,12 +49,12 @@ RSpec.describe Projection do
         end
         let(:options) { { size: 'max', region: '0,0,800,600' } }
 
-        it { is_expected.to eq Iiif::Dimension.new(width: 800, height: 600) }
+        it { is_expected.to eq IIIF::Image::Dimension.new(width: 800, height: 600) }
       end
 
       context 'percentages' do
         let(:options) { { size: 'pct:50', region: '0,0,800,600' } }
-        it { is_expected.to eq Iiif::Dimension.new(width: 400, height: 300) }
+        it { is_expected.to eq IIIF::Image::Dimension.new(width: 400, height: 300) }
       end
     end
 
@@ -65,7 +65,7 @@ RSpec.describe Projection do
         let(:options) { { size: 'max', region: 'full' } }
 
         it 'limits users to thumbnail sizes' do
-          expect(subject).to eq Iiif::Dimension.new(width: 400, height: 400)
+          expect(subject).to eq IIIF::Image::Dimension.new(width: 400, height: 400)
         end
       end
 
@@ -73,7 +73,7 @@ RSpec.describe Projection do
         let(:options) { { size: 'max', region: '0,0,800,600' } }
 
         it 'limits users to a maximum tiles size' do
-          expect(subject).to eq Iiif::Dimension.new(width: 512, height: 512)
+          expect(subject).to eq IIIF::Image::Dimension.new(width: 512, height: 512)
         end
       end
     end
@@ -171,7 +171,7 @@ RSpec.describe Projection do
       let(:options) { { size: 'full', region: 'full' } }
 
       it 'uses the image dimensions' do
-        expect(subject).to eq Iiif::Dimension.new(width: 800, height: 600)
+        expect(subject).to eq IIIF::Image::Dimension.new(width: 800, height: 600)
       end
     end
 
@@ -179,7 +179,7 @@ RSpec.describe Projection do
       let(:options) { { size: 'full', region: '0,1,2,3' } }
 
       it 'handles explicit region requests' do
-        expect(subject).to eq Iiif::Dimension.new(width: 2, height: 3)
+        expect(subject).to eq IIIF::Image::Dimension.new(width: 2, height: 3)
       end
     end
 
@@ -187,7 +187,7 @@ RSpec.describe Projection do
       let(:options) { { size: 'full', region: '-22832,-22832,22832,22832' } }
 
       it 'raises an error' do
-        expect { subject }.to raise_error Iiif::InvalidAttributeError
+        expect { subject }.to raise_error IIIF::Image::InvalidAttributeError
       end
     end
   end

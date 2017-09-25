@@ -2,7 +2,7 @@
 class DjatokaImage < SourceImage
   include ActiveSupport::Benchmarkable
   # @param id [StacksIdentifier]
-  # @param transformation [Iiif::Transformation]
+  # @param transformation [IIIF::Image::Transformation]
   # @param url [String] the url for the djatoka resolver
   def initialize(id:, transformation:, url:)
     @id = id

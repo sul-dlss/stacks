@@ -2,7 +2,7 @@
 class IiifImage < SourceImage
   include ActiveSupport::Benchmarkable
   # @params id [StacksIdentifier]
-  # @params transformation [Iiif::Transformation]
+  # @params transformation [IIIF::Image::Transformation]
   # @params base_uri [String]
   def initialize(id:, transformation:, base_uri:)
     @id = id
@@ -15,7 +15,7 @@ class IiifImage < SourceImage
   private
 
   def image_uri
-    @image_uri ||= Iiif::URI.new(base_uri: @base_uri, identifier: remote_id, transformation: transformation)
+    @image_uri ||= IIIF::Image::URI.new(base_uri: @base_uri, identifier: remote_id, transformation: transformation)
   end
 
   def image_url

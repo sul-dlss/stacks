@@ -130,10 +130,10 @@ class IiifController < ApplicationController
     { id: stacks_identifier }.merge(canonical_params)
   end
 
-  # @return [Iiif::Transformation] returns the transformation for the parameters
+  # @return [IIIF::Image::Transformation] returns the transformation for the parameters
   def transformation
     return unless allowed_params.key?(:size)
-    Iiif::OptionDecoder.decode(allowed_params)
+    IIIF::Image::OptionDecoder.decode(allowed_params)
   end
 
   def stacks_identifier

@@ -21,14 +21,14 @@ RSpec.describe 'Ability', type: :model do
     StacksMediaStream.new(id: media_identifier).tap { |x| allow(x).to receive(:rights_xml).and_return(rights_xml) }
   end
 
-  let(:thumbnail_transformation) { Iiif::OptionDecoder.decode(region: 'full', size: '!400,400') }
+  let(:thumbnail_transformation) { IIIF::Image::OptionDecoder.decode(region: 'full', size: '!400,400') }
   let(:thumbnail) { Projection.new(image, thumbnail_transformation) }
-  let(:square_transformation) { Iiif::OptionDecoder.decode(region: 'square', size: '!400,400') }
+  let(:square_transformation) { IIIF::Image::OptionDecoder.decode(region: 'square', size: '!400,400') }
   let(:square_thumbnail) { Projection.new(image, square_transformation) }
-  let(:tile_transformation) { Iiif::OptionDecoder.decode(region: '0,0,100,100', size: '256,256') }
+  let(:tile_transformation) { IIIF::Image::OptionDecoder.decode(region: '0,0,100,100', size: '256,256') }
   let(:tile) { Projection.new(image, tile_transformation) }
 
-  let(:big_transform) { Iiif::OptionDecoder.decode(region: 'full', size: '748,') }
+  let(:big_transform) { IIIF::Image::OptionDecoder.decode(region: 'full', size: '748,') }
   let(:big_image) { Projection.new(image, big_transform) }
 
   before do
