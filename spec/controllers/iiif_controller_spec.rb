@@ -36,7 +36,7 @@ RSpec.describe IiifController do
       # for current_image
       allow(controller).to receive(:can?).with(:download, image).and_return(true)
 
-      allow(Iiif::OptionDecoder).to receive(:decode)
+      allow(IIIF::Image::OptionDecoder).to receive(:decode)
         .with(ActionController::Parameters)
         .and_return(transformation)
       allow(StacksImage).to receive(:new).and_return(image)

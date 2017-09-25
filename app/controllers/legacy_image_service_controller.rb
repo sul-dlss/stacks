@@ -40,7 +40,7 @@ class LegacyImageServiceController < ApplicationController
   end
 
   def iiif_params
-    Iiif::Transformation.new(
+    IIIF::Image::Transformation.new(
       region: iiif_region,
       rotation: allowed_params.fetch(:rotate, 0),
       quality: 'default',

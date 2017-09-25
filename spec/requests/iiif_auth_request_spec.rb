@@ -16,7 +16,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
   let(:quality) { 'default' }
   let(:format) { 'jpg' }
   let(:params_hash) { { id: identifier, transformation: transformation } }
-  let(:transformation) { Iiif::Transformation.new region: region, size: size, rotation: rotation, quality: quality, format: format }
+  let(:transformation) { IIIF::Image::Transformation.new region: region, size: size, rotation: rotation, quality: quality, format: format }
 
   context "#show" do
     let!(:si_stanford_only) do

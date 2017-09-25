@@ -7,7 +7,7 @@ class IiifMetadataService < MetadataService
   # @param base_uri [String] base path to the IIIF server
   def initialize(image_id:, canonical_url:, base_uri:)
     id = RemoteIiifIdentifier.convert(image_id)
-    @url = Iiif::URI.new(identifier: id, base_uri: base_uri).to_s
+    @url = IIIF::Image::URI.new(identifier: id, base_uri: base_uri).to_s
     @canonical_url = canonical_url
   end
 

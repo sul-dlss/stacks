@@ -99,7 +99,7 @@ gem 'honeybadger'
 
 # Use okcomputer to monitor the application
 gem 'okcomputer'
-
+gem 'iiif-image-api', '~> 0.0.8'
 gem 'bootstrap-sass'
 gem 'sul_styles'
 gem 'djatoka'
