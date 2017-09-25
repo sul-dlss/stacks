@@ -41,10 +41,11 @@ class IiifMetadataService < MetadataService
 
   # @return [String] the IIIF info response
   def retrieve
-    # puts "Fetching #{@url}"
-    conn = HTTP.get(@url)
-    raise "There was a problem fetching #{@url}. Server returned #{conn.code}" unless conn.code == 200
-    conn.body
+    with_retries max_tries: 3, rescue: [HTTP::ConnectionError] do
+      conn = HTTP.get(@url)
+      raise "There was a problem fetching #{@url}. Server returned #{conn.code}" unless conn.code == 200
+      conn.body
+    end
   end
 
   def json
