@@ -49,10 +49,13 @@ class IiifMetadataService < MetadataService
   end
 
   def json
+    retrieved_json = retrieve
     @json ||= begin
-                JSON.parse(retrieve).tap do |data|
+                JSON.parse(retrieved_json).tap do |data|
                   data['@id'] = @canonical_url
                 end
               end
+  rescue JSON::ParserError => error
+    raise Stacks::UnexpectedMetadataResponseError.new(@url, error, retrieved_json)
   end
 end
