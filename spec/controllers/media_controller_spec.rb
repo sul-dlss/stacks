@@ -92,12 +92,17 @@ RSpec.describe MediaController do
     end
 
     context 'success' do
-      before { allow(controller).to receive(:can?).and_return(true) }
+      let(:token) { instance_double(StacksMediaToken, to_encrypted_string: 'sekret-token') }
+      before do
+        allow(controller).to receive(:can?).and_return(true)
+        allow(StacksMediaToken).to receive(:new).and_return(token)
+      end
+
       it 'returns json that indicates a successful auth check (including token)' do
         get :auth_check, params: { id: id, file_name: file_name, format: :js }
         body = JSON.parse(response.body)
-        expect(body['status']).to eq('success')
-        expect(body['token']).to match(/^[a-zA-Z0-9]+=+-+[a-zA-Z0-9]+$/)
+        expect(body['status']).to eq 'success'
+        expect(body['token']).to eq 'sekret-token'
       end
     end
   end
