@@ -7,12 +7,13 @@ class StacksFile
 
   attr_accessor :id, :current_ability, :download
 
-  def exist?
-    path && File.exist?(path)
+  # Some files exist but have unreadable permissions, treat these as non-existent
+  def readable?
+    path && File.readable?(path)
   end
 
   def mtime
-    @mtime ||= File.mtime(path) if exist?
+    @mtime ||= File.mtime(path) if readable?
   end
 
   def etag

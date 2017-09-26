@@ -202,20 +202,20 @@ RSpec.describe Projection do
     end
 
     context 'when file exists and transformation is valid' do
-      let(:file) { instance_double(StacksFile, exist?: true) }
+      let(:file) { instance_double(StacksFile, readable?: true) }
       let(:source_image) { instance_double(SourceImage, valid?: true) }
       it { is_expected.to be true }
     end
 
     context 'when file exists but transformation is not valid' do
-      let(:file) { instance_double(StacksFile, exist?: true) }
+      let(:file) { instance_double(StacksFile, readable?: true) }
       let(:source_image) { instance_double(SourceImage, valid?: false) }
 
       it { is_expected.to be false }
     end
 
     context 'when file does not exist' do
-      let(:file) { instance_double(StacksFile, exist?: false) }
+      let(:file) { instance_double(StacksFile, readable?: false) }
       let(:source_image) { instance_double(SourceImage) }
 
       it { is_expected.to be false }
