@@ -55,7 +55,7 @@ class IiifMetadataService < MetadataService
                   data['@id'] = @canonical_url
                 end
               end
-  rescue JSON::ParserError => error
-    raise Stacks::UnexpectedMetadataResponseError.new(@url, error, retrieved_json)
+  rescue JSON::ParserError => err
+    raise Stacks::UnexpectedMetadataResponseError, "There was a problem fetching #{@url}. #{err}: #{retrieved_json}"
   end
 end
