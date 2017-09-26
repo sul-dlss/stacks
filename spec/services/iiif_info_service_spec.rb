@@ -55,7 +55,7 @@ RSpec.describe IiifInfoService do
       end
 
       it 'has the profile' do
-        expect(image_info['profile']).to eq 'http://iiif.io/api/image/2/level1'
+        expect(image_info['profile']).to eq 'http://iiif.io/api/image/2/level2'
       end
     end
 

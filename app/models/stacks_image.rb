@@ -28,7 +28,7 @@ class StacksImage
   end
 
   def profile
-    'http://iiif.io/api/image/2/level1'
+    'http://iiif.io/api/image/2/level2'
   end
 
   def exist?

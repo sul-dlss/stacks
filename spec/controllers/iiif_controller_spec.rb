@@ -127,7 +127,7 @@ RSpec.describe IiifController do
       expect(controller.content_type).to eq 'application/json'
       expect(response).to be_successful
       expect(controller.response_body.first).to eq "{\n  \"height\": \"999\"\n}"
-      expect(controller.headers['Link']).to eq '<http://iiif.io/api/image/2/level1.json>;rel="profile"'
+      expect(controller.headers['Link']).to eq '<http://iiif.io/api/image/2/level2.json>;rel="profile"'
     end
   end
 end

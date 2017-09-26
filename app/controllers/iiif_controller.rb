@@ -158,7 +158,7 @@ class IiifController < ApplicationController
   end
 
   def add_iiif_profile_header
-    headers['Link'] = '<http://iiif.io/api/image/2/level1.json>;rel="profile"'
+    headers['Link'] = '<http://iiif.io/api/image/2/level2.json>;rel="profile"'
   end
 
   # We consider an image to be degraded if the user isn't current able to download it, but if they

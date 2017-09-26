@@ -36,7 +36,7 @@ RSpec.describe StacksImage do
   describe 'profile' do
     subject { instance.profile }
 
-    it { is_expected.to eq 'http://iiif.io/api/image/2/level1' }
+    it { is_expected.to eq 'http://iiif.io/api/image/2/level2' }
   end
 
   describe '#restricted' do
