@@ -14,7 +14,7 @@ RSpec.describe 'IIIF API' do
     StacksImage.new(id: StacksIdentifier.new(druid: 'nr349ct7889', file_name: 'nr349ct7889_00_0001.jp2'))
   end
   let(:file_source) do
-    instance_double(StacksFile, exist?: true,
+    instance_double(StacksFile, readable?: true,
                                 etag: 'etag',
                                 mtime: Time.zone.now)
   end

@@ -14,7 +14,7 @@ RSpec.describe FileController do
     subject { get :show, params: { id: druid, file_name: 'xf680rd3068_1.jp2' } }
 
     before do
-      allow(file).to receive_messages(exist?: true, mtime: Time.zone.now, path: File.join(Rails.root, 'Gemfile'))
+      allow(file).to receive_messages(mtime: Time.zone.now, path: File.join(Rails.root, 'Gemfile'))
     end
 
     context "with an invalid druid" do
