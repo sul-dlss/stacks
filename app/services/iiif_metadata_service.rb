@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'errors'
+
 # Fetch metadata from the remote IIIF server
 class IiifMetadataService < MetadataService
   # @param image_id [StacksIdentifier]
@@ -42,9 +44,16 @@ class IiifMetadataService < MetadataService
   # @return [String] the IIIF info response
   def retrieve
     with_retries max_tries: 3, rescue: [HTTP::ConnectionError] do
-      conn = HTTP.get(@url)
-      raise "There was a problem fetching #{@url}. Server returned #{conn.code}" unless conn.code == 200
+      handle_response(HTTP.get(@url))
+    end
+  end
+
+  def handle_response(conn)
+    case conn.code
+    when 200
       conn.body
+    else
+      raise Stacks::RetrieveMetadataError, "There was a problem fetching #{@url}. Server returned #{conn.code}"
     end
   end
 
