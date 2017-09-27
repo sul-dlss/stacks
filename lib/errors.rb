@@ -4,4 +4,8 @@
 module Stacks
   # An UnexpectedMetadataResponse to raise when HTTP returns bad JSON
   class UnexpectedMetadataResponseError < StandardError; end
+
+  # RetrieveMetadataError is raised when there is an error retrieving metadata
+  # from the image server.
+  class RetrieveMetadataError < StandardError; end
 end
