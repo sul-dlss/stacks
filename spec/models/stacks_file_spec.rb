@@ -29,19 +29,19 @@ RSpec.describe StacksFile do
     subject { instance.readable? }
 
     before do
-      allow(File).to receive(:stat).with(path).and_return(permissions)
+      allow(File).to receive(:world_readable?).with(path).and_return(permissions)
     end
 
     context 'with a readable file' do
-      let(:permissions) { double 'perms', world_readable?: 0o0644 }
+      let(:permissions) { 420 }
 
-      it { is_expected.to eq true }
+      it { is_expected.to eq 420 }
     end
 
     context 'with an unreadable file' do
-      let(:permissions) { double 'perms', world_readable?: 0o600 }
+      let(:permissions) { nil }
 
-      it { is_expected.to eq false }
+      it { is_expected.to eq nil }
     end
   end
 end

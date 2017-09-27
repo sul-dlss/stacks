@@ -8,17 +8,8 @@ class StacksFile
   attr_accessor :id, :current_ability, :download
 
   # Some files exist but have unreadable permissions, treat these as non-existent
-  def world_readable?
-    case File.stat(path).world_readable?
-    when 420
-      true
-    else
-      false
-    end
-  end
-
   def readable?
-    path && world_readable?
+    path && File.world_readable?(path)
   end
 
   def mtime
