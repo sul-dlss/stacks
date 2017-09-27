@@ -18,10 +18,10 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
   let(:params_hash) { { id: identifier, transformation: transformation } }
   let(:transformation) { IIIF::Image::Transformation.new region: region, size: size, rotation: rotation, quality: quality, format: format }
   let(:path) { "/stacks/nr/349/ct/7889/nr349ct7889_00_0001" }
-  let(:perms) { double 'perms', world_readable?: 644 }
+  let(:perms) { nil }
 
   before(:each) do
-    allow(File).to receive(:stat).with(path).and_return(perms)
+    allow(File).to receive(:world_readable?).with(path).and_return(perms)
   end
 
   context "#show" do

@@ -13,10 +13,10 @@ RSpec.describe "Authentication for File requests", type: :request do
   let(:filename) { 'xf680rd3068_1.jp2' }
   let(:identifier) { StacksIdentifier.new('xf680rd3068%2Fxf680rd3068_1.jp2') }
   let(:path) { "/stacks/xf/680/rd/3068/xf680rd3068_1.jp2" }
-  let(:perms) { double 'perms', world_readable?: 644 }
+  let(:perms) { nil }
 
   before(:each) do
-    allow(File).to receive(:stat).with(path).and_return(perms)
+    allow(File).to receive(:world_readable?).with(path).and_return(perms)
   end
 
   context "#show" do
