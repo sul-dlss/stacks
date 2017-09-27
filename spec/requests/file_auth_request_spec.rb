@@ -12,6 +12,12 @@ RSpec.describe "Authentication for File requests", type: :request do
   let(:druid) { 'xf680rd3068' }
   let(:filename) { 'xf680rd3068_1.jp2' }
   let(:identifier) { StacksIdentifier.new('xf680rd3068%2Fxf680rd3068_1.jp2') }
+  let(:path) { "/stacks/xf/680/rd/3068/xf680rd3068_1.jp2" }
+  let(:perms) { double 'perms', world_readable?: 644 }
+
+  before(:each) do
+    allow(File).to receive(:stat).with(path).and_return(perms)
+  end
 
   context "#show" do
     let!(:sf_stanford_only) do
