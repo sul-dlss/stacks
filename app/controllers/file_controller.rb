@@ -1,8 +1,6 @@
 ##
 # API for delivering files from stacks
 class FileController < ApplicationController
-  before_action :load_file
-
   rescue_from ActionController::MissingFile do
     render plain: 'File not found', status: :not_found
   end
@@ -28,8 +26,14 @@ class FileController < ApplicationController
 
   def stacks_file_params
     allowed_params.slice(:download)
-                  .merge(id: StacksIdentifier.new(druid: params[:id],
-                                                  file_name: params[:file_name]))
+                  .merge(id: stacks_identifier)
+  end
+
+  def stacks_identifier
+    id = StacksIdentifier.new(druid: params[:id],
+                              file_name: params[:file_name])
+    return id if id.valid?
+    raise ActionController::RoutingError, 'Invalid druid'
   end
 
   # called when CanCan::AccessDenied error is raised, typically by authorize!
@@ -55,10 +59,6 @@ class FileController < ApplicationController
   end
 
   def current_file
-    @file
-  end
-
-  def load_file
     @file ||= StacksFile.new(stacks_file_params)
   end
 end
