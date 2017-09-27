@@ -1,11 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe StacksFile do
+  let(:path) { "#{Settings.stacks.storage_root}/ab/012/cd/3456/def.pdf" }
+  let(:identifier) { StacksIdentifier.new(druid: 'druid:ab012cd3456', file_name: 'def.pdf') }
+  let(:instance) { described_class.new(id: identifier) }
+
   describe '#path' do
     subject { instance.path }
-
-    let(:identifier) { StacksIdentifier.new(druid: 'druid:ab012cd3456', file_name: 'def.pdf') }
-    let(:instance) { described_class.new(id: identifier) }
 
     it 'is the druid tree path to the file' do
       expect(subject).to eq "#{Settings.stacks.storage_root}/ab/012/cd/3456/def.pdf"
@@ -21,6 +22,26 @@ RSpec.describe StacksFile do
       let(:identifier) { StacksIdentifier.new('abcdef%2F') }
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#readable?' do
+    subject { instance.readable? }
+
+    before do
+      allow(File).to receive(:stat).with(path).and_return(permissions)
+    end
+
+    context 'with a readable file' do
+      let(:permissions) { double 'perms', world_readable?: 0o0644 }
+
+      it { is_expected.to eq true }
+    end
+
+    context 'with an unreadable file' do
+      let(:permissions) { double 'perms', world_readable?: 0o600 }
+
+      it { is_expected.to eq false }
     end
   end
 end
