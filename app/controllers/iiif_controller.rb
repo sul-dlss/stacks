@@ -3,6 +3,7 @@
 ##
 # API for delivering IIIF-compatible images and image tiles
 class IiifController < ApplicationController
+  before_action :ensure_valid_identifier
   before_action :add_iiif_profile_header
 
   # Follow the interface of Riiif
@@ -120,7 +121,6 @@ class IiifController < ApplicationController
 
   def current_image
     @image ||= begin
-                 raise ActionController::RoutingError, "invalid identifer" unless stacks_identifier.valid?
                  img = model.new(stacks_image_params)
                  can?(:download, img) ? img : img.restricted
                end
@@ -166,5 +166,9 @@ class IiifController < ApplicationController
   def degraded?
     !can?(:access, current_image) && current_image.accessable_by?(stanford_generic_user) ||
       !can?(:download, current_image) && current_image.readable_by?(stanford_generic_user)
+  end
+
+  def ensure_valid_identifier
+    raise ActionController::RoutingError, "invalid identifer" unless stacks_identifier.valid?
   end
 end
