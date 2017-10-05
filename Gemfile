@@ -100,6 +100,8 @@ gem 'honeybadger'
 # Use okcomputer to monitor the application
 gem 'okcomputer'
 gem 'iiif-image-api', '~> 0.1.0'
+# Prevents malformed requests from raising exceptions
+gem 'rack-utf8_sanitizer'
 gem 'bootstrap-sass'
 gem 'sul_styles'
 gem 'djatoka'
