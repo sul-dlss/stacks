@@ -21,6 +21,11 @@ from the media server
 1. File downloads https://stacks.stanford.edu/file/:id/:file_name
 1. Web authentication
 
+### IIIF Endpoint
+Stacks acts as a proxy to an image server.  The proxy is responsible for ensuring the client has the proper permissions to send the request to the image server.  This work is done by querying the rights metadata from PURL.  Additionally it mutates the info.json response to provide appropriate tile sizes for the users current access level.
+
+Stacks started out as a proxy for the Djatoka server, but in Fall 2017, we added the capability for Stacks to proxy to any IIIF compatible image server. We switched to Canteloupe at that time.  Had RIIIF been our preferred choice at that time, we could have instead pointed Stacks at a server running https://github.com/sul-dlss/image-server/.
+
 ## Requirements
 
 * Ruby (2.2.2+ or greater)
