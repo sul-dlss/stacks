@@ -22,7 +22,7 @@ Rails.application.routes.draw do
 
   constraints identifier: %r{[^/]+}, size: %r{[^/]+} do
     get '/image/iiif/:identifier', to: redirect('/image/iiif/%{identifier}/info.json', status: 303), as: :iiif_base
-    get '/image/iiif/:identifier/:region/:size/:rotation/:quality' => 'iiif#show', as: :iiif
+    get '/image/iiif/:identifier/:region/:size/:rotation/:quality.:format' => 'iiif#show', as: :iiif
     get '/image/iiif/:identifier/info.json' => 'iiif#metadata', as: :iiif_metadata
     match '/image/iiif/:identifier/info.json' => 'iiif#metadata_options', via: [:options]
     get '/image/iiif/app/:identifier/:region/:size/:rotation/:quality' => 'webauth#login_iiif'
