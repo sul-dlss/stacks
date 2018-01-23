@@ -45,6 +45,30 @@ RSpec.describe 'IIIF API' do
     expect(json['tiles']).to eq [{ 'width' => 256, 'height' => 256, 'scaleFactors' => [1, 2, 4, 8, 16] }]
   end
 
+  context 'for location-restricted documents' do
+    before do
+      stub_rights_xml(location_rights_xml)
+    end
+
+    context 'outside of the location' do
+      it 'uses the unauthorized status code for the response' do
+        get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json'
+        expect(response).to have_http_status :unauthorized
+      end
+    end
+
+    context 'at the location' do
+      let(:user) { User.new(ip_address: 'ip.address1') }
+      before do
+        allow_any_instance_of(IiifController).to receive(:current_user).and_return(user)
+      end
+      it 'uses the ok status code for the response' do
+        get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json'
+        expect(response).to have_http_status :ok
+      end
+    end
+  end
+
   context 'for stanford-restricted documents' do
     before do
       stub_rights_xml(stanford_restricted_rights_xml)
