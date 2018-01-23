@@ -54,7 +54,7 @@ class Projection
     image.exist? && image_source.valid?
   end
 
-  delegate :accessable_by?, :readable_by?, :id, to: :image
+  delegate :accessable_by?, :readable_by?, :object_thumbnail?, :id, to: :image
   delegate :response, to: :image_source
 
   private

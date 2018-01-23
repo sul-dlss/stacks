@@ -47,7 +47,7 @@ class Ability
 
     can :read, Projection do |projection|
       # This is called when checking to see if the image response should be served
-      projection.thumbnail? ||
+      (projection.thumbnail? && projection.object_thumbnail?) ||
         (projection.tile? && can?(:access, projection))
     end
 
