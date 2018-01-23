@@ -41,6 +41,18 @@ module StacksRights
     rights.location_rights_for_file(id.file_name, location)
   end
 
+  def object_thumbnail?
+    doc = Nokogiri::XML.parse(public_xml)
+
+    thumb_element = doc.xpath('//thumb')
+
+    if thumb_element.any?
+      thumb_element.text == "#{id.druid}/#{id.file_name}"
+    else
+      doc.xpath("//file[@id=\"#{id.file_name}\"]/../@sequence").text == '1'
+    end
+  end
+
   private
 
   def world_accessable?
@@ -113,6 +125,10 @@ module StacksRights
   end
 
   def rights_xml
-    Purl.public_xml(id.druid)
+    public_xml
+  end
+
+  def public_xml
+    @public_xml ||= Purl.public_xml(id.druid)
   end
 end

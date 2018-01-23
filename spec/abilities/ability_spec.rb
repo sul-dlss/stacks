@@ -7,18 +7,26 @@ RSpec.describe 'Ability', type: :model do
   subject(:ability) { Ability.new(user) }
   let(:user) { nil }
 
-  let(:rights_xml) { '' }
+  let(:public_xml) do
+    <<-XML
+      <publicObject>
+        #{rights_xml}
+        #{thumbnail_metadata}
+      </publicObject>
+    XML
+  end
+  let(:thumbnail_metadata) { '<thumb>yx350pf4616/image.jpg</thumb>' }
   let(:file_identifier) { StacksIdentifier.new(druid: 'xxxxxxx', file_name: 'file.csv') }
   let(:file) do
-    StacksFile.new(id: file_identifier).tap { |x| allow(x).to receive(:rights_xml).and_return(rights_xml) }
+    StacksFile.new(id: file_identifier).tap { |x| allow(x).to receive(:public_xml).and_return(public_xml) }
   end
   let(:image_identifier) { StacksIdentifier.new(druid: 'yx350pf4616', file_name: 'image.jpg') }
   let(:image) do
-    StacksImage.new(id: image_identifier).tap { |x| allow(x).to receive(:rights_xml).and_return(rights_xml) }
+    StacksImage.new(id: image_identifier).tap { |x| allow(x).to receive(:public_xml).and_return(public_xml) }
   end
   let(:media_identifier) { StacksIdentifier.new(druid: 'xxxxxxx', file_name: 'movie.mp4') }
   let(:media) do
-    StacksMediaStream.new(id: media_identifier).tap { |x| allow(x).to receive(:rights_xml).and_return(rights_xml) }
+    StacksMediaStream.new(id: media_identifier).tap { |x| allow(x).to receive(:public_xml).and_return(public_xml) }
   end
 
   let(:thumbnail_transformation) { IIIF::Image::OptionDecoder.decode(region: 'full', size: '!400,400') }
@@ -32,7 +40,7 @@ RSpec.describe 'Ability', type: :model do
   let(:big_image) { Projection.new(image, big_transform) }
 
   before do
-    allow_any_instance_of(StacksImage).to receive(:rights_xml).and_return(rights_xml)
+    allow_any_instance_of(StacksImage).to receive(:public_xml).and_return(public_xml)
     allow(image).to receive_messages(image_width: 11_957, image_height: 15_227)
   end
 
@@ -198,6 +206,51 @@ RSpec.describe 'Ability', type: :model do
       it { is_expected.not_to be_able_to(:stream, media) }
       it { is_expected.not_to be_able_to(:access, file) }
       it { is_expected.to be_able_to(:read_metadata, image) }
+      it { is_expected.to be_able_to(:read, thumbnail) }
+      it { is_expected.to be_able_to(:read, square_thumbnail) }
+    end
+
+    context 'with a stanford-only file that is not the thumbnail' do
+      let(:rights_xml) do
+        <<-EOF.strip_heredoc
+        <rightsMetadata>
+          <access type="read">
+            <machine>
+              <group>Stanford</group>
+            </machine>
+          </access>
+        </rightsMetadata>
+        EOF
+      end
+      let(:thumbnail_metadata) { '<thumb>x/y.jpg</thumb>' }
+
+      it { is_expected.not_to be_able_to(:read, thumbnail) }
+      it { is_expected.not_to be_able_to(:read, square_thumbnail) }
+    end
+
+    context 'with a stanford-only file that is the first image in an object without an explicit thumbnail' do
+      let(:rights_xml) do
+        <<-EOF.strip_heredoc
+        <rightsMetadata>
+          <access type="read">
+            <machine>
+              <group>Stanford</group>
+            </machine>
+          </access>
+        </rightsMetadata>
+        EOF
+      end
+      let(:content_metadata) do
+        <<-XML
+          <contentMetadata>
+            <resource sequence="1">
+              <file id="image.jpg" />
+            </resource>
+          </contentMetadata>
+        XML
+      end
+      let(:thumbnail_metadata) { content_metadata }
+
       it { is_expected.to be_able_to(:read, thumbnail) }
       it { is_expected.to be_able_to(:read, square_thumbnail) }
     end
