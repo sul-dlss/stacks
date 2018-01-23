@@ -54,4 +54,18 @@ module RightsXMLFixtures
       </publicObject>
     XML
   end
+
+  def location_rights_xml
+    <<-XML
+      <publicObject>
+        <rightsMetadata>
+          <access type="read">
+            <machine>
+              <location>location1</location>
+            </machine>
+          </access>
+        </rightsMetadata>
+      </publicObject>
+    XML
+  end
 end
