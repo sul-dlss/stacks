@@ -98,6 +98,7 @@ RSpec.describe 'IIIF API' do
       it 'serves a degraded info.json description for the original file' do
         get '/image/iiif/degraded_nr349ct7889%2Fnr349ct7889_00_0001/info.json'
 
+        expect(response).to have_http_status :ok
         expect(controller.send(:current_image).id.druid).to eq 'nr349ct7889'
       end
     end

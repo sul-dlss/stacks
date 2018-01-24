@@ -45,7 +45,7 @@ class IiifController < ApplicationController
     expires_in 10.minutes, public: false
     authorize! :read_metadata, current_image
 
-    status = if can? :access, current_image
+    status = if degraded_identifier? || can?(:access, current_image)
                :ok
              else
                :unauthorized
