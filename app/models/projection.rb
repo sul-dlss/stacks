@@ -3,6 +3,10 @@ class Projection
   THUMBNAIL_BOUNDS = IIIF::Image::Dimension.new(width: 400, height: 800)
   TILE_BOUNDS = IIIF::Image::Dimension.new(width: 512, height: 512)
 
+  def self.thumbnail(image)
+    new(image, IIIF::Image::Transformation.new(size: THUMBNAIL_BOUNDS, region: IIIF::Image::Region::Full.new))
+  end
+
   def initialize(image, transformation)
     @image = image
     @transformation = transformation

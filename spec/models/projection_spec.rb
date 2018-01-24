@@ -11,6 +11,14 @@ RSpec.describe Projection do
     allow(image).to receive_messages(image_width: 800, image_height: 600)
   end
 
+  describe '.thumbnail' do
+    subject(:projection) { described_class.thumbnail(image) }
+
+    it 'is a thumbnail' do
+      expect(projection).to be_a_thumbnail
+    end
+  end
+
   describe '#tile_dimensions' do
     subject { instance.send(:tile_dimensions) }
 

@@ -37,7 +37,7 @@ class IiifController < ApplicationController
 
     return unless stale?(cache_headers_metadata)
 
-    if degraded? && !degraded_identifier?
+    if degraded?
       redirect_to iiif_metadata_url(identifier: degraded_identifier)
       return
     end
@@ -167,11 +167,19 @@ class IiifController < ApplicationController
     headers['Link'] = '<http://iiif.io/api/image/2/level2.json>;rel="profile"'
   end
 
-  # We consider an image to be degraded if the user isn't current able to download it, but if they
+  # We consider an image to be degraded if the user isn't currently able to download it, but if they
   # login as a stanford user, they will be able to.
   def degraded?
-    !can?(:access, current_image) && current_image.accessable_by?(stanford_generic_user) ||
-      !can?(:download, current_image) && current_image.readable_by?(stanford_generic_user)
+    return false if degraded_identifier?
+
+    # accessible if the user authenticates
+    degraded = !can?(:access, current_image) && current_image.accessable_by?(stanford_generic_user)
+    # downloadable if the user authenticates
+    degraded ||= !can?(:download, current_image) && current_image.readable_by?(stanford_generic_user)
+    # thumbnail-only
+    degraded ||= !can?(:access, current_image) && can?(:read, Projection.thumbnail(current_image))
+
+    degraded
   end
 
   def ensure_valid_identifier

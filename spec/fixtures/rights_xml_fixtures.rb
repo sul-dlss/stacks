@@ -68,4 +68,19 @@ module RightsXMLFixtures
       </publicObject>
     XML
   end
+
+  def location_thumbnail_rights_xml
+    <<-XML
+      <publicObject>
+        <rightsMetadata>
+          <access type="read">
+            <machine>
+              <location>location1</location>
+            </machine>
+          </access>
+        </rightsMetadata>
+        <thumb>nr349ct7889/nr349ct7889_00_0001.jp2</thumb>
+      </publicObject>
+    XML
+  end
 end
