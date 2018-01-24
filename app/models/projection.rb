@@ -1,6 +1,6 @@
 # A projection is the result of a StacksImage put through a IIIF::Image::Transformation
 class Projection
-  THUMBNAIL_BOUNDS = IIIF::Image::Dimension.new(width: 400, height: 800)
+  THUMBNAIL_BOUNDS = IIIF::Image::Dimension.new(width: 400, height: 400)
   TILE_BOUNDS = IIIF::Image::Dimension.new(width: 512, height: 512)
 
   def initialize(image, transformation)
