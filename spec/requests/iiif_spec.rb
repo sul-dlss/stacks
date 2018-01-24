@@ -55,6 +55,19 @@ RSpec.describe 'IIIF API' do
         get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json'
         expect(response).to have_http_status :unauthorized
       end
+
+      context 'for a thumbnail' do
+        before do
+          stub_rights_xml(location_thumbnail_rights_xml)
+        end
+
+        it 'redirects requests to the degraded info.json' do
+          get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json'
+          expect(response).to have_http_status :redirect
+          expect(response).to redirect_to('/image/iiif/degraded_nr349ct7889%252Fnr349ct7889_00_0001/info.json')
+          expect(response.headers['Cache-Control']).to match(/max-age=0/)
+        end
+      end
     end
 
     context 'at the location' do

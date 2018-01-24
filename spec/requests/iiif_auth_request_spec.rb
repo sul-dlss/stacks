@@ -58,6 +58,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
       allow(si).to receive(:world_downloadable?).and_return(false)
       allow(si).to receive(:world_rights).and_return([false, ''])
       allow(si).to receive(:exist?).and_return(true)
+      allow(si).to receive(:object_thumbnail?).and_return(false)
       si
     end
     let!(:si_loc_and_stanford) do
