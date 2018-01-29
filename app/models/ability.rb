@@ -45,10 +45,16 @@ class Ability
 
     cannot :download, RestrictedImage
 
+    # These are called when checking to see if the image response should be served
     can :read, Projection do |projection|
-      # This is called when checking to see if the image response should be served
-      (projection.thumbnail? && projection.object_thumbnail?) ||
-        (projection.tile? && can?(:access, projection))
+      # Allow access to tile or thumbnail-sized requests for an accessible image
+      (projection.tile? || projection.thumbnail?) && can?(:access, projection)
+    end
+
+    can :read, Projection do |projection|
+      # Allow access to thumbnail-sized projections of a declared (or implicit) thumbnail for the object;
+      # note that because this is implicit, we do not check rightsMetadata permissions.
+      projection.thumbnail? && projection.object_thumbnail?
     end
 
     can :stream, StacksMediaStream do |f|
