@@ -282,6 +282,24 @@ RSpec.describe 'Ability', type: :model do
     end
   end
 
+  context 'with a no-download file that is not the thumbnail' do
+    let(:rights_xml) do
+      <<-EOF.strip_heredoc
+      <rightsMetadata>
+        <access type="read">
+          <machine>
+            <world rule="no-download" />
+          </machine>
+        </access>
+      </rightsMetadata>
+      EOF
+    end
+    let(:thumbnail_metadata) { '<thumb>x/y.jpg</thumb>' }
+
+    it { is_expected.to be_able_to(:read, thumbnail) }
+    it { is_expected.to be_able_to(:read, square_thumbnail) }
+  end
+
   context 'for location-based access restrictions' do
     let(:rights_xml) do
       <<-XML
