@@ -14,8 +14,15 @@ class RestrictedImage < StacksImage
   # Overides stacks image to provide fixed dimensions
   def max_tile_dimensions
     lambda do |projection|
-      return projection.explicit_tile_dimensions(absolute_restricted_size) if projection.absolute_region?
-      projection.explicit_tile_dimensions(IIIF::Image::Size::BestFit.new(400, 400))
+      projection.explicit_tile_dimensions(max_size(projection))
+    end
+  end
+
+  def max_size(projection)
+    if projection.absolute_region?
+      absolute_restricted_size
+    else
+      restricted_size
     end
   end
 
