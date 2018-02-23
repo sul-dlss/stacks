@@ -92,6 +92,18 @@ class Projection
   # @return [SourceImage]
   def image_source
     @image_source ||= StacksImageSourceFactory.create(id: id,
-                                                      transformation: transformation)
+                                                      transformation: real_transformation)
+  end
+
+  def real_transformation
+    return transformation unless image.is_a? RestrictedImage
+
+    IIIF::Image::Transformation.new(
+      region: transformation.region,
+      size: image.max_size(self),
+      rotation: transformation.rotation,
+      quality: transformation.quality,
+      format: transformation.format
+    )
   end
 end

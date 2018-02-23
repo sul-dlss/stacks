@@ -87,6 +87,40 @@ RSpec.describe Projection do
     end
   end
 
+  describe '#response' do
+    context 'for an image' do
+      let(:id) { StacksIdentifier.new('ab123cd4567%2Fb') }
+      let(:image) { StacksImage.new id: id }
+      subject(:projection) { described_class.new(image, transformation) }
+
+      context "full region" do
+        let(:options) { { size: 'max', region: 'full' } }
+
+        it 'allows the user to see the full-resolution image' do
+          allow(HTTP).to receive(:get).and_return(double(body: nil))
+          subject.response
+          expect(HTTP).to have_received(:get).with(%r{/full/max/0/default.jpg})
+        end
+      end
+    end
+
+    context 'for a restricted image' do
+      let(:id) { StacksIdentifier.new('ab123cd4567%2Fb') }
+      let(:image) { RestrictedImage.new id: id }
+      subject(:projection) { described_class.new(image, transformation) }
+
+      context "full region" do
+        let(:options) { { size: 'max', region: 'full' } }
+
+        it 'limits users to a thumbnail' do
+          allow(HTTP).to receive(:get).and_return(double(body: nil))
+          subject.response
+          expect(HTTP).to have_received(:get).with(%r{/full/!400,400/0/default.jpg})
+        end
+      end
+    end
+  end
+
   describe '#thumbnail?' do
     subject { instance.thumbnail? }
 
