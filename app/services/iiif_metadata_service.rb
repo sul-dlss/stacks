@@ -52,6 +52,8 @@ class IiifMetadataService < MetadataService
     case conn.code
     when 200
       conn.body
+    when 503
+      raise Stacks::ImageServerUnavailable, "Unable to reach image server (503 Service Unavailable) for #{@url}."
     else
       raise Stacks::RetrieveMetadataError, "There was a problem fetching #{@url}. Server returned #{conn.code}"
     end
