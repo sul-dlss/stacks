@@ -44,6 +44,9 @@ Metrics/LineLength:
 Naming/HeredocDelimiterNaming:
   Enabled: false
 
+Naming/MemoizedInstanceVariableName:
+  Enabled: false
+
 Naming/PredicateName:
   NamePrefix:
     - 'is_'
