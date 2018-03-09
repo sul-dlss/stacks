@@ -100,10 +100,20 @@ class Projection
 
     IIIF::Image::Transformation.new(
       region: transformation.region,
-      size: image.max_size(self),
+      size: restricted_size,
       rotation: transformation.rotation,
       quality: transformation.quality,
       format: transformation.format
     )
+  end
+
+  def restricted_size
+    size = transformation.size
+    case size
+    when IIIF::Image::Size::Max, IIIF::Image::Size::Full
+      image.max_size(self)
+    else
+      size
+    end
   end
 end
