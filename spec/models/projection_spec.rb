@@ -118,6 +118,26 @@ RSpec.describe Projection do
           expect(HTTP).to have_received(:get).with(%r{/full/!400,400/0/default.jpg})
         end
       end
+
+      context "smaller-than-a-thumbnail size" do
+        let(:options) { { size: '!100,100', region: 'full' } }
+
+        it 'limits users to a thumbnail' do
+          allow(HTTP).to receive(:get).and_return(double(body: nil))
+          subject.response
+          expect(HTTP).to have_received(:get).with(%r{/full/!100,100/0/default.jpg})
+        end
+      end
+
+      context "square region" do
+        let(:options) { { size: '100,100', region: 'square' } }
+
+        it 'limits users to a thumbnail' do
+          allow(HTTP).to receive(:get).and_return(double(body: nil))
+          subject.response
+          expect(HTTP).to have_received(:get).with(%r{/square/100,100/0/default.jpg})
+        end
+      end
     end
   end
 
