@@ -3,7 +3,7 @@ class Purl
   include ActiveSupport::Benchmarkable
 
   def self.instance
-    @purl ||= new
+    @instance ||= new
   end
 
   class << self
