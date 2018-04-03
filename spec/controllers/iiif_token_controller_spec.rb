@@ -71,7 +71,7 @@ RSpec.describe IiifTokenController do
 
           data = JSON.parse(subject.body)
           expect(data['accessToken']).not_to be_blank
-          expect(data['tokenType']).to eq 'Token'
+          expect(data['tokenType']).to eq 'Bearer'
           expect(data['expiresIn']).to be > 0
         end
       end
