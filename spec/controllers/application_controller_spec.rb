@@ -20,7 +20,9 @@ RSpec.describe ApplicationController do
     context 'with a Bearer token' do
       let(:user) { User.new(id: 'test-user', ldap_groups: ['stanford:stanford']) }
       let(:credentials) do
-        ActionController::HttpAuthentication::Token.encode_credentials(user.token)
+        # `encode_credentials` hardcodes `Token` so make sure to test `Bearer`
+        # http://iiif.io/api/auth/1.0/#the-json-access-token-response
+        ActionController::HttpAuthentication::Token.encode_credentials(user.token).gsub('Token', 'Bearer')
       end
 
       before do
