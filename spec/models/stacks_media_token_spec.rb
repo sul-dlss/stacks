@@ -64,8 +64,8 @@ RSpec.describe StacksMediaToken do
     end
 
     it 'returns false on a token that has been tampered with' do
-      enc_token_str[0..4] = 'edit' # replace the first 4 characters with something else
-      expect(StacksMediaToken.verify_encrypted_token?(enc_token_str, id, file_name, user_ip)).to eq false
+      invalid_token = enc_token_str + 'invalid'
+      expect(StacksMediaToken.verify_encrypted_token?(invalid_token, id, file_name, user_ip)).to eq false
     end
 
     it 'returns false if token_valid? returns false' do
