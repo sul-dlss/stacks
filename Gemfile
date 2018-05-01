@@ -101,3 +101,7 @@ gem 'dor-rights-auth', require: 'dor/rights_auth'
 gem 'dalli'
 gem 'retries'
 gem 'scientist'
+
+group :production do
+  gem 'newrelic_rpm'
+end
