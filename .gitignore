@@ -24,3 +24,4 @@ config/environments/*.local.yml
 /spec/examples.txt
 
 .pry_history
+/.byebug_history

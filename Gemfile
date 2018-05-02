@@ -6,11 +6,11 @@ git_source(:github) do |repo_name|
 end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.1.0'
+gem 'rails', '~> 5.2.0'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
 # Use Puma as the app server
-gem 'puma', '~> 3.7'
+gem 'puma', '~> 3.11'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -34,10 +34,13 @@ gem 'jbuilder', '~> 2.5'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
+# Reduces boot times through caching; required in config/boot.rb
+gem 'bootsnap', '>= 1.1.0', require: false
+
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
-  gem 'web-console'
-  gem 'listen', '~> 3.0.5'
+  gem 'web-console', '>= 3.3.0'
+  gem 'listen', '>= 3.0.5', '< 3.2'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
@@ -58,12 +61,6 @@ group :development, :test do
   # Capybara for feature/integration tests
   gem 'capybara'
 
-  # factory_girl_rails for creating fixtures in tests
-  gem 'factory_girl_rails'
-
-  # Poltergeist is a capybara driver to run integration tests using PhantomJS
-  gem 'poltergeist'
-
   # Database cleaner allows us to clean the entire database after certain tests
   gem 'database_cleaner'
 
@@ -73,13 +70,8 @@ group :development, :test do
   # scss-lint will test the scss files to enfoce styles
   gem 'scss-lint', require: false
 
-  # Coveralls for code coverage metrics
-  gem 'coveralls', require: false
+  gem 'simplecov'
   gem 'webmock', '~> 3.0'
-end
-
-group :test do
-  gem 'codeclimate-test-reporter', require: false
 end
 
 # Use Capistrano for deployment
@@ -109,3 +101,7 @@ gem 'dor-rights-auth', require: 'dor/rights_auth'
 gem 'dalli'
 gem 'retries'
 gem 'scientist'
+
+group :production do
+  gem 'newrelic_rpm'
+end
