@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/sul-dlss/stacks.svg?branch=master)](https://travis-ci.org/sul-dlss/stacks)
 [![Coverage Status](https://coveralls.io/repos/sul-dlss/stacks/badge.svg)](https://coveralls.io/r/sul-dlss/stacks)
-[![Dependency Status](https://gemnasium.com/sul-dlss/stacks.svg)](https://gemnasium.com/sul-dlss/stacks)
+
 [![Code Climate](https://codeclimate.com/github/sul-dlss/stacks/badges/gpa.svg)](https://codeclimate.com/github/sul-dlss/stacks)
 [![GitHub version](https://badge.fury.io/gh/sul-dlss%2Fstacks.svg)](https://badge.fury.io/gh/sul-dlss%2Fstacks)
 
