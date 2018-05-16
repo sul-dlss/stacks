@@ -2,8 +2,8 @@
 class DriverFactory
   # Instantiate the implementation class with all passed arguments and
   # configured attributes
-  def self.create(**kwargs)
-    implementation.new(**kwargs.merge(attributes))
+  def self.create(kwargs)
+    implementation.new(kwargs.merge(attributes))
   end
 
   # @return [Hash] the configured attributes from the settings yaml files
