@@ -30,6 +30,8 @@ class Projection
       raise NotImplementedError, "Percent regions are not yet supported"
     when IIIF::Image::Region::Absolute
       transformation.region.dimensions
+    when IIIF::Image::Region::Square
+      square_region_dimensions
     else
       raise ArgumentError, "Unknown region format #{transformation.region}"
     end
@@ -87,6 +89,11 @@ class Projection
   def scaled_region_dimensions
     # TODO: scaling for Region::Percent
     IIIF::Image::Dimension.new(width: image.image_width, height: image.image_height)
+  end
+
+  def square_region_dimensions
+    size = [image.image_width, image.image_height].min
+    IIIF::Image::Dimension.new(width: size, height: size)
   end
 
   # @return [SourceImage]
