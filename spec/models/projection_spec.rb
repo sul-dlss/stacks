@@ -237,6 +237,14 @@ RSpec.describe Projection do
       end
     end
 
+    context 'for square' do
+      let(:options) { { size: 'full', region: 'square' } }
+
+      it 'uses the image dimensions' do
+        expect(subject).to eq IIIF::Image::Dimension.new(width: 600, height: 600)
+      end
+    end
+
     context 'for an explicit region' do
       let(:options) { { size: 'full', region: '0,1,2,3' } }
 
