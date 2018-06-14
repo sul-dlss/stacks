@@ -42,6 +42,9 @@ legacy:
     - xlarge
     - full
 
+iiif:
+  max_tile_size: 4096
+
 user:
   stanford_groups:
     - stanford:stanford

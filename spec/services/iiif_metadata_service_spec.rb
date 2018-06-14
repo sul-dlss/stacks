@@ -33,6 +33,21 @@ RSpec.describe IiifMetadataService do
         expect(subject.fetch('tiles').first.fetch('width')).to eq 256
         expect(subject.fetch('sizes').last.fetch('width')).to eq 3832
       end
+      context "for really large images" do
+        let(:json) do
+          '{"@id":"https://sul-imageserver-uat.stanford.edu/cantaloupe/iiif/2/' \
+          'nr%2F349%2Fct%2F7889%2Fnr349ct7889_00_0001.jp2",' \
+          '"width":4096,' \
+          '"height":265380,' \
+          '"tiles":[{"width":1024,"height":66345,"scaleFactors":[1,2,4,8]}],' \
+          '"sizes":[{"width":1916,"height":1276}]}'
+        end
+        subject { service.fetch(nil) }
+        it "caps the maximum tile size" do
+          expect(subject.fetch('tiles').first.fetch('width')).to eq 1024
+          expect(subject.fetch('tiles').first.fetch('height')).to eq 4096
+        end
+      end
     end
 
     describe '#image_width' do

@@ -19,11 +19,16 @@ class IiifMetadataService < MetadataService
   # @return [Hash] a data structure representing the IIIF info response
   def fetch(tile_size)
     json.tap do |updated|
+      tiledef = updated.fetch('tiles').first
+
       if tile_size
-        tiledef = updated.fetch('tiles').first
         tiledef['height'] = tile_size
         tiledef['width'] = tile_size
       end
+
+      tiledef['height'] = Settings.iiif.max_tile_size if tiledef['height'] > Settings.iiif.max_tile_size
+      tiledef['width'] = Settings.iiif.max_tile_size if tiledef['width'] > Settings.iiif.max_tile_size
+
       # Add a full size for parity with our Djatoka implmentation,
       # because Cantaloupe doesn't provide it
       updated.fetch('sizes').push('width' => updated.fetch('width'),
