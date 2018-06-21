@@ -73,10 +73,18 @@ class ApplicationController < ActionController::Base
   end
 
   def webauth_user
+    ldap_groups = if request.env['WEBAUTH_LDAPPRIVGROUP'].present?
+                    request.env['WEBAUTH_LDAPPRIVGROUP'].split('|')
+                  elsif request.env['eduPersonEntitlement'].present?
+                    request.env['eduPersonEntitlement'].split(';')
+                  else
+                    []
+                  end
+
     User.new(id: request.remote_user,
              ip_address: request.remote_ip,
              webauth_user: true,
-             ldap_groups: request.env.fetch('WEBAUTH_LDAPPRIVGROUP', '').split('|'))
+             ldap_groups: ldap_groups)
   end
 
   def anonymous_locatable_user
