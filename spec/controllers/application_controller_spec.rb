@@ -45,6 +45,20 @@ RSpec.describe ApplicationController do
         expect(subject.id).to eq 'my-user'
         expect(subject).to be_a_webauth_user
       end
+
+      context 'with webauth groups' do
+        before { request.env['WEBAUTH_LDAPPRIVGROUP'] = 'a|b' }
+        it 'supports webauth users' do
+          expect(subject.ldap_groups).to match_array %w[a b]
+        end
+      end
+
+      context 'with shibboleth groups' do
+        before { request.env['eduPersonEntitlement'] = 'a;b' }
+        it 'supports shibboleth users' do
+          expect(subject.ldap_groups).to match_array %w[a b]
+        end
+      end
     end
 
     context 'with no other credentials' do
