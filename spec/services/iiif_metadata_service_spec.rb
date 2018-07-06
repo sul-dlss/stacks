@@ -31,11 +31,24 @@ RSpec.describe IiifMetadataService do
         expect(subject['@id']).to eq 'foo'
         expect(subject['width']).to eq 3832
         expect(subject.fetch('tiles').first.fetch('width')).to eq 256
-        expect(subject.fetch('sizes').first.fetch('width')).to eq 3832
+        expect(subject.fetch('sizes').last.fetch('width')).to eq 3832
       end
 
-      it 'respects max_pixels to not try and "overdeliver" what the image server can handle' do
-        expect(subject.fetch('sizes').last.fetch('width')).to eq 1916
+      context 'when max_pixels threshold is reached' do
+        around(:each) do |example|
+          default_max_pixels = Settings.max_pixels
+          Settings.max_pixels = 8_000_000
+          example.run
+          Settings.max_pixels = default_max_pixels
+        end
+
+        it 'max size is not the image size' do
+          expect(subject.fetch('sizes').last.fetch('width')).to eq 1916
+        end
+
+        it 'sets a maxWidth' do
+          expect(subject.fetch('maxWidth')).to eq 1916
+        end
       end
     end
 

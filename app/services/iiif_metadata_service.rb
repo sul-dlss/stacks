@@ -31,6 +31,8 @@ class IiifMetadataService < MetadataService
         # because Cantaloupe doesn't provide it
         updated.fetch('sizes').push('width' => width,
                                     'height' => height)
+      else
+        updated['maxWidth'] = updated.fetch('sizes').last.fetch('width')
       end
     end
   end

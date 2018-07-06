@@ -9,5 +9,3 @@ user:
     location2:
       - ip.address3
       - ip.address4
-
-max_pixels: 8000000 # Similar to cantaloupe.properties
