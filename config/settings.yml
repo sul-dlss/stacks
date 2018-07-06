@@ -22,7 +22,7 @@ stacks:
         base_uri: https://sul-imageserver-uat.stanford.edu/cantaloupe/iiif/2/
     check:
       implementation: CheckIiif
-
+max_pixels: 400000000 # Similar to cantaloupe.properties
 
 purl:
   url: 'https://purl.stanford.edu/'

@@ -31,7 +31,11 @@ RSpec.describe IiifMetadataService do
         expect(subject['@id']).to eq 'foo'
         expect(subject['width']).to eq 3832
         expect(subject.fetch('tiles').first.fetch('width')).to eq 256
-        expect(subject.fetch('sizes').last.fetch('width')).to eq 3832
+        expect(subject.fetch('sizes').first.fetch('width')).to eq 3832
+      end
+
+      it 'respects max_pixels to not try and "overdeliver" what the image server can handle' do
+        expect(subject.fetch('sizes').last.fetch('width')).to eq 1916
       end
     end
 

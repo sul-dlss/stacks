@@ -24,10 +24,14 @@ class IiifMetadataService < MetadataService
         tiledef['height'] = tile_size
         tiledef['width'] = tile_size
       end
-      # Add a full size for parity with our Djatoka implmentation,
-      # because Cantaloupe doesn't provide it
-      updated.fetch('sizes').push('width' => updated.fetch('width'),
-                                  'height' => updated.fetch('height'))
+      width = updated.fetch('width')
+      height = updated.fetch('height')
+      if (width * height) <= Settings.max_pixels
+        # Add a full size for parity with our Djatoka implmentation,
+        # because Cantaloupe doesn't provide it
+        updated.fetch('sizes').push('width' => width,
+                                    'height' => height)
+      end
     end
   end
 
