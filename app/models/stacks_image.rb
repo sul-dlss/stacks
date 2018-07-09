@@ -9,6 +9,8 @@ class StacksImage
   attr_accessor :id
   attr_accessor :canonical_url, :transformation
 
+  PROFILE_URI = 'http://iiif.io/api/image/2/level2'.freeze
+
   # @return [RestrictedImage] the restricted version of this image
   def restricted
     RestrictedImage.new(transformation: transformation,
@@ -28,14 +30,23 @@ class StacksImage
   end
 
   def profile
-    'http://iiif.io/api/image/2/level2'
+    if exceeds_threshold?
+      [
+        PROFILE_URI,
+        {
+          maxWidth: max_width
+        }
+      ]
+    else
+      PROFILE_URI
+    end
   end
 
   def exist?
     file_source.readable? && image_width > 0
   end
 
-  delegate :image_width, :image_height, to: :info_service
+  delegate :image_width, :image_height, :exceeds_threshold?, :max_width, to: :info_service
   delegate :etag, :mtime, to: :file_source
 
   # This is overriden in RestrictedImage

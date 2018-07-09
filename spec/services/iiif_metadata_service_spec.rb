@@ -45,10 +45,6 @@ RSpec.describe IiifMetadataService do
         it 'max size is not the image size' do
           expect(subject.fetch('sizes').last.fetch('width')).to eq 1916
         end
-
-        it 'sets a maxWidth' do
-          expect(subject.fetch('maxWidth')).to eq 1916
-        end
       end
     end
 
@@ -63,6 +59,13 @@ RSpec.describe IiifMetadataService do
       subject { service.image_height }
       it "Returns the height of the image" do
         expect(subject).to eq 2552
+      end
+    end
+
+    describe '#max_width' do
+      subject { service.max_width }
+      it "Returns the max_width of the image" do
+        expect(subject).to eq 1916
       end
     end
   end

@@ -26,15 +26,21 @@ class IiifMetadataService < MetadataService
       end
       width = updated.fetch('width')
       height = updated.fetch('height')
-      if (width * height) <= Settings.max_pixels
+      unless exceeds_threshold?
         # Add a full size for parity with our Djatoka implmentation,
         # because Cantaloupe doesn't provide it
         updated.fetch('sizes').push('width' => width,
                                     'height' => height)
-      else
-        updated['maxWidth'] = updated.fetch('sizes').last.fetch('width')
       end
     end
+  end
+
+  def exceeds_threshold?
+    (image_width * image_height) >= Settings.max_pixels
+  end
+
+  def max_width
+    json.fetch('sizes').last.fetch('width')
   end
 
   def image_width

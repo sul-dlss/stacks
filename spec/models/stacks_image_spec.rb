@@ -35,8 +35,21 @@ RSpec.describe StacksImage do
 
   describe 'profile' do
     subject { instance.profile }
+    context 'when max_pixels threshold is not reached' do
+      before do
+        expect(instance).to receive_messages(exceeds_threshold?: false)
+      end
 
-    it { is_expected.to eq 'http://iiif.io/api/image/2/level2' }
+      it { is_expected.to eq 'http://iiif.io/api/image/2/level2' }
+    end
+
+    context 'when max_pixels threshold is reached' do
+      before do
+        expect(instance).to receive_messages(exceeds_threshold?: true, max_width: 1234)
+      end
+
+      it { is_expected.to eq ['http://iiif.io/api/image/2/level2', { maxWidth: 1234 }] }
+    end
   end
 
   describe '#restricted' do
