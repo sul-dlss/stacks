@@ -56,7 +56,7 @@ class ApplicationController < ActionController::Base
 
   def has_bearer_credentials?(request)
     scheme = auth_scheme(request)
-    request.authorization.present? && (scheme == 'Token' || scheme == 'Bearer')
+    request.authorization.present? && %w[Token Bearer].include?(scheme)
   end
 
   def bearer_cookie_user
