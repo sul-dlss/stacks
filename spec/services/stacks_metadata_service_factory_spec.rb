@@ -17,14 +17,5 @@ RSpec.describe StacksMetadataServiceFactory do
         expect(subject).to be_instance_of IiifMetadataService
       end
     end
-
-    context 'when the driver is djatoka' do
-      before do
-        allow(Settings.stacks).to receive(:driver).and_return('djatoka')
-      end
-      it 'returns a metadata service' do
-        expect(subject).to be_instance_of DjatokaMetadataService
-      end
-    end
   end
 end
