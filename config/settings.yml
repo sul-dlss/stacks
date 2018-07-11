@@ -1,15 +1,6 @@
 stacks:
   storage_root: /stacks
   driver: remote_iiif
-  djatoka:
-    image:
-      implementation: DjatokaImage
-      attributes:
-        url: 'http://localhost:8080/resolver'
-    metadata:
-      implementation: DjatokaMetadataService
-    check:
-      implementation: CheckDjatoka
   remote_iiif:
     image:
       implementation: IiifImage

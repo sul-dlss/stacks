@@ -21,7 +21,7 @@ RSpec.describe StacksImage do
   describe '#info' do
     subject { instance.info }
 
-    let(:info_service) { instance_double(DjatokaMetadataService, fetch: {}) }
+    let(:info_service) { instance_double(IiifMetadataService, fetch: {}) }
 
     before do
       allow(instance).to receive(:info_service).and_return(info_service)

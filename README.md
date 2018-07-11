@@ -26,6 +26,7 @@ Stacks acts as a proxy to an image server.  The proxy is responsible for ensurin
 
 Stacks started out as a proxy for the Djatoka server, but in Fall 2017, we added the capability for Stacks to proxy to any IIIF compatible image server. We switched to Canteloupe at that time.  Had RIIIF been our preferred choice at that time, we could have instead pointed Stacks at a server running https://github.com/sul-dlss/image-server/.
 
+Legacy Djatoka support was removed from this codebase in July 2018.
 ## Requirements
 
 * Ruby (2.2.2+ or greater)
