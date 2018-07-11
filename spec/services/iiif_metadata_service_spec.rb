@@ -33,6 +33,19 @@ RSpec.describe IiifMetadataService do
         expect(subject.fetch('tiles').first.fetch('width')).to eq 256
         expect(subject.fetch('sizes').last.fetch('width')).to eq 3832
       end
+
+      context 'when max_pixels threshold is reached' do
+        around(:each) do |example|
+          default_max_pixels = Settings.max_pixels
+          Settings.max_pixels = 8_000_000
+          example.run
+          Settings.max_pixels = default_max_pixels
+        end
+
+        it 'max size is not the image size' do
+          expect(subject.fetch('sizes').last.fetch('width')).to eq 1916
+        end
+      end
     end
 
     describe '#image_width' do
@@ -46,6 +59,13 @@ RSpec.describe IiifMetadataService do
       subject { service.image_height }
       it "Returns the height of the image" do
         expect(subject).to eq 2552
+      end
+    end
+
+    describe '#max_width' do
+      subject { service.max_width }
+      it "Returns the max_width of the image" do
+        expect(subject).to eq 1916
       end
     end
   end
