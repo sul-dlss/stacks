@@ -43,7 +43,7 @@ class FileController < ApplicationController
   def rescue_can_can(exception)
     stanford_restricted, _rule = current_file.stanford_only_rights
     if stanford_restricted && !current_user.webauth_user?
-      redirect_to auth_file_url(allowed_params.to_h.symbolize_keys)
+      redirect_to auth_file_url(allowed_params.to_h.symbolize_keys.merge(referrer: request.original_url))
     else
       super
     end

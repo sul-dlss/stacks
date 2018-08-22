@@ -106,11 +106,17 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
           expect(response).to have_http_status(403)
         end
       end
-      it "prompts for webauth when user not webauthed" do
+      it "prompts for webauth when user not webauthed (with a referrer param back to the resource)" do
         allow_any_instance_of(IiifController).to receive(:current_user).and_return(user_no_loc_no_webauth)
         allow_any_instance_of(IiifController).to receive(:current_image).and_return(si_stanford_only)
         get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
-        expect(response).to redirect_to(auth_iiif_url(identifier: identifier, format: format))
+        expect(response).to redirect_to(
+          auth_iiif_url(
+            identifier: identifier,
+            format: format,
+            referrer: iiif_url(identifier: identifier, format: format)
+          )
+        )
       end
     end
     context 'location' do
@@ -171,11 +177,17 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
             expect(response).to have_http_status(200)
             expect(response.content_type).to eq('image/jpeg')
           end
-          it 'prompts for webauth when not in location' do
+          it 'prompts for webauth when not in location (with a referrer param back to the resource)' do
             allow_any_instance_of(IiifController).to receive(:current_user).and_return(user_no_loc_no_webauth)
             allow_any_instance_of(IiifController).to receive(:current_image).and_return(si_user_not_in_loc_and_stanford)
             get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
-            expect(response).to redirect_to(auth_iiif_url(identifier: identifier, format: format))
+            expect(response).to redirect_to(
+              auth_iiif_url(
+                identifier: identifier,
+                format: format,
+                referrer: iiif_url(identifier: identifier, format: format)
+              )
+            )
           end
         end
       end
