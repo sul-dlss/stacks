@@ -47,7 +47,6 @@ Naming/HeredocDelimiterNaming:
 Naming/MemoizedInstanceVariableName:
   Exclude:
     - 'app/controllers/**/*'
-    - 'app/services/djatoka_metadata_service.rb'
 
 Naming/PredicateName:
   NamePrefix:
