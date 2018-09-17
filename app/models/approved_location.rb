@@ -9,6 +9,7 @@ class ApprovedLocation
 
   def to_s
     return '' unless location_for_ip
+
     location_for_ip[0].to_s
   end
 
@@ -18,6 +19,7 @@ class ApprovedLocation
 
   def location_for_ip
     return unless locatable.try(:ip_address)
+
     location_configuration.find do |_, ip_addresses|
       ip_addresses.include?(locatable.ip_address)
     end

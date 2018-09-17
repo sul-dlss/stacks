@@ -7,6 +7,7 @@ class FileController < ApplicationController
 
   def show
     return unless stale?(cache_headers)
+
     authorize! :read, current_file
     expires_in 10.minutes
 
@@ -17,6 +18,7 @@ class FileController < ApplicationController
 
   def disposition
     return :attachment if allowed_params[:download]
+
     :inline
   end
 
@@ -33,6 +35,7 @@ class FileController < ApplicationController
     id = StacksIdentifier.new(druid: params[:id],
                               file_name: params[:file_name])
     return id if id.valid?
+
     raise ActionController::RoutingError, 'Invalid druid'
   end
 

@@ -21,6 +21,7 @@ class IiifController < ApplicationController
     raise ActionController::MissingFile, 'File Not Found' unless projection.valid?
 
     return unless stale?(cache_headers_show(projection))
+
     authorize! :read, projection
     expires_in 10.minutes, public: anonymous_ability.can?(:read, projection)
 
@@ -139,6 +140,7 @@ class IiifController < ApplicationController
   # @return [IIIF::Image::Transformation] returns the transformation for the parameters
   def transformation
     return unless allowed_params.key?(:size)
+
     IIIF::Image::OptionDecoder.decode(allowed_params)
   end
 

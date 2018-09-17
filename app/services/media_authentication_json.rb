@@ -12,6 +12,7 @@ class MediaAuthenticationJSON
     return location_only_restricted_json if only_location_grants_access?
     return stanford_only_restricted_json if only_stanford_grants_access?
     return stanford_or_location_restricted_json if stanford_or_location_grants_access?
+
     {}
   end
 
