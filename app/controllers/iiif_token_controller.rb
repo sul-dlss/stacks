@@ -86,6 +86,7 @@ class IiifTokenController < ApplicationController
   def write_bearer_token_cookie(token)
     # webauth users already have a webauth cookie; no additional cookie needed
     return if current_user.webauth_user?
+
     cookies[:bearer_token] = {
       value: token,
       expires: 1.hour.from_now,

@@ -40,6 +40,7 @@ class IiifInfoService
     services << AuthService.to_iiif(context) if current_image.stanford_restricted?
     services << LocationService.to_iiif(context) if current_image.restricted_by_location?
     return nil if services.empty?
+
     services.one? ? services.first : services
   end
 end

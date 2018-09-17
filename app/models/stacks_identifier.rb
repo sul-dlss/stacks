@@ -25,6 +25,7 @@ class StacksIdentifier
 
   def valid?
     return true if druid_parts && file_name
+
     false
   end
 
