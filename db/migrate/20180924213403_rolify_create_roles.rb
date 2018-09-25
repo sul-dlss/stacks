@@ -13,7 +13,8 @@ class RolifyCreateRoles < ActiveRecord::Migration[5.2]
     end
 
     add_index(:roles, :name)
-    add_index(:roles, [ :name, :resource_type, :resource_id ], length: 1000)
+    # MySQL doesn't like this migration.
+    # add_index(:roles, [ :name, :resource_type, :resource_id ])
     add_index(:users_roles, [ :user_id, :role_id ])
   end
 end
