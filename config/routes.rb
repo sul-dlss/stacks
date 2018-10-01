@@ -19,7 +19,7 @@ Rails.application.routes.draw do
 
   get '/auth/iiif' => 'webauth#login', as: :iiif_auth_api
   get '/auth/logout' => 'webauth#logout', as: :logout
-  get '/auth/inspect' => 'webauth#inspect'
+  get '/inspect_auth' => 'webauth#inspect'
   get '/image/iiif/token' => 'iiif_token#create', as: :iiif_token_api
 
   constraints identifier: %r{[^/]+}, size: %r{[^/]+} do
