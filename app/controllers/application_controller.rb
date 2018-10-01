@@ -11,6 +11,12 @@ class ApplicationController < ActionController::Base
     Rails.logger.info current_user.inspect
   end
 
+  def debug_auth
+    respond_to do |format|
+      format.json { render json: { current_user: current_user.as_json, request: request.as_json, host: ENV['HOSTNAME'] } }
+    end
+  end
+
   private
 
   def set_origin_header
