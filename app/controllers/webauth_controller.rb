@@ -1,9 +1,7 @@
 ##
 # Authentication endpoint, protected in production by a webauth prompt
 class WebauthController < ApplicationController
-  before_action do
-    raise CanCan::AccessDenied, 'Unable to authenticate' unless current_user
-  end
+  before_action :authenticate_user!
 
   def login
     flash[:success] = 'You have been successfully logged in.'
