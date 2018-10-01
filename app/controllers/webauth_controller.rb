@@ -20,6 +20,12 @@ class WebauthController < ApplicationController
     end
   end
 
+  def inspect
+    respond_to do |format|
+      format.json { render json: { current_user: current_user.as_json, request: request.as_json, host: ENV['HOSTNAME'] } }
+    end
+  end
+
   # TODO: we may want one method for all the below, with a referer param to know where to redirect
   # TODO: can't think of a reasonable way to do strong params here
 
