@@ -12,9 +12,7 @@ class ApplicationController < ActionController::Base
   end
 
   def debug_auth
-    respond_to do |format|
-      format.json { render json: { current_user: current_user.as_json,  host: ENV['HOSTNAME'] } }
-    end
+    render json: { current_user: current_user.as_json,  host: ENV['HOSTNAME'] }
   end
 
   private
