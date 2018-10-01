@@ -1,8 +1,6 @@
 ##
 # Authentication endpoint, protected in production by a webauth prompt
 class WebauthController < ApplicationController
-  before_action :authenticate_user!
-
   def login
     flash[:success] = 'You have been successfully logged in.'
 
