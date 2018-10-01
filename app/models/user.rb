@@ -16,7 +16,7 @@ class User < ApplicationRecord
 
   after_create :create_roles_from_workgroups
 
-  attr_accessor :id, :webauth_user, :anonymous_locatable_user, :app_user, :token_user, :ldap_groups, :ip_address
+  attr_accessor :id, :webauth_user, :database_authenticatable, :anonymous_locatable_user, :app_user, :token_user, :ldap_groups, :ip_address
 
   def webauth_user?
     webauth_user || persisted?
