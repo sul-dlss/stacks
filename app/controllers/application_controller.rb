@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
   end
 
   def debug_auth
-    render plain: { current_user: current_user.inspect,  host: ENV['HOSTNAME'] }.to_json
+    render json: { warden: request.env['warden'].user, current_user: current_user,  host: ENV['HOSTNAME'] }
   end
 
   private
