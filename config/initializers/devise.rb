@@ -13,7 +13,7 @@ DeviseRemoteUser.configure do |config|
     end
   end
   config.auto_create = true
-  config.auto_update = true
+  config.auto_update = false
   config.attribute_map = { shibboleth_groups: 'eduPersonEntitlement', webauth_groups: 'WEBAUTH_LDAPPRIVGROUP' }
 end
 
