@@ -1,12 +1,25 @@
 ##
 # Simple user model for anonymous, webauth, and locally authenticated "app" users
-class User
-  include ActiveModel::Model
+class User < ApplicationRecord
+  include ActiveSupport::Callbacks
 
-  attr_accessor :id, :webauth_user, :anonymous_locatable_user, :app_user, :token_user, :ldap_groups, :ip_address
+  define_callbacks :groups_changed
+
+  set_callback :groups_changed, :after, :create_roles_from_workgroups
+
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  devise :remote_user_authenticatable, :registerable,
+         :recoverable, :rememberable
+
+  rolify
+
+  after_create :create_roles_from_workgroups
+
+  attr_accessor :id, :webauth_user, :database_authenticatable, :anonymous_locatable_user, :app_user, :token_user, :ldap_groups, :ip_address
 
   def webauth_user?
-    webauth_user
+    webauth_user || persisted?
   end
 
   def anonymous_locatable_user?
@@ -14,7 +27,7 @@ class User
   end
 
   def stanford?
-    ldap_groups.present? && (ldap_groups & Settings.user.stanford_groups).any?
+    (ldap_groups.present? && (ldap_groups & Settings.user.stanford_groups).any?) || has_role?(:stanford)
   end
 
   def app_user?
@@ -44,7 +57,16 @@ class User
   end
 
   def token
-    self.class.encryptor.encrypt_and_sign([{ id: id, ldap_groups: ldap_groups, ip_address: ip_address }, Time.zone.now])
+    self.class.encryptor.encrypt_and_sign([
+                                            {
+                                              id: id,
+                                              email: email,
+                                              ldap_groups: ldap_groups,
+                                              ip_address: ip_address,
+                                              webauth_user: webauth_user
+                                            },
+                                            Time.zone.now
+                                          ])
   end
 
   def self.encryptor
@@ -59,5 +81,23 @@ class User
       webauth_user: true,
       ldap_groups: Settings.user.stanford_groups
     )
+  end
+
+  def shibboleth_groups=(groups)
+    self.ldap_groups = groups.split(';')
+  end
+
+  def webauth_groups=(groups)
+    self.ldap_groups = groups.split('|')
+  end
+
+  def ldap_groups=(group)
+    run_callbacks :groups_changed do
+      @ldap_groups = group
+    end
+  end
+
+  def create_roles_from_workgroups
+    add_role(:stanford) if ldap_groups.present? && (ldap_groups & Settings.user.stanford_groups).any?
   end
 end

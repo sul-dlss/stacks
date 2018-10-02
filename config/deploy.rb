@@ -2,8 +2,8 @@ set :application, 'digital_stacks'
 set :repo_url, 'https://github.com/sul-dlss/stacks.git'
 
 # Default branch is :master
-ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
-
+# ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
+set :branch, 'devise'
 # Default deploy_to directory is /var/www/my_app
 set :deploy_to, '/opt/app/stacks/stacks'
 
@@ -20,7 +20,7 @@ set :log_level, :info
 # set :pty, true
 
 # Default value for :linked_files is []
-set :linked_files, %w{config/honeybadger.yml config/secrets.yml config/newrelic.yml}
+set :linked_files, %w{config/database.yml config/honeybadger.yml config/secrets.yml config/newrelic.yml}
 
 # Default value for linked_dirs is []
 set :linked_dirs, %w(config/settings log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system)

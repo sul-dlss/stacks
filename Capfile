@@ -20,7 +20,7 @@ install_plugin Capistrano::SCM::Git
 # require 'capistrano/chruby'
 
 require 'capistrano/bundler'
-require 'capistrano/rails/assets'
+require 'capistrano/rails'
 require 'capistrano/passenger'
 require 'capistrano/honeybadger'
 require 'capistrano/shared_configs'

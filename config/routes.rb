@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :users
   constraints file_name: %r{[^/]+} do
     get '/file/:id/:file_name' => 'file#show', as: :file
     get '/file/app/:id/:file_name' => 'webauth#login_file'
@@ -18,6 +19,7 @@ Rails.application.routes.draw do
 
   get '/auth/iiif' => 'webauth#login', as: :iiif_auth_api
   get '/auth/logout' => 'webauth#logout', as: :logout
+  get '/debug_auth' => 'application#debug_auth'
   get '/image/iiif/token' => 'iiif_token#create', as: :iiif_token_api
 
   constraints identifier: %r{[^/]+}, size: %r{[^/]+} do

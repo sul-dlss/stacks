@@ -6,6 +6,10 @@ class ApplicationController < ActionController::Base
   rescue_from CanCan::AccessDenied, with: :rescue_can_can
   before_action :set_origin_header
 
+  before_action do
+    Rails.logger.info current_user.inspect
+  end
+
   private
 
   def set_origin_header
@@ -19,10 +23,8 @@ class ApplicationController < ActionController::Base
                         bearer_auth_user
                       elsif has_bearer_cookie?
                         bearer_cookie_user
-                      elsif request.remote_user
-                        webauth_user
                       else
-                        anonymous_locatable_user
+                        super || anonymous_locatable_user
                       end
   end
 
@@ -72,21 +74,6 @@ class ApplicationController < ActionController::Base
     User.from_token(token, ip_address: request.remote_ip)
   end
 
-  def webauth_user
-    ldap_groups = if request.env['WEBAUTH_LDAPPRIVGROUP'].present?
-                    request.env['WEBAUTH_LDAPPRIVGROUP'].split('|')
-                  elsif request.env['eduPersonEntitlement'].present?
-                    request.env['eduPersonEntitlement'].split(';')
-                  else
-                    []
-                  end
-
-    User.new(id: request.remote_user,
-             ip_address: request.remote_ip,
-             webauth_user: true,
-             ldap_groups: ldap_groups)
-  end
-
   def anonymous_locatable_user
     User.new(ip_address: request.remote_ip,
              anonymous_locatable_user: true)
@@ -96,5 +83,9 @@ class ApplicationController < ActionController::Base
     Rails.logger.debug "Access denied on #{exception.action} #{exception.subject.inspect}"
 
     render file: "#{Rails.root}/public/403.html", status: :forbidden, layout: false
+  end
+
+  def after_sign_out_path_for(*)
+    '/Shibboleth.sso/Logout'
   end
 end
