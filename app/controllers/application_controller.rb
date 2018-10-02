@@ -6,6 +6,10 @@ class ApplicationController < ActionController::Base
   rescue_from CanCan::AccessDenied, with: :rescue_can_can
   before_action :set_origin_header
 
+  before_action do
+    Rails.logger.info current_user.inspect
+  end
+
   private
 
   def set_origin_header
