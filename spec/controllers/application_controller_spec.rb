@@ -61,6 +61,19 @@ RSpec.describe ApplicationController do
       end
     end
 
+    context 'with session information' do
+      before do
+        request.session[:remote_user] = 'my-user'
+        request.session[:workgroups] = 'a;b'
+      end
+
+      it 'retrieves the remote user and workgroup information' do
+        expect(subject.id).to eq 'my-user'
+        expect(subject).to be_a_webauth_user
+        expect(subject.ldap_groups).to match_array %w[a b]
+      end
+    end
+
     context 'with no other credentials' do
       it 'is an anonymous locatable user' do
         expect(subject).to be_an_anonymous_locatable_user

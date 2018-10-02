@@ -5,6 +5,8 @@ class WebauthController < ApplicationController
     raise CanCan::AccessDenied, 'Unable to authenticate' unless current_user
   end
 
+  before_action :write_auth_session_info, except: [:logout]
+
   def login
     flash[:success] = 'You have been successfully logged in.'
 
@@ -15,6 +17,8 @@ class WebauthController < ApplicationController
   end
 
   def logout
+    session[:remote_user] = nil
+    session[:workgroups] = nil
     respond_to do |format|
       format.html
     end
@@ -29,5 +33,12 @@ class WebauthController < ApplicationController
 
   def login_iiif
     redirect_to iiif_path(params.to_unsafe_h.symbolize_keys)
+  end
+
+  private
+
+  def write_auth_session_info
+    session[:remote_user] = request.env['REMOTE_USER']
+    session[:workgroups] = workgroups_from_env.join(';')
   end
 end
