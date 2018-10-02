@@ -5,6 +5,8 @@ RSpec.describe WebauthController do
 
   before do
     allow(controller).to receive(:current_user).and_return(user)
+    request.env['REMOTE_USER'] = 'username'
+    request.env['eduPersonEntitlement'] = 'a;b'
   end
 
   describe '#logout' do
@@ -22,6 +24,11 @@ RSpec.describe WebauthController do
 
     it 'returns the user to the file api' do
       expect(subject).to redirect_to file_url(params)
+    end
+
+    it 'stores user information in the session' do
+      get :login_file, params: params
+      expect(session).to include 'remote_user' => 'username', 'workgroups' => 'a;b'
     end
 
     context 'with a failed login' do
@@ -48,6 +55,11 @@ RSpec.describe WebauthController do
         quality: 'default',
         format: 'jpg'
       }
+    end
+
+    it 'stores user information in the session' do
+      get :login_iiif, params: params
+      expect(session).to include 'remote_user' => 'username', 'workgroups' => 'a;b'
     end
 
     it 'returns the user to the image' do

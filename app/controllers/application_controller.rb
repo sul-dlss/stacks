@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
                         bearer_auth_user
                       elsif has_bearer_cookie?
                         bearer_cookie_user
-                      elsif request.remote_user
+                      elsif session[:remote_user] || request.remote_user
                         webauth_user
                       else
                         anonymous_locatable_user
@@ -73,18 +73,23 @@ class ApplicationController < ActionController::Base
   end
 
   def webauth_user
-    ldap_groups = if request.env['WEBAUTH_LDAPPRIVGROUP'].present?
-                    request.env['WEBAUTH_LDAPPRIVGROUP'].split('|')
-                  elsif request.env['eduPersonEntitlement'].present?
-                    request.env['eduPersonEntitlement'].split(';')
-                  else
-                    []
-                  end
+    ldap_groups = session[:workgroups].split(';') if session[:workgroups].present?
+    ldap_groups ||= workgroups_from_env
 
-    User.new(id: request.remote_user,
+    User.new(id: session[:remote_user] || request.remote_user,
              ip_address: request.remote_ip,
              webauth_user: true,
              ldap_groups: ldap_groups)
+  end
+
+  def workgroups_from_env
+    if request.env['WEBAUTH_LDAPPRIVGROUP'].present?
+      request.env['WEBAUTH_LDAPPRIVGROUP'].split('|')
+    elsif request.env['eduPersonEntitlement'].present?
+      request.env['eduPersonEntitlement'].split(';')
+    else
+      []
+    end
   end
 
   def anonymous_locatable_user
