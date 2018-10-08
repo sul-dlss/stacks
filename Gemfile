@@ -54,7 +54,7 @@ group :development, :test do
   gem 'pry-byebug', require: false
 
   # RSpec for testing
-  gem 'rspec-rails', '~> 3.0'
+  gem 'rspec-rails', '~> 3.8'
 
   gem 'rails-controller-testing'
 
