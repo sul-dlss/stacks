@@ -28,7 +28,7 @@ RSpec.describe WebauthController do
 
     it 'stores user information in the session' do
       get :login_file, params: params
-      expect(session).to include 'remote_user' => 'username', 'workgroups' => 'a;b'
+      expect(session.to_h).to include 'remote_user' => 'username', 'workgroups' => 'a;b'
     end
 
     context 'with a failed login' do
@@ -59,7 +59,7 @@ RSpec.describe WebauthController do
 
     it 'stores user information in the session' do
       get :login_iiif, params: params
-      expect(session).to include 'remote_user' => 'username', 'workgroups' => 'a;b'
+      expect(session.to_h).to include 'remote_user' => 'username', 'workgroups' => 'a;b'
     end
 
     it 'returns the user to the image' do
