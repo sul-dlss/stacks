@@ -91,7 +91,11 @@ class IiifController < ApplicationController
   #   b)  need user to login to determine if access allowed
   def rescue_can_can(exception)
     if degraded? && !current_user.webauth_user?
-      redirect_to auth_iiif_url(allowed_params.to_h.symbolize_keys.tap { |x| x[:identifier] = escaped_identifier })
+      redirect_to auth_iiif_url(
+        allowed_params.to_h.symbolize_keys.tap do |x|
+          x[:identifier] = escaped_identifier
+        end.merge(referrer: request.original_url)
+      )
     else
       super
     end

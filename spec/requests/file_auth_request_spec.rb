@@ -104,11 +104,13 @@ RSpec.describe "Authentication for File requests", type: :request do
           expect(response).to have_http_status(403)
         end
       end
-      it "prompts for webauth when user not webauthed" do
+      it "prompts for webauth when user not webauthed (with a referrer param back to the resource)" do
         allow_any_instance_of(FileController).to receive(:current_user).and_return(user_no_loc_no_webauth)
         allow_any_instance_of(FileController).to receive(:current_file).and_return(sf_stanford_only)
         get "/file/#{druid}/#{filename}"
-        expect(response).to redirect_to(auth_file_url(id: druid, file_name: filename))
+        expect(response).to redirect_to(
+          auth_file_url(id: druid, file_name: filename, referrer: file_url(id: druid, file_name: filename))
+        )
       end
     end
     context 'location' do
@@ -164,11 +166,13 @@ RSpec.describe "Authentication for File requests", type: :request do
             expect_any_instance_of(FileController).to receive(:send_file).with(sf_loc_and_stanford.path, disposition: :inline).and_call_original
             get "/file/#{druid}/#{filename}"
           end
-          it 'prompts for webauth when not in location' do
+          it 'prompts for webauth when not in location (with a referrer param back to the resource)' do
             allow_any_instance_of(FileController).to receive(:current_user).and_return(user_no_loc_no_webauth)
             allow_any_instance_of(FileController).to receive(:current_file).and_return(sf_user_not_in_loc_and_stanford)
             get "/file/#{druid}/#{filename}"
-            expect(response).to redirect_to(auth_file_url(id: druid, file_name: filename))
+            expect(response).to redirect_to(
+              auth_file_url(id: druid, file_name: filename, referrer: file_url(id: druid, file_name: filename))
+            )
           end
         end
       end
