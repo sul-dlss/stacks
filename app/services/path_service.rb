@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Converts druids/file name to a file path on disk
 module PathService
   # @param id [StacksIdentifier]

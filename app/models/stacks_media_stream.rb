@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # media stream via stacks
 class StacksMediaStream

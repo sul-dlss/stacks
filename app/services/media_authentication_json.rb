@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ###
 # A class to model various authentication checks on media objects
 # and return a hash to be used as JSON in a controller response

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ###
 # Simple class that will return an approved location (for restricted content)
 # based on a provided locatable object's IP address

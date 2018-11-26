@@ -32,7 +32,7 @@ class StacksImage
   end
 
   def exist?
-    file_source.readable? && image_width > 0
+    file_source.readable? && image_width.positive?
   end
 
   delegate :image_width, :image_height, to: :info_service

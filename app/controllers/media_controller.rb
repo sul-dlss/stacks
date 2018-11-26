@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # API for delivering streaming media via stacks
 class MediaController < ApplicationController

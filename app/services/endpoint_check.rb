@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # @abstract creates okcomputer checks
 class EndpointCheck
   def self.ok_check

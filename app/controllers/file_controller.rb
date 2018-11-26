@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # API for delivering files from stacks
 class FileController < ApplicationController

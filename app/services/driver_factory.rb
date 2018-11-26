@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # @abstract Parent class for factories that use the settings.yml
 class DriverFactory
   # Instantiate the implementation class with all passed arguments and

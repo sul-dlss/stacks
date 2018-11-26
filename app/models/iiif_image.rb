@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Represents a remote Iiif endpoint
 class IiifImage < SourceImage
   include ActiveSupport::Benchmarkable

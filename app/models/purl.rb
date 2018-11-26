@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # PURL API service
 class Purl
   include ActiveSupport::Benchmarkable

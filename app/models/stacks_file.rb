@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # Represents a file on disk in stacks. A StacksFile may be downloaded and
 # may be the file that backs a StacksImage or StacksMediaStream
@@ -17,7 +19,7 @@ class StacksFile
   end
 
   def etag
-    mtime.to_i if mtime
+    mtime&.to_i
   end
 
   def path

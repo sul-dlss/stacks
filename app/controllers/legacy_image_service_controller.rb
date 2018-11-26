@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # Translate legacy Stanford API image requests into IIIF API requests
 class LegacyImageServiceController < ApplicationController
@@ -8,7 +10,7 @@ class LegacyImageServiceController < ApplicationController
   self.model = StacksImage
 
   # kludge to get around Rails' overzealous URL escaping
-  IDENTIFIER_SEPARATOR = 'ZZZZZZZ'.freeze
+  IDENTIFIER_SEPARATOR = 'ZZZZZZZ'
 
   ##
   # Redirect legacy image requests to their IIIF equivalents
