@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RightsXMLFixtures
   def world_readable_rights_xml
     <<-XML

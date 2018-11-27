@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A projection is the result of a StacksImage put through a IIIF::Image::Transformation
 class Projection
   THUMBNAIL_BOUNDS = IIIF::Image::Dimension.new(width: 400, height: 400)

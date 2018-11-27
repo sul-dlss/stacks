@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # Spec helper module to stub the Rights XML for a PURL object.
 # It may be a good idea, in the future, to abstract the

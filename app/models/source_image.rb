@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # @abstract Represents a source of an image.
 class SourceImage
   def initialize(id:, file_name:, transformation:); end

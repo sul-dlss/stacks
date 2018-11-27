@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # Simple user model for anonymous, webauth, and locally authenticated "app" users
 class User

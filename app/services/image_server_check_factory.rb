@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A factory that produces the correct checks for the configured image server
 class ImageServerCheckFactory < DriverFactory
   def self.ok_check

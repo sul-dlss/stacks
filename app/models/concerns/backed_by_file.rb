@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Common methods for projections (StacksImage, StacksMediaStream) that
 # are backed by a file on disk.
 module BackedByFile

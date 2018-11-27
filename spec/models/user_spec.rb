@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 # These specs are a rather integration-y approach to testing ability.rb, since they rely

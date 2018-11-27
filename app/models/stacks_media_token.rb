@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # need resolv for the IP address regex
 require 'resolv'
 

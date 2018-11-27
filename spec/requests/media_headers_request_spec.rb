@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 def verify_cors_headers(allow_origin, allow_credentials)

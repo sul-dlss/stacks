@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # API to create IIIF Authentication access tokens
 class IiifTokenController < ApplicationController
   def create

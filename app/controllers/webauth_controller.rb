@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # Authentication endpoint, protected in production by a webauth prompt
 class WebauthController < ApplicationController
