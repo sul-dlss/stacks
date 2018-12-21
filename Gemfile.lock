@@ -352,7 +352,7 @@ PLATFORMS
 
 DEPENDENCIES
   bootsnap (>= 1.1.0)
-  bootstrap-sass (= 3.3.7)
+  bootstrap-sass
   byebug
   cancancan
   capistrano (~> 3.0)

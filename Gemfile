@@ -90,7 +90,7 @@ gem 'honeybadger'
 # Use okcomputer to monitor the application
 gem 'okcomputer'
 gem 'iiif-image-api', '~> 0.1.0'
-gem 'bootstrap-sass', '3.3.7' # Pinned to 3.3.7 because our centos6 environment isn't compatible with sassc
+gem 'bootstrap-sass'
 gem 'sul_styles'
 gem 'config'
 gem 'faraday'
