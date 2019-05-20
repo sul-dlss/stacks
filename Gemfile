@@ -9,30 +9,8 @@ end
 gem 'rails', '~> 5.2.0'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3', '~> 1.3.13'
-# Use Puma as the app server
-gem 'puma', '~> 3.11'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
-# Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '>= 2.7.2'
-# Use CoffeeScript for .coffee assets and views
-gem 'coffee-rails', '~> 4.2'
-
-# Use jquery as the JavaScript library
-gem 'jquery-rails'
-# Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
-gem 'turbolinks', '~> 5'
-# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.5'
-
-# Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
-
-# Use Unicorn as the app server
-# gem 'unicorn'
-
-# Use Capistrano for deployment
-# gem 'capistrano-rails', group: :development
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
@@ -44,6 +22,9 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
+  
+  # Use Puma as the app server
+  gem 'puma', '~> 3.11'
 end
 
 group :development, :test do
@@ -60,9 +41,6 @@ group :development, :test do
 
   # Capybara for feature/integration tests
   gem 'capybara'
-
-  # Database cleaner allows us to clean the entire database after certain tests
-  gem 'database_cleaner'
 
   # Rubocop is a static code analyzer to enforce style.
   gem 'rubocop', '~> 0.50', require: false
@@ -100,7 +78,6 @@ gem 'cancancan'
 gem 'dor-rights-auth', require: 'dor/rights_auth'
 gem 'dalli'
 gem 'retries'
-gem 'scientist'
 
 group :production do
   gem 'newrelic_rpm'
