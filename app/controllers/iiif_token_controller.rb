@@ -39,7 +39,10 @@ class IiifTokenController < ApplicationController
     browser_params.require(:origin)
 
     # The browser-based interaction requires using iframes
-    response.headers['X-Frame-Options'] = "ALLOW-FROM #{browser_params[:origin]}"
+    # We disable this header (added by default) entirely to ensure
+    # that IIIF viewers embedded by iframes in other pages will
+    # work as expected.
+    response.headers['X-Frame-Options'] = ""
 
     @message[:messageId] = browser_params[:messageId]
 

@@ -19,8 +19,8 @@ RSpec.describe IiifTokenController do
         get :create, params: { origin: 'http://example.edu/', messageId: '1' }
       end
 
-      it 'sets the X-Frame-Options header' do
-        expect(subject.headers['X-Frame-Options']).to eq 'ALLOW-FROM http://example.edu/'
+      it 'wipes out the X-Frame-Options header' do
+        expect(subject.headers['X-Frame-Options']).to eq ''
       end
 
       it 'assigns the message and origin parameters' do
