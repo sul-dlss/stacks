@@ -123,7 +123,7 @@ class IiifController < ApplicationController
 
   def set_attachment_content_disposition_header
     filename = [stacks_identifier.file_name_without_ext, format_param].join('.')
-    response.headers['Content-Disposition'] = "attachment;filename=#{filename}"
+    response.headers['Content-Disposition'] = "attachment;filename=\"#{filename}\""
   end
 
   def current_image

@@ -89,7 +89,7 @@ RSpec.describe IiifController do
       end
 
       it 'sets the preferred filename' do
-        expect(subject.headers['Content-Disposition']).to include 'filename=nr349ct7889_00_0001.jpg'
+        expect(subject.headers['Content-Disposition']).to include 'filename="nr349ct7889_00_0001.jpg"'
       end
     end
   end
