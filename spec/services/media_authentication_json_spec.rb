@@ -11,7 +11,7 @@ RSpec.describe MediaAuthenticationJSON do
       location_rights: false
     )
   end
-  let(:user) { double('User', location: nil, webauth_user: false) }
+  let(:user) { double('User', locations: [], webauth_user: false) }
   subject { described_class.new(media: media, user: user, auth_url: '/the/auth/url') }
 
   describe 'Location Restricted Media' do
@@ -27,7 +27,7 @@ RSpec.describe MediaAuthenticationJSON do
 
     context 'When a user is in the blessed location' do
       before do
-        allow(user).to receive(:location).and_return('blessed_location')
+        allow(user).to receive(:locations).and_return(['blessed_location'])
         allow(media).to receive(:location_rights).with('blessed_location').and_return(true)
       end
 

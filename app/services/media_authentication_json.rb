@@ -73,7 +73,9 @@ class MediaAuthenticationJSON
   end
 
   def user_is_in_location?
-    Array.wrap(media.location_rights(user.location))[0]
+    user.locations.any? do |location|
+      Array.wrap(media.location_rights(location))[0]
+    end
   end
 
   def stanford_grants_access?
