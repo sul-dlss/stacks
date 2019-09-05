@@ -21,164 +21,168 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
   let(:transformation) { IIIF::Image::Transformation.new region: region, size: size, rotation: rotation, quality: quality, format: format }
   let(:path) { "/stacks/nr/349/ct/7889/nr349ct7889_00_0001" }
   let(:perms) { nil }
+  let(:current_image) { StacksImage.new(params_hash) }
 
   before(:each) do
     allow(File).to receive(:world_readable?).with(path).and_return(perms)
   end
 
   context "#show" do
-    let!(:si_stanford_only) do
-      si = StacksImage.new(params_hash)
-      allow(si).to receive(:stanford_only_rights).and_return([true, ''])
-      allow(si).to receive(:stanford_only_downloadable?).and_return(true)
-      allow(si).to receive(:location_rights).and_return([false, ''])
-      allow(si).to receive(:restricted_by_location?).and_return(false)
-      allow(si).to receive(:agent_rights).and_return([false, ''])
-      allow(si).to receive(:world_rights).and_return([false, ''])
-      allow(si).to receive(:world_downloadable?).and_return(false)
-      allow(si).to receive(:world_unrestricted?).and_return(false)
-      allow(si).to receive(:exist?).and_return(true)
-      si
-    end
-    let!(:si_loc_only) do
-      si = StacksImage.new(params_hash)
-      allow(si).to receive(:restricted_by_location?).and_return(true)
-      allow(si).to receive(:location_rights).and_return([true, ''])
-      allow(si).to receive(:stanford_only_rights).and_return([false, ''])
-      allow(si).to receive(:agent_rights).and_return([false, ''])
-      allow(si).to receive(:world_rights).and_return([false, ''])
-      allow(si).to receive(:exist?).and_return(true)
-      si
-    end
-    let!(:si_user_not_in_loc) do
-      si = StacksImage.new(params_hash)
-      allow(si).to receive(:restricted_by_location?).and_return(true)
-      allow(si).to receive(:location_rights).and_return([false, ''])
-      allow(si).to receive(:stanford_only_downloadable?).and_return(false)
-      allow(si).to receive(:stanford_only_rights).and_return([false, ''])
-      allow(si).to receive(:agent_rights).and_return([false, ''])
-      allow(si).to receive(:world_downloadable?).and_return(false)
-      allow(si).to receive(:world_rights).and_return([false, ''])
-      allow(si).to receive(:exist?).and_return(true)
-      allow(si).to receive(:object_thumbnail?).and_return(false)
-      si
-    end
-    let!(:si_loc_and_stanford) do
-      si = StacksImage.new(params_hash)
-      allow(si).to receive(:stanford_only_rights).and_return([true, ''])
-      allow(si).to receive(:location_rights).and_return([true, ''])
-      allow(si).to receive(:restricted_by_location?).and_return(true)
-      allow(si).to receive(:agent_rights).and_return([false, ''])
-      allow(si).to receive(:world_rights).and_return([false, ''])
-      allow(si).to receive(:exist?).and_return(true)
-      si
-    end
-    let!(:si_user_not_in_loc_and_stanford) do
-      si = StacksImage.new(params_hash)
-      allow(si).to receive(:stanford_only_rights).and_return([true, ''])
-      allow(si).to receive(:restricted_by_location?).and_return(true)
-      allow(si).to receive(:location_rights).and_return([false, ''])
-      allow(si).to receive(:agent_rights).and_return([false, ''])
-      allow(si).to receive(:world_downloadable?).and_return(false)
-      allow(si).to receive(:stanford_only_downloadable?).and_return(false)
-      allow(si).to receive(:world_rights).and_return([false, ''])
-      allow(si).to receive(:exist?).and_return(true)
-      si
-    end
-
     before(:each) do
       allow_any_instance_of(Projection).to receive(:valid?).and_return(true)
       allow(HTTP).to receive(:get).and_return(instance_double(HTTP::Response, body: StringIO.new))
+
+      allow_any_instance_of(IiifController).to receive(:current_user).and_return(current_user)
+      allow_any_instance_of(IiifController).to receive(:current_image).and_return(current_image)
     end
 
-    # NOTE:  stanford only + location rights tested under location context
-    context 'stanford only (no location qualifications)' do
-      context 'webauthed user' do
-        it 'allows when user webauthed and authorized' do
-          allow_any_instance_of(IiifController).to receive(:current_user).and_return(user_webauth_stanford_no_loc)
-          allow_any_instance_of(IiifController).to receive(:current_image).and_return(si_stanford_only)
+    context 'with a public item' do
+      before do
+        stub_rights_xml(world_readable_rights_xml)
+      end
+
+      context 'with an unauthenticated user' do
+        let(:current_user) { user_no_loc_no_webauth }
+
+        it 'works' do
           get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
           expect(response).to have_http_status(200)
           expect(response.content_type).to eq('image/jpeg')
         end
-        it 'blocks when user webauthed but NOT authorized' do
-          allow_any_instance_of(IiifController).to receive(:current_user).and_return(user_webauth_no_stanford_no_loc)
-          allow_any_instance_of(IiifController).to receive(:current_image).and_return(si_stanford_only)
-          get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
-          expect(response).to have_http_status(403)
-        end
-      end
-      it "prompts for webauth when user not webauthed" do
-        allow_any_instance_of(IiifController).to receive(:current_user).and_return(user_no_loc_no_webauth)
-        allow_any_instance_of(IiifController).to receive(:current_image).and_return(si_stanford_only)
-        get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
-        expect(response).to redirect_to(auth_iiif_url(identifier: identifier, format: format))
       end
     end
-    context 'location' do
-      context 'not stanford qualified in any way' do
-        it 'allows when user in location' do
-          allow_any_instance_of(IiifController).to receive(:current_user).and_return(user_loc_no_webauth)
-          allow_any_instance_of(IiifController).to receive(:current_image).and_return(si_loc_only)
+
+    context 'with a stanford only item' do
+      before do
+        stub_rights_xml(stanford_restricted_rights_xml)
+      end
+
+      context 'with a authorized webauthed user' do
+        let(:current_user) { user_webauth_stanford_no_loc }
+
+        it 'works' do
           get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
           expect(response).to have_http_status(200)
           expect(response.content_type).to eq('image/jpeg')
         end
-        it 'blocks when user not in location' do
-          allow_any_instance_of(IiifController).to receive(:current_user).and_return(user_no_loc_no_webauth)
-          allow_any_instance_of(IiifController).to receive(:current_image).and_return(si_user_not_in_loc)
+      end
+
+      context 'with a unauthorized webauthed user' do
+        let(:current_user) { user_webauth_no_stanford_no_loc }
+
+        it 'blocks' do
           get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
           expect(response).to have_http_status(403)
         end
       end
-      context 'OR stanford' do
-        context 'user webauthed' do
-          context 'authorized' do
-            it 'allows when user in location' do
-              allow_any_instance_of(IiifController).to receive(:current_user).and_return(user_webauth_stanford_loc)
-              allow_any_instance_of(IiifController).to receive(:current_image).and_return(si_loc_and_stanford)
-              get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
-              expect(response).to have_http_status(200)
-              expect(response.content_type).to eq('image/jpeg')
-            end
-            it 'allows when user not in location' do
-              allow_any_instance_of(IiifController).to receive(:current_user).and_return(user_webauth_stanford_no_loc)
-              allow_any_instance_of(IiifController).to receive(:current_image).and_return(si_user_not_in_loc_and_stanford)
-              get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
-              expect(response).to have_http_status(200)
-              expect(response.content_type).to eq('image/jpeg')
-            end
-          end
-          context 'NOT authorized' do
-            it 'allows when in location' do
-              allow_any_instance_of(IiifController).to receive(:current_user).and_return(user_webauth_no_stanford_loc)
-              allow_any_instance_of(IiifController).to receive(:current_image).and_return(si_loc_and_stanford)
-              get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
-              expect(response).to have_http_status(200)
-              expect(response.content_type).to eq('image/jpeg')
-            end
-            it 'blocks when not in location' do
-              allow_any_instance_of(IiifController).to receive(:current_user).and_return(user_webauth_no_stanford_no_loc)
-              allow_any_instance_of(IiifController).to receive(:current_image).and_return(si_user_not_in_loc_and_stanford)
-              get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
-              expect(response).to have_http_status(403)
-            end
-          end
+
+      context 'with an unauthenticated user' do
+        let(:current_user) { user_no_loc_no_webauth }
+
+        it 'redirects to the authentication endpoint' do
+          get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
+          expect(response).to redirect_to(auth_iiif_url(identifier: identifier, format: format))
         end
-        context 'user NOT webauthed' do
-          it 'allows when in location (no webauth prompt)' do
-            allow_any_instance_of(IiifController).to receive(:current_user).and_return(user_loc_no_webauth)
-            allow_any_instance_of(IiifController).to receive(:current_image).and_return(si_loc_and_stanford)
-            get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
-            expect(response).to have_http_status(200)
-            expect(response.content_type).to eq('image/jpeg')
-          end
-          it 'prompts for webauth when not in location' do
-            allow_any_instance_of(IiifController).to receive(:current_user).and_return(user_no_loc_no_webauth)
-            allow_any_instance_of(IiifController).to receive(:current_image).and_return(si_user_not_in_loc_and_stanford)
-            get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
-            expect(response).to redirect_to(auth_iiif_url(identifier: identifier, format: format))
-          end
+      end
+    end
+
+    context 'with a location-restricted item' do
+      before do
+        stub_rights_xml(location_rights_xml)
+      end
+
+      context 'with a user in the location' do
+        let(:current_user) { user_loc_no_webauth }
+
+        it 'works' do
+          get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
+          expect(response).to have_http_status(200)
+          expect(response.content_type).to eq('image/jpeg')
+        end
+      end
+
+      context 'with a user outside the location' do
+        let(:current_user) { user_no_loc_no_webauth }
+
+        it 'blocks' do
+          get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
+          expect(response).to have_http_status(403)
+        end
+      end
+    end
+
+    context 'with an item that is stanford-only or viewable in a location' do
+      before do
+        stub_rights_xml <<-XML
+          <publicObject>
+            <rightsMetadata>
+              <access type="read">
+                <machine>
+                  <group>Stanford</group>
+                </machine>
+                <machine>
+                  <location>location1</location>
+                </machine>
+              </access>
+            </rightsMetadata>
+          </publicObject>
+        XML
+      end
+
+      context 'with a user in the location' do
+        let(:current_user) { user_loc_no_webauth }
+
+        it 'works' do
+          get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
+          expect(response).to have_http_status(200)
+          expect(response.content_type).to eq('image/jpeg')
+        end
+      end
+
+      context 'with an unauthorized user outside the location' do
+        let(:current_user) { user_webauth_no_stanford_no_loc }
+
+        it 'blocks' do
+          get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
+          expect(response).to have_http_status(403)
+        end
+      end
+
+      context 'with an unauthorized user inside the location' do
+        let(:current_user) { user_webauth_no_stanford_no_loc }
+
+        it 'blocks' do
+          get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
+          expect(response).to have_http_status(403)
+        end
+      end
+
+      context 'with a stanford authenticated user' do
+        let(:current_user) { user_webauth_stanford_no_loc }
+
+        it 'works' do
+          get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
+          expect(response).to have_http_status(200)
+          expect(response.content_type).to eq('image/jpeg')
+        end
+      end
+
+      context 'with a stanford authenticated user in the location' do
+        let(:current_user) { user_webauth_stanford_loc }
+
+        it 'works' do
+          get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
+          expect(response).to have_http_status(200)
+          expect(response.content_type).to eq('image/jpeg')
+        end
+      end
+
+      context 'with an unauthenticated user not in the location' do
+        let(:current_user) { user_no_loc_no_webauth }
+
+        it 'redirects to the authentication endpoint' do
+          get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
+          expect(response).to redirect_to(auth_iiif_url(identifier: identifier, format: format))
         end
       end
     end
