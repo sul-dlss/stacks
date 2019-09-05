@@ -9,10 +9,12 @@ class ApprovedLocation
     @locatable = locatable
   end
 
-  def to_s
-    return '' unless location_for_ip
+  def locations
+    return [] unless locatable.try(:ip_address)
 
-    location_for_ip[0].to_s
+    location_configuration.select do |_, ip_addresses|
+      ip_addresses.include?(locatable.ip_address)
+    end.keys.map(&:to_s)
   end
 
   private
@@ -20,14 +22,10 @@ class ApprovedLocation
   attr_reader :locatable
 
   def location_for_ip
-    return unless locatable.try(:ip_address)
-
-    location_configuration.find do |_, ip_addresses|
-      ip_addresses.include?(locatable.ip_address)
-    end
+    locations.first
   end
 
   def location_configuration
-    Settings.user.locations
+    Settings.user.locations.to_h
   end
 end

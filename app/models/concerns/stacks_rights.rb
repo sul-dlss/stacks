@@ -7,14 +7,14 @@ module StacksRights
     world_downloadable? ||
       (stanford_only_downloadable? && user.stanford?) ||
       (agent_downloadable?(user.id) && user.app_user?) ||
-      location_downloadable?(user.location)
+      location_downloadable?(user)
   end
 
   def accessable_by?(user)
     world_accessable? ||
       (stanford_only_accessable? && user.stanford?) ||
       agent_accessable?(user) ||
-      location_accessable?(user.location)
+      location_accessable?(user)
   end
 
   def maybe_downloadable?
@@ -66,8 +66,10 @@ module StacksRights
     agent_rights_defined && user.app_user?
   end
 
-  def location_accessable?(location)
-    location_rights(location).first
+  def location_accessable?(user)
+    user.locations.any? do |location|
+      location_rights(location).first
+    end
   end
 
   def world_unrestricted?
@@ -117,9 +119,11 @@ module StacksRights
     end
   end
 
-  def location_downloadable?(location)
-    value, rule = location_rights(location)
-    value && (rule.nil? || rule != Dor::RightsAuth::NO_DOWNLOAD_RULE)
+  def location_downloadable?(user)
+    user.locations.any? do |location|
+      value, rule = location_rights(location)
+      value && (rule.nil? || rule != Dor::RightsAuth::NO_DOWNLOAD_RULE)
+    end
   end
 
   def rights

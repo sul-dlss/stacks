@@ -31,12 +31,12 @@ class User
     id
   end
 
-  def location
-    ApprovedLocation.new(self).to_s
+  def locations
+    @locations ||= ApprovedLocation.new(self).locations
   end
 
   def location?
-    location.present?
+    locations.any?
   end
 
   def self.from_token(token, additional_attributes = {})

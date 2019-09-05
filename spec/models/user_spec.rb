@@ -31,7 +31,7 @@ RSpec.describe User do
 
   describe '#location' do
     it 'is the string representation of the ApprovedLocation' do
-      expect(User.new(ip_address: 'ip.address1').location).to eq 'location1'
+      expect(User.new(ip_address: 'ip.address1').locations).to eq %w[location1 location2]
     end
   end
 end
