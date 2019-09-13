@@ -23,6 +23,6 @@ RSpec.describe RestrictedImage do
   describe '#profile' do
     subject { instance.profile }
 
-    it { is_expected.to eq ['http://iiif.io/api/image/2/level2', { 'maxWidth' => 400 }] }
+    it { is_expected.to eq ['http://iiif.io/api/image/2/level2', { 'maxHeight' => 400, 'maxWidth' => 400 }] }
   end
 end
