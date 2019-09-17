@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe "It proxies image requests to a remote IIIF server (canteloupe)" do
   let(:info_request) do
-    "https://sul-imageserver-uat.stanford.edu/cantaloupe/iiif/2/nr%2F349%2Fct%2F7889%2Fimage.jp2/info.json"
+    "https://sul-imageserver-uat.stanford.edu/iiif/2/nr%2F349%2Fct%2F7889%2Fimage.jp2/info.json"
   end
   let(:info_response) do
     '{
@@ -14,7 +14,7 @@ RSpec.describe "It proxies image requests to a remote IIIF server (canteloupe)" 
   end
 
   let(:image_response) do
-    "https://sul-imageserver-uat.stanford.edu/cantaloupe/iiif/2/nr%2F349%2Fct%2F7889%2Fimage.jp2/full/max/0/default.jpg"
+    "https://sul-imageserver-uat.stanford.edu/iiif/2/nr%2F349%2Fct%2F7889%2Fimage.jp2/full/max/0/default.jpg"
   end
 
   before do

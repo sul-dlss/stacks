@@ -26,7 +26,7 @@ class IiifInfoService
   def info
     current_image.info.tap do |info|
       info['profile'] = current_image.profile
-      info['sizes'] = [{ width: 400, height: 400 }] unless current_image.maybe_downloadable?
+      info['sizes'] = thumbnail_only_size unless current_image.maybe_downloadable?
 
       service = services unless downloadable_anonymously
       info['service'] = service if service
@@ -42,5 +42,15 @@ class IiifInfoService
     return nil if services.empty?
 
     services.one? ? services.first : services
+  end
+
+  def thumbnail_only_size
+    aspect_ratio = Projection.thumbnail(current_image).region_dimensions.aspect.to_f
+
+    if aspect_ratio > 1
+      [{ width: 400, height: (400 / aspect_ratio).floor }]
+    else
+      [{ width: (400 * aspect_ratio).floor, height: 400 }]
+    end
   end
 end

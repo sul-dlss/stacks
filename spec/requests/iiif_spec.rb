@@ -10,7 +10,8 @@ RSpec.describe 'IIIF API' do
   end
   let(:metadata_service) do
     instance_double(MetadataService, fetch: metadata,
-                                     image_width: 1702)
+                                     image_width: 1702,
+                                     image_height: 2552)
   end
   let(:stacks_image) do
     StacksImage.new(id: StacksIdentifier.new(druid: 'nr349ct7889', file_name: 'nr349ct7889_00_0001.jp2'))
@@ -113,6 +114,13 @@ RSpec.describe 'IIIF API' do
     it 'serves up regular info.json (no degraded)' do
       get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json'
       expect(response).to have_http_status :ok
+    end
+
+    it 'replaces the sizes element to reflect the only downloadable (thumbnail) size' do
+      get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json'
+      json = JSON.parse(response.body)
+
+      expect(json['sizes']).to eq [{ 'width' => 266, 'height' => 400 }]
     end
   end
 
