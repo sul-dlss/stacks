@@ -16,7 +16,7 @@ RSpec.describe "CORS headers for Media requests", type: :request do
   let(:druid) { 'bb582xs1304' }
   let(:filename) { 'bb582xs1304_sl.mp4' }
 
-  context "#verify_token" do
+  describe "#verify_token" do
     let(:ip_address) { '192.168.1.100' }
     let(:token) { StacksMediaToken.new(druid, filename, ip_address) }
     let(:encrypted_token) { token.to_encrypted_string }
@@ -27,7 +27,7 @@ RSpec.describe "CORS headers for Media requests", type: :request do
     end
   end
 
-  context "#auth_check" do
+  describe "#auth_check" do
     it 'sets the correct CORS headers' do
       get "/media/#{druid}/#{filename}/auth_check", params: { format: :js }
       expect(verify_cors_headers(response.headers['Access-Control-Allow-Origin'],

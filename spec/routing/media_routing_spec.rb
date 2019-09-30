@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Media routes' do
-  context '#verify_token: filename with' do
+  describe '#verify_token: filename with' do
     it 'chars not requiring URI escaping' do
       filename = "(no_escape_needed):;=&$*-_+!,~'.mp4"
       expect(get: "/media/oo000oo0000/#{filename}/verify_token").to route_to(
