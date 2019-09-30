@@ -27,7 +27,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
     allow(File).to receive(:world_readable?).with(path).and_return(perms)
   end
 
-  context "#show" do
+  describe "#show" do
     before(:each) do
       allow_any_instance_of(Projection).to receive(:valid?).and_return(true)
       allow(HTTP).to receive(:get).and_return(instance_double(HTTP::Response, body: StringIO.new))

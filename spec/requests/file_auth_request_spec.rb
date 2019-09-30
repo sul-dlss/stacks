@@ -21,7 +21,7 @@ RSpec.describe "Authentication for File requests", type: :request do
     allow(File).to receive(:world_readable?).with(path).and_return(perms)
   end
 
-  context "#show" do
+  describe "#show" do
     let!(:sf_stanford_only) do
       sf = StacksFile.new(id: identifier)
       allow(sf).to receive(:rights_xml).and_return <<-EOF
@@ -99,6 +99,7 @@ RSpec.describe "Authentication for File requests", type: :request do
           expect_any_instance_of(FileController).to receive(:send_file).with(sf_stanford_only.path, disposition: :inline).and_call_original
           get "/file/#{druid}/#{filename}"
         end
+
         it 'blocks when user webauthed but NOT authorized' do
           allow_any_instance_of(FileController).to receive(:current_user).and_return(user_webauth_no_stanford_no_loc)
           allow_any_instance_of(FileController).to receive(:current_file).and_return(sf_stanford_only)
@@ -121,6 +122,7 @@ RSpec.describe "Authentication for File requests", type: :request do
           expect_any_instance_of(FileController).to receive(:send_file).with(sf_loc_only.path, disposition: :inline).and_call_original
           get "/file/#{druid}/#{filename}"
         end
+
         it 'blocks when user not in location' do
           allow_any_instance_of(FileController).to receive(:current_user).and_return(user_no_loc_no_webauth)
           allow_any_instance_of(FileController).to receive(:current_file).and_return(sf_user_not_in_loc)
@@ -137,6 +139,7 @@ RSpec.describe "Authentication for File requests", type: :request do
               expect_any_instance_of(FileController).to receive(:send_file).with(sf_loc_and_stanford.path, disposition: :inline).and_call_original
               get "/file/#{druid}/#{filename}"
             end
+
             it 'allows when user not in location' do
               allow_any_instance_of(FileController).to receive(:current_user).and_return(user_webauth_stanford_no_loc)
               allow_any_instance_of(FileController).to receive(:current_file).and_return(sf_user_not_in_loc_and_stanford)
@@ -151,6 +154,7 @@ RSpec.describe "Authentication for File requests", type: :request do
               expect_any_instance_of(FileController).to receive(:send_file).with(sf_loc_and_stanford.path, disposition: :inline).and_call_original
               get "/file/#{druid}/#{filename}"
             end
+
             it 'blocks when not in location' do
               allow_any_instance_of(FileController).to receive(:current_user).and_return(user_webauth_no_stanford_no_loc)
               allow_any_instance_of(FileController).to receive(:current_file).and_return(sf_user_not_in_loc_and_stanford)
@@ -166,6 +170,7 @@ RSpec.describe "Authentication for File requests", type: :request do
             expect_any_instance_of(FileController).to receive(:send_file).with(sf_loc_and_stanford.path, disposition: :inline).and_call_original
             get "/file/#{druid}/#{filename}"
           end
+
           it 'prompts for webauth when not in location' do
             allow_any_instance_of(FileController).to receive(:current_user).and_return(user_no_loc_no_webauth)
             allow_any_instance_of(FileController).to receive(:current_file).and_return(sf_user_not_in_loc_and_stanford)

@@ -12,7 +12,7 @@ RSpec.describe 'IIIF routes' do
       expect(get: '/image/iiif/abc%2Fdef/full/full/0/default.jpg').to route_to('iiif#show', identifier: 'abc/def', region: 'full', size: 'full', rotation: '0', quality: 'default', format: 'jpg')
     end
 
-    context '#show: identifier with' do
+    describe '#show: identifier with' do
       it 'chars not requiring URI escaping' do
         identifier = "(no_escape_needed):;=&$*.-_+!,~'.ext"
         expect(get: "/image/iiif/#{identifier}/info.json").to route_to('iiif#metadata', identifier: identifier)

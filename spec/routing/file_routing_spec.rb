@@ -7,7 +7,7 @@ RSpec.describe 'file routes' do
     expect(get: '/file/abc/def.pdf').to route_to('file#show', id: 'abc', file_name: 'def.pdf')
   end
 
-  context '#show (download): filename with' do
+  describe '#show (download): filename with' do
     it 'chars not requiring URI escaping' do
       filename = "(no_escape_needed):;=&$*.-_+!,~'.ext"
       expect(get: "/file/oo000oo0000/#{filename}").to route_to(
