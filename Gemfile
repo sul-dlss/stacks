@@ -43,7 +43,7 @@ group :development, :test do
   gem 'capybara'
 
   # Rubocop is a static code analyzer to enforce style.
-  gem 'rubocop', '~> 0.50', require: false
+  gem 'rubocop', require: false
   gem 'rubocop-performance', require: false
   gem 'rubocop-rails', require: false
   gem 'rubocop-rspec', require: false

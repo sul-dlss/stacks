@@ -27,6 +27,15 @@ Layout/EmptyLinesAroundBlockBody:
     - 'spec/requests/iiif_auth_request_spec.rb'
     - 'spec/requests/media_auth_request_spec.rb'
 
+Layout/LineLength:
+  Max: 120
+  Exclude:
+    - 'spec/requests/file_auth_request_spec.rb'
+    - 'spec/requests/iiif_auth_request_spec.rb'
+    - 'spec/requests/media_auth_request_spec.rb'
+    - 'spec/routing/iiif_routing_spec.rb'
+    - 'spec/routing/legacy_image_api_spec.rb'
+
 Lint/AssignmentInCondition:
   Enabled: false
 
@@ -37,15 +46,6 @@ Metrics/BlockLength:
 Metrics/ClassLength:
   Exclude:
     - 'app/controllers/iiif_controller.rb'
-
-Metrics/LineLength:
-  Max: 120
-  Exclude:
-    - 'spec/requests/file_auth_request_spec.rb'
-    - 'spec/requests/iiif_auth_request_spec.rb'
-    - 'spec/requests/media_auth_request_spec.rb'
-    - 'spec/routing/iiif_routing_spec.rb'
-    - 'spec/routing/legacy_image_api_spec.rb'
 
 Naming/HeredocDelimiterNaming:
   Enabled: false
