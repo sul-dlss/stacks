@@ -59,6 +59,32 @@ RSpec.describe IiifInfoService do
       end
     end
 
+    context 'when the tile is exaggerated in dimensions' do
+      let(:source_info) do
+        { tile_height: 48_915,
+          tile_width: 512,
+          '@context' => [],
+          'tiles' => [{ 'width' => 512, 'height' => 48_915 }] }
+      end
+
+      it 'reduces the tile size' do
+        expect(image_info['tiles'].first).to include 'width' => 512, 'height' => 512
+      end
+    end
+
+    context 'when the tile is not exaggerated in dimensions' do
+      let(:source_info) do
+        { tile_height: 20_480,
+          tile_width: 512,
+          '@context' => [],
+          'tiles' => [{ 'width' => 512, 'height' => 20_480 }] }
+      end
+
+      it 'retains the tile size' do
+        expect(image_info['tiles'].first).to include 'width' => 512, 'height' => 20_480
+      end
+    end
+
     context 'when the image is not downloadable' do
       let(:image) do
         RestrictedImage.new(id: identifier)

@@ -2,6 +2,8 @@
 
 # Produces iiif info.json responses
 class IiifInfoService
+  ASPECT_EXAGGERATION = 40.0
+
   # A helper method to instantiate and produce the json
   # @param current_image [StacksImage,RestrictedImage] the image to get the information for
   # @param downloadable_anonymously [Boolean] can the resource be downloaded anonymously?
@@ -30,7 +32,24 @@ class IiifInfoService
 
       service = services unless downloadable_anonymously
       info['service'] = service if service
+      info['tiles'] = tiles(info['tiles']) if info['tiles']
     end
+  end
+
+  ##
+  # Modifies the tiles height/width if the of the provided tiles are significantly
+  # exaggerated. This is so that too large of an image is not returned and that
+  # browser canvas APIs can handle the returned images without failing.
+  def tiles(tiles)
+    width = tiles[0]['width'].to_f
+    height = tiles[0]['height'].to_f
+    minimum = [width, height].min
+    aspect_ratio = width / height
+    if aspect_ratio < (1 / ASPECT_EXAGGERATION) || aspect_ratio > ASPECT_EXAGGERATION
+      tiles[0]['width'] = minimum
+      tiles[0]['height'] = minimum
+    end
+    tiles
   end
 
   # @return [String,Array<String>,NilClass] return a string if there is one service,
