@@ -38,7 +38,7 @@ Metrics/ClassLength:
   Exclude:
     - 'app/controllers/iiif_controller.rb'
 
-Metrics/LineLength:
+Layout/LineLength:
   Max: 120
   Exclude:
     - 'spec/requests/file_auth_request_spec.rb'
