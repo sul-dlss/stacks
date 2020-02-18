@@ -148,15 +148,6 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
         end
       end
 
-      context 'with an unauthorized user inside the location' do
-        let(:current_user) { user_webauth_no_stanford_no_loc }
-
-        it 'blocks' do
-          get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
-          expect(response).to have_http_status(403)
-        end
-      end
-
       context 'with a stanford authenticated user' do
         let(:current_user) { user_webauth_stanford_no_loc }
 
