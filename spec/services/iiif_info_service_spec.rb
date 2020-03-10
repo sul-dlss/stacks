@@ -59,6 +59,21 @@ RSpec.describe IiifInfoService do
       end
     end
 
+    context 'when the sizes are too large to actually deliver' do
+      let(:source_info) do
+        {
+          'sizes' => [
+            { 'width' => 512, 'height' => 512 },
+            { 'width' => 512_000, 'height' => 512_000 }
+          ]
+        }
+      end
+
+      it 'trims out sizes that are over the maximum servable' do
+        expect(image_info['sizes']).to eq [{ 'width' => 512, 'height' => 512 }]
+      end
+    end
+
     context 'when the tile is exaggerated in dimensions' do
       let(:source_info) do
         { tile_height: 48_915,

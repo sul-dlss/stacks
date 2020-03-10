@@ -3,6 +3,7 @@
 # Produces iiif info.json responses
 class IiifInfoService
   ASPECT_EXAGGERATION = 40.0
+  MAX_SIZE_ALLOWED = 200_000_000
 
   # A helper method to instantiate and produce the json
   # @param current_image [StacksImage,RestrictedImage] the image to get the information for
@@ -28,11 +29,21 @@ class IiifInfoService
   def info
     current_image.info.tap do |info|
       info['profile'] = current_image.profile
+      info['sizes'] = sizes(info['sizes'])
       info['sizes'] = thumbnail_only_size unless current_image.maybe_downloadable?
 
       service = services unless downloadable_anonymously
       info['service'] = service if service
       info['tiles'] = tiles(info['tiles']) if info['tiles']
+    end
+  end
+
+  ##
+  # Trims the provided sizes so that known large undownloadable sizes are not
+  # returned
+  def sizes(sizes)
+    sizes.to_a.filter do |size|
+      size['width'].to_f * size['height'].to_f < MAX_SIZE_ALLOWED
     end
   end
 
