@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'boot'
 
 require "rails"
@@ -26,5 +28,18 @@ module DigitalStacks
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
+
+    # Swap out the default RemoteIp configuration with one configured for our
+    # load-balancers. The generic configuration will ignore all internal IPs
+    # (e.g. 172.xxx or 10.xx), which are used on campus and we want to know about.
+    config.middleware.swap ActionDispatch::RemoteIp,
+                           ActionDispatch::RemoteIp,
+                           true,
+                           [
+                             "127.0.0.1", # localhost IPv4
+                             "::1", # localhost IPv6
+                             "172.20.21.208/28", # foa_lb_mgmt_dev_nets
+                             "172.20.21.192/28" # foa_lb_mgmt_prod_nets
+                           ].map { |proxy| IPAddr.new(proxy) }
   end
 end
