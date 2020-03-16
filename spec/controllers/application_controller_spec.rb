@@ -63,6 +63,14 @@ RSpec.describe ApplicationController do
       end
     end
 
+    context 'with an empty REMOTE_USER header' do
+      before do
+        request.env['REMOTE_USER'] = ''
+      end
+
+      it { expect(subject).not_to be_a_webauth_user }
+    end
+
     context 'with session information' do
       before do
         request.session[:remote_user] = 'my-user'
