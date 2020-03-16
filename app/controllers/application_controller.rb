@@ -21,7 +21,7 @@ class ApplicationController < ActionController::Base
                         bearer_auth_user
                       elsif has_bearer_cookie?
                         bearer_cookie_user
-                      elsif session[:remote_user] || request.remote_user
+                      elsif session[:remote_user] || request.remote_user.present?
                         webauth_user
                       else
                         anonymous_locatable_user
