@@ -11,7 +11,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
   let(:user_webauth_stanford_no_loc) { User.new(webauth_user: true, ldap_groups: %w(stanford:stanford)) }
   let(:user_webauth_stanford_loc) { User.new(webauth_user: true, ldap_groups: %w(stanford:stanford), ip_address: allowed_loc) }
   let(:user_webauth_no_stanford_loc) { User.new(webauth_user: true, ip_address: allowed_loc) }
-  let(:identifier) { StacksIdentifier.new('nr349ct7889%2Fnr349ct7889_00_0001') }
+  let(:identifier) { StacksIdentifier.new('nr349ct7889%2Fnr349ct7889_00_0001.jp2') }
   let(:region) { '0,640,2552,2552' }
   let(:size) { '100,100' }
   let(:rotation) { '0' }
@@ -19,7 +19,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
   let(:format) { 'jpg' }
   let(:params_hash) { { id: identifier, transformation: transformation } }
   let(:transformation) { IIIF::Image::Transformation.new region: region, size: size, rotation: rotation, quality: quality, format: format }
-  let(:path) { "/stacks/nr/349/ct/7889/nr349ct7889_00_0001" }
+  let(:path) { "/stacks/nr/349/ct/7889/nr349ct7889_00_0001.jp2" }
   let(:perms) { nil }
   let(:current_image) { StacksImage.new(params_hash) }
 

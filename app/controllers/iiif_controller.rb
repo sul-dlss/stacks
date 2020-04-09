@@ -4,6 +4,7 @@
 # API for delivering IIIF-compatible images and image tiles
 class IiifController < ApplicationController
   before_action :ensure_valid_identifier
+  before_action :ensure_identifier_has_extension
   before_action :add_iiif_profile_header
 
   # Follow the interface of Riiif
@@ -145,7 +146,7 @@ class IiifController < ApplicationController
   end
 
   def stacks_identifier
-    @stacks_identifier ||= StacksIdentifier.new(escaped_identifier.sub(/^degraded_/, '') + '.jp2')
+    @stacks_identifier ||= StacksIdentifier.new(escaped_identifier.sub(/^degraded_/, ''))
   end
 
   def canonical_params
@@ -182,6 +183,14 @@ class IiifController < ApplicationController
     degraded ||= !can?(:access, current_image) && can?(:read, Projection.thumbnail(current_image))
 
     degraded
+  end
+
+  # Stacks used to allow requesting images without an extension. However this was
+  # different than how requests for media or file downloads worked.  Now we prefer the
+  # full file name for consistency across all endpoints.
+  def ensure_identifier_has_extension
+    return if stacks_identifier.has_file_name_extension?
+    redirect_to identifier: stacks_identifier.to_s + '.jp2' # halts the request cycle
   end
 
   def ensure_valid_identifier
