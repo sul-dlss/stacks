@@ -28,7 +28,8 @@ class IiifController < ApplicationController
     set_image_response_headers
 
     self.content_type = Mime::Type.lookup_by_extension(format_param).to_s
-    self.response_body = projection.response
+    self.status = projection.response.status
+    self.response_body = projection.response.body
   end
 
   ##
