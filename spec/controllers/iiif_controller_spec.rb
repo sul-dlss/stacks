@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe IiifController do
   describe '#show' do
     let(:identifier) { 'nr349ct7889%2Fnr349ct7889_00_0001' }
-    let(:image_response) { StringIO.new }
+    let(:image_response) { instance_double(HTTP::Response, body: StringIO.new, status: 200) }
     let(:projection) { instance_double(Projection, response: image_response, valid?: true) }
     let(:image) do
       instance_double(StacksImage,
@@ -65,6 +65,11 @@ RSpec.describe IiifController do
     it 'sets the content type' do
       subject
       expect(controller.content_type).to eq 'image/jpeg'
+    end
+
+    it 'sets the status' do
+      subject
+      expect(controller.status).to eq 200
     end
 
     context 'additional params' do

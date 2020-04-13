@@ -9,8 +9,7 @@ class SourceImage
   def response
     with_retries max_tries: 3, rescue: [HTTP::ConnectionError] do
       benchmark "Fetch #{image_url}" do
-        # HTTP::Response#body does response streaming
-        HTTP.get(image_url).body
+        HTTP.get(image_url)
       end
     end
   end
