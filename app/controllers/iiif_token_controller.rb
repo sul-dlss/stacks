@@ -2,6 +2,8 @@
 
 # API to create IIIF Authentication access tokens
 class IiifTokenController < ApplicationController
+  skip_forgery_protection
+
   def create
     token = mint_bearer_token if token_eligible_user?
 

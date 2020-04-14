@@ -6,14 +6,18 @@ git_source(:github) do |repo_name|
 end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.2.0'
+gem 'rails', '~> 6.0'
 # Use sqlite3 as the database for Active Record
-gem 'sqlite3'
+gem 'sqlite3', '~> 1.4'
+# Use Puma as the app server
+gem 'puma', '~> 4.3'
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
+gem 'sass-rails', '>= 6'
+# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
+gem 'jbuilder', '~> 2.7'
 
 # Reduces boot times through caching; required in config/boot.rb
-gem 'bootsnap', '>= 1.1.0', require: false
+gem 'bootsnap', '>= 1.4.2', require: false
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
@@ -22,25 +26,22 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
-
-  # Use Puma as the app server
-  gem 'puma', '~> 3.11'
 end
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug'
-
-  # Call 'binding.pry' anywhere in the code to stop execution and get a pry console
-  gem 'pry-byebug', require: false
+  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
 
   # RSpec for testing
-  gem 'rspec-rails', '~> 3.8'
+  gem 'rspec-rails', '~> 4.0'
 
   gem 'rails-controller-testing'
 
   # Capybara for feature/integration tests
   gem 'capybara'
+  gem 'selenium-webdriver'
+  # Easy installation and use of web drivers to run system tests with browsers
+  gem 'webdrivers'
 
   # Rubocop is a static code analyzer to enforce style.
   gem 'rubocop', '~> 0.50', require: false
@@ -71,7 +72,7 @@ gem 'honeybadger'
 # Use okcomputer to monitor the application
 gem 'okcomputer'
 gem 'iiif-image-api', '~> 0.1.0'
-gem 'bootstrap-sass'
+gem 'bootstrap'
 gem 'sul_styles'
 gem 'config'
 gem 'faraday'

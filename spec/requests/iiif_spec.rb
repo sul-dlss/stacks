@@ -43,7 +43,7 @@ RSpec.describe 'IIIF API' do
   it 'handles JSON-LD requests' do
     get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json', headers: { HTTP_ACCEPT: 'application/ld+json' }
 
-    expect(response.content_type).to eq 'application/ld+json'
+    expect(response.media_type).to eq 'application/ld+json'
     json = JSON.parse(response.body)
     expect(json['tiles']).to eq [{ 'width' => 256, 'height' => 256, 'scaleFactors' => [1, 2, 4, 8, 16] }]
   end

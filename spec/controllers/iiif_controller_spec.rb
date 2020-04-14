@@ -64,7 +64,7 @@ RSpec.describe IiifController do
 
     it 'sets the content type' do
       subject
-      expect(controller.content_type).to eq 'image/jpeg'
+      expect(controller.media_type).to eq 'image/jpeg'
     end
 
     it 'sets the status' do
@@ -131,7 +131,7 @@ RSpec.describe IiifController do
 
     it 'provides iiif info.json responses' do
       get :metadata, params: { identifier: 'nr349ct7889%2Fnr349ct7889_00_0001', format: :json }
-      expect(controller.content_type).to eq 'application/json'
+      expect(controller.media_type).to eq 'application/json'
       expect(response).to be_successful
       expect(controller.response_body.first).to eq "{\n  \"height\": \"999\"\n}"
       expect(controller.headers['Link']).to eq '<http://iiif.io/api/image/2/level2.json>;rel="profile"'
