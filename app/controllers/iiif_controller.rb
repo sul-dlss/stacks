@@ -146,7 +146,7 @@ class IiifController < ApplicationController
   end
 
   def stacks_identifier
-    @stacks_identifier ||= StacksIdentifier.new(escaped_identifier.sub(/^degraded_/, '') + '.jp2')
+    @stacks_identifier ||= StacksIdentifier.new(escaped_identifier.sub(/^degraded_/, ''), file_ext: 'jp2')
   end
 
   def canonical_params

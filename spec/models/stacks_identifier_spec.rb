@@ -32,4 +32,19 @@ RSpec.describe StacksIdentifier do
     subject { instance.treeified_path }
     it { is_expected.to eq 'nr/349/ct/7889/nr349ct7889_00_0001.jp2' }
   end
+
+  context 'with some optional attributes' do
+    let(:instance) { described_class.new identifier }
+    let(:identifier) { 'nr349ct7889%2Fnr349ct7889_00_0001%2F!attr!%2Fversion=2'}
+
+    it 'parses out the right data' do
+      expect(instance.druid).to eq 'nr349ct7889'
+      expect(instance.file_name_without_ext).to eq 'nr349ct7889_00_0001'
+      expect(instance.options['version']).to eq '2'
+    end
+
+    it 'reserializes to the original value' do
+      expect(instance.to_s).to eq identifier
+    end
+  end
 end
