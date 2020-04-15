@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe MediaAuthenticationJSON do
+RSpec.describe MediaAuthenticationJson do
   let(:media) do
     double(
       'Media',

@@ -3,7 +3,7 @@
 ###
 # A class to model various authentication checks on media objects
 # and return a hash to be used as JSON in a controller response
-class MediaAuthenticationJSON
+class MediaAuthenticationJson
   def initialize(opts = {})
     @user = opts[:user]
     @media = opts[:media]

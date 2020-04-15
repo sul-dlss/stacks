@@ -47,7 +47,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
         it 'works' do
           get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
           expect(response).to have_http_status(200)
-          expect(response.content_type).to eq('image/jpeg')
+          expect(response.media_type).to eq('image/jpeg')
         end
       end
     end
@@ -63,7 +63,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
         it 'works' do
           get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
           expect(response).to have_http_status(200)
-          expect(response.content_type).to eq('image/jpeg')
+          expect(response.media_type).to eq('image/jpeg')
         end
       end
 
@@ -97,7 +97,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
         it 'works' do
           get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
           expect(response).to have_http_status(200)
-          expect(response.content_type).to eq('image/jpeg')
+          expect(response.media_type).to eq('image/jpeg')
         end
       end
 
@@ -135,7 +135,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
         it 'works' do
           get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
           expect(response).to have_http_status(200)
-          expect(response.content_type).to eq('image/jpeg')
+          expect(response.media_type).to eq('image/jpeg')
         end
       end
 
@@ -154,7 +154,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
         it 'works' do
           get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
           expect(response).to have_http_status(200)
-          expect(response.content_type).to eq('image/jpeg')
+          expect(response.media_type).to eq('image/jpeg')
         end
       end
 
@@ -164,7 +164,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
         it 'works' do
           get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
           expect(response).to have_http_status(200)
-          expect(response.content_type).to eq('image/jpeg')
+          expect(response.media_type).to eq('image/jpeg')
         end
       end
 

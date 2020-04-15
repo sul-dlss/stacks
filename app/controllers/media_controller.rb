@@ -48,7 +48,7 @@ class MediaController < ApplicationController
     if can? :stream, current_media
       { status: :success, token: encrypted_token }
     else
-      MediaAuthenticationJSON.new(
+      MediaAuthenticationJson.new(
         user: current_user,
         media: current_media,
         auth_url: iiif_auth_api_url
