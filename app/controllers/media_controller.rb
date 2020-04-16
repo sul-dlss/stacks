@@ -11,10 +11,13 @@ class MediaController < ApplicationController
   end
 
   def verify_token
+    if allowed_params[:stacks_token].blank? && anonymous_ability.can?(:stream, current_media)
+      render plain: 'no token needed', status: :ok
     # the media service calling verify_token provides the end-user IP address,
     # as we care about the (user) IP address that made a request to the media service with the
     # stacks_token, not the IP address of the service checking the stacks_token.
-    if token_valid? allowed_params[:stacks_token], id, file_name, allowed_params[:user_ip]
+    elsif allowed_params[:stacks_token].present? &&
+          token_valid?(allowed_params[:stacks_token], id, file_name, allowed_params[:user_ip])
       render plain: 'valid token', status: :ok
     else
       render plain: 'invalid token', status: :forbidden
