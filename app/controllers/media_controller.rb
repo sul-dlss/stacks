@@ -3,6 +3,8 @@
 ##
 # API for delivering streaming media via stacks
 class MediaController < ApplicationController
+  skip_forgery_protection
+
   before_action :load_media
   before_action :set_cors_headers, only: [:auth_check]
 
