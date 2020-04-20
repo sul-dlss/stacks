@@ -71,7 +71,7 @@ gem 'honeybadger'
 
 # Use okcomputer to monitor the application
 gem 'okcomputer'
-gem 'iiif-image-api', '~> 0.1.0'
+gem 'iiif-image-api', '~> 0.2'
 gem 'bootstrap'
 gem 'sul_styles'
 gem 'config'
