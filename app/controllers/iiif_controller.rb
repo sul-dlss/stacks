@@ -3,6 +3,8 @@
 ##
 # API for delivering IIIF-compatible images and image tiles
 class IiifController < ApplicationController
+  skip_forgery_protection
+
   before_action :ensure_valid_identifier
   before_action :add_iiif_profile_header
 
