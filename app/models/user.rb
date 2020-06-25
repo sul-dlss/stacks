@@ -40,13 +40,27 @@ class User
   end
 
   def self.from_token(token, additional_attributes = {})
-    attributes, timestamp = encryptor.decrypt_and_verify(token)
+    attributes, timestamp, expiry = encryptor.decrypt_and_verify(token)
+    expiry ||= timestamp + Settings.token.default_expiry_time
 
-    User.new(attributes.merge(token_user: true).merge(additional_attributes)) if timestamp >= 1.hour.ago
+    return nil if expiry < Time.zone.now
+
+    User.new(attributes.merge(token_user: true).merge(additional_attributes))
   end
 
   def token
-    self.class.encryptor.encrypt_and_sign([{ id: id, ldap_groups: ldap_groups, ip_address: ip_address }, Time.zone.now])
+    mint_time = Time.zone.now
+
+    self.class.encryptor.encrypt_and_sign(
+      [
+        # stored parameters
+        { id: id, ldap_groups: ldap_groups, ip_address: ip_address },
+        # mint time
+        mint_time,
+        # expiry time
+        mint_time + Settings.token.default_expiry_time
+      ]
+    )
   end
 
   def self.encryptor
