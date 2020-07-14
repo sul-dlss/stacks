@@ -22,6 +22,10 @@ class StacksFile
     mtime&.to_i
   end
 
+  def content_length
+    @content_length ||= File.size(path) if readable?
+  end
+
   def path
     @path ||= PathService.for(id)
   end
