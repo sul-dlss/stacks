@@ -6,6 +6,9 @@ class ApplicationController < ActionController::Base
   include ActionController::HttpAuthentication::Token
 
   rescue_from CanCan::AccessDenied, with: :rescue_can_can
+  rescue_from Purl::Exception do
+    head :not_found
+  end
   before_action :set_origin_header
 
   private

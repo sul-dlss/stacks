@@ -371,6 +371,10 @@ GEM
     xpath (3.2.0)
       nokogiri (~> 1.8)
     zeitwerk (2.4.0)
+    zip_tricks (5.3.1)
+    zipline (1.2.1)
+      rails (>= 3.2.1, < 6.1)
+      zip_tricks (>= 4.2.1, < 6.0)
 
 PLATFORMS
   ruby
@@ -418,6 +422,7 @@ DEPENDENCIES
   web-console (>= 3.3.0)
   webdrivers
   webmock (~> 3.0)
+  zipline
 
 BUNDLED WITH
    2.1.4
