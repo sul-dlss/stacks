@@ -12,6 +12,8 @@ class FileController < ApplicationController
 
     authorize! :read, current_file
     expires_in 10.minutes
+    response.headers['Accept-Ranges'] = 'bytes'
+    response.headers['Content-Length'] = current_file.content_length
 
     send_file current_file.path, disposition: disposition
   end
