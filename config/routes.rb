@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get '/object/:id' => 'object#show', as: :object
+
   constraints file_name: %r{[^/]+} do
     get '/file/:id/:file_name' => 'file#show', as: :file
     get '/file/app/:id/:file_name' => 'webauth#login_file'

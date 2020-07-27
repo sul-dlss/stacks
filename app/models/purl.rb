@@ -4,19 +4,38 @@
 class Purl
   include ActiveSupport::Benchmarkable
 
+  class Exception < ::RuntimeError; end
+
   def self.instance
     @instance ||= new
   end
 
   class << self
-    delegate :public_xml, to: :instance
+    delegate :public_xml, :files, to: :instance
   end
 
   # TODO: was etag a valid key?
   def public_xml(druid)
     Rails.cache.fetch("purl/#{druid}/public_xml", expires_in: 10.minutes) do
       benchmark "Fetching public xml for #{druid}" do
-        Faraday.get(public_xml_url(druid)).body
+        response = Faraday.get(public_xml_url(druid))
+        raise Purl::Exception, response.status unless response.success?
+
+        response.body
+      end
+    end
+  end
+
+  def files(druid)
+    return to_enum(:files, druid) unless block_given?
+
+    doc = Nokogiri::XML.parse(public_xml(druid))
+
+    doc.xpath('//contentMetadata/resource').each do |resource|
+      resource.xpath('file|externalFile').each do |attr|
+        id = StacksIdentifier.new(druid: attr['objectId'] || druid, file_name: attr['fileId'] || attr['id'])
+        file = StacksFile.new(id: id)
+        yield file
       end
     end
   end
