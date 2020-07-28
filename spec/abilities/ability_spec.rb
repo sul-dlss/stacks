@@ -31,6 +31,8 @@ RSpec.describe 'Ability', type: :model do
 
   let(:thumbnail_transformation) { IIIF::Image::OptionDecoder.decode(region: 'full', size: '!400,400') }
   let(:thumbnail) { Projection.new(image, thumbnail_transformation) }
+  let(:best_fit_thumbnail_transformation) { IIIF::Image::OptionDecoder.decode(region: 'full', size: '!600,500') }
+  let(:best_fit_thumbnail) { Projection.new(image, best_fit_thumbnail_transformation) }
   let(:square_transformation) { IIIF::Image::OptionDecoder.decode(region: 'square', size: '!400,400') }
   let(:square_thumbnail) { Projection.new(image, square_transformation) }
   let(:tile_transformation) { IIIF::Image::OptionDecoder.decode(region: '0,0,100,100', size: '256,256') }
@@ -125,6 +127,7 @@ RSpec.describe 'Ability', type: :model do
       it { is_expected.to be_able_to(:access, file) }
       it { is_expected.to be_able_to(:read_metadata, image) }
       it { is_expected.to be_able_to(:read, thumbnail) }
+      it { is_expected.to be_able_to(:read, best_fit_thumbnail) }
       it { is_expected.to be_able_to(:read, square_thumbnail) }
     end
 
