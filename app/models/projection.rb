@@ -17,7 +17,7 @@ class Projection
   def thumbnail?
     (transformation.region.is_a?(IIIF::Image::Region::Full) ||
     transformation.region.is_a?(IIIF::Image::Region::Square)) &&
-      tile_dimensions.enclosed_by?(THUMBNAIL_BOUNDS)
+      (tile_dimensions.enclosed_by?(THUMBNAIL_BOUNDS) || transformation.size.is_a?(IIIF::Image::Size::BestFit))
   end
 
   def tile?
@@ -77,6 +77,13 @@ class Projection
       scaled_tile_dimensions(size.scale)
     when IIIF::Image::Size::Max, IIIF::Image::Size::Full
       image.max_tile_dimensions.call(self)
+    when IIIF::Image::Size::BestFit
+      max_size = image.max_tile_dimensions.call(self)
+      if size.width <= max_size.width && size.height <= max_size.height
+        explicit_tile_dimensions(size)
+      else
+        explicit_tile_dimensions(max_size)
+      end
     else
       explicit_tile_dimensions(size)
     end
@@ -119,6 +126,13 @@ class Projection
   def restricted_size
     size = transformation.size
     case size
+    when IIIF::Image::Size::BestFit
+      max_size = image.max_size(self)
+      if size.width <= max_size.width && size.height <= max_size.height
+        size
+      else
+        max_size
+      end
     when IIIF::Image::Size::Max, IIIF::Image::Size::Full
       image.max_size(self)
     else

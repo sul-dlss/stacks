@@ -77,6 +77,14 @@ RSpec.describe Projection do
         end
       end
 
+      context "best fit size" do
+        let(:options) { { size: '!800,800', region: 'full' } }
+
+        it 'limits users to thumbnail sizes' do
+          expect(subject).to eq IIIF::Image::Dimension.new(width: 400, height: 400)
+        end
+      end
+
       context "specified region" do
         let(:options) { { size: 'max', region: '0,0,800,600' } }
 
@@ -126,6 +134,16 @@ RSpec.describe Projection do
           allow(HTTP).to receive(:get).and_return(double(body: nil))
           subject.response
           expect(HTTP).to have_received(:get).with(%r{/full/!100,100/0/default.jpg})
+        end
+      end
+
+      context "best fit size" do
+        let(:options) { { size: '!800,880', region: 'full' } }
+
+        it 'limits users to a thumbnail' do
+          allow(HTTP).to receive(:get).and_return(double(body: nil))
+          subject.response
+          expect(HTTP).to have_received(:get).with(%r{/full/!400,400/0/default.jpg})
         end
       end
 
