@@ -11,30 +11,36 @@ RSpec.describe "Authentication for Media requests", type: :request do
 
   describe "#auth_check" do
     let(:format) { 'mp4' }
-    let!(:sms_stanford_only) do
-      sms = StacksMediaStream.new(id: identifier, format: format)
-      allow(sms).to receive(:stanford_only_rights).and_return([true, ''])
-      allow(sms).to receive(:restricted_by_location?).and_return(false)
-      allow(sms).to receive(:location_rights).and_return([false, ''])
-      allow(sms).to receive(:agent_rights).and_return([false, ''])
-      allow(sms).to receive(:world_unrestricted?).and_return(false)
-      allow(sms).to receive(:world_rights).and_return([false, ''])
-      sms
+    let(:public_xml) do
+      <<-XML
+        <publicObject>
+          #{rights_xml}
+        </publicObject>
+      XML
     end
-    let!(:sms_user_not_in_loc) do
+
+    let(:rights_xml) do
+      <<-EOF.strip_heredoc
+      <rightsMetadata>
+          <access type="read">
+            <machine>
+              <group>Stanford</group>
+            </machine>
+          </access>
+        </rightsMetadata>
+      EOF
+    end
+
+    let(:mock_media) do
       sms = StacksMediaStream.new(id: identifier, format: format)
-      allow(sms).to receive(:restricted_by_location?).and_return(true)
-      allow(sms).to receive(:location_rights).and_return([false, ''])
-      allow(sms).to receive(:stanford_only_rights).and_return([false, ''])
-      allow(sms).to receive(:agent_rights).and_return([false, ''])
-      allow(sms).to receive(:world_rights).and_return([false, ''])
+      allow(sms).to receive(:public_xml).and_return(public_xml)
       sms
     end
 
     context 'when the user can read/stream the file' do
       it 'gets the success JSON and a token' do
         allow_any_instance_of(MediaController).to receive(:current_user).and_return(user_webauth_stanford_no_loc)
-        allow_any_instance_of(MediaController).to receive(:current_media).and_return(sms_stanford_only)
+        allow_any_instance_of(MediaController).to receive(:current_media).and_return(mock_media)
         get "/media/#{druid}/file.#{format}/auth_check.js"
         body = JSON.parse(response.body)
         expect(body['status']).to eq 'success'
@@ -46,7 +52,7 @@ RSpec.describe "Authentication for Media requests", type: :request do
       context 'stanford restricted' do
         it 'indicates that the object is restricted in the json' do
           allow_any_instance_of(MediaController).to receive(:current_user).and_return(user_no_loc_no_webauth)
-          allow_any_instance_of(MediaController).to receive(:current_media).and_return(sms_stanford_only)
+          allow_any_instance_of(MediaController).to receive(:current_media).and_return(mock_media)
           get "/media/#{druid}/file.#{format}/auth_check.js"
           body = JSON.parse(response.body)
           expect(body['status']).to eq(['stanford_restricted'])
@@ -54,9 +60,21 @@ RSpec.describe "Authentication for Media requests", type: :request do
       end
 
       context 'location restricted' do
-        it 'incicates that the object is location restricted in the json' do
+        let(:rights_xml) do
+          <<-EOF.strip_heredoc
+          <rightsMetadata>
+              <access type="read">
+                <machine>
+                  <location>location1</location>
+                </machine>
+              </access>
+            </rightsMetadata>
+          EOF
+        end
+
+        it 'indicates that the object is location restricted in the json' do
           allow_any_instance_of(MediaController).to receive(:current_user).and_return(user_no_loc_no_webauth)
-          allow_any_instance_of(MediaController).to receive(:current_media).and_return(sms_user_not_in_loc)
+          allow_any_instance_of(MediaController).to receive(:current_media).and_return(mock_media)
           get "/media/#{druid}/file.#{format}/auth_check.js"
           body = JSON.parse(response.body)
           expect(body['status']).to eq(['location_restricted'])

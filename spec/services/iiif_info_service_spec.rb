@@ -109,7 +109,7 @@ RSpec.describe IiifInfoService do
       let(:auth_service) { image_info['service'] }
 
       before do
-        allow(image).to receive(:stanford_only_rights).and_return([true, nil])
+        allow(image).to receive(:stanford_restricted?).and_return(true)
       end
 
       it 'the tile height/width is 256' do
@@ -153,7 +153,6 @@ RSpec.describe IiifInfoService do
       before do
         stub_rights_xml(world_readable_rights_xml)
         allow(image).to receive(:restricted_by_location?).and_return(true)
-        allow(image).to receive(:restricted_locations).and_return([:spec])
       end
 
       it 'advertises an authentication service' do
@@ -177,9 +176,8 @@ RSpec.describe IiifInfoService do
 
       before do
         stub_rights_xml(world_readable_rights_xml)
-        allow(image).to receive(:stanford_only_rights).and_return([true, nil])
+        allow(image).to receive(:stanford_restricted?).and_return(true)
         allow(image).to receive(:restricted_by_location?).and_return(true)
-        allow(image).to receive(:restricted_locations).and_return([:spec])
       end
 
       it 'advertises support for both login and external authentication' do

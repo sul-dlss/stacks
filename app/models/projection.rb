@@ -62,12 +62,13 @@ class Projection
     image.exist? && image_source.valid?
   end
 
-  delegate :accessable_by?, :readable_by?, :object_thumbnail?, :id, to: :image
+  delegate :object_thumbnail?, :id, to: :image
+
   delegate :response, to: :image_source
 
-  private
-
   attr_reader :transformation, :image
+
+  private
 
   # @return [IIIF::Image::Dimension]
   def tile_dimensions

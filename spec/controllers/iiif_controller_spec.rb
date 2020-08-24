@@ -107,12 +107,12 @@ RSpec.describe IiifController do
                       etag: nil,
                       mtime: nil)
     end
-    let(:anon_user) { instance_double(User) }
+    let(:anon_user) { instance_double(User, stanford?: false, app_user?: false, locations: []) }
 
     before do
       # for the cache headers
       allow(controller).to receive(:anonymous_locatable_user).and_return(anon_user)
-      allow(image).to receive(:accessable_by?).with(anon_user).and_return(false)
+      allow(controller.send(:anonymous_ability)).to receive(:can?).with(:access, image).and_return(false)
       # for info.json generation
       allow(controller.send(:anonymous_ability)).to receive(:can?).with(:download, image).and_return(false)
       # for current_image

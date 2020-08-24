@@ -35,6 +35,10 @@ class ApplicationController < ActionController::Base
     @anonymous_ability ||= Ability.new(anonymous_locatable_user)
   end
 
+  def stanford_ability
+    @stanford_ability ||= Ability.new(stanford_generic_user)
+  end
+
   def stanford_generic_user
     @stanford_generic_user ||= User.stanford_generic_user
   end
