@@ -7,12 +7,13 @@ RSpec.describe MediaAuthenticationJson do
     double(
       'Media',
       restricted_by_location?: false,
-      stanford_only_rights: false,
+      stanford_restricted?: false,
       location_rights: false
     )
   end
-  let(:user) { double('User', locations: [], webauth_user: false) }
-  subject { described_class.new(media: media, user: user, auth_url: '/the/auth/url') }
+  let(:ability) { Ability.new(user) }
+  let(:user) { double('User', locations: [], webauth_user: false, stanford?: false, app_user?: false) }
+  subject { described_class.new(media: media, user: user, auth_url: '/the/auth/url', ability: ability) }
 
   describe 'Location Restricted Media' do
     before do
@@ -27,8 +28,7 @@ RSpec.describe MediaAuthenticationJson do
 
     context 'When a user is in the blessed location' do
       before do
-        allow(user).to receive(:locations).and_return(['blessed_location'])
-        allow(media).to receive(:location_rights).with('blessed_location').and_return(true)
+        allow(ability).to receive(:can?).with(:access, media).and_return(true)
       end
 
       it 'returns an empty hash because this class should not have been called in this context' do
@@ -39,7 +39,7 @@ RSpec.describe MediaAuthenticationJson do
 
   describe 'Stanford Restricted Media' do
     before do
-      allow(media).to receive(:stanford_only_rights).and_return(true)
+      allow(media).to receive(:stanford_restricted?).and_return(true)
     end
 
     context 'when the user is not Stanford authenticated' do
@@ -67,7 +67,7 @@ RSpec.describe MediaAuthenticationJson do
   describe 'Stanford Restricted OR Location Restricted Media' do
     before do
       allow(media).to receive(:restricted_by_location?).and_return(true)
-      allow(media).to receive(:stanford_only_rights).and_return(true)
+      allow(media).to receive(:stanford_restricted?).and_return(true)
     end
 
     it 'returns JSON that indicates that the item is stanford restricted' do

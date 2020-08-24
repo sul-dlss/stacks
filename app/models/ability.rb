@@ -41,16 +41,78 @@ class Ability
     # NOTE: the below ability definitions which reference StacksFile also implicitly
     # cover StacksImage and StacksMediaStream, and any other subclasses of StacksFile.
 
-    can [:download, :read], [StacksFile, StacksImage, Projection, StacksMediaStream] do |f|
-      f.readable_by?(user)
+    models = [StacksFile, StacksImage, StacksMediaStream]
+
+    can [:download, :read], models do |f|
+      value, rule = f.rights.world_rights_for_file f.id.file_name
+
+      value && (rule.nil? || rule != Dor::RightsAuth::NO_DOWNLOAD_RULE)
+    end
+
+    can [:access], models do |f|
+      value, _rule = f.rights.world_rights_for_file f.id.file_name
+
+      value
+    end
+
+    if user.stanford?
+      can [:download, :read], models do |f|
+        value, rule = f.rights.stanford_only_rights_for_file f.id.file_name
+
+        value && (rule.nil? || rule != Dor::RightsAuth::NO_DOWNLOAD_RULE)
+      end
+
+      can [:access], models do |f|
+        value, _rule = f.rights.stanford_only_rights_for_file f.id.file_name
+
+        value
+      end
+    end
+
+    if user.app_user?
+      can [:download, :read], models do |f|
+        value, rule = f.rights.agent_rights_for_file f.id.file_name, user.id
+
+        value && (rule.nil? || rule != Dor::RightsAuth::NO_DOWNLOAD_RULE)
+      end
+
+      can [:access], models do |f|
+        value, _rule = f.rights.agent_rights_for_file f.id.file_name, user.id
+
+        value
+      end
+    end
+
+    if user.locations.present?
+      can [:download, :read], models do |f|
+        user.locations.any? do |location|
+          value, rule = f.rights.location_rights_for_file(f.id.file_name, location)
+          value && (rule.nil? || rule != Dor::RightsAuth::NO_DOWNLOAD_RULE)
+        end
+      end
+
+      can [:access], models do |f|
+        user.locations.any? do |location|
+          value, _rule = f.rights.location_rights_for_file(f.id.file_name, location)
+          value
+        end
+      end
     end
 
     cannot :download, RestrictedImage
 
     # These are called when checking to see if the image response should be served
-    can :read, Projection do |projection|
+    can [:download, :read], Projection do |projection|
+      can?(:download, projection.image)
+    end
+
+    can [:download, :read], Projection do |projection|
       # Allow access to tile or thumbnail-sized requests for an accessible image
-      (projection.tile? || projection.thumbnail?) && can?(:access, projection)
+      (projection.tile? || projection.thumbnail?) && can?(:access, projection.image)
+    end
+
+    can [:access], Projection do |projection|
+      can?(:access, projection.image)
     end
 
     can :read, Projection do |projection|
@@ -64,11 +126,5 @@ class Ability
     end
 
     can :read_metadata, StacksImage
-
-    # Access is a lower level of privileges than read.
-    # You need access to get any info.json response.
-    can :access, [Projection, StacksFile, StacksImage, StacksMediaStream] do |f|
-      f.accessable_by?(user)
-    end
   end
 end

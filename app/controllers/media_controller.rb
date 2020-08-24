@@ -52,6 +52,7 @@ class MediaController < ApplicationController
     else
       MediaAuthenticationJson.new(
         user: current_user,
+        ability: current_ability,
         media: current_media,
         auth_url: iiif_auth_api_url
       )

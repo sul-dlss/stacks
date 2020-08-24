@@ -102,7 +102,7 @@ class IiifController < ApplicationController
 
   # the cache headers for the metadata action
   def cache_headers_metadata
-    cache_headers.merge(public: current_image.accessable_by?(anonymous_locatable_user))
+    cache_headers.merge(public: anonymous_ability.can?(:access, current_image))
   end
 
   # the cache headers for the show action
@@ -178,9 +178,9 @@ class IiifController < ApplicationController
     return false if degraded_identifier?
 
     # accessible if the user authenticates
-    degraded = !can?(:access, current_image) && current_image.accessable_by?(stanford_generic_user)
+    degraded = !can?(:access, current_image) && stanford_ability.can?(:access, current_image)
     # downloadable if the user authenticates
-    degraded ||= !can?(:download, current_image) && current_image.readable_by?(stanford_generic_user)
+    degraded ||= !can?(:download, current_image) && stanford_ability.can?(:download, current_image)
     # thumbnail-only
     degraded ||= !can?(:access, current_image) && can?(:read, Projection.thumbnail(current_image))
 

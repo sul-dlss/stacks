@@ -21,6 +21,18 @@ AllCops:
 Rails:
   Enabled: true
 
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - 'app/models/ability.rb'
+
+Metrics/PerceivedComplexity:
+  Exclude:
+    - 'app/models/ability.rb'
+
+Metrics/AbcSize:
+  Exclude:
+    - 'app/models/ability.rb'
+
 Layout/EmptyLinesAroundBlockBody:
   Exclude:
     - 'spec/requests/file_auth_request_spec.rb'
@@ -47,6 +59,10 @@ Layout/LineLength:
     - 'spec/requests/media_auth_request_spec.rb'
     - 'spec/routing/iiif_routing_spec.rb'
     - 'spec/routing/legacy_image_api_spec.rb'
+
+Metrics/MethodLength:
+  Exclude:
+    - 'app/models/ability.rb'
 
 Naming/HeredocDelimiterNaming:
   Enabled: false
