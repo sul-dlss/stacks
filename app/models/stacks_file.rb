@@ -27,6 +27,10 @@ class StacksFile
   end
 
   def path
-    @path ||= PathService.for(id)
+    @path ||= begin
+      return unless id.valid?
+
+      File.join(Settings.stacks.storage_root, id.treeified_path)
+    end
   end
 end

@@ -9,7 +9,7 @@ RSpec.describe 'IIIF API' do
       'tiles' => [{ 'width' => 256, "height" => 256, "scaleFactors" => [1, 2, 4, 8, 16] }] }
   end
   let(:metadata_service) do
-    instance_double(MetadataService, fetch: metadata,
+    instance_double(IiifMetadataService, fetch: metadata,
                                      image_width: 1702,
                                      image_height: 2552)
   end
@@ -30,7 +30,7 @@ RSpec.describe 'IIIF API' do
     allow(Rails.cache).to receive(:fetch).and_yield
     allow(StacksImage).to receive(:new).and_return(stacks_image)
     allow(stacks_image).to receive(:file_source).and_return(file_source)
-    allow(StacksMetadataServiceFactory).to receive(:create).and_return(metadata_service)
+    allow(IiifMetadataService).to receive(:new).and_return(metadata_service)
   end
 
   it 'redirects base uri requests to the info.json document' do

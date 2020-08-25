@@ -56,6 +56,6 @@ class StacksImage
 
   # @return [InfoService]
   def info_service
-    @info_service ||= StacksMetadataServiceFactory.create(image_id: id, canonical_url: canonical_url)
+    @info_service ||= IiifMetadataService.new(image_id: id, canonical_url: canonical_url)
   end
 end

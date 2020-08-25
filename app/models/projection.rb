@@ -108,8 +108,7 @@ class Projection
 
   # @return [IiifImage]
   def image_source
-    @image_source ||= StacksImageSourceFactory.create(id: id,
-                                                      transformation: real_transformation)
+    @image_source ||= IiifImage.new(id: id, transformation: real_transformation)
   end
 
   def real_transformation

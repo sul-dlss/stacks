@@ -296,7 +296,7 @@ RSpec.describe Projection do
     subject { instance.valid? }
 
     before do
-      allow(StacksImageSourceFactory).to receive(:create).and_return(source_image)
+      allow(IiifImage).to receive(:new).and_return(source_image)
       allow(StacksFile).to receive(:new).and_return(file)
     end
 
