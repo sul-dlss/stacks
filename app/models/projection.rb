@@ -106,7 +106,7 @@ class Projection
     IIIF::Image::Dimension.new(width: size, height: size)
   end
 
-  # @return [SourceImage]
+  # @return [IiifImage]
   def image_source
     @image_source ||= StacksImageSourceFactory.create(id: id,
                                                       transformation: real_transformation)
