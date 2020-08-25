@@ -5,7 +5,6 @@
 # may be the file that backs a StacksImage or StacksMediaStream
 class StacksFile
   include ActiveModel::Model
-  include StacksRights
 
   attr_accessor :id, :file_name, :current_ability, :download
 
@@ -46,4 +45,8 @@ class StacksFile
     end
   end
 
+  def stacks_rights
+    @stacks_rights ||= StacksRights.new(id: id, file_name: file_name)
+  end
+  delegate :rights, to: :stacks_rights
 end

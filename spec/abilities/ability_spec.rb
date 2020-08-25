@@ -17,13 +17,13 @@ RSpec.describe 'Ability', type: :model do
   end
   let(:thumbnail_metadata) { '<thumb>yx350pf4616/image.jpg</thumb>' }
   let(:file) do
-    StacksFile.new(id: 'xxxxxxx', file_name: 'file.csv').tap { |x| allow(x).to receive(:public_xml).and_return(public_xml) }
+    StacksFile.new(id: 'xxxxxxx', file_name: 'file.csv')
   end
   let(:image) do
-    StacksImage.new(id: 'yx350pf4616', file_name: 'image.jpg').tap { |x| allow(x).to receive(:public_xml).and_return(public_xml) }
+    StacksImage.new(id: 'yx350pf4616', file_name: 'image.jpg')
   end
   let(:media) do
-    StacksMediaStream.new(id: 'xxxxxxx', file_name: 'movie.mp4').tap { |x| allow(x).to receive(:public_xml).and_return(public_xml) }
+    StacksMediaStream.new(id: 'xxxxxxx', file_name: 'movie.mp4')
   end
 
   let(:thumbnail_transformation) { IIIF::Image::OptionDecoder.decode(region: 'full', size: '!400,400') }
@@ -39,7 +39,7 @@ RSpec.describe 'Ability', type: :model do
   let(:big_image) { Projection.new(image, big_transform) }
 
   before do
-    allow_any_instance_of(StacksImage).to receive(:public_xml).and_return(public_xml)
+    allow(Purl).to receive(:public_xml).and_return(public_xml)
     allow(image).to receive_messages(image_width: 11_957, image_height: 15_227)
   end
 

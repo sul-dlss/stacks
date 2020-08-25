@@ -3,7 +3,6 @@
 ##
 # An image that can be delivered over the IIIF endpoint
 class StacksImage
-  include StacksRights
   include ActiveModel::Model
 
   attr_accessor :id, :file_name
@@ -59,4 +58,10 @@ class StacksImage
   def info_service
     @info_service ||= IiifMetadataService.new(id: id, file_name: file_name, canonical_url: canonical_url)
   end
+
+  def stacks_rights
+    @stacks_rights ||= StacksRights.new(id: id, file_name: file_name)
+  end
+  delegate :rights, :maybe_downloadable?, :object_thumbnail?,
+           :stanford_restricted?, :restricted_by_location?, :cdl_restricted?, to: :stacks_rights
 end

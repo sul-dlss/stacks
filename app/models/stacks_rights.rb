@@ -2,7 +2,14 @@
 
 ##
 # RightsMetadata interpretation
-module StacksRights
+class StacksRights
+  attr_reader :id, :file_name
+
+  def initialize(id:, file_name:)
+    @id = id
+    @file_name = file_name
+  end
+
   def maybe_downloadable?
     rights.world_unrestricted_file?(file_name) ||
       rights.stanford_only_unrestricted_file?(file_name)
