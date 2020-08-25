@@ -84,7 +84,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
 
         it 'redirects to the authentication endpoint' do
           get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
-          expect(response).to redirect_to(auth_iiif_url(identifier: identifier, format: format))
+          expect(response).to redirect_to(auth_iiif_url(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001', format: format))
         end
       end
     end
@@ -176,7 +176,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
 
         it 'redirects to the authentication endpoint' do
           get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
-          expect(response).to redirect_to(auth_iiif_url(identifier: 'nr349ct7889%2Fnr349ct7889_00_0001', format: format))
+          expect(response).to redirect_to(auth_iiif_url(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001', format: format))
         end
       end
     end

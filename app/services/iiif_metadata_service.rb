@@ -11,7 +11,7 @@ class IiifMetadataService
   # @param canonical_url [String]
   # @param base_uri [String] base path to the IIIF server
   def initialize(id:, file_name:, canonical_url:, base_uri: Settings.imageserver.base_uri)
-    druid_parts = id.sub(/^druid:/, '').match(/^([a-z]{2})(\d{3})([a-z]{2})(\d{4})$/i)
+    druid_parts = id.match(/^([a-z]{2})(\d{3})([a-z]{2})(\d{4})$/i)
     id = CGI.escape(File.join(druid_parts[1..4], file_name))
     @url = IIIF::Image::URI.new(identifier: id, base_uri: base_uri).to_s
     @canonical_url = canonical_url

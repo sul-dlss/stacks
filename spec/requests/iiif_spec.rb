@@ -34,9 +34,9 @@ RSpec.describe 'IIIF API' do
   end
 
   it 'redirects base uri requests to the info.json document' do
-    get '/image/iiif/abc'
+    get '/image/iiif/nr349ct7889/abc'
 
-    expect(response).to redirect_to('/image/iiif/abc/info.json')
+    expect(response).to redirect_to('/image/iiif/nr349ct7889/abc/info.json')
     expect(response.status).to eq 303
   end
 
@@ -67,7 +67,7 @@ RSpec.describe 'IIIF API' do
         it 'redirects requests to the degraded info.json' do
           get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json'
           expect(response).to have_http_status :redirect
-          expect(response).to redirect_to('/image/iiif/degraded_nr349ct7889%252Fnr349ct7889_00_0001/info.json')
+          expect(response).to redirect_to('/image/iiif/degraded/nr349ct7889/nr349ct7889_00_0001/info.json')
           expect(response.headers['Cache-Control']).to match(/max-age=0/)
         end
       end
@@ -91,15 +91,15 @@ RSpec.describe 'IIIF API' do
     end
 
     it 'redirects requests to the degraded info.json' do
-      get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json'
+      get '/image/iiif/nr349ct7889/nr349ct7889_00_0001/info.json'
       expect(response).to have_http_status :redirect
-      expect(response).to redirect_to('/image/iiif/degraded_nr349ct7889%252Fnr349ct7889_00_0001/info.json')
+      expect(response).to redirect_to('/image/iiif/degraded/nr349ct7889/nr349ct7889_00_0001/info.json')
       expect(response.headers['Cache-Control']).to match(/max-age=0/)
     end
 
     context 'when connecting to the degraded url' do
       it 'serves a degraded info.json description for the original file' do
-        get '/image/iiif/degraded_nr349ct7889%2Fnr349ct7889_00_0001/info.json'
+        get '/image/iiif/degraded/nr349ct7889/nr349ct7889_00_0001/info.json'
 
         expect(response).to have_http_status :ok
         expect(controller.send(:current_image).id).to eq 'nr349ct7889'
@@ -129,9 +129,9 @@ RSpec.describe 'IIIF API' do
       stub_rights_xml(stanford_only_no_download_xml)
     end
     it 'redirects to degraded version' do
-      get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json'
+      get '/image/iiif/nr349ct7889/nr349ct7889_00_0001/info.json'
       expect(response).to have_http_status :redirect
-      expect(response).to redirect_to('/image/iiif/degraded_nr349ct7889%252Fnr349ct7889_00_0001/info.json')
+      expect(response).to redirect_to('/image/iiif/degraded/nr349ct7889/nr349ct7889_00_0001/info.json')
     end
   end
 end

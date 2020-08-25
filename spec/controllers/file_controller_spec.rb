@@ -19,13 +19,6 @@ RSpec.describe FileController do
       allow(file).to receive_messages(mtime: Time.zone.now, path: path)
     end
 
-    context "with an invalid druid" do
-      let(:druid) { 'foo' }
-      it 'raises 404 Not Found' do
-        expect { subject }.to raise_error ActionController::RoutingError
-      end
-    end
-
     it 'sends the file to the user' do
       expect(controller).to receive(:send_file).with(file.path, disposition: :inline).and_call_original
       subject

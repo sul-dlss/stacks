@@ -5,7 +5,6 @@
 class IiifController < ApplicationController
   skip_forgery_protection
 
-  before_action :ensure_valid_identifier
   before_action :add_iiif_profile_header
 
   rescue_from ActionController::MissingFile do
@@ -25,7 +24,7 @@ class IiifController < ApplicationController
 
     set_image_response_headers
 
-    self.content_type = Mime::Type.lookup_by_extension(format_param).to_s
+    self.content_type = Mime::Type.lookup_by_extension(iiif_params[:format]).to_s
     self.status = projection.response.status
     self.response_body = projection.response.body
   end
@@ -37,15 +36,15 @@ class IiifController < ApplicationController
 
     return unless stale?(cache_headers_metadata)
 
-    if degraded?
-      redirect_to iiif_metadata_url(identifier: degraded_identifier)
+    if !degraded? && degradable?
+      redirect_to degraded_iiif_metadata_url(id: identifier_params[:id], file_name: identifier_params[:file_name])
       return
     end
 
     expires_in cache_time, public: false
     authorize! :read_metadata, current_image
 
-    status = if degraded_identifier? || can?(:access, current_image)
+    status = if degraded? || can?(:access, current_image)
                :ok
              else
                :unauthorized
@@ -76,12 +75,8 @@ class IiifController < ApplicationController
     )
   end
 
-  def allowed_params
-    params.permit(:region, :size, :rotation, :quality, :format, :identifier, :download)
-  end
-
-  def format_param
-    allowed_params[:format]
+  def iiif_params
+    params.permit(:region, :size, :rotation, :quality, :format)
   end
 
   # called when CanCan::AccessDenied error is raised, typically by authorize!
@@ -89,8 +84,8 @@ class IiifController < ApplicationController
   #   a)  access not allowed (send to super)  OR
   #   b)  need user to login to determine if access allowed
   def rescue_can_can(exception)
-    if degraded? && !current_user.webauth_user?
-      redirect_to auth_iiif_url(allowed_params.to_h.symbolize_keys.tap { |x| x[:identifier] = escaped_identifier })
+    if degradable? && !current_user.webauth_user?
+      redirect_to auth_iiif_url(iiif_params.to_h.merge(identifier_params).merge(download: params[:download]).symbolize_keys)
     else
       super
     end
@@ -117,11 +112,11 @@ class IiifController < ApplicationController
   end
 
   def set_image_response_headers
-    set_attachment_content_disposition_header if allowed_params[:download]
+    set_attachment_content_disposition_header if params[:download]
   end
 
   def set_attachment_content_disposition_header
-    filename = [File.basename(identifier_params[:file_name], '.*'), format_param].join('.')
+    filename = [File.basename(identifier_params[:file_name], '.*'), iiif_params[:format]].join('.')
     response.headers['Content-Disposition'] = "attachment;filename=\"#{filename}\""
   end
 
@@ -133,36 +128,25 @@ class IiifController < ApplicationController
   end
 
   def identifier_params
-    id, file_name = escaped_identifier.split('%2F', 2)
+    return params.slice(:id, :file_name) if params[:id] && params[:file_name]
+
+    id, file_name = params[:identifier].sub('/', '%2F').split('%2F', 2)
     { id: id, file_name: file_name }
   end
 
   def stacks_image_params
-    { id: identifier_params[:id].sub(/^degraded_/, ''), file_name: identifier_params[:file_name] + '.jp2' }.merge(canonical_params)
+    {
+      id: identifier_params[:id],
+      file_name: identifier_params[:file_name] + '.jp2',
+      canonical_url: iiif_base_url(id: identifier_params[:id], file_name: identifier_params[:file_name], host: request.host_with_port)
+    }
   end
 
   # @return [IIIF::Image::Transformation] returns the transformation for the parameters
   def transformation
-    return unless allowed_params.key?(:size)
+    return unless iiif_params.key?(:size)
 
-    IIIF::Image::OptionDecoder.decode(allowed_params)
-  end
-
-  def canonical_params
-    { canonical_url: iiif_base_url(identifier: escaped_identifier, host: request.host_with_port) }
-  end
-
-  # kludge to get around Rails' overzealous URL escaping
-  def escaped_identifier
-    allowed_params[:identifier].sub('/', '%2F')
-  end
-
-  def degraded_identifier
-    "degraded_#{escaped_identifier}"
-  end
-
-  def degraded_identifier?
-    escaped_identifier.starts_with? 'degraded'
+    IIIF::Image::OptionDecoder.decode(iiif_params)
   end
 
   def add_iiif_profile_header
@@ -171,25 +155,21 @@ class IiifController < ApplicationController
 
   # We consider an image to be degraded if the user isn't currently able to download it, but if they
   # login as a stanford user, they will be able to.
-  def degraded?
-    return false if degraded_identifier?
-
+  def degradable?
     stanford_ability = User.stanford_generic_user.ability
 
     # accessible if the user authenticates
-    degraded = !can?(:access, current_image) && stanford_ability.can?(:access, current_image)
+    degradable = !can?(:access, current_image) && stanford_ability.can?(:access, current_image)
     # downloadable if the user authenticates
-    degraded ||= !can?(:download, current_image) && stanford_ability.can?(:download, current_image)
+    degradable ||= !can?(:download, current_image) && stanford_ability.can?(:download, current_image)
     # thumbnail-only
-    degraded ||= !can?(:access, current_image) && can?(:read, Projection.thumbnail(current_image))
+    degradable ||= !can?(:access, current_image) && can?(:read, Projection.thumbnail(current_image))
 
-    degraded
+    degradable
   end
 
-  def ensure_valid_identifier
-    return if identifier_params[:id].match(/^(degraded_)?(druid:)?([a-z]{2})(\d{3})([a-z]{2})(\d{4})$/i) && identifier_params[:file_name].present?
-
-    raise ActionController::RoutingError, 'Invalid druid'
+  def degraded?
+    params[:degraded].present?
   end
 
   def cache_time

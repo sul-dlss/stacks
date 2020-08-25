@@ -4,7 +4,11 @@ require 'rails_helper'
 
 RSpec.describe 'file routes' do
   it 'routes to #show' do
-    expect(get: '/file/abc/def.pdf').to route_to('file#show', id: 'abc', file_name: 'def.pdf')
+    expect(get: '/file/oo000oo0000/def.pdf').to route_to('file#show', id: 'oo000oo0000', file_name: 'def.pdf')
+  end
+
+  it 'routes to #show even with a druid namespace' do
+    expect(get: '/file/druid:oo000oo0000/def.pdf').to route_to('file#show', id: 'oo000oo0000', file_name: 'def.pdf')
   end
 
   describe '#show (download): filename with' do
@@ -54,11 +58,11 @@ RSpec.describe 'file routes' do
 
   describe 'authorization' do
     it 'routes to webauth#login_file' do
-      expect(get: '/file/auth/abc/def.pdf').to route_to('webauth#login_file', id: 'abc', file_name: 'def.pdf')
+      expect(get: '/file/auth/oo000oo0000/def.pdf').to route_to('webauth#login_file', id: 'oo000oo0000', file_name: 'def.pdf')
     end
 
     it 'routes to webauth#login_file' do
-      expect(get: '/file/app/abc/def.pdf').to route_to('webauth#login_file', id: 'abc', file_name: 'def.pdf')
+      expect(get: '/file/app/oo000oo0000/def.pdf').to route_to('webauth#login_file', id: 'oo000oo0000', file_name: 'def.pdf')
     end
   end
 end

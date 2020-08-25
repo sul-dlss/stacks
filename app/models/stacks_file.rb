@@ -42,7 +42,7 @@ class StacksFile
 
   def druid_parts
     @druid_parts ||= begin
-      id.sub(/^druid:/, '').match(/^([a-z]{2})(\d{3})([a-z]{2})(\d{4})$/i)
+      id.match(/^([a-z]{2})(\d{3})([a-z]{2})(\d{4})$/i)
     end
   end
 

@@ -8,9 +8,9 @@ class StacksMediaStream
 
   # @return [StacksFile] the file on disk that back this projection
   def file
-    @file ||= StacksFile.new
+    @file ||= StacksFile.new(id: id, file_name: file_name)
   end
 
   attr_accessor :format, :id, :file_name
-  delegate :id, :id=, :file_name, :file_name=, :etag, :mtime, to: :file
+  delegate :etag, :mtime, to: :file
 end

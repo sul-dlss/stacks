@@ -48,20 +48,12 @@ RSpec.describe IiifController do
       allow(image).to receive(:projection_for).with(transformation).and_return(projection)
     end
 
-    context 'with a bad druid' do
-      let(:identifier) { 'nr349ct788%2Fnr349ct7889_00_0001' }
-
-      it 'raises an error' do
-        expect { subject }.to raise_error ActionController::RoutingError
-      end
-    end
-
     it 'loads the image' do
       subject
       expect(assigns(:image)).to eq image
       expect(StacksImage).to have_received(:new).with(
         id: "nr349ct7889", file_name: 'nr349ct7889_00_0001.jp2',
-        canonical_url: "http://test.host/image/iiif/nr349ct7889%252Fnr349ct7889_00_0001"
+        canonical_url: "http://test.host/image/iiif/nr349ct7889/nr349ct7889_00_0001"
       )
     end
 

@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe StacksFile do
   let(:path) { "#{Settings.stacks.storage_root}/ab/012/cd/3456/def.pdf" }
-  let(:instance) { described_class.new(id: 'druid:ab012cd3456', file_name: 'def.pdf') }
+  let(:instance) { described_class.new(id: 'ab012cd3456', file_name: 'def.pdf') }
 
   describe '#path' do
     subject { instance.path }

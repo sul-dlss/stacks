@@ -48,7 +48,8 @@ RSpec.describe WebauthController do
     subject { get :login_iiif, params: params }
     let(:params) do
       {
-        identifier: 'nr349ct7889%2Fnr349ct7889_00_0001',
+        id: 'nr349ct7889',
+        file_name: 'nr349ct7889_00_0001',
         region: '0,640,2552,2552',
         size: '100,100',
         rotation: '0',

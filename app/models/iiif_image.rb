@@ -41,7 +41,7 @@ class IiifImage
   end
 
   def druid_parts
-    @druid_parts ||= id.sub(/^druid:/, '').match(/^([a-z]{2})(\d{3})([a-z]{2})(\d{4})$/i)
+    @druid_parts ||= id.match(/^([a-z]{2})(\d{3})([a-z]{2})(\d{4})$/i)
   end
 
   attr_reader :transformation, :id, :file_name

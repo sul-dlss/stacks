@@ -5,13 +5,10 @@
 class LegacyImageServiceController < ApplicationController
   before_action :load_image
 
-  # kludge to get around Rails' overzealous URL escaping
-  IDENTIFIER_SEPARATOR = 'ZZZZZZZ'
-
   ##
   # Redirect legacy image requests to their IIIF equivalents
   def show
-    redirect_to iiif_path(iiif_options).sub(IDENTIFIER_SEPARATOR, '%2F')
+    redirect_to iiif_path(iiif_options)
   end
 
   private
@@ -19,8 +16,7 @@ class LegacyImageServiceController < ApplicationController
   def iiif_options
     @image.transformation
           .to_params
-          .merge(
-            identifier: "#{id}#{IDENTIFIER_SEPARATOR}#{file_name}",
+          .merge(id: id, file_name: file_name,
             download: allowed_params[:download]
           )
   end

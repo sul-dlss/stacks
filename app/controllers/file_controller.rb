@@ -7,8 +7,6 @@ class FileController < ApplicationController
     render plain: 'File not found', status: :not_found
   end
 
-  before_action :validate_druid_and_filename
-
   def show
     return unless stale?(cache_headers)
 
@@ -30,12 +28,6 @@ class FileController < ApplicationController
 
   def file_params
     params.permit(:id, :file_name, :download)
-  end
-
-  def validate_druid_and_filename
-    return if file_params[:id].match(/^(druid:)?([a-z]{2})(\d{3})([a-z]{2})(\d{4})$/i) && file_params[:file_name].present?
-
-    raise ActionController::RoutingError, 'Invalid druid'
   end
 
   # called when CanCan::AccessDenied error is raised, typically by authorize!
