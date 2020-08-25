@@ -44,7 +44,7 @@ RSpec.describe Purl do
               )
       )
 
-      actual = described_class.files('abc').map { |file| file.id + "/" + file.file_name }
+      actual = described_class.files('abc').map { |file| "#{file.id}/#{file.file_name}" }
 
       expect(actual).to match_array ['abc/26855.jp2', 'def/123.jp2']
     end

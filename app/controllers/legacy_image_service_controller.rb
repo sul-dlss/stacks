@@ -17,8 +17,7 @@ class LegacyImageServiceController < ApplicationController
     @image.transformation
           .to_params
           .merge(id: id, file_name: file_name,
-            download: allowed_params[:download]
-          )
+                 download: allowed_params[:download])
   end
 
   def allowed_params

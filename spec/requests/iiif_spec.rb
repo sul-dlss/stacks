@@ -10,8 +10,8 @@ RSpec.describe 'IIIF API' do
   end
   let(:metadata_service) do
     instance_double(IiifMetadataService, fetch: metadata,
-                                     image_width: 1702,
-                                     image_height: 2552)
+                                         image_width: 1702,
+                                         image_height: 2552)
   end
   let(:stacks_image) do
     StacksImage.new(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001.jp2')

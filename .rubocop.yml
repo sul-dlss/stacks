@@ -32,6 +32,7 @@ Metrics/PerceivedComplexity:
 Metrics/AbcSize:
   Exclude:
     - 'app/models/ability.rb'
+    - 'app/controllers/iiif_controller.rb'
 
 Layout/EmptyLinesAroundBlockBody:
   Exclude:
@@ -52,7 +53,7 @@ Metrics/ClassLength:
     - 'app/models/projection.rb'
 
 Layout/LineLength:
-  Max: 120
+  Max: 140
   Exclude:
     - 'spec/requests/file_auth_request_spec.rb'
     - 'spec/requests/iiif_auth_request_spec.rb'

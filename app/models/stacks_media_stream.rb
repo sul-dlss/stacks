@@ -11,6 +11,7 @@ class StacksMediaStream
   end
 
   attr_accessor :format, :id, :file_name
+
   delegate :etag, :mtime, to: :file
 
   def stacks_rights

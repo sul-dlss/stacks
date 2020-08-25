@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Methods for getting a current_user instance
 module CurrentUserConcern
   include ActionController::HttpAuthentication::Basic
   include ActionController::HttpAuthentication::Token
