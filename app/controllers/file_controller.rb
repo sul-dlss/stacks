@@ -48,7 +48,7 @@ class FileController < ApplicationController
   #   a)  access not allowed (send to super)  OR
   #   b)  need user to login to determine if access allowed
   def rescue_can_can(exception)
-    if stanford_ability.can?(:access, current_file) && !current_user.webauth_user?
+    if User.stanford_generic_user.ability.can?(:access, current_file) && !current_user.webauth_user?
       redirect_to auth_file_url(allowed_params.to_h.symbolize_keys)
     else
       super
