@@ -37,11 +37,7 @@ class IiifImage
   end
 
   def remote_id
-    CGI.escape(File.join(druid_parts[1..4], file_name))
-  end
-
-  def druid_parts
-    @druid_parts ||= id.match(/^([a-z]{2})(\d{3})([a-z]{2})(\d{4})$/i)
+    CGI.escape(StacksFile.new(id: id, file_name: file_name).treeified_path)
   end
 
   attr_reader :transformation, :id, :file_name
