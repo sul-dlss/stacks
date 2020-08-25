@@ -177,6 +177,8 @@ class IiifController < ApplicationController
   def degraded?
     return false if degraded_identifier?
 
+    stanford_ability = User.stanford_generic_user.ability
+
     # accessible if the user authenticates
     degraded = !can?(:access, current_image) && stanford_ability.can?(:access, current_image)
     # downloadable if the user authenticates

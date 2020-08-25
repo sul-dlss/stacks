@@ -7,6 +7,10 @@ class User
 
   attr_accessor :id, :webauth_user, :anonymous_locatable_user, :app_user, :token_user, :ldap_groups, :ip_address
 
+  def ability
+    Ability.new(self)
+  end
+
   def webauth_user?
     webauth_user
   end
