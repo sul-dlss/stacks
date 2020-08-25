@@ -3,11 +3,13 @@
 # Represents a remote Iiif endpoint
 class IiifImage
   include ActiveSupport::Benchmarkable
-  # @params id [StacksIdentifier]
+  # @params id [String]
+  # @params file_name [String]
   # @params transformation [IIIF::Image::Transformation]
   # @params base_uri [String]
-  def initialize(id:, transformation:, base_uri: Settings.imageserver.base_uri)
+  def initialize(id:, file_name:, transformation:, base_uri: Settings.imageserver.base_uri)
     @id = id
+    @file_name = file_name
     @transformation = transformation
     @base_uri = base_uri
   end
@@ -35,10 +37,14 @@ class IiifImage
   end
 
   def remote_id
-    RemoteIiifIdentifier.convert(id)
+    CGI.escape(File.join(druid_parts[1..4], file_name))
   end
 
-  attr_reader :transformation, :id
+  def druid_parts
+    @druid_parts ||= id.sub(/^druid:/, '').match(/^([a-z]{2})(\d{3})([a-z]{2})(\d{4})$/i)
+  end
+
+  attr_reader :transformation, :id, :file_name
 
   delegate :logger, to: Rails
 end

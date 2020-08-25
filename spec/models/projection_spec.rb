@@ -98,8 +98,7 @@ RSpec.describe Projection do
 
   describe '#response' do
     context 'for an image' do
-      let(:id) { StacksIdentifier.new('ab123cd4567%2Fb') }
-      let(:image) { StacksImage.new id: id }
+      let(:image) { StacksImage.new id: 'ab123cd4567', file_name: 'b' }
       subject(:projection) { described_class.new(image, transformation) }
 
       context "full region" do
@@ -116,8 +115,7 @@ RSpec.describe Projection do
     end
 
     context 'for a restricted image' do
-      let(:id) { StacksIdentifier.new('ab123cd4567%2Fb') }
-      let(:image) { RestrictedImage.new id: id }
+      let(:image) { RestrictedImage.new id: 'ab123cd4567', file_name: 'b' }
       subject(:projection) { described_class.new(image, transformation) }
 
       context "full region" do

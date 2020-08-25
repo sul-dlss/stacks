@@ -33,8 +33,7 @@ class Purl
 
     doc.xpath('//contentMetadata/resource').each do |resource|
       resource.xpath('file|externalFile').each do |attr|
-        id = StacksIdentifier.new(druid: attr['objectId'] || druid, file_name: attr['fileId'] || attr['id'])
-        file = StacksFile.new(id: id)
+        file = StacksFile.new(id: attr['objectId'] || druid, file_name: attr['fileId'] || attr['id'])
         yield file
       end
     end

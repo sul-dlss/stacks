@@ -14,7 +14,7 @@ RSpec.describe 'IIIF API' do
                                      image_height: 2552)
   end
   let(:stacks_image) do
-    StacksImage.new(id: StacksIdentifier.new(druid: 'nr349ct7889', file_name: 'nr349ct7889_00_0001.jp2'))
+    StacksImage.new(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001.jp2')
   end
   let(:file_source) do
     instance_double(StacksFile, readable?: true,
@@ -102,7 +102,7 @@ RSpec.describe 'IIIF API' do
         get '/image/iiif/degraded_nr349ct7889%2Fnr349ct7889_00_0001/info.json'
 
         expect(response).to have_http_status :ok
-        expect(controller.send(:current_image).id.druid).to eq 'nr349ct7889'
+        expect(controller.send(:current_image).id).to eq 'nr349ct7889'
       end
     end
   end

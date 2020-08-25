@@ -8,8 +8,7 @@ RSpec.describe FileController do
     stub_rights_xml(world_readable_rights_xml)
   end
 
-  let(:identifier) { StacksIdentifier.new(druid: druid, file_name: 'xf680rd3068_1.jp2') }
-  let(:file) { StacksFile.new(id: identifier) }
+  let(:file) { StacksFile.new(id: druid, file_name: 'xf680rd3068_1.jp2') }
 
   describe '#show' do
     let(:druid) { 'xf680rd3068' }
@@ -50,7 +49,7 @@ RSpec.describe FileController do
 
       it 'ignored when instantiating StacksFile' do
         subject
-        expect(StacksFile).to have_received(:new).with(ActionController::Parameters.new('id' => identifier).permit!)
+        expect(StacksFile).to have_received(:new).with(hash_including(id: 'xf680rd3068', file_name: 'xf680rd3068_1.jp2'))
       end
     end
 

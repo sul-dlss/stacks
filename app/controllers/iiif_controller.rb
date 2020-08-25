@@ -8,10 +8,6 @@ class IiifController < ApplicationController
   before_action :ensure_valid_identifier
   before_action :add_iiif_profile_header
 
-  # Follow the interface of Riiif
-  class_attribute :model
-  self.model = StacksImage
-
   rescue_from ActionController::MissingFile do
     render plain: 'File not found', status: :not_found
   end
@@ -125,19 +121,24 @@ class IiifController < ApplicationController
   end
 
   def set_attachment_content_disposition_header
-    filename = [stacks_identifier.file_name_without_ext, format_param].join('.')
+    filename = [File.basename(identifier_params[:file_name], '.*'), format_param].join('.')
     response.headers['Content-Disposition'] = "attachment;filename=\"#{filename}\""
   end
 
   def current_image
     @image ||= begin
-                 img = model.new(stacks_image_params)
+                 img = StacksImage.new(stacks_image_params)
                  can?(:download, img) ? img : img.restricted
                end
   end
 
+  def identifier_params
+    id, file_name = escaped_identifier.split('%2F', 2)
+    { id: id, file_name: file_name }
+  end
+
   def stacks_image_params
-    { id: stacks_identifier }.merge(canonical_params)
+    { id: identifier_params[:id].sub(/^degraded_/, ''), file_name: identifier_params[:file_name] + '.jp2' }.merge(canonical_params)
   end
 
   # @return [IIIF::Image::Transformation] returns the transformation for the parameters
@@ -145,10 +146,6 @@ class IiifController < ApplicationController
     return unless allowed_params.key?(:size)
 
     IIIF::Image::OptionDecoder.decode(allowed_params)
-  end
-
-  def stacks_identifier
-    @stacks_identifier ||= StacksIdentifier.new(escaped_identifier.sub(/^degraded_/, '') + '.jp2')
   end
 
   def canonical_params
@@ -190,7 +187,9 @@ class IiifController < ApplicationController
   end
 
   def ensure_valid_identifier
-    raise ActionController::RoutingError, "invalid identifer" unless stacks_identifier.valid?
+    return if identifier_params[:id].match(/^(degraded_)?(druid:)?([a-z]{2})(\d{3})([a-z]{2})(\d{4})$/i) && identifier_params[:file_name].present?
+
+    raise ActionController::RoutingError, 'Invalid druid'
   end
 
   def cache_time

@@ -7,6 +7,8 @@ class FileController < ApplicationController
     render plain: 'File not found', status: :not_found
   end
 
+  before_action :validate_druid_and_filename
+
   def show
     return unless stale?(cache_headers)
 
@@ -21,24 +23,17 @@ class FileController < ApplicationController
   private
 
   def disposition
-    return :attachment if allowed_params[:download]
+    return :attachment if file_params[:download]
 
     :inline
   end
 
-  def allowed_params
+  def file_params
     params.permit(:id, :file_name, :download)
   end
 
-  def stacks_file_params
-    allowed_params.slice(:download)
-                  .merge(id: stacks_identifier)
-  end
-
-  def stacks_identifier
-    id = StacksIdentifier.new(druid: params[:id],
-                              file_name: params[:file_name])
-    return id if id.valid?
+  def validate_druid_and_filename
+    return if file_params[:id].match(/^(druid:)?([a-z]{2})(\d{3})([a-z]{2})(\d{4})$/i) && file_params[:file_name].present?
 
     raise ActionController::RoutingError, 'Invalid druid'
   end
@@ -49,7 +44,7 @@ class FileController < ApplicationController
   #   b)  need user to login to determine if access allowed
   def rescue_can_can(exception)
     if User.stanford_generic_user.ability.can?(:access, current_file) && !current_user.webauth_user?
-      redirect_to auth_file_url(allowed_params.to_h.symbolize_keys)
+      redirect_to auth_file_url(file_params.to_h.symbolize_keys)
     else
       super
     end
@@ -65,6 +60,6 @@ class FileController < ApplicationController
   end
 
   def current_file
-    @file ||= StacksFile.new(stacks_file_params)
+    @file ||= StacksFile.new(file_params)
   end
 end

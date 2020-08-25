@@ -9,7 +9,7 @@ class ObjectController < ApplicationController
     files = accessible_files.map do |file|
       [
         file,
-        file.id.file_name,
+        file.file_name,
         modification_time: file.mtime
       ]
     end

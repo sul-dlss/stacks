@@ -6,13 +6,14 @@ class StacksImage
   include StacksRights
   include ActiveModel::Model
 
-  attr_accessor :id
+  attr_accessor :id, :file_name
   attr_accessor :canonical_url, :transformation
 
   # @return [RestrictedImage] the restricted version of this image
   def restricted
     RestrictedImage.new(transformation: transformation,
                         id: id,
+                        file_name: file_name,
                         canonical_url: canonical_url)
   end
 
@@ -51,11 +52,11 @@ class StacksImage
 
   # @return [StacksFile]
   def file_source
-    @file_source ||= StacksFile.new(id: id)
+    @file_source ||= StacksFile.new(id: id, file_name: file_name)
   end
 
   # @return [InfoService]
   def info_service
-    @info_service ||= IiifMetadataService.new(image_id: id, canonical_url: canonical_url)
+    @info_service ||= IiifMetadataService.new(id: id, file_name: file_name, canonical_url: canonical_url)
   end
 end

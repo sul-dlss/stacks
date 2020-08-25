@@ -60,9 +60,7 @@ class MediaController < ApplicationController
   end
 
   def stacks_media_stream_params
-    allowed_params.slice(:format)
-                  .merge(id: StacksIdentifier.new(druid: params[:id],
-                                                  file_name: params[:file_name]))
+    allowed_params.slice(:format, :id, :file_name)
   end
 
   def id

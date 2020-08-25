@@ -62,7 +62,7 @@ class Projection
     image.exist? && image_source.valid?
   end
 
-  delegate :object_thumbnail?, :id, to: :image
+  delegate :object_thumbnail?, :id, :file_name, to: :image
 
   delegate :response, to: :image_source
 
@@ -108,7 +108,7 @@ class Projection
 
   # @return [IiifImage]
   def image_source
-    @image_source ||= IiifImage.new(id: id, transformation: real_transformation)
+    @image_source ||= IiifImage.new(id: id, file_name: file_name, transformation: real_transformation)
   end
 
   def real_transformation
