@@ -115,6 +115,7 @@ RSpec.describe IiifInfoService do
 
       before do
         allow(image).to receive(:stanford_restricted?).and_return(true)
+        allow(image).to receive(:cdl_restricted?).and_return(false)
       end
 
       it 'the tile height/width is 256' do
