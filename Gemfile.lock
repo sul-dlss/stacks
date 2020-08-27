@@ -269,6 +269,7 @@ GEM
     rb-fsevent (0.10.4)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
+    redis (4.2.1)
     regexp_parser (1.7.1)
     retries (0.0.5)
     rexml (3.2.4)
@@ -413,6 +414,7 @@ DEPENDENCIES
   puma (~> 4.3)
   rails (~> 6.0)
   rails-controller-testing
+  redis
   retries
   rspec-rails (~> 4.0)
   rubocop (~> 0.50)

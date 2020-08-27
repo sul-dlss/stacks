@@ -106,13 +106,10 @@ class Ability
       # end
 
       can [:access], models do |f|
-        user.cdl_tokens.any? do |payload|
-          value, _rule = f.rights.cdl_rights_for_file?(f.id.file_name)
-          next unless value
+        value, _rule = f.rights.cdl_rights_for_file?(f.id.file_name)
+        next unless value
 
-          # check the token
-          payload['aud'] == f.id.druid
-        end
+        user.cdl_tokens.any? { |payload| payload['aud'] == f.id.druid }
       end
     end
 

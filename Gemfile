@@ -83,6 +83,7 @@ gem 'dalli'
 gem 'retries'
 gem 'zipline'
 gem 'jwt'
+gem 'redis'
 
 group :production do
   gem 'newrelic_rpm'

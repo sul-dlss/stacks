@@ -54,7 +54,7 @@ class User
 
     (jwt_tokens || []).each do |token|
       payload, _headers = decode_token(token)
-      next unless payload && payload['sub'] == id && payload['exp'] >= Time.zone.now.to_i
+      next unless payload && payload['sub'] == id && !token_expired?(payload)
 
       yield payload
     end
@@ -67,6 +67,23 @@ class User
     [payload&.merge(token: token)&.with_indifferent_access, headers]
   rescue JWT::ExpiredSignature, JWT::InvalidSubError
     nil
+  end
+
+  def token_expired?(payload)
+    return true if payload['exp'] < Time.zone.now.to_i
+
+    redis&.get("cdl.#{payload['jti']}") == 'expired'
+  rescue Redis::BaseError => e
+    Honeybadger.notify(e) if Rails.env.production?
+    Rails.logger.error(e)
+
+    false
+  end
+
+  def redis
+    return unless Settings.cdl.redis.present? || ENV['REDIS_URL']
+
+    @redis ||= Redis.new(Settings.cdl.redis.to_h)
   end
 
   def self.from_token(token, additional_attributes = {})

@@ -23,6 +23,7 @@ cdl:
   jwt:
     algorithm: 'HS256'
     secret: secret
+  redis: {}
 
 stream:
   # max_token_age is specified in seconds
