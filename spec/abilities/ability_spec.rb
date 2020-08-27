@@ -1043,4 +1043,42 @@ RSpec.describe 'Ability', type: :model do
       end
     end
   end
+
+  describe 'for an object with CDL rights' do
+    let(:user) do
+      User.new(id: 'a', webauth_user: true, ldap_groups: %w(stanford:stanford), jwt_tokens: jwt_tokens)
+    end
+    let(:jwt_tokens) { [] }
+    let(:rights_xml) do
+      <<-EOF.strip_heredoc
+      <rightsMetadata>
+        <access type="read">
+          <machine>
+            <cdl>
+              <group rule="no-download">Stanford</group>
+            </cdl>
+          </machine>
+        </access>
+      </rightsMetadata>
+      EOF
+    end
+
+    it { is_expected.not_to be_able_to(:access, image) }
+    it { is_expected.not_to be_able_to(:access, file) }
+
+    context 'for a Stanford user with a checkout JWT token' do
+      let(:jwt_tokens) do
+        [
+          JWT.encode(
+            { aud: image.id.druid, sub: 'a', exp: (Time.zone.now + 1.hour).to_i },
+            Settings.cdl.jwt.secret,
+            Settings.cdl.jwt.algorithm
+          )
+        ]
+      end
+
+      it { is_expected.to be_able_to(:access, image) }
+      it { is_expected.not_to be_able_to(:access, file) }
+    end
+  end
 end

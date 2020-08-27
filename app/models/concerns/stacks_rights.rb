@@ -14,6 +14,12 @@ module StacksRights
     value
   end
 
+  def cdl_restricted?
+    value, _rule = rights.cdl_rights_for_file id.file_name
+
+    value
+  end
+
   # Returns true if a given file has any location restrictions.
   #   Falls back to the object-level behavior if none at file level.
   def restricted_by_location?
