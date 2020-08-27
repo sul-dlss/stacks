@@ -82,6 +82,7 @@ gem 'dor-rights-auth', require: 'dor/rights_auth'
 gem 'dalli'
 gem 'retries'
 gem 'zipline'
+gem 'jwt'
 
 group :production do
   gem 'newrelic_rpm'

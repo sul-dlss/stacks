@@ -107,7 +107,7 @@ RSpec.describe IiifController do
                       etag: nil,
                       mtime: nil)
     end
-    let(:anon_user) { instance_double(User, stanford?: false, app_user?: false, locations: []) }
+    let(:anon_user) { instance_double(User, stanford?: false, app_user?: false, locations: [], cdl_tokens: []) }
 
     before do
       # for the cache headers

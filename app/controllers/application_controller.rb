@@ -88,7 +88,8 @@ class ApplicationController < ActionController::Base
     User.new(id: session[:remote_user] || request.remote_user,
              ip_address: request.remote_ip,
              webauth_user: true,
-             ldap_groups: ldap_groups)
+             ldap_groups: ldap_groups,
+             jwt_tokens: cookies.encrypted[:tokens]).tap { |user| clean_up_expired_cdl_tokens(user) }
   end
 
   def workgroups_from_env
@@ -110,5 +111,11 @@ class ApplicationController < ActionController::Base
     Rails.logger.debug "Access denied on #{exception.action} #{exception.subject.inspect}"
 
     render file: "#{Rails.root}/public/403.html", status: :forbidden, layout: false
+  end
+
+  def clean_up_expired_cdl_tokens(user)
+    return unless cookies.encrypted[:tokens] && user.cdl_tokens.length != cookies.encrypted[:tokens].length
+
+    cookies.encrypted[:tokens] = user.cdl_tokens.pluck(:token)
   end
 end

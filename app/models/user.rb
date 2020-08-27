@@ -5,7 +5,8 @@
 class User
   include ActiveModel::Model
 
-  attr_accessor :id, :webauth_user, :anonymous_locatable_user, :app_user, :token_user, :ldap_groups, :ip_address
+  attr_accessor :id, :webauth_user, :anonymous_locatable_user, :app_user, :token_user,
+                :ldap_groups, :ip_address, :jwt_tokens
 
   def webauth_user?
     webauth_user
@@ -39,6 +40,24 @@ class User
     locations.any?
   end
 
+  def cdl_tokens
+    return [] if jwt_tokens.blank?
+
+    @cdl_tokens ||= jwt_tokens.map do |token|
+      payload, _headers = begin
+        JWT.decode(token, Settings.cdl.jwt.secret, true, {
+                     algorithm: Settings.cdl.jwt.algorithm, sub: id, verify_sub: true
+                   })
+                          rescue JWT::ExpiredSignature, JWT::InvalidSubError
+                            nil
+      end
+
+      next unless payload && payload['sub'] == id && payload['exp'] >= Time.zone.now.to_i
+
+      payload.merge(token: token).with_indifferent_access
+    end.compact
+  end
+
   def self.from_token(token, additional_attributes = {})
     attributes, timestamp, expiry = encryptor.decrypt_and_verify(token)
     expiry ||= timestamp + Settings.token.default_expiry_time
@@ -54,7 +73,7 @@ class User
     self.class.encryptor.encrypt_and_sign(
       [
         # stored parameters
-        { id: id, ldap_groups: ldap_groups, ip_address: ip_address },
+        { id: id, ldap_groups: ldap_groups, ip_address: ip_address, jwt_tokens: jwt_tokens },
         # mint time
         mint_time,
         # expiry time
