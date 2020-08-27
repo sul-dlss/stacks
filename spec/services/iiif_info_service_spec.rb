@@ -12,7 +12,11 @@ RSpec.describe IiifInfoService do
       double('routing context',
              iiif_auth_api_url: 'http://foo/auth/api',
              iiif_token_api_url: 'http://foo/token/api',
-             logout_url: 'http://foo/logout')
+             logout_url: 'http://foo/logout',
+             cdl_checkout_iiif_auth_api_url: 'http://cdl/out',
+             cdl_checkin_iiif_auth_api_url: 'http://cdl/in',
+             cdl_info_iiif_auth_api_url: 'http://cdl/info',
+             cdl_iiif_token_api_url: 'http://cdl/token')
     end
     let(:downloadable_anonymously) { true }
     let(:image) do
