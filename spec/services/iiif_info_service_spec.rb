@@ -193,5 +193,29 @@ RSpec.describe IiifInfoService do
         ]
       end
     end
+
+    context 'when the item has CDL rights' do
+      let(:image) do
+        RestrictedImage.new(id: identifier)
+      end
+      let(:downloadable_anonymously) { false }
+
+      before do
+        stub_rights_xml(world_readable_rights_xml)
+        allow(image).to receive(:cdl_restricted?).and_return(true)
+      end
+
+      it 'advertises support for both login and external authentication' do
+        expect(image_info.dig('service', '@id')).to eq 'http://cdl/out'
+        expect(image_info.dig('service', 'profile')).to eq 'http://iiif.io/api/auth/1/login'
+
+        expect(image_info.dig('service', 'service', 0, 'profile')).to eq 'http://iiif.io/api/auth/1/token'
+        expect(image_info.dig('service', 'service', 0, '@id')).to eq 'http://cdl/token'
+        expect(image_info.dig('service', 'service', 1, 'profile')).to eq 'http://iiif.io/api/auth/1/logout'
+        expect(image_info.dig('service', 'service', 1, '@id')).to eq 'http://cdl/in'
+        expect(image_info.dig('service', 'service', 2, 'profile')).to eq 'http://iiif.io/api/auth/1/info'
+        expect(image_info.dig('service', 'service', 2, '@id')).to eq 'http://cdl/info'
+      end
+    end
   end
 end
