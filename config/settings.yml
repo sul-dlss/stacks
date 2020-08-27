@@ -19,6 +19,7 @@ purl:
   url: 'https://purl.stanford.edu/'
 
 cdl:
+  url: 'https://requests.stanford.edu/cdl'
   jwt:
     algorithm: 'HS256'
     secret: secret

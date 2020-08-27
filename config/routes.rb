@@ -19,8 +19,17 @@ Rails.application.routes.draw do
   root 'stacks#index'
 
   get '/auth/iiif' => 'webauth#login', as: :iiif_auth_api
+  get '/auth/iiif/cdl/:id/checkout' => 'cdl#create', as: :cdl_checkout_iiif_auth_api
+  get '/auth/iiif/cdl/:id/checkin' => 'cdl#delete', as: :cdl_checkin_iiif_auth_api
+  get '/auth/iiif/cdl/:id/renew' => 'cdl#renew', as: :cdl_renew_iiif_auth_api
+  get '/auth/iiif/cdl/:id/checkout/success' => 'cdl#create_success', as: :cdl_checkout_success_iiif_auth_api
+  get '/auth/iiif/cdl/:id/checkin/success' => 'cdl#delete_success', as: :cdl_checkin_success_iiif_auth_api
+  get '/auth/iiif/cdl/:id/renew/success' => 'cdl#renew_success', as: :cdl_renew_success_iiif_auth_api
+  get '/cdl/:id' => 'cdl#show', as: :cdl_info_iiif_auth_api
+  match '/cdl/:id' => 'cdl#show_options', via: [:options]
   get '/auth/logout' => 'webauth#logout', as: :logout
   get '/image/iiif/token' => 'iiif_token#create', as: :iiif_token_api
+  get '/image/iiif/token/:id' => 'iiif_token#create', as: :cdl_iiif_token_api
 
   constraints identifier: %r{[^/]+}, size: %r{[^/]+} do
     get '/image/iiif/:identifier', to: redirect('/image/iiif/%{identifier}/info.json', status: 303), as: :iiif_base

@@ -12,7 +12,12 @@ RSpec.describe IiifInfoService do
       double('routing context',
              iiif_auth_api_url: 'http://foo/auth/api',
              iiif_token_api_url: 'http://foo/token/api',
-             logout_url: 'http://foo/logout')
+             logout_url: 'http://foo/logout',
+             cdl_checkout_iiif_auth_api_url: 'http://cdl/out',
+             cdl_checkin_iiif_auth_api_url: 'http://cdl/in',
+             cdl_info_iiif_auth_api_url: 'http://cdl/info',
+             cdl_iiif_token_api_url: 'http://cdl/token',
+             cdl_renew_iiif_auth_api_url: 'http://cdl/renew')
     end
     let(:downloadable_anonymously) { true }
     let(:image) do
@@ -187,6 +192,30 @@ RSpec.describe IiifInfoService do
           'http://iiif.io/api/auth/1/login',
           'http://iiif.io/api/auth/1/external'
         ]
+      end
+    end
+
+    context 'when the item has CDL rights' do
+      let(:image) do
+        RestrictedImage.new(id: identifier)
+      end
+      let(:downloadable_anonymously) { false }
+
+      before do
+        stub_rights_xml(world_readable_rights_xml)
+        allow(image).to receive(:cdl_restricted?).and_return(true)
+      end
+
+      it 'advertises support for both login and external authentication' do
+        expect(image_info.dig('service', '@id')).to eq 'http://cdl/out'
+        expect(image_info.dig('service', 'profile')).to eq 'http://iiif.io/api/auth/1/login'
+
+        expect(image_info.dig('service', 'service', 0, 'profile')).to eq 'http://iiif.io/api/auth/1/token'
+        expect(image_info.dig('service', 'service', 0, '@id')).to eq 'http://cdl/token'
+        expect(image_info.dig('service', 'service', 1, 'profile')).to eq 'http://iiif.io/api/auth/1/logout'
+        expect(image_info.dig('service', 'service', 1, '@id')).to eq 'http://cdl/in'
+        expect(image_info.dig('service', 'service', 2, 'profile')).to eq 'http://iiif.io/api/auth/1/info'
+        expect(image_info.dig('service', 'service', 2, '@id')).to eq 'http://cdl/info'
       end
     end
   end
