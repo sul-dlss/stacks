@@ -1,3 +1,11 @@
+GIT
+  remote: https://github.com/sul-dlss/dor-rights-auth.git
+  revision: 8fc776642bb22ac773c718b67e03412f69195c85
+  branch: add-file-support
+  specs:
+    dor-rights-auth (1.4.0)
+      nokogiri
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -122,8 +130,6 @@ GEM
     docile (1.3.2)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
-    dor-rights-auth (1.5.0)
-      nokogiri
     dry-configurable (0.11.6)
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.4, >= 0.4.7)
@@ -394,7 +400,7 @@ DEPENDENCIES
   config
   dalli
   dlss-capistrano
-  dor-rights-auth
+  dor-rights-auth!
   faraday
   honeybadger
   http

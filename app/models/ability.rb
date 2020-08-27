@@ -99,6 +99,23 @@ class Ability
       end
     end
 
+    if user.cdl_tokens.present?
+      # TODO: Actually check if the CDL object is downloadable
+      # can [:download, :read], models do |f|
+      #   ...
+      # end
+
+      can [:access], models do |f|
+        user.cdl_tokens.any? do |payload|
+          value, _rule = f.rights.cdl_rights_for_file?(f.id.file_name)
+          next unless value
+
+          # check the token
+          payload['aud'] == f.id.druid
+        end
+      end
+    end
+
     cannot :download, RestrictedImage
 
     # These are called when checking to see if the image response should be served
