@@ -21,7 +21,7 @@ class CdlService
       'profile' => 'http://iiif.io/api/auth/1/login',
       'label' => 'Available for checkout',
       'header' => 'SUNetID required: This item is available to Stanford affiliates only. Download is prohibited.',
-      'confirmLabel' => 'Login',
+      'confirmLabel' => 'Check out',
       'failureHeader' => 'Unable to authenticate',
       'failureDescription' => 'The authentication service cannot be reached.',
       'service' => [
@@ -36,8 +36,7 @@ class CdlService
         },
         {
           '@id' => cdl_info_iiif_auth_api_url(id),
-          'profile' => 'http://iiif.io/api/auth/1/info',
-          'label' => 'Check in early'
+          'profile' => 'http://iiif.io/api/auth/1/info'
         }
       ]
     }
