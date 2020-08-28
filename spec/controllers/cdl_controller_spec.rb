@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe CdlController do
   let(:user) { User.new id: 'username', jwt_tokens: [token] }
   let(:token) { JWT.encode(payload, Settings.cdl.jwt.secret, Settings.cdl.jwt.algorithm) }
-  let(:payload) { { aud: 'druid', sub: 'username', exp: (Time.zone.now + 1.day).to_i } }
+  let(:payload) { { aud: 'druid', sub: 'username', exp: (Time.zone.now + 1.day).to_i, barcode: '36105110268922' } }
 
   before do
     allow(controller).to receive(:current_user).and_return(user)
@@ -26,7 +26,15 @@ RSpec.describe CdlController do
 
       expect(response.status).to eq 200
       expect(JSON.parse(response.body).with_indifferent_access).to include(
-        sub: 'username', aud: 'druid', exp: a_kind_of(Numeric)
+        payload: hash_including(sub: 'username', aud: 'druid', exp: a_kind_of(Numeric))
+      )
+    end
+
+    it 'includes a url to look up availability' do
+      get :show, { params: { id: 'druid' } }
+
+      expect(JSON.parse(response.body).with_indifferent_access).to include(
+        availability_url: match(%(cdl/availability/36105110268922))
       )
     end
   end

@@ -8,12 +8,15 @@ class CdlController < ApplicationController
   end
 
   before_action :write_auth_session_info, only: [:create]
-  before_action :validate_token, except: [:create]
+  before_action :validate_token, only: [:delete]
 
   # Render some information about an active CDL token so the viewer can display e.g.
   # the current due date.
   def show
-    render json: payload.except(:token)
+    render json: {
+      payload: payload&.except(:token),
+      availability_url: ("#{Settings.cdl.url}/availability/#{barcode}" if barcode)
+    }.reject { |_k, v| v.blank? }
   end
 
   # rubocop:disable Metrics/AbcSize
@@ -38,10 +41,7 @@ class CdlController < ApplicationController
         format.js { render js: 'window.close();' }
       end
     else
-      public_xml = Purl.public_xml(params[:id])
-      doc = Nokogiri::XML.parse(public_xml)
-      barcode = doc.xpath('//identityMetadata/sourceId[@source="sul"]')&.text&.sub(/^stanford_/, '')
-      render json: 'invalid barcode', status: 400 and return unless barcode.starts_with?('36105')
+      render json: 'invalid barcode', status: 400 and return unless barcode
 
       checkout_params = {
         id: params[:id],
@@ -83,10 +83,22 @@ class CdlController < ApplicationController
   end
 
   def payload
-    @payload ||= current_user.cdl_tokens.find { |token| token[:aud] == params[:id] }
+    @payload ||= current_user.cdl_tokens.find { |token| token[:aud] == params[:id] }&.with_indifferent_access
   end
 
   def validate_token
     render json: 'Token not found', status: :bad_request if payload.blank?
+  end
+
+  def barcode
+    @barcode ||= begin
+      return payload&.dig('barcode') if payload&.dig('barcode')
+
+      public_xml = Purl.public_xml(params[:id])
+      doc = Nokogiri::XML.parse(public_xml)
+      barcode = doc.xpath('//identityMetadata/sourceId[@source="sul"]')&.text&.sub(/^stanford_/, '')
+
+      barcode if barcode.starts_with?('36105')
+    end
   end
 end
