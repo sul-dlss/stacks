@@ -6,6 +6,7 @@ class CdlController < ApplicationController
   before_action do
     raise CanCan::AccessDenied, 'Unable to authenticate' unless current_user
   end
+  skip_forgery_protection only: :show
 
   before_action :write_auth_session_info, only: [:create]
   before_action :validate_token, only: [:delete]
