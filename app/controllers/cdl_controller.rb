@@ -6,7 +6,7 @@ class CdlController < ApplicationController
   before_action do
     raise CanCan::AccessDenied, 'Unable to authenticate' unless current_user
   end
-  skip_forgery_protection only: :show
+  skip_forgery_protection only: [:show, :show_options]
 
   before_action :write_auth_session_info, only: [:create]
   before_action :validate_token, only: [:delete]
@@ -18,6 +18,11 @@ class CdlController < ApplicationController
       payload: payload&.except(:token),
       availability_url: ("#{Settings.cdl.url}/availability/#{barcode}" if barcode)
     }.reject { |_k, v| v.blank? }
+  end
+
+  def show_options
+    response.headers['Access-Control-Allow-Headers'] = 'Authorization'
+    self.response_body = ''
   end
 
   # rubocop:disable Metrics/AbcSize
