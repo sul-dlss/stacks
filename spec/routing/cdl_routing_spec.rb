@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'CDL routes', type: :routing do
   it 'routes to #show' do
-    expect(get: '/auth/iiif/cdl/druid').to route_to('cdl#show', id: 'druid')
+    expect(get: '/cdl/druid').to route_to('cdl#show', id: 'druid')
   end
 
   it 'routes to #create' do

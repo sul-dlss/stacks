@@ -7,6 +7,26 @@ RSpec.describe CdlController do
   let(:token) { JWT.encode(payload, Settings.cdl.jwt.secret, Settings.cdl.jwt.algorithm) }
   let(:payload) { { aud: 'druid', sub: 'username', exp: (Time.zone.now + 1.day).to_i, barcode: '36105110268922' } }
 
+  let(:barcoded_item_xml) do
+    <<-EOXML
+      <publicObject>
+        <identityMetadata>
+          <sourceId source="sul">36105110268922</sourceId>
+        </identityMetadata>
+      </publicObject>
+    EOXML
+  end
+
+  let(:non_barcoded_item_xml) do
+    <<-EOXML
+      <publicObject>
+        <identityMetadata>
+          <sourceId source="sul">this is not a barcode</sourceId>
+        </identityMetadata>
+      </publicObject>
+    EOXML
+  end
+
   before do
     allow(controller).to receive(:current_user).and_return(user)
     cookies.encrypted[:tokens] = [token]
@@ -14,10 +34,17 @@ RSpec.describe CdlController do
 
   describe '#show' do
     context 'without a token' do
-      it 'is a 404' do
+      before do
+        allow(Purl).to receive(:public_xml).with('other-druid').and_return(barcoded_item_xml)
+      end
+
+      it 'includes a url to look up availability' do
         get :show, { params: { id: 'other-druid' } }
 
-        expect(response.status).to eq 400
+        expect(response.status).to eq 200
+        expect(JSON.parse(response.body).with_indifferent_access).to include(
+          availability_url: match(%(cdl/availability/36105110268922))
+        )
       end
     end
 
@@ -40,26 +67,6 @@ RSpec.describe CdlController do
   end
 
   describe '#create' do
-    let(:barcoded_item_xml) do
-      <<-EOXML
-        <publicObject>
-          <identityMetadata>
-            <sourceId source="sul">36105110268922</sourceId>
-          </identityMetadata>
-        </publicObject>
-      EOXML
-    end
-
-    let(:non_barcoded_item_xml) do
-      <<-EOXML
-        <publicObject>
-          <identityMetadata>
-            <sourceId source="sul">this is not a barcode</sourceId>
-          </identityMetadata>
-        </publicObject>
-      EOXML
-    end
-
     context 'with a token' do
       it 'stores the token in a cookie' do
         get :create, { params: { id: 'other-druid', token: 'xyz' } }
