@@ -40,22 +40,28 @@ class User
     locations.any?
   end
 
+  def append_jwt_token(token)
+    self.jwt_tokens = (cdl_tokens.to_a + [decode_token(token).first]).compact.sort_by { |x| x.fetch(:iat, Time.at(0)) }.reverse.uniq { |x| x[:aud] }.pluck(:token)
+  end
+
   def cdl_tokens
-    return [] if jwt_tokens.blank?
+    return to_enum(:cdl_tokens) unless block_given?
 
-    @cdl_tokens ||= jwt_tokens.map do |token|
-      payload, _headers = begin
-        JWT.decode(token, Settings.cdl.jwt.secret, true, {
-                     algorithm: Settings.cdl.jwt.algorithm, sub: id, verify_sub: true
-                   })
-                          rescue JWT::ExpiredSignature, JWT::InvalidSubError
-                            nil
-      end
-
+    (jwt_tokens || []).each do |token|
+      payload, _headers = decode_token(token)
       next unless payload && payload['sub'] == id && payload['exp'] >= Time.zone.now.to_i
 
-      payload.merge(token: token).with_indifferent_access
-    end.compact
+      yield payload
+    end
+  end
+
+  def decode_token(token)
+    payload, headers = JWT.decode(token, Settings.cdl.jwt.secret, true, {
+                 algorithm: Settings.cdl.jwt.algorithm, sub: id, verify_sub: true
+               })
+    return [payload&.merge(token: token)&.with_indifferent_access, headers]
+  rescue JWT::ExpiredSignature, JWT::InvalidSubError
+    nil
   end
 
   def self.from_token(token, additional_attributes = {})

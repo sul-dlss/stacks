@@ -68,10 +68,24 @@ RSpec.describe CdlController do
 
   describe '#create' do
     context 'with a token' do
+      let(:new_token) { JWT.encode(payload.merge(aud: 'other-druid'), Settings.cdl.jwt.secret, Settings.cdl.jwt.algorithm) }
+
       it 'stores the token in a cookie' do
-        get :create, { params: { id: 'other-druid', token: 'xyz' } }
+        get :create, { params: { id: 'other-druid', token: new_token } }
 
         expect(cookies.encrypted[:tokens].length).to eq 2
+      end
+    end
+
+    context 'with an updated token' do
+      let(:new_exp) { (Time.zone.now + 2.day).to_i }
+      let(:new_token) { JWT.encode(payload.merge(iat: Time.zone.now.to_i, exp: new_exp), Settings.cdl.jwt.secret, Settings.cdl.jwt.algorithm) }
+
+      it 'stores the token in a cookie' do
+        get :create, { params: { id: 'druid', token: new_token } }
+
+        expect(cookies.encrypted[:tokens].length).to eq 1
+        expect(controller.send(:current_user).cdl_tokens.first[:exp]).to eq new_exp
       end
     end
 

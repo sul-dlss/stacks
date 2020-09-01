@@ -40,7 +40,8 @@ class CdlController < ApplicationController
   #      - barcode (note: the actual item barcode may differ from the one in the SDR item)
   def create
     if params[:token]
-      cookies.encrypted[:tokens] = (cookies.encrypted[:tokens] || []).concat([params[:token]])
+      current_user.append_jwt_token(params[:token])
+      cookies.encrypted[:tokens] = current_user.jwt_tokens
 
       respond_to do |format|
         format.html { render html: '<html><script>window.close();</script></html>'.html_safe }

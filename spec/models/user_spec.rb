@@ -72,7 +72,7 @@ RSpec.describe User do
         end
 
         it 'filters expired tokens' do
-          expect(user.cdl_tokens.length).to eq 0
+          expect(user.cdl_tokens.count).to eq 0
         end
       end
 
@@ -84,7 +84,7 @@ RSpec.describe User do
         end
 
         it 'filters tokens for other users' do
-          expect(user.cdl_tokens.length).to eq 0
+          expect(user.cdl_tokens.count).to eq 0
         end
       end
     end

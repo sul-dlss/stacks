@@ -114,7 +114,7 @@ class ApplicationController < ActionController::Base
   end
 
   def clean_up_expired_cdl_tokens(user)
-    return unless cookies.encrypted[:tokens] && user.cdl_tokens.length != cookies.encrypted[:tokens].length
+    return unless cookies.encrypted[:tokens] && user.cdl_tokens.count != cookies.encrypted[:tokens].length
 
     cookies.encrypted[:tokens] = user.cdl_tokens.pluck(:token)
   end
