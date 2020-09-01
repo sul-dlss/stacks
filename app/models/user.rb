@@ -41,7 +41,7 @@ class User
   end
 
   def append_jwt_token(token)
-    self.jwt_tokens = (cdl_tokens.to_a + [decode_token(token).first]).compact.sort_by { |x| x.fetch(:iat, Time.at(0)) }.reverse.uniq { |x| x[:aud] }.pluck(:token)
+    self.jwt_tokens = (cdl_tokens.to_a + [decode_token(token)&.first]).compact.sort_by { |x| x.fetch(:iat, Time.at(0)) }.reverse.uniq { |x| x[:aud] }.pluck(:token)
   end
 
   def cdl_tokens
