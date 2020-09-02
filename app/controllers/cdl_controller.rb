@@ -53,6 +53,7 @@ class CdlController < ApplicationController
       checkout_params = {
         id: params[:id],
         barcode: barcode,
+        modal: true,
         return_to: cdl_checkout_iiif_auth_api_url(params[:id])
       }
 
