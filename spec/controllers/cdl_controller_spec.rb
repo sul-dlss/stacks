@@ -94,7 +94,7 @@ RSpec.describe CdlController do
 
       get :create, { params: { id: 'other-druid' } }
 
-      expect(response).to redirect_to('https://requests.stanford.edu/cdl/checkout?barcode=36105110268922&id=other-druid&return_to=http%3A%2F%2Ftest.host%2Fauth%2Fiiif%2Fcdl%2Fother-druid%2Fcheckout')
+      expect(response).to redirect_to('https://requests.stanford.edu/cdl/checkout?barcode=36105110268922&id=other-druid&modal=true&return_to=http%3A%2F%2Ftest.host%2Fauth%2Fiiif%2Fcdl%2Fother-druid%2Fcheckout')
     end
 
     context 'with a record without a barcode' do

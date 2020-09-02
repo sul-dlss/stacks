@@ -16,7 +16,8 @@ RSpec.describe IiifInfoService do
              cdl_checkout_iiif_auth_api_url: 'http://cdl/out',
              cdl_checkin_iiif_auth_api_url: 'http://cdl/in',
              cdl_info_iiif_auth_api_url: 'http://cdl/info',
-             cdl_iiif_token_api_url: 'http://cdl/token')
+             cdl_iiif_token_api_url: 'http://cdl/token',
+             cdl_renew_iiif_auth_api_url: 'http://cdl/renew')
     end
     let(:downloadable_anonymously) { true }
     let(:image) do

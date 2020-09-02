@@ -81,6 +81,23 @@ class CdlController < ApplicationController
   end
   # rubocop:enable Metrics/AbcSize
 
+  def renew
+    if params[:token]
+      current_user.append_jwt_token(params[:token])
+      cookies.encrypted[:tokens] = current_user.jwt_tokens
+
+      respond_to do |format|
+        format.html { render html: '<html><script>window.close();</script></html>'.html_safe }
+        format.js { render js: 'window.close();' }
+      end
+    else
+      token = payload[:token]
+
+      renew_params = { token: token, return_to: cdl_renew_iiif_auth_api_url(params[:id]) }
+      redirect_to "#{Settings.cdl.url}/renew?#{renew_params.to_param}"
+    end
+  end
+
   private
 
   def write_auth_session_info

@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   get '/auth/iiif' => 'webauth#login', as: :iiif_auth_api
   get '/auth/iiif/cdl/:id/checkout' => 'cdl#create', as: :cdl_checkout_iiif_auth_api
   get '/auth/iiif/cdl/:id/checkin' => 'cdl#delete', as: :cdl_checkin_iiif_auth_api
+  get '/auth/iiif/cdl/:id/renew' => 'cdl#renew', as: :cdl_renew_iiif_auth_api
   get '/cdl/:id' => 'cdl#show', as: :cdl_info_iiif_auth_api
   match '/cdl/:id' => 'cdl#show_options', via: [:options]
   get '/auth/logout' => 'webauth#logout', as: :logout

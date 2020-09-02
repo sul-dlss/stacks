@@ -37,13 +37,17 @@ class CdlService
         {
           '@id' => cdl_info_iiif_auth_api_url(id),
           'profile' => 'http://iiif.io/api/auth/1/info'
+        },
+        {
+          '@id' => cdl_renew_iiif_auth_api_url(id),
+          'profile' => 'http://iiif.io/api/auth/1/renew'
         }
       ]
     }
   end
 
   delegate :cdl_checkout_iiif_auth_api_url, :cdl_checkin_iiif_auth_api_url,
-           :cdl_iiif_token_api_url, :cdl_info_iiif_auth_api_url, to: :url_helpers
+           :cdl_iiif_token_api_url, :cdl_info_iiif_auth_api_url, :cdl_renew_iiif_auth_api_url, to: :url_helpers
 
   def url_helpers
     @context
