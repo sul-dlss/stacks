@@ -41,7 +41,12 @@ class User
   end
 
   def append_jwt_token(token)
-    self.jwt_tokens = (cdl_tokens.to_a + [decode_token(token)&.first]).compact.sort_by { |x| x.fetch(:iat, Time.at(0)) }.reverse.uniq { |x| x[:aud] }.pluck(:token)
+    self.jwt_tokens = (cdl_tokens.to_a + [decode_token(token)&.first])
+                      .compact
+                      .sort_by { |x| x.fetch(:iat, Time.zone.at(0)) }
+                      .reverse
+                      .uniq { |x| x[:aud] }
+                      .pluck(:token)
   end
 
   def cdl_tokens
@@ -57,9 +62,9 @@ class User
 
   def decode_token(token)
     payload, headers = JWT.decode(token, Settings.cdl.jwt.secret, true, {
-                 algorithm: Settings.cdl.jwt.algorithm, sub: id, verify_sub: true
-               })
-    return [payload&.merge(token: token)&.with_indifferent_access, headers]
+                                    algorithm: Settings.cdl.jwt.algorithm, sub: id, verify_sub: true
+                                  })
+    [payload&.merge(token: token)&.with_indifferent_access, headers]
   rescue JWT::ExpiredSignature, JWT::InvalidSubError
     nil
   end

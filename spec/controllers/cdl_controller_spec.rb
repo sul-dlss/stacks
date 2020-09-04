@@ -68,21 +68,29 @@ RSpec.describe CdlController do
 
   describe '#create' do
     context 'with a token' do
-      let(:new_token) { JWT.encode(payload.merge(aud: 'other-druid'), Settings.cdl.jwt.secret, Settings.cdl.jwt.algorithm) }
+      let(:new_token) do
+        JWT.encode(payload.merge(aud: 'other-druid'), Settings.cdl.jwt.secret, Settings.cdl.jwt.algorithm)
+      end
 
       it 'stores the token in a cookie' do
-        get :create, { params: { id: 'other-druid', token: new_token } }
+        get :create_success, { params: { id: 'other-druid', token: new_token } }
 
         expect(cookies.encrypted[:tokens].length).to eq 2
       end
     end
 
     context 'with an updated token' do
-      let(:new_exp) { (Time.zone.now + 2.day).to_i }
-      let(:new_token) { JWT.encode(payload.merge(iat: Time.zone.now.to_i, exp: new_exp), Settings.cdl.jwt.secret, Settings.cdl.jwt.algorithm) }
+      let(:new_exp) { 2.days.from_now.to_i }
+      let(:new_token) do
+        JWT.encode(
+          payload.merge(iat: Time.zone.now.to_i, exp: new_exp),
+          Settings.cdl.jwt.secret,
+          Settings.cdl.jwt.algorithm
+        )
+      end
 
       it 'stores the token in a cookie' do
-        get :create, { params: { id: 'druid', token: new_token } }
+        get :create_success, { params: { id: 'druid', token: new_token } }
 
         expect(cookies.encrypted[:tokens].length).to eq 1
         expect(controller.send(:current_user).cdl_tokens.first[:exp]).to eq new_exp
@@ -94,7 +102,7 @@ RSpec.describe CdlController do
 
       get :create, { params: { id: 'other-druid' } }
 
-      expect(response).to redirect_to('https://requests.stanford.edu/cdl/checkout?barcode=36105110268922&id=other-druid&modal=true&return_to=http%3A%2F%2Ftest.host%2Fauth%2Fiiif%2Fcdl%2Fother-druid%2Fcheckout')
+      expect(response).to redirect_to('https://requests.stanford.edu/cdl/checkout?barcode=36105110268922&id=other-druid&modal=true&return_to=http%3A%2F%2Ftest.host%2Fauth%2Fiiif%2Fcdl%2Fother-druid%2Fcheckout%2Fsuccess')
     end
 
     context 'with a record without a barcode' do
@@ -110,7 +118,7 @@ RSpec.describe CdlController do
   describe '#delete' do
     context 'with a success parameter' do
       it 'purges the cookie' do
-        get :delete, params: { id: 'druid', success: true }
+        get :delete_success, params: { id: 'druid' }
 
         expect(cookies.encrypted[:tokens].length).to eq 0
       end
@@ -119,7 +127,7 @@ RSpec.describe CdlController do
     it 'bounces you to requests to handle the symphony interaction' do
       get :delete, params: { id: 'druid' }
 
-      url = 'http%3A%2F%2Ftest.host%2Fauth%2Fiiif%2Fcdl%2Fdruid%2Fcheckin'
+      url = 'http%3A%2F%2Ftest.host%2Fauth%2Fiiif%2Fcdl%2Fdruid%2Fcheckin%2Fsuccess'
       expect(response).to redirect_to("https://requests.stanford.edu/cdl/checkin?return_to=#{url}&token=#{token}")
     end
   end
