@@ -84,7 +84,7 @@ class CdlController < ApplicationController
   def renew
     token = existing_payload[:token]
 
-    renew_params = { token: token, return_to: cdl_renew_success_iiif_auth_api_url(params[:id]) }
+    renew_params = { modal: true, token: token, return_to: cdl_renew_success_iiif_auth_api_url(params[:id]) }
     redirect_to "#{Settings.cdl.url}/renew?#{renew_params.to_param}"
   end
 

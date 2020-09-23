@@ -115,6 +115,35 @@ RSpec.describe CdlController do
     end
   end
 
+  describe '#renew' do
+    context 'with an updated token' do
+      let(:new_exp) { 2.days.from_now.to_i }
+      let(:new_token) do
+        JWT.encode(
+          payload.merge(iat: Time.zone.now.to_i, exp: new_exp),
+          Settings.cdl.jwt.secret,
+          Settings.cdl.jwt.algorithm
+        )
+      end
+
+      it 'stores the token in a cookie' do
+        get :renew_success, { params: { id: 'druid', token: new_token } }
+
+        expect(cookies.encrypted[:tokens].length).to eq 1
+        expect(controller.send(:current_user).cdl_tokens.first[:exp]).to eq new_exp
+      end
+    end
+
+    it 'bounces you to requests to handle the symphony interaction' do
+      get :renew, { params: { id: 'druid' } }
+
+      url = 'http%3A%2F%2Ftest.host%2Fauth%2Fiiif%2Fcdl%2Fdruid%2Frenew%2Fsuccess'
+      expect(response).to redirect_to(
+        "https://requests.stanford.edu/cdl/renew?modal=true&return_to=#{url}&token=#{token}"
+      )
+    end
+  end
+
   describe '#delete' do
     it 'bounces you to requests to handle the symphony interaction' do
       get :delete, params: { id: 'druid' }
