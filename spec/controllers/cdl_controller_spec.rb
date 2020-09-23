@@ -123,4 +123,27 @@ RSpec.describe CdlController do
       expect(response).to redirect_to("https://requests.stanford.edu/cdl/checkin?return_to=#{url}&token=#{token}")
     end
   end
+
+  describe '#delete_success' do
+    let(:user) { User.new id: 'username', jwt_tokens: [token, other_token] }
+    let(:other_token) do
+      JWT.encode(
+        payload.merge(aud: 'other-druid'),
+        Settings.cdl.jwt.secret,
+        Settings.cdl.jwt.algorithm
+      )
+    end
+
+    before do
+      cookies.encrypted[:tokens] = [token, other_token]
+    end
+
+    it 'removes any remaining tokens for the druid' do
+      get :delete_success, params: { id: 'druid' }
+
+      expect(cookies.encrypted[:tokens].length).to eq 1
+      u = User.new(id: 'username', jwt_tokens: cookies.encrypted[:tokens])
+      expect(u.cdl_tokens.first[:aud]).to eq 'other-druid'
+    end
+  end
 end

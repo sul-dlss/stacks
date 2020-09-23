@@ -71,6 +71,10 @@ class CdlController < ApplicationController
   end
 
   def delete_success
+    # Note: the user may have lost its token already (because it was marked as expired)
+    bad_tokens, good_tokens = current_user.cdl_tokens.partition { |payload| payload['aud'] == params[:id] }
+    cookies.encrypted[:tokens] = good_tokens.pluck(:token) if bad_tokens.any?
+
     respond_to do |format|
       format.html { render html: '<html><script>window.close();</script></html>'.html_safe }
       format.js { render js: 'window.close();' }
