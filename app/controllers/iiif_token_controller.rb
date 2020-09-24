@@ -32,7 +32,11 @@ class IiifTokenController < ApplicationController
   # app-user, or are accessing material from a location-specific kiosk.
   # Other anonymous users are not eligible.
   def token_eligible_user?
-    current_user.token_user? || current_user.webauth_user? || current_user.app_user? || current_user.location?
+    current_user.token_user? ||
+      current_user.webauth_user? ||
+      current_user.app_user? ||
+      current_user.location? ||
+      current_user.cdl_tokens.any?
   end
 
   # Handle IIIF Authentication 1.0 browser-based client application requests

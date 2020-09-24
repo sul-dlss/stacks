@@ -63,6 +63,7 @@ Layout/LineLength:
 Metrics/MethodLength:
   Exclude:
     - 'app/models/ability.rb'
+    - 'app/services/cdl_service.rb'
 
 Naming/HeredocDelimiterNaming:
   Enabled: false

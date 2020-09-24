@@ -18,6 +18,13 @@ stacks:
 purl:
   url: 'https://purl.stanford.edu/'
 
+cdl:
+  url: 'https://requests.stanford.edu/cdl'
+  jwt:
+    algorithm: 'HS256'
+    secret: secret
+  redis: {}
+
 stream:
   # max_token_age is specified in seconds
   max_token_age: 45

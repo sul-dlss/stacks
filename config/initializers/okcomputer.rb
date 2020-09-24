@@ -19,6 +19,8 @@ OkComputer::Registry.register 'stacks_mounted_dir',
 
 OkComputer::Registry.register 'purl_url', OkComputer::HttpCheck.new(Settings.purl.url + "status/default.json")
 
+OkComputer::Registry.register 'redis', OkComputer::RedisCheck.new(Settings.cdl.redis.to_h) if Settings.cdl.redis
+OkComputer.make_optional %w(redis)
 # ------------------------------------------------------------------------------
 
 # NON-CRUCIAL (Optional) checks, avail at /status/<name-of-check>

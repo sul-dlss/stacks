@@ -25,7 +25,7 @@ class IiifController < ApplicationController
     return unless stale?(cache_headers_show(projection))
 
     authorize! :read, projection
-    expires_in 10.minutes, public: anonymous_ability.can?(:read, projection)
+    expires_in cache_time, public: anonymous_ability.can?(:read, projection)
 
     set_image_response_headers
 
@@ -46,7 +46,7 @@ class IiifController < ApplicationController
       return
     end
 
-    expires_in 10.minutes, public: false
+    expires_in cache_time, public: false
     authorize! :read_metadata, current_image
 
     status = if degraded_identifier? || can?(:access, current_image)
@@ -189,5 +189,11 @@ class IiifController < ApplicationController
 
   def ensure_valid_identifier
     raise ActionController::RoutingError, "invalid identifer" unless stacks_identifier.valid?
+  end
+
+  def cache_time
+    return 1.minute if current_image.cdl_restricted?
+
+    10.minutes
   end
 end

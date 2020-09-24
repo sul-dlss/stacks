@@ -3,16 +3,19 @@
 require 'rails_helper'
 
 RSpec.describe IiifController do
+  let(:image) do
+    instance_double(StacksImage,
+                    valid?: true,
+                    exist?: true,
+                    etag: nil,
+                    mtime: nil,
+                    cdl_restricted?: false)
+  end
+
   describe '#show' do
     let(:identifier) { 'nr349ct7889%2Fnr349ct7889_00_0001' }
     let(:image_response) { instance_double(HTTP::Response, body: StringIO.new, status: 200) }
     let(:projection) { instance_double(Projection, response: image_response, valid?: true) }
-    let(:image) do
-      instance_double(StacksImage,
-                      exist?: true,
-                      etag: nil,
-                      mtime: nil)
-    end
     let(:transformation) { double }
 
     let(:iiif_params) do
@@ -100,14 +103,7 @@ RSpec.describe IiifController do
   end
 
   describe '#metadata' do
-    let(:image) do
-      instance_double(StacksImage,
-                      valid?: true,
-                      exist?: true,
-                      etag: nil,
-                      mtime: nil)
-    end
-    let(:anon_user) { instance_double(User, stanford?: false, app_user?: false, locations: []) }
+    let(:anon_user) { instance_double(User, stanford?: false, app_user?: false, locations: [], cdl_tokens: []) }
 
     before do
       # for the cache headers
