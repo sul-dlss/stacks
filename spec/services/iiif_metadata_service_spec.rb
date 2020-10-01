@@ -8,6 +8,7 @@ RSpec.describe IiifMetadataService do
   end
   let(:base_uri) { 'https://sul-imageserver-uat.stanford.edu/cantaloupe/iiif/2/' } # 'image-server-path'
   let(:service) { described_class.new(image_id: identifier, canonical_url: 'foo', base_uri: base_uri) }
+  let(:http_client) { instance_double(HTTP::Client) }
 
   context "When a valid JSON response is received" do
     let(:json) do
@@ -19,8 +20,11 @@ RSpec.describe IiifMetadataService do
       '"sizes":[{"width":1916,"height":1276}]}'
     end
     let(:response) { instance_double(HTTP::Response, code: 200, body: json) }
+
     before do
-      allow(HTTP).to receive(:get)
+      allow(HTTP).to receive(:use)
+        .and_return(http_client)
+      allow(http_client).to receive(:get)
         .with('https://sul-imageserver-uat.stanford.edu/cantaloupe/iiif/2/nr%2F349%2Fct%2F7889%2Fnr349ct7889_00_0001.jp2/info.json')
         .and_return(response)
     end
@@ -54,7 +58,9 @@ RSpec.describe IiifMetadataService do
     let(:empty_json) { '' }
     let(:bad_response) { instance_double(HTTP::Response, code: 200, body: empty_json) }
     before do
-      allow(HTTP).to receive(:get)
+      allow(HTTP).to receive(:use)
+        .and_return(http_client)
+      allow(http_client).to receive(:get)
         .with('https://sul-imageserver-uat.stanford.edu/cantaloupe/iiif/2/nr%2F349%2Fct%2F7889%2Fnr349ct7889_00_0001.jp2/info.json')
         .and_return(bad_response)
     end
