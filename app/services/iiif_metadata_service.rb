@@ -44,7 +44,11 @@ class IiifMetadataService < MetadataService
   # @return [String] the IIIF info response
   def retrieve
     with_retries max_tries: 3, rescue: [HTTP::ConnectionError] do
-      handle_response(HTTP.get(@url))
+      handle_response(
+        # Disable url normalization as an upstream bug in addressable causes issues for `+`
+        # https://github.com/sporkmonger/addressable/issues/386
+        HTTP.use({ normalize_uri: { normalizer: lambda(&:itself) } }).get(@url)
+      )
     end
   end
 

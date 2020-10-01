@@ -22,6 +22,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
   let(:path) { "/stacks/nr/349/ct/7889/nr349ct7889_00_0001" }
   let(:perms) { nil }
   let(:current_image) { StacksImage.new(params_hash) }
+  let(:http_client) { instance_double(HTTP::Client) }
 
   before(:each) do
     allow(File).to receive(:world_readable?).with(path).and_return(perms)
@@ -30,7 +31,9 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
   describe "#show" do
     before(:each) do
       allow_any_instance_of(Projection).to receive(:valid?).and_return(true)
-      allow(HTTP).to receive(:get).and_return(instance_double(HTTP::Response, status: 200, body: StringIO.new))
+      allow(HTTP).to receive(:use)
+        .and_return(http_client)
+      allow(http_client).to receive(:get).and_return(instance_double(HTTP::Response, status: 200, body: StringIO.new))
 
       allow_any_instance_of(IiifController).to receive(:current_user).and_return(current_user)
       allow_any_instance_of(IiifController).to receive(:current_image).and_return(current_image)

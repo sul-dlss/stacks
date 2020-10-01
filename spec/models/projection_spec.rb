@@ -6,6 +6,7 @@ RSpec.describe Projection do
   let(:image) { StacksImage.new }
   let(:instance) { described_class.new(image, transformation) }
   let(:transformation) { IIIF::Image::OptionDecoder.decode(options) }
+  let(:http_client) { instance_double(HTTP::Client) }
 
   before do
     allow(image).to receive_messages(image_width: 800, image_height: 600)
@@ -105,9 +106,11 @@ RSpec.describe Projection do
         let(:options) { { size: 'max', region: 'full' } }
 
         it 'allows the user to see the full-resolution image' do
-          allow(HTTP).to receive(:get).and_return(double(body: nil))
+          allow(HTTP).to receive(:use)
+            .and_return(http_client)
+          allow(http_client).to receive(:get).and_return(double(body: nil))
           subject.response
-          expect(HTTP).to have_received(:get).with(%r{/full/max/0/default.jpg})
+          expect(http_client).to have_received(:get).with(%r{/full/max/0/default.jpg})
         end
       end
     end
@@ -121,9 +124,11 @@ RSpec.describe Projection do
         let(:options) { { size: 'max', region: 'full' } }
 
         it 'limits users to a thumbnail' do
-          allow(HTTP).to receive(:get).and_return(double(body: nil))
+          allow(HTTP).to receive(:use)
+            .and_return(http_client)
+          allow(http_client).to receive(:get).and_return(double(body: nil))
           subject.response
-          expect(HTTP).to have_received(:get).with(%r{/full/!400,400/0/default.jpg})
+          expect(http_client).to have_received(:get).with(%r{/full/!400,400/0/default.jpg})
         end
       end
 
@@ -131,9 +136,11 @@ RSpec.describe Projection do
         let(:options) { { size: '!100,100', region: 'full' } }
 
         it 'limits users to a thumbnail' do
-          allow(HTTP).to receive(:get).and_return(double(body: nil))
+          allow(HTTP).to receive(:use)
+            .and_return(http_client)
+          allow(http_client).to receive(:get).and_return(double(body: nil))
           subject.response
-          expect(HTTP).to have_received(:get).with(%r{/full/!100,100/0/default.jpg})
+          expect(http_client).to have_received(:get).with(%r{/full/!100,100/0/default.jpg})
         end
       end
 
@@ -141,9 +148,11 @@ RSpec.describe Projection do
         let(:options) { { size: '!800,880', region: 'full' } }
 
         it 'limits users to a thumbnail' do
-          allow(HTTP).to receive(:get).and_return(double(body: nil))
+          allow(HTTP).to receive(:use)
+            .and_return(http_client)
+          allow(http_client).to receive(:get).and_return(double(body: nil))
           subject.response
-          expect(HTTP).to have_received(:get).with(%r{/full/!400,400/0/default.jpg})
+          expect(http_client).to have_received(:get).with(%r{/full/!400,400/0/default.jpg})
         end
       end
 
@@ -151,9 +160,11 @@ RSpec.describe Projection do
         let(:options) { { size: '100,100', region: 'square' } }
 
         it 'limits users to a thumbnail' do
-          allow(HTTP).to receive(:get).and_return(double(body: nil))
+          allow(HTTP).to receive(:use)
+            .and_return(http_client)
+          allow(http_client).to receive(:get).and_return(double(body: nil))
           subject.response
-          expect(HTTP).to have_received(:get).with(%r{/square/100,100/0/default.jpg})
+          expect(http_client).to have_received(:get).with(%r{/square/100,100/0/default.jpg})
         end
       end
     end

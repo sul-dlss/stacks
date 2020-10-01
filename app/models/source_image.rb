@@ -9,7 +9,9 @@ class SourceImage
   def response
     with_retries max_tries: 3, rescue: [HTTP::ConnectionError] do
       benchmark "Fetch #{image_url}" do
-        HTTP.get(image_url)
+        # Disable url normalization as an upstream bug in addressable causes issues for `+`
+        # https://github.com/sporkmonger/addressable/issues/386
+        HTTP.use({ normalize_uri: { normalizer: lambda(&:itself) } }).get(image_url)
       end
     end
   end
