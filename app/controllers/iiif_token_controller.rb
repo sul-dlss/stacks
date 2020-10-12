@@ -26,6 +26,22 @@ class IiifTokenController < ApplicationController
     end
   end
 
+  def create_for_item
+    if current_user.cdl_tokens.none? { |payload| payload['aud'] == params[:id] }
+      @message = { error: 'missingCredentials', description: '' }
+
+      if browser_based_client_auth?
+        create_for_browser_based_client_application_auth
+      else
+        create_for_json_access_token_auth(nil)
+      end
+
+      return
+    end
+
+    create
+  end
+
   private
 
   # An authenticated user can retrieve a token if they are logged in with webauth, as an

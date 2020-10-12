@@ -5,13 +5,13 @@ require 'rails_helper'
 RSpec.describe IiifTokenController do
   render_views
 
+  let(:user) { User.new(anonymous_locatable_user: true) }
+
+  before do
+    allow(controller).to receive(:current_user).and_return(user)
+  end
+
   describe '#create' do
-    let(:user) { User.new(anonymous_locatable_user: true) }
-
-    before do
-      allow(controller).to receive(:current_user).and_return(user)
-    end
-
     context 'browser-based interaction' do
       let(:user) { User.new id: 'xyz', webauth_user: true }
 
@@ -85,6 +85,40 @@ RSpec.describe IiifTokenController do
           data = JSON.parse(subject.body)
           expect(data['error']).to eq 'missingCredentials'
         end
+      end
+    end
+  end
+
+  describe '#create_for_item' do
+    it 'returns an error response' do
+      get :create_for_item, params: { id: 'whatever', format: :js }
+
+      expect(response.status).to eq 401
+
+      data = JSON.parse(response.body)
+      expect(data['error']).to eq 'missingCredentials'
+    end
+
+    context 'with a token for the item' do
+      let(:user) do
+        User.new(
+          id: 'xyz',
+          jwt_tokens: jwt_tokens.map do |payload|
+            JWT.encode(payload, Settings.cdl.jwt.secret, Settings.cdl.jwt.algorithm)
+          end
+        )
+      end
+
+      let(:jwt_tokens) do
+        [
+          { jti: 'a', aud: 'whatever', sub: 'xyz', exp: (Time.zone.now + 1.hour).to_i }
+        ]
+      end
+
+      it 'calls the ordinary create method' do
+        allow(controller).to receive(:create)
+        get :create_for_item, params: { id: 'whatever', format: :js }
+        expect(controller).to have_received(:create)
       end
     end
   end
