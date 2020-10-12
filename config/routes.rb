@@ -29,7 +29,7 @@ Rails.application.routes.draw do
   match '/cdl/:id' => 'cdl#show_options', via: [:options]
   get '/auth/logout' => 'webauth#logout', as: :logout
   get '/image/iiif/token' => 'iiif_token#create', as: :iiif_token_api
-  get '/image/iiif/token/:id' => 'iiif_token#create', as: :cdl_iiif_token_api
+  get '/image/iiif/token/:id' => 'iiif_token#create_for_item', as: :cdl_iiif_token_api
 
   constraints identifier: %r{[^/]+}, size: %r{[^/]+} do
     get '/image/iiif/:identifier', to: redirect('/image/iiif/%{identifier}/info.json', status: 303), as: :iiif_base
