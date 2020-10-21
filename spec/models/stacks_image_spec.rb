@@ -13,9 +13,8 @@ RSpec.describe StacksImage do
   describe "#info_service" do
     subject { instance.send(:info_service) }
 
-    let(:identifier) { StacksIdentifier.new(druid: 'ab012cd3456', file_name: 'def') }
-    let(:instance) { described_class.new(id: identifier) }
-    it { is_expected.to be_kind_of MetadataService }
+    let(:instance) { described_class.new(id: 'ab012cd3456', file_name: 'def') }
+    it { is_expected.to be_kind_of IiifMetadataService }
   end
 
   describe '#info' do
@@ -45,7 +44,6 @@ RSpec.describe StacksImage do
     let(:image) do
       described_class.new(attributes)
     end
-    let(:identifier) { StacksIdentifier.new(druid: 'ab012cd3456', file_name: 'def') }
 
     let(:transformation) do
       IIIF::Image::Transformation.new(
@@ -57,7 +55,7 @@ RSpec.describe StacksImage do
     end
 
     let(:attributes) do
-      { id: identifier,
+      { id: 'ab012cd3456', file_name: 'def',
         canonical_url: 'http://example.com/',
         transformation: transformation }
     end
@@ -65,6 +63,7 @@ RSpec.describe StacksImage do
     it 'passes all the parameters' do
       expect(subject.transformation).to eq attributes[:transformation]
       expect(subject.id).to eq attributes[:id]
+      expect(subject.file_name).to eq attributes[:file_name]
       expect(subject.canonical_url).to eq attributes[:canonical_url]
     end
   end

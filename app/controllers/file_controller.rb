@@ -21,26 +21,13 @@ class FileController < ApplicationController
   private
 
   def disposition
-    return :attachment if allowed_params[:download]
+    return :attachment if file_params[:download]
 
     :inline
   end
 
-  def allowed_params
+  def file_params
     params.permit(:id, :file_name, :download)
-  end
-
-  def stacks_file_params
-    allowed_params.slice(:download)
-                  .merge(id: stacks_identifier)
-  end
-
-  def stacks_identifier
-    id = StacksIdentifier.new(druid: params[:id],
-                              file_name: params[:file_name])
-    return id if id.valid?
-
-    raise ActionController::RoutingError, 'Invalid druid'
   end
 
   # called when CanCan::AccessDenied error is raised, typically by authorize!
@@ -48,8 +35,8 @@ class FileController < ApplicationController
   #   a)  access not allowed (send to super)  OR
   #   b)  need user to login to determine if access allowed
   def rescue_can_can(exception)
-    if stanford_ability.can?(:access, current_file) && !current_user.webauth_user?
-      redirect_to auth_file_url(allowed_params.to_h.symbolize_keys)
+    if User.stanford_generic_user.ability.can?(:access, current_file) && !current_user.webauth_user?
+      redirect_to auth_file_url(file_params.to_h.symbolize_keys)
     else
       super
     end
@@ -65,6 +52,6 @@ class FileController < ApplicationController
   end
 
   def current_file
-    @file ||= StacksFile.new(stacks_file_params)
+    @file ||= StacksFile.new(file_params)
   end
 end

@@ -5,9 +5,8 @@
 # may be the file that backs a StacksImage or StacksMediaStream
 class StacksFile
   include ActiveModel::Model
-  include StacksRights
 
-  attr_accessor :id, :current_ability, :download
+  attr_accessor :id, :file_name, :current_ability, :download
 
   # Some files exist but have unreadable permissions, treat these as non-existent
   def readable?
@@ -27,6 +26,27 @@ class StacksFile
   end
 
   def path
-    @path ||= PathService.for(id)
+    @path ||= begin
+      return unless treeified_path
+
+      File.join(Settings.stacks.storage_root, treeified_path)
+    end
   end
+
+  def treeified_path
+    return unless druid_parts && file_name
+
+    File.join(druid_parts[1..4], file_name)
+  end
+
+  def druid_parts
+    @druid_parts ||= begin
+      id.match(/^([a-z]{2})(\d{3})([a-z]{2})(\d{4})$/i)
+    end
+  end
+
+  def stacks_rights
+    @stacks_rights ||= StacksRights.new(id: id, file_name: file_name)
+  end
+  delegate :rights, to: :stacks_rights
 end

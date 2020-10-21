@@ -28,5 +28,5 @@ OkComputer.make_optional %w(redis)
 #   - in /status/all, these checks will display their result text, but will not affect HTTP response code
 
 # For image content in image viewer
-OkComputer::Registry.register 'imageserver_url', ImageServerCheckFactory.ok_check
+OkComputer::Registry.register 'imageserver_url', OkComputer::HttpCheck.new(Settings.imageserver.base_uri)
 OkComputer.make_optional %w(imageserver_url)

@@ -9,12 +9,12 @@ RSpec.describe 'IIIF API' do
       'tiles' => [{ 'width' => 256, "height" => 256, "scaleFactors" => [1, 2, 4, 8, 16] }] }
   end
   let(:metadata_service) do
-    instance_double(MetadataService, fetch: metadata,
-                                     image_width: 1702,
-                                     image_height: 2552)
+    instance_double(IiifMetadataService, fetch: metadata,
+                                         image_width: 1702,
+                                         image_height: 2552)
   end
   let(:stacks_image) do
-    StacksImage.new(id: StacksIdentifier.new(druid: 'nr349ct7889', file_name: 'nr349ct7889_00_0001.jp2'))
+    StacksImage.new(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001.jp2')
   end
   let(:file_source) do
     instance_double(StacksFile, readable?: true,
@@ -30,13 +30,13 @@ RSpec.describe 'IIIF API' do
     allow(Rails.cache).to receive(:fetch).and_yield
     allow(StacksImage).to receive(:new).and_return(stacks_image)
     allow(stacks_image).to receive(:file_source).and_return(file_source)
-    allow(StacksMetadataServiceFactory).to receive(:create).and_return(metadata_service)
+    allow(IiifMetadataService).to receive(:new).and_return(metadata_service)
   end
 
   it 'redirects base uri requests to the info.json document' do
-    get '/image/iiif/abc'
+    get '/image/iiif/nr349ct7889/abc'
 
-    expect(response).to redirect_to('/image/iiif/abc/info.json')
+    expect(response).to redirect_to('/image/iiif/nr349ct7889/abc/info.json')
     expect(response.status).to eq 303
   end
 
@@ -67,7 +67,7 @@ RSpec.describe 'IIIF API' do
         it 'redirects requests to the degraded info.json' do
           get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json'
           expect(response).to have_http_status :redirect
-          expect(response).to redirect_to('/image/iiif/degraded_nr349ct7889%252Fnr349ct7889_00_0001/info.json')
+          expect(response).to redirect_to('/image/iiif/degraded/nr349ct7889/nr349ct7889_00_0001/info.json')
           expect(response.headers['Cache-Control']).to match(/max-age=0/)
         end
       end
@@ -91,18 +91,18 @@ RSpec.describe 'IIIF API' do
     end
 
     it 'redirects requests to the degraded info.json' do
-      get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json'
+      get '/image/iiif/nr349ct7889/nr349ct7889_00_0001/info.json'
       expect(response).to have_http_status :redirect
-      expect(response).to redirect_to('/image/iiif/degraded_nr349ct7889%252Fnr349ct7889_00_0001/info.json')
+      expect(response).to redirect_to('/image/iiif/degraded/nr349ct7889/nr349ct7889_00_0001/info.json')
       expect(response.headers['Cache-Control']).to match(/max-age=0/)
     end
 
     context 'when connecting to the degraded url' do
       it 'serves a degraded info.json description for the original file' do
-        get '/image/iiif/degraded_nr349ct7889%2Fnr349ct7889_00_0001/info.json'
+        get '/image/iiif/degraded/nr349ct7889/nr349ct7889_00_0001/info.json'
 
         expect(response).to have_http_status :ok
-        expect(controller.send(:current_image).id.druid).to eq 'nr349ct7889'
+        expect(controller.send(:current_image).id).to eq 'nr349ct7889'
       end
     end
   end
@@ -129,9 +129,9 @@ RSpec.describe 'IIIF API' do
       stub_rights_xml(stanford_only_no_download_xml)
     end
     it 'redirects to degraded version' do
-      get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json'
+      get '/image/iiif/nr349ct7889/nr349ct7889_00_0001/info.json'
       expect(response).to have_http_status :redirect
-      expect(response).to redirect_to('/image/iiif/degraded_nr349ct7889%252Fnr349ct7889_00_0001/info.json')
+      expect(response).to redirect_to('/image/iiif/degraded/nr349ct7889/nr349ct7889_00_0001/info.json')
     end
   end
 end

@@ -54,6 +54,6 @@ class CdlService
   end
 
   def id
-    @current_image.id.druid
+    @current_image.id
   end
 end

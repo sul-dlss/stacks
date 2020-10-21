@@ -98,8 +98,7 @@ RSpec.describe Projection do
 
   describe '#response' do
     context 'for an image' do
-      let(:id) { StacksIdentifier.new('ab123cd4567%2Fb') }
-      let(:image) { StacksImage.new id: id }
+      let(:image) { StacksImage.new id: 'ab123cd4567', file_name: 'b' }
       subject(:projection) { described_class.new(image, transformation) }
 
       context "full region" do
@@ -116,8 +115,7 @@ RSpec.describe Projection do
     end
 
     context 'for a restricted image' do
-      let(:id) { StacksIdentifier.new('ab123cd4567%2Fb') }
-      let(:image) { RestrictedImage.new id: id }
+      let(:image) { RestrictedImage.new id: 'ab123cd4567', file_name: 'b' }
       subject(:projection) { described_class.new(image, transformation) }
 
       context "full region" do
@@ -296,26 +294,26 @@ RSpec.describe Projection do
     subject { instance.valid? }
 
     before do
-      allow(StacksImageSourceFactory).to receive(:create).and_return(source_image)
+      allow(IiifImage).to receive(:new).and_return(source_image)
       allow(StacksFile).to receive(:new).and_return(file)
     end
 
     context 'when file exists and transformation is valid' do
       let(:file) { instance_double(StacksFile, readable?: true) }
-      let(:source_image) { instance_double(SourceImage, valid?: true) }
+      let(:source_image) { instance_double(IiifImage, valid?: true) }
       it { is_expected.to be true }
     end
 
     context 'when file exists but transformation is not valid' do
       let(:file) { instance_double(StacksFile, readable?: true) }
-      let(:source_image) { instance_double(SourceImage, valid?: false) }
+      let(:source_image) { instance_double(IiifImage, valid?: false) }
 
       it { is_expected.to be false }
     end
 
     context 'when file does not exist' do
       let(:file) { instance_double(StacksFile, readable?: false) }
-      let(:source_image) { instance_double(SourceImage) }
+      let(:source_image) { instance_double(IiifImage) }
 
       it { is_expected.to be false }
     end

@@ -44,26 +44,26 @@ class Ability
     models = [StacksFile, StacksImage, StacksMediaStream]
 
     can [:download, :read], models do |f|
-      value, rule = f.rights.world_rights_for_file f.id.file_name
+      value, rule = f.rights.world_rights_for_file f.file_name
 
       value && (rule.nil? || rule != Dor::RightsAuth::NO_DOWNLOAD_RULE)
     end
 
     can [:access], models do |f|
-      value, _rule = f.rights.world_rights_for_file f.id.file_name
+      value, _rule = f.rights.world_rights_for_file f.file_name
 
       value
     end
 
     if user.stanford?
       can [:download, :read], models do |f|
-        value, rule = f.rights.stanford_only_rights_for_file f.id.file_name
+        value, rule = f.rights.stanford_only_rights_for_file f.file_name
 
         value && (rule.nil? || rule != Dor::RightsAuth::NO_DOWNLOAD_RULE)
       end
 
       can [:access], models do |f|
-        value, _rule = f.rights.stanford_only_rights_for_file f.id.file_name
+        value, _rule = f.rights.stanford_only_rights_for_file f.file_name
 
         value
       end
@@ -71,13 +71,13 @@ class Ability
 
     if user.app_user?
       can [:download, :read], models do |f|
-        value, rule = f.rights.agent_rights_for_file f.id.file_name, user.id
+        value, rule = f.rights.agent_rights_for_file f.file_name, user.id
 
         value && (rule.nil? || rule != Dor::RightsAuth::NO_DOWNLOAD_RULE)
       end
 
       can [:access], models do |f|
-        value, _rule = f.rights.agent_rights_for_file f.id.file_name, user.id
+        value, _rule = f.rights.agent_rights_for_file f.file_name, user.id
 
         value
       end
@@ -86,14 +86,14 @@ class Ability
     if user.locations.present?
       can [:download, :read], models do |f|
         user.locations.any? do |location|
-          value, rule = f.rights.location_rights_for_file(f.id.file_name, location)
+          value, rule = f.rights.location_rights_for_file(f.file_name, location)
           value && (rule.nil? || rule != Dor::RightsAuth::NO_DOWNLOAD_RULE)
         end
       end
 
       can [:access], models do |f|
         user.locations.any? do |location|
-          value, _rule = f.rights.location_rights_for_file(f.id.file_name, location)
+          value, _rule = f.rights.location_rights_for_file(f.file_name, location)
           value
         end
       end
@@ -106,10 +106,10 @@ class Ability
       # end
 
       can [:access], models do |f|
-        value, _rule = f.rights.cdl_rights_for_file(f.id.file_name)
+        value, _rule = f.rights.cdl_rights_for_file(f.file_name)
         next unless value
 
-        user.cdl_tokens.any? { |payload| payload['aud'] == f.id.druid }
+        user.cdl_tokens.any? { |payload| payload['aud'] == f.id }
       end
     end
 

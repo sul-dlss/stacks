@@ -1,19 +1,8 @@
 stacks:
   storage_root: /stacks
-  driver: remote_iiif
-  remote_iiif:
-    image:
-      implementation: IiifImage
-      attributes:
-        # Example: https://sul-imageserver-uat.stanford.edu/iiif/2/ff%2F139%2Fpd%2F0160%2F67352ccc-d1b0-11e1-89ae-279075081939.jp2/info.json
-        base_uri: https://sul-imageserver-uat.stanford.edu/iiif/2/
-    metadata:
-      implementation: IiifMetadataService
-      attributes:
-        base_uri: https://sul-imageserver-uat.stanford.edu/iiif/2/
-    check:
-      implementation: CheckIiif
 
+imageserver:
+  base_uri: 'https://sul-imageserver-prod.stanford.edu/iiif/2/'
 
 purl:
   url: 'https://purl.stanford.edu/'

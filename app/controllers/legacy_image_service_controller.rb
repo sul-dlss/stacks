@@ -5,17 +5,10 @@
 class LegacyImageServiceController < ApplicationController
   before_action :load_image
 
-  # Follow the interface of Riiif
-  class_attribute :model
-  self.model = StacksImage
-
-  # kludge to get around Rails' overzealous URL escaping
-  IDENTIFIER_SEPARATOR = 'ZZZZZZZ'
-
   ##
   # Redirect legacy image requests to their IIIF equivalents
   def show
-    redirect_to iiif_path(iiif_options).sub(IDENTIFIER_SEPARATOR, '%2F')
+    redirect_to iiif_path(iiif_options)
   end
 
   private
@@ -23,10 +16,8 @@ class LegacyImageServiceController < ApplicationController
   def iiif_options
     @image.transformation
           .to_params
-          .merge(
-            identifier: "#{id}#{IDENTIFIER_SEPARATOR}#{file_name}",
-            download: allowed_params[:download]
-          )
+          .merge(id: id, file_name: file_name,
+                 download: allowed_params[:download])
   end
 
   def allowed_params
@@ -34,7 +25,7 @@ class LegacyImageServiceController < ApplicationController
   end
 
   def load_image
-    @image ||= model.new(stacks_image_params)
+    @image ||= StacksImage.new(stacks_image_params)
   end
 
   def stacks_image_params
@@ -95,7 +86,7 @@ class LegacyImageServiceController < ApplicationController
   end
 
   def identifier_params
-    { id: [id, file_name].join('%2F') }
+    { id: id, file_name: file_name }
   end
 
   def id

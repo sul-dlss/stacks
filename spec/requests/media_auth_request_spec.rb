@@ -7,7 +7,6 @@ RSpec.describe "Authentication for Media requests", type: :request do
   let(:user_no_loc_no_webauth) { User.new }
   let(:user_webauth_stanford_no_loc) { User.new(webauth_user: true, ldap_groups: %w(stanford:stanford)) }
   let(:druid) { 'bb582xs1304' }
-  let(:identifier) { StacksIdentifier.new('bb582xs1304%2Ffile') }
 
   describe "#auth_check" do
     let(:format) { 'mp4' }
@@ -32,8 +31,8 @@ RSpec.describe "Authentication for Media requests", type: :request do
     end
 
     let(:mock_media) do
-      sms = StacksMediaStream.new(id: identifier, format: format)
-      allow(sms).to receive(:public_xml).and_return(public_xml)
+      sms = StacksMediaStream.new(id: 'bb582xs1304', file_name: 'file', format: format)
+      allow(Purl).to receive(:public_xml).with('bb582xs1304').and_return(public_xml)
       sms
     end
 

@@ -8,8 +8,7 @@ RSpec.describe FileController do
     stub_rights_xml(world_readable_rights_xml)
   end
 
-  let(:identifier) { StacksIdentifier.new(druid: druid, file_name: 'xf680rd3068_1.jp2') }
-  let(:file) { StacksFile.new(id: identifier) }
+  let(:file) { StacksFile.new(id: druid, file_name: 'xf680rd3068_1.jp2') }
 
   describe '#show' do
     let(:druid) { 'xf680rd3068' }
@@ -18,13 +17,6 @@ RSpec.describe FileController do
     before do
       path = File.join(Rails.root, 'spec/fixtures/nr/349/ct/7889/image.jp2')
       allow(file).to receive_messages(mtime: Time.zone.now, path: path)
-    end
-
-    context "with an invalid druid" do
-      let(:druid) { 'foo' }
-      it 'raises 404 Not Found' do
-        expect { subject }.to raise_error ActionController::RoutingError
-      end
     end
 
     it 'sends the file to the user' do
@@ -50,7 +42,7 @@ RSpec.describe FileController do
 
       it 'ignored when instantiating StacksFile' do
         subject
-        expect(StacksFile).to have_received(:new).with(ActionController::Parameters.new('id' => identifier).permit!)
+        expect(StacksFile).to have_received(:new).with(hash_including(id: 'xf680rd3068', file_name: 'xf680rd3068_1.jp2'))
       end
     end
 
