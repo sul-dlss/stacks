@@ -49,4 +49,52 @@ RSpec.describe Purl do
       expect(actual).to match_array ['abc/26855.jp2', 'def/123.jp2']
     end
   end
+
+  describe '.barcode' do
+    let(:barcoded_item_xml) do
+      <<-EOXML
+        <publicObject>
+          <identityMetadata>
+            <otherId name="barcode">12345</otherId>
+          </identityMetadata>
+        </publicObject>
+      EOXML
+    end
+
+    let(:source_id_xml) do
+      <<-EOXML
+        <publicObject>
+          <identityMetadata>
+            <sourceId source="sul">stanford_36105110268922</sourceId>
+          </identityMetadata>
+        </publicObject>
+      EOXML
+    end
+
+    let(:garbage_source_id_xml) do
+      <<-EOXML
+        <publicObject>
+          <identityMetadata>
+            <sourceId source="sul">someotherid</sourceId>
+          </identityMetadata>
+        </publicObject>
+      EOXML
+    end
+
+    it 'gets the barcode from the otherId' do
+      allow(described_class).to receive(:public_xml).with('druid').and_return(barcoded_item_xml)
+
+      expect(described_class.barcode('druid')).to eq '12345'
+    end
+
+    it 'extracts a barcode from the sourceId' do
+      allow(described_class).to receive(:public_xml).with('druid').and_return(source_id_xml)
+      expect(described_class.barcode('druid')).to eq '36105110268922'
+    end
+
+    it 'returns nil if a barcode cannot be extracted from the sourceId' do
+      allow(described_class).to receive(:public_xml).with('druid').and_return(garbage_source_id_xml)
+      expect(described_class.barcode('druid')).to be_nil
+    end
+  end
 end

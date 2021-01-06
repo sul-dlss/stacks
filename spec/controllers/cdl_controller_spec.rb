@@ -7,26 +7,6 @@ RSpec.describe CdlController do
   let(:token) { JWT.encode(payload, Settings.cdl.jwt.secret, Settings.cdl.jwt.algorithm) }
   let(:payload) { { aud: 'druid', sub: 'username', exp: (Time.zone.now + 1.day).to_i, barcode: '36105110268922' } }
 
-  let(:barcoded_item_xml) do
-    <<-EOXML
-      <publicObject>
-        <identityMetadata>
-          <sourceId source="sul">36105110268922</sourceId>
-        </identityMetadata>
-      </publicObject>
-    EOXML
-  end
-
-  let(:non_barcoded_item_xml) do
-    <<-EOXML
-      <publicObject>
-        <identityMetadata>
-          <sourceId source="sul">this is not a barcode</sourceId>
-        </identityMetadata>
-      </publicObject>
-    EOXML
-  end
-
   before do
     allow(controller).to receive(:current_user).and_return(user)
     cookies.encrypted[:tokens] = [token]
@@ -35,7 +15,7 @@ RSpec.describe CdlController do
   describe '#show' do
     context 'without a token' do
       before do
-        allow(Purl).to receive(:public_xml).with('other-druid').and_return(barcoded_item_xml)
+        allow(Purl).to receive(:barcode).with('other-druid').and_return('36105110268922')
       end
 
       it 'includes a url to look up availability' do
@@ -98,7 +78,7 @@ RSpec.describe CdlController do
     end
 
     it 'bounces you to requests to handle the symphony interaction' do
-      allow(Purl).to receive(:public_xml).with('other-druid').and_return(barcoded_item_xml)
+      allow(Purl).to receive(:barcode).with('other-druid').and_return('36105110268922')
 
       get :create, { params: { id: 'other-druid' } }
 
@@ -107,7 +87,7 @@ RSpec.describe CdlController do
 
     context 'with a record without a barcode' do
       it 'is a 400' do
-        allow(Purl).to receive(:public_xml).with('other-druid').and_return(non_barcoded_item_xml)
+        allow(Purl).to receive(:barcode).with('other-druid').and_return(nil)
         get :create, { params: { id: 'other-druid' } }
 
         expect(response.status).to eq 400

@@ -116,14 +116,8 @@ class CdlController < ApplicationController
   end
 
   def barcode
-    @barcode ||= begin
-      return existing_payload&.dig('barcode') if existing_payload&.dig('barcode')
+    return existing_payload['barcode'] if existing_payload&.dig('barcode')
 
-      public_xml = Purl.public_xml(params[:id])
-      doc = Nokogiri::XML.parse(public_xml)
-      barcode = doc.xpath('//identityMetadata/sourceId[@source="sul"]')&.text&.sub(/^stanford_/, '')
-
-      barcode if barcode.starts_with?('36105')
-    end
+    @barcode ||= Purl.barcode(params[:id])
   end
 end
