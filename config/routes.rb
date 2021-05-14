@@ -5,10 +5,12 @@ Rails.application.routes.draw do
 
   constraints id: druid_regex, file_name: %r{[^/]+} do
     get '/file/:id/:file_name' => 'file#show', as: :file
+    options '/file/:id/:file_name', to: 'file#options'
     get '/file/app/:id/:file_name' => 'webauth#login_file'
     get '/file/auth/:id/:file_name' => 'webauth#login_file', as: :auth_file
 
     get '/file/druid::id/:file_name' => 'file#show'
+    options '/file/druid::id/:file_name', to: 'file#options'
     get '/file/app/druid::id/:file_name' => 'webauth#login_file'
     get '/file/auth/druid::id/:file_name' => 'webauth#login_file'
   end

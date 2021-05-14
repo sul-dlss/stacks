@@ -18,6 +18,14 @@ class FileController < ApplicationController
     send_file current_file.path, disposition: disposition
   end
 
+  def options
+    response.headers['Access-Control-Allow-Methods'] = 'GET, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Range'
+    response.headers['Access-Control-Max-Age'] = 1.day.to_i
+
+    head :ok
+  end
+
   private
 
   def disposition
