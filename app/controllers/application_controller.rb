@@ -10,6 +10,8 @@ class ApplicationController < ActionController::Base
   end
   before_action :set_origin_header
 
+  protect_from_forgery with: :null_session
+
   private
 
   def set_origin_header
