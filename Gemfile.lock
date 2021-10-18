@@ -112,6 +112,7 @@ GEM
     config (3.1.0)
       deep_merge (~> 1.2, >= 1.2.1)
       dry-validation (~> 1.0, >= 1.0.0)
+    connection_pool (2.2.5)
     crack (0.4.5)
       rexml
     crass (1.0.6)
@@ -413,6 +414,7 @@ DEPENDENCIES
   capistrano-shared_configs
   capybara
   config
+  connection_pool
   dalli
   dlss-capistrano
   dor-rights-auth
