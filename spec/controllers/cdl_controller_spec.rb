@@ -19,7 +19,7 @@ RSpec.describe CdlController do
       end
 
       it 'includes a url to look up availability' do
-        get :show, { params: { id: 'other-druid' } }
+        get :show, params: { id: 'other-druid' }
 
         expect(response.status).to eq 200
         expect(JSON.parse(response.body).with_indifferent_access).to include(
@@ -29,7 +29,7 @@ RSpec.describe CdlController do
     end
 
     it 'renders some information from the token' do
-      get :show, { params: { id: 'druid' } }
+      get :show, params: { id: 'druid' }
 
       expect(response.status).to eq 200
       expect(JSON.parse(response.body).with_indifferent_access).to include(
@@ -38,7 +38,7 @@ RSpec.describe CdlController do
     end
 
     it 'includes a url to look up availability' do
-      get :show, { params: { id: 'druid' } }
+      get :show, params: { id: 'druid' }
 
       expect(JSON.parse(response.body).with_indifferent_access).to include(
         availability_url: match(%(cdl/availability/36105110268922))
@@ -53,7 +53,7 @@ RSpec.describe CdlController do
       end
 
       it 'stores the token in a cookie' do
-        get :create_success, { params: { id: 'other-druid', token: new_token } }
+        get :create_success, params: { id: 'other-druid', token: new_token }
 
         expect(cookies.encrypted[:tokens].length).to eq 2
       end
@@ -70,7 +70,7 @@ RSpec.describe CdlController do
       end
 
       it 'stores the token in a cookie' do
-        get :create_success, { params: { id: 'druid', token: new_token } }
+        get :create_success, params: { id: 'druid', token: new_token }
 
         expect(cookies.encrypted[:tokens].length).to eq 1
         expect(controller.send(:current_user).cdl_tokens.first[:exp]).to eq new_exp
@@ -80,7 +80,7 @@ RSpec.describe CdlController do
     it 'bounces you to requests to handle the symphony interaction' do
       allow(Purl).to receive(:barcode).with('other-druid').and_return('36105110268922')
 
-      get :create, { params: { id: 'other-druid' } }
+      get :create, params: { id: 'other-druid' }
 
       expect(response).to redirect_to('https://requests.stanford.edu/cdl/checkout?barcode=36105110268922&id=other-druid&modal=true&return_to=http%3A%2F%2Ftest.host%2Fauth%2Fiiif%2Fcdl%2Fother-druid%2Fcheckout%2Fsuccess')
     end
@@ -88,7 +88,7 @@ RSpec.describe CdlController do
     context 'with a record without a barcode' do
       it 'is a 400' do
         allow(Purl).to receive(:barcode).with('other-druid').and_return(nil)
-        get :create, { params: { id: 'other-druid' } }
+        get :create, params: { id: 'other-druid' }
 
         expect(response.status).to eq 400
       end
@@ -107,7 +107,7 @@ RSpec.describe CdlController do
       end
 
       it 'stores the token in a cookie' do
-        get :renew_success, { params: { id: 'druid', token: new_token } }
+        get :renew_success, params: { id: 'druid', token: new_token }
 
         expect(cookies.encrypted[:tokens].length).to eq 1
         expect(controller.send(:current_user).cdl_tokens.first[:exp]).to eq new_exp
@@ -115,7 +115,7 @@ RSpec.describe CdlController do
     end
 
     it 'bounces you to requests to handle the symphony interaction' do
-      get :renew, { params: { id: 'druid' } }
+      get :renew, params: { id: 'druid' }
 
       url = 'http%3A%2F%2Ftest.host%2Fauth%2Fiiif%2Fcdl%2Fdruid%2Frenew%2Fsuccess'
       expect(response).to redirect_to(
