@@ -8,7 +8,7 @@ class FileController < ApplicationController
   end
 
   def show
-    return unless stale?(cache_headers)
+    return unless stale?(**cache_headers)
 
     authorize! :read, current_file
     expires_in 10.minutes
