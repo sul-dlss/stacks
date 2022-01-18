@@ -17,7 +17,7 @@ class IiifController < ApplicationController
     projection = current_image.projection_for(transformation)
     raise ActionController::MissingFile, 'File Not Found' unless projection.valid?
 
-    return unless stale?(cache_headers_show(projection))
+    return unless stale?(**cache_headers_show(projection))
 
     authorize! :read, projection
     expires_in cache_time, public: anonymous_ability.can?(:read, projection)
@@ -34,7 +34,7 @@ class IiifController < ApplicationController
   def metadata
     raise ActionController::MissingFile, 'File Not Found' unless current_image.exist?
 
-    return unless stale?(cache_headers_metadata)
+    return unless stale?(**cache_headers_metadata)
 
     if !degraded? && degradable?
       redirect_to degraded_iiif_metadata_url(id: identifier_params[:id], file_name: identifier_params[:file_name])
