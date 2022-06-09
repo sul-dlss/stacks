@@ -1,6 +1,4 @@
-[![Build Status](https://travis-ci.org/sul-dlss/stacks.svg?branch=master)](https://travis-ci.org/sul-dlss/stacks)
-[![Code Climate Test Coverage](https://codeclimate.com/github/sul-dlss/stacks/badges/coverage.svg)](https://codeclimate.com/github/sul-dlss/stacks/coverage)
-[![Code Climate](https://codeclimate.com/github/sul-dlss/stacks/badges/gpa.svg)](https://codeclimate.com/github/sul-dlss/stacks)
+[![CI](https://github.com/sul-dlss/stacks/actions/workflows/ruby.yml/badge.svg)](https://github.com/sul-dlss/stacks/actions/workflows/ruby.yml)
 [![GitHub version](https://badge.fury.io/gh/sul-dlss%2Fstacks.svg)](https://badge.fury.io/gh/sul-dlss%2Fstacks)
 
 # Digital Stacks
@@ -43,6 +41,14 @@ Change directories into the app and install dependencies
 Start the development server
 
     $ rails s
+
+## Developing
+
+For local development, the app will skip checks for the presence of image files and proxy the request to production image servers. You'll need to be on the Stanford VPN for this to work.
+
+A IIIF image request (#2 under "Capabilities" above) to production might look like: `https://stacks.stanford.edu/image/iiif/qj283wt8591%2FRT0073990001/info.json`
+
+In local development, this will become: `http://localhost:3000/image/iiif/qj283wt8591%2FRT0073990001/info.json`.
 
 ## Configuring
 
