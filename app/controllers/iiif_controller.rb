@@ -31,8 +31,11 @@ class IiifController < ApplicationController
 
   ##
   # IIIF info.json endpoint
+  # rubocop:disable Metrics/PerceivedComplexity
   def metadata
-    raise ActionController::MissingFile, 'File Not Found' unless current_image.exist?
+    unless Rails.env.development?
+      raise ActionController::MissingFile, 'File Not Found' unless current_image.exist?
+    end
 
     return unless stale?(**cache_headers_metadata)
 
@@ -56,6 +59,7 @@ class IiifController < ApplicationController
       end
     end
   end
+  # rubocop:enable Metrics/PerceivedComplexity
 
   def metadata_options
     response.headers['Access-Control-Allow-Headers'] = 'Authorization'
