@@ -42,6 +42,14 @@ Start the development server
 
     $ rails s
 
+## Developing
+
+For local development, the app will skip checks for the presence of image files and proxy the request to production image servers. You'll need to be on the Stanford VPN for this to work.
+
+A IIIF image request (#2 under "Capabilities" above) to production might look like: `https://stacks.stanford.edu/image/iiif/qj283wt8591%2FRT0073990001/info.json`
+
+In local development, this will become: `http://localhost:3000/image/iiif/qj283wt8591%2FRT0073990001/info.json`.
+
 ## Configuring
 
 Configuration is handled through the [RailsConfig](/railsconfig/config) settings.yml files.
