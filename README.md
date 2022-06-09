@@ -1,6 +1,4 @@
-[![Build Status](https://travis-ci.org/sul-dlss/stacks.svg?branch=master)](https://travis-ci.org/sul-dlss/stacks)
-[![Code Climate Test Coverage](https://codeclimate.com/github/sul-dlss/stacks/badges/coverage.svg)](https://codeclimate.com/github/sul-dlss/stacks/coverage)
-[![Code Climate](https://codeclimate.com/github/sul-dlss/stacks/badges/gpa.svg)](https://codeclimate.com/github/sul-dlss/stacks)
+[![CI](https://github.com/sul-dlss/stacks/actions/workflows/ruby.yml/badge.svg)](https://github.com/sul-dlss/stacks/actions/workflows/ruby.yml)
 [![GitHub version](https://badge.fury.io/gh/sul-dlss%2Fstacks.svg)](https://badge.fury.io/gh/sul-dlss%2Fstacks)
 
 # Digital Stacks
