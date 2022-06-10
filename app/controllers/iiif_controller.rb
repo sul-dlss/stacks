@@ -139,10 +139,17 @@ class IiifController < ApplicationController
   end
 
   def stacks_image_params
+    # Generate the canonical URL manually to avoid cases where the requested
+    # URL encodes the / between id and filename as %2F, but the canonical URL
+    # does not. See: https://github.com/sul-dlss/stacks/issues/864
+    identifier = ERB::Util.url_encode(identifier_params[:id])
+    filename = ERB::Util.url_encode(identifier_params[:file_name])
+    root = iiif_root_url(host: request.host_with_port)
+    canonical_url = "#{root}/#{identifier}%2F#{filename}"
     {
       id: identifier_params[:id],
       file_name: identifier_params[:file_name] + '.jp2',
-      canonical_url: iiif_base_url(id: identifier_params[:id], file_name: identifier_params[:file_name], host: request.host_with_port)
+      canonical_url: canonical_url
     }
   end
 

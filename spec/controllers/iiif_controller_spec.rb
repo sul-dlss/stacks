@@ -53,7 +53,7 @@ RSpec.describe IiifController do
       expect(assigns(:image)).to eq image
       expect(StacksImage).to have_received(:new).with(
         id: "nr349ct7889", file_name: 'nr349ct7889_00_0001.jp2',
-        canonical_url: "http://test.host/image/iiif/nr349ct7889/nr349ct7889_00_0001"
+        canonical_url: "http://test.host/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001"
       )
     end
 
