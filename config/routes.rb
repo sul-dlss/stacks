@@ -42,6 +42,20 @@ Rails.application.routes.draw do
   get '/image/iiif/token' => 'iiif_token#create', as: :iiif_token_api
   get '/image/iiif/token/:id' => 'iiif_token#create_for_item', as: :cdl_iiif_token_api
 
+  constraints identifier: %r{#{druid_regex}%(25)?2F[^/]+}, size: %r{[^/]+} do
+    get '/image/iiif/:identifier', to: redirect('/image/iiif/%{identifier}/info.json', status: 303)
+    get '/image/iiif/:identifier/:region/:size/:rotation/:quality.:format' => 'iiif#show'
+    get '/image/iiif/:identifier/info.json' => 'iiif#metadata'
+    match '/image/iiif/:identifier/info.json' => 'iiif#metadata_options', via: [:options]
+    get '/image/iiif/auth/:identifier/:region/:size/:rotation/:quality' => 'webauth#login_iiif'
+
+    get '/image/iiif/degraded/:identifier', to: redirect('/image/iiif/degraded/%{identifier}/info.json', status: 303), defaults: { degraded: true }
+    get '/image/iiif/degraded/:identifier/:region/:size/:rotation/:quality.:format' => 'iiif#show', defaults: { degraded: true }
+    get '/image/iiif/degraded/:identifier/info.json' => 'iiif#metadata', defaults: { degraded: true }
+    match '/image/iiif/degraded/:identifier/info.json' => 'iiif#metadata_options', via: [:options], defaults: { degraded: true }
+    get '/image/iiif/auth/degraded/:identifier/:region/:size/:rotation/:quality' => 'webauth#login_iiif', defaults: { degraded: true }
+  end
+
   constraints id: druid_regex, file_name: %r{[^/]+}, size: %r{[^/]+} do
     get '/image/iiif/:id/:file_name', to: redirect('/image/iiif/%{id}/%{file_name}/info.json', status: 303), as: :iiif_base
     get '/image/iiif/:id/:file_name/:region/:size/:rotation/:quality.:format' => 'iiif#show', as: :iiif
@@ -49,18 +63,11 @@ Rails.application.routes.draw do
     match '/image/iiif/:id/:file_name/info.json' => 'iiif#metadata_options', via: [:options]
     get '/image/iiif/auth/:id/:file_name/:region/:size/:rotation/:quality' => 'webauth#login_iiif', as: :auth_iiif
 
-    get '/image/iiif/degraded/:id/:file_name', to: redirect('/image/iiif/degraded/%{identifier}/info.json', status: 303), as: :degraded_iiif_base, defaults: { degraded: true }
+    get '/image/iiif/degraded/:id/:file_name', to: redirect('/image/iiif/degraded/%{id}/%{file_name}/info.json', status: 303), as: :degraded_iiif_base, defaults: { degraded: true }
     get '/image/iiif/degraded/:id/:file_name/:region/:size/:rotation/:quality.:format' => 'iiif#show', as: :degraded_iiif, defaults: { degraded: true }
     get '/image/iiif/degraded/:id/:file_name/info.json' => 'iiif#metadata', as: :degraded_iiif_metadata, defaults: { degraded: true }
     match '/image/iiif/degraded/:id/:file_name/info.json' => 'iiif#metadata_options', via: [:options], defaults: { degraded: true }
     get '/image/iiif/auth/degraded/:id/:file_name/:region/:size/:rotation/:quality' => 'webauth#login_iiif', as: :degraded_auth_iiif, defaults: { degraded: true }
-  end
-
-  constraints identifier: %r{#{druid_regex}%(25)?2F[^/]+}, size: %r{[^/]+} do
-    get '/image/iiif/:identifier', to: redirect('/image/iiif/%{identifier}/info.json', status: 303)
-    get '/image/iiif/:identifier/:region/:size/:rotation/:quality.:format' => 'iiif#show'
-    get '/image/iiif/:identifier/info.json' => 'iiif#metadata'
-    match '/image/iiif/:identifier/info.json' => 'iiif#metadata_options', via: [:options]
   end
 
   # As of Sept 2017, the legacy service was still used by Revs and Bassi Verati/FRDA
