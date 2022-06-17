@@ -43,7 +43,7 @@ RSpec.describe "Authentication for Media requests", type: :request do
         get "/media/#{druid}/file.#{format}/auth_check.js"
         body = JSON.parse(response.body)
         expect(body['status']).to eq 'success'
-        expect(body['token']).to match(/^[a-zA-Z0-9]+/)
+        expect(body['token']).to match(/^[%a-zA-Z0-9]+/)
       end
     end
 
