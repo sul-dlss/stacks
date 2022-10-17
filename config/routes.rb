@@ -3,16 +3,30 @@ Rails.application.routes.draw do
 
   get '/object/:id' => 'object#show', as: :object
 
-  constraints id: druid_regex, file_name: %r{[^/]+} do
-    get '/file/:id/:file_name' => 'file#show', as: :file
-    options '/file/:id/:file_name', to: 'file#options'
-    get '/file/app/:id/:file_name' => 'webauth#login_file'
-    get '/file/auth/:id/:file_name' => 'webauth#login_file', as: :auth_file
+  constraints id: druid_regex do
+    if Settings.features.allow_slashes_in_filenames
+      get '/file/:id/*file_name' => 'file#show', format: false, as: :file
+      options '/file/:id/*file_name', to: 'file#options', format: false
+      get '/file/app/:id/*file_name' => 'webauth#login_file', format: false
+      get '/file/auth/:id/*file_name' => 'webauth#login_file', format: false, as: :auth_file
 
-    get '/file/druid::id/:file_name' => 'file#show'
-    options '/file/druid::id/:file_name', to: 'file#options'
-    get '/file/app/druid::id/:file_name' => 'webauth#login_file'
-    get '/file/auth/druid::id/:file_name' => 'webauth#login_file'
+      get '/file/druid::id/*file_name' => 'file#show', format: false
+      options '/file/druid::id/*file_name', to: 'file#options', format: false
+      get '/file/app/druid::id/*file_name' => 'webauth#login_file', format: false
+      get '/file/auth/druid::id/*file_name' => 'webauth#login_file', format: false
+    else
+      constraints file_name: %r{[^/]+} do
+        get '/file/:id/:file_name' => 'file#show', format: false, as: :file
+        options '/file/:id/:file_name', to: 'file#options', format: false
+        get '/file/app/:id/:file_name' => 'webauth#login_file', format: false
+        get '/file/auth/:id/:file_name' => 'webauth#login_file', format: false, as: :auth_file
+
+        get '/file/druid::id/:file_name' => 'file#show', format: false
+        options '/file/druid::id/:file_name', to: 'file#options', format: false
+        get '/file/app/druid::id/:file_name' => 'webauth#login_file', format: false
+        get '/file/auth/druid::id/:file_name' => 'webauth#login_file', format: false
+      end
+    end
   end
 
   if Settings.features.streaming_media
