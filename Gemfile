@@ -82,7 +82,7 @@ gem 'dalli'
 gem 'retries'
 gem 'zipline', '~> 1.2'
 gem 'jwt'
-gem 'redis'
+gem 'redis', '< 5' # Keep redis gem on v4 until Redis on VM is updated to v7
 
 # connection_pool required for thread-safe operations in dalli >= 3.0
 # see https://github.com/petergoldstein/dalli/blob/v3.0.0/3.0-Upgrade.md
