@@ -1,11 +1,11 @@
-// SUL Style Variables/Mixins
-@import 'sul-styles';
+// Entry point for your Sass build
+@import 'palette';
 @import 'deja-vu-font';
 @import 'sul-variables';
 
 @import 'bootstrap-variables';
 
-@import 'bootstrap';
+@import 'bootstrap/scss/bootstrap';
 
 @import 'base';
 @import 'layout';
