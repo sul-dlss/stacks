@@ -23,5 +23,7 @@ config/environments/*.local.yml
 /coverage
 /spec/examples.txt
 
-.pry_history
-/.byebug_history
+/node_modules
+
+/app/assets/builds/*
+!/app/assets/builds/.keep

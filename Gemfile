@@ -7,14 +7,13 @@ end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 7.0.3'
-# The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
-gem 'sprockets-rails'
+# asset pipeline for Rails
+gem 'propshaft'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3', '~> 1.4'
 # Use Puma as the app server
 gem 'puma', '~> 5.0'
-# Use SCSS for stylesheets
-gem 'sass-rails', '>= 6'
+
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.7'
 
@@ -48,9 +47,6 @@ group :development, :test do
   gem 'rubocop-rails', require: false
   gem 'rubocop-rspec', require: false
 
-  # scss-lint will test the scss files to enfoce styles
-  gem 'scss-lint', require: false
-
   gem 'simplecov'
   gem 'webmock', '~> 3.0'
 end
@@ -71,8 +67,6 @@ gem 'honeybadger'
 # Use okcomputer to monitor the application
 gem 'okcomputer'
 gem 'iiif-image-api', '~> 0.2'
-gem 'bootstrap'
-gem 'sul_styles'
 gem 'config'
 gem 'faraday'
 gem 'http'
@@ -91,3 +85,5 @@ gem 'connection_pool'
 group :production do
   gem 'newrelic_rpm'
 end
+
+gem "cssbundling-rails", "~> 1.1"
