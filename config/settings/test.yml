@@ -1,6 +1,3 @@
-features:
-  allow_slashes_in_filenames: true
-
 app_users:
   test-user: 'password'
 
