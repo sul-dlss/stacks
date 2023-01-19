@@ -8,11 +8,13 @@ Rails.application.routes.draw do
     options '/file/:id/*file_name', to: 'file#options', format: false
     get '/file/app/:id/*file_name' => 'webauth#login_file', format: false
     get '/file/auth/:id/*file_name' => 'webauth#login_file', format: false, as: :auth_file
+    get '/file/auth/:id' => 'webauth#login_object', format: false, as: :auth_object
 
     get '/file/druid::id/*file_name' => 'file#show', format: false
     options '/file/druid::id/*file_name', to: 'file#options', format: false
     get '/file/app/druid::id/*file_name' => 'webauth#login_file', format: false
     get '/file/auth/druid::id/*file_name' => 'webauth#login_file', format: false
+    get '/file/auth/druid::id' => 'webauth#login_object', format: false
   end
 
   if Settings.features.streaming_media
