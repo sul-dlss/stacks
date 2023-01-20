@@ -5,8 +5,16 @@
 class ObjectController < ApplicationController
   include Zipline
 
+  # Return a zip of all the files if they have access to all the files.
+  # This will force a login if any of the files is not access=world
   def show
-    files = accessible_files.map do |file|
+    files = Purl.files(druid)
+    raise ActionController::RoutingError, 'No downloadable files' if files.none?
+
+    files.each do |file|
+      authorize! :download, file
+    end
+    zip_contents = files.map do |file|
       [
         file,
         file.file_name,
@@ -14,26 +22,25 @@ class ObjectController < ApplicationController
       ]
     end
 
-    raise ActionController::RoutingError, 'No downloadable files' if files.none?
-
-    zipline(files, "#{druid}.zip")
+    zipline(zip_contents, "#{druid}.zip")
   end
 
   private
 
-  def allowed_params
-    params.permit(:id, :download)
-  end
-
   def druid
-    allowed_params[:id]
+    params[:id]
   end
 
-  def accessible_files
-    return to_enum(:accessible_files) unless block_given?
-
-    Purl.files(druid).each do |file|
-      yield file if can? :download, file
+  # called when CanCan::AccessDenied error is raised by authorize!
+  #   Should only be here if
+  #   a)  access not allowed (send to super)  OR
+  #   b)  need user to login to determine if access allowed
+  def rescue_can_can(exception)
+    current_file = exception.subject
+    if User.stanford_generic_user.ability.can?(:access, current_file) && !current_user.webauth_user?
+      redirect_to auth_object_path(id: druid)
+    else
+      super
     end
   end
 end
