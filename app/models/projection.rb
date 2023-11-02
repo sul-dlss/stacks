@@ -160,6 +160,4 @@ class Projection
   def dimensions_to_size(dimensions)
     IIIF::Image::Size::BestFit.new(dimensions.width, dimensions.height)
   end
-
-
 end
