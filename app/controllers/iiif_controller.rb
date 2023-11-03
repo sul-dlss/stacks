@@ -33,9 +33,7 @@ class IiifController < ApplicationController
   # IIIF info.json endpoint
   # rubocop:disable Metrics/PerceivedComplexity
   def metadata
-    unless Rails.env.development?
-      raise ActionController::MissingFile, 'File Not Found' unless current_image.exist?
-    end
+    raise ActionController::MissingFile, 'File Not Found' if !Rails.env.development? && !current_image.exist?
 
     return unless stale?(**cache_headers_metadata)
 
@@ -55,7 +53,7 @@ class IiifController < ApplicationController
 
     respond_to do |format|
       format.any(:json, :jsonld) do
-        render json: image_info, status: status
+        render json: image_info, status:
       end
     end
   end
@@ -126,16 +124,16 @@ class IiifController < ApplicationController
 
   def current_image
     @image ||= begin
-                 img = StacksImage.new(stacks_image_params)
-                 can?(:download, img) ? img : img.restricted
-               end
+      img = StacksImage.new(stacks_image_params)
+      can?(:download, img) ? img : img.restricted
+    end
   end
 
   def identifier_params
     return params.permit(:id, :file_name).to_h if params[:id] && params[:file_name]
 
     id, file_name = params[:identifier].sub('/', '%2F').split('%2F', 2)
-    { id: id, file_name: file_name }
+    { id:, file_name: }
   end
 
   def stacks_image_params

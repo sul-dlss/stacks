@@ -29,7 +29,7 @@ class IiifImage
   private
 
   def image_uri
-    @image_uri ||= IIIF::Image::URI.new(base_uri: @base_uri, identifier: remote_id, transformation: transformation)
+    @image_uri ||= IIIF::Image::URI.new(base_uri: @base_uri, identifier: remote_id, transformation:)
   end
 
   def image_url
@@ -37,7 +37,7 @@ class IiifImage
   end
 
   def remote_id
-    CGI.escape(StacksFile.new(id: id, file_name: file_name).treeified_path)
+    CGI.escape(StacksFile.new(id:, file_name:).treeified_path)
   end
 
   attr_reader :transformation, :id, :file_name

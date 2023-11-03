@@ -57,7 +57,7 @@ RSpec.describe StacksImage do
     let(:attributes) do
       { id: 'ab012cd3456', file_name: 'def',
         canonical_url: 'http://example.com/',
-        transformation: transformation }
+        transformation: }
     end
 
     it 'passes all the parameters' do

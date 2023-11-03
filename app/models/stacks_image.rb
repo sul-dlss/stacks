@@ -10,10 +10,10 @@ class StacksImage
 
   # @return [RestrictedImage] the restricted version of this image
   def restricted
-    RestrictedImage.new(transformation: transformation,
-                        id: id,
-                        file_name: file_name,
-                        canonical_url: canonical_url)
+    RestrictedImage.new(transformation:,
+                        id:,
+                        file_name:,
+                        canonical_url:)
   end
 
   # @return [Hash]
@@ -51,16 +51,16 @@ class StacksImage
 
   # @return [StacksFile]
   def file_source
-    @file_source ||= StacksFile.new(id: id, file_name: file_name)
+    @file_source ||= StacksFile.new(id:, file_name:)
   end
 
   # @return [InfoService]
   def info_service
-    @info_service ||= IiifMetadataService.new(id: id, file_name: file_name, canonical_url: canonical_url)
+    @info_service ||= IiifMetadataService.new(id:, file_name:, canonical_url:)
   end
 
   def stacks_rights
-    @stacks_rights ||= StacksRights.new(id: id, file_name: file_name)
+    @stacks_rights ||= StacksRights.new(id:, file_name:)
   end
   delegate :rights, :maybe_downloadable?, :object_thumbnail?,
            :stanford_restricted?, :restricted_by_location?, :cdl_restricted?, to: :stacks_rights

@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe IiifMetadataService do
   let(:base_uri) { 'https://sul-imageserver-uat.stanford.edu/cantaloupe/iiif/2/' } # 'image-server-path'
-  let(:service) { described_class.new(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001.jp2', canonical_url: 'foo', base_uri: base_uri) }
+  let(:service) { described_class.new(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001.jp2', canonical_url: 'foo', base_uri:) }
   let(:http_client) { instance_double(HTTP::Client) }
 
   context "When a valid JSON response is received" do

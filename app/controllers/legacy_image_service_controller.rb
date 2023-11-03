@@ -16,7 +16,7 @@ class LegacyImageServiceController < ApplicationController
   def iiif_options
     @image.transformation
           .to_params
-          .merge(id: id, file_name: file_name,
+          .merge(id:, file_name:,
                  download: allowed_params[:download])
   end
 
@@ -86,7 +86,7 @@ class LegacyImageServiceController < ApplicationController
   end
 
   def identifier_params
-    { id: id, file_name: file_name }
+    { id:, file_name: }
   end
 
   def id

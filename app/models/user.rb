@@ -68,7 +68,7 @@ class User
     payload, headers = JWT.decode(token, Settings.cdl.jwt.secret, true, {
                                     algorithm: Settings.cdl.jwt.algorithm, sub: id, verify_sub: true
                                   })
-    [payload&.merge(token: token)&.with_indifferent_access, headers]
+    [payload&.merge(token:)&.with_indifferent_access, headers]
   rescue JWT::ExpiredSignature, JWT::InvalidSubError
     nil
   end
@@ -105,7 +105,7 @@ class User
     self.class.encryptor.encrypt_and_sign(
       [
         # stored parameters
-        { id: id, ldap_groups: ldap_groups, ip_address: ip_address, jwt_tokens: jwt_tokens },
+        { id:, ldap_groups:, ip_address:, jwt_tokens: },
         # mint time
         mint_time,
         # expiry time

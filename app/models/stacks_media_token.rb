@@ -64,10 +64,10 @@ class StacksMediaToken
 
   def to_hash
     {
-      id: id,
-      file_name: file_name,
-      user_ip: user_ip,
-      timestamp: timestamp
+      id:,
+      file_name:,
+      user_ip:,
+      timestamp:
     }
   end
 

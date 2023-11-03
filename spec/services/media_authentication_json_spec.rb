@@ -13,7 +13,7 @@ RSpec.describe MediaAuthenticationJson do
   end
   let(:ability) { Ability.new(user) }
   let(:user) { double('User', locations: [], webauth_user: false, stanford?: false, app_user?: false, cdl_tokens: []) }
-  subject { described_class.new(media: media, user: user, auth_url: '/the/auth/url', ability: ability) }
+  subject { described_class.new(media:, user:, auth_url: '/the/auth/url', ability:) }
 
   describe 'Location Restricted Media' do
     before do

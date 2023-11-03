@@ -85,7 +85,7 @@ class IiifTokenController < ApplicationController
                    :unauthorized
                  end
 
-        render json: @message.to_json, callback: callback_value, status: status
+        render json: @message.to_json, callback: callback_value, status:
       end
     end
   end

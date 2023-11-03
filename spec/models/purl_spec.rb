@@ -41,7 +41,7 @@ RSpec.describe Purl do
             </contentMetadata>
           </publicObject>
           EOXML
-              )
+        )
       )
 
       actual = described_class.files('abc').map { |file| "#{file.id}/#{file.file_name}" }

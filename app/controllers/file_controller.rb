@@ -16,7 +16,7 @@ class FileController < ApplicationController
     response.headers['Content-Length'] = current_file.content_length
     response.headers.delete('X-Frame-Options')
 
-    send_file current_file.path, disposition: disposition
+    send_file current_file.path, disposition:
   end
 
   def options
