@@ -4,11 +4,11 @@ require 'rails_helper'
 
 RSpec.describe MediaAuthenticationJson do
   let(:media) do
-    double(
-      'Media',
+    instance_double(
+      StacksMediaStream,
       restricted_by_location?: false,
       stanford_restricted?: false,
-      location_rights: false
+      embargoed?: false
     )
   end
   let(:ability) { Ability.new(user) }

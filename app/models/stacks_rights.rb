@@ -33,6 +33,8 @@ class StacksRights
     rights.restricted_by_location?(file_name)
   end
 
+  delegate :embargoed?, to: :rights
+
   def object_thumbnail?
     doc = Nokogiri::XML.parse(public_xml)
 
