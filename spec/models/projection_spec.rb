@@ -20,7 +20,7 @@ RSpec.describe Projection do
     end
   end
 
-  describe '#tile_dimensions' do
+  describe '#tiledimensions' do
     subject { instance.send(:tile_dimensions) }
 
     context "for an unrestricted image" do
@@ -110,6 +110,18 @@ RSpec.describe Projection do
           allow(http_client).to receive(:get).and_return(double(body: nil))
           subject.response
           expect(http_client).to have_received(:get).with(%r{/full/max/0/default.jpg})
+        end
+      end
+
+      context "best fit size" do
+        let(:options) { { size: '!850,700', region: 'full' } }
+
+        it 'returns original size when requested dimensions are larger' do
+          allow(HTTP).to receive(:use)
+            .and_return(http_client)
+          allow(http_client).to receive(:get).and_return(double(body: nil))
+          subject.response
+          expect(http_client).to have_received(:get).with(%r{/full/!800,600/0/default.jpg})
         end
       end
     end
