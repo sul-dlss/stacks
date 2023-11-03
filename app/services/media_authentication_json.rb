@@ -12,9 +12,9 @@ class MediaAuthenticationJson
   end
 
   def as_json(*)
-    return stanford_or_location_restricted_json if location_grants_access? && stanford_grants_access?
-    return location_only_restricted_json if location_grants_access?
-    return stanford_only_restricted_json if stanford_grants_access?
+    return stanford_or_location_response if location_grants_access? && stanford_grants_access?
+    return location_only_response if location_grants_access?
+    return stanford_only_response if stanford_grants_access?
 
     {}
   end
@@ -23,19 +23,19 @@ class MediaAuthenticationJson
 
   attr_reader :auth_url, :media, :user, :ability
 
-  def location_only_restricted_json
+  def location_only_response
     {
       status: [:location_restricted]
     }
   end
 
-  def stanford_only_restricted_json
+  def stanford_only_response
     {
       status: [:stanford_restricted]
     }.merge(login_service)
   end
 
-  def stanford_or_location_restricted_json
+  def stanford_or_location_response
     {
       status: [
         :stanford_restricted,
