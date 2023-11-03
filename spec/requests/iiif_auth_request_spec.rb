@@ -17,8 +17,8 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
   let(:quality) { 'default' }
   let(:format) { 'jpg' }
   let(:identifier) { 'nr349ct7889%2Fnr349ct7889_00_0001' }
-  let(:params_hash) { { id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001', transformation: transformation } }
-  let(:transformation) { IIIF::Image::Transformation.new region: region, size: size, rotation: rotation, quality: quality, format: format }
+  let(:params_hash) { { id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001', transformation: } }
+  let(:transformation) { IIIF::Image::Transformation.new region:, size:, rotation:, quality:, format: }
   let(:path) { "/stacks/nr/349/ct/7889/nr349ct7889_00_0001" }
   let(:perms) { nil }
   let(:current_image) { StacksImage.new(params_hash) }
@@ -49,7 +49,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
 
         it 'works' do
           get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
-          expect(response).to have_http_status(200)
+          expect(response).to have_http_status(:ok)
           expect(response.media_type).to eq('image/jpeg')
         end
       end
@@ -65,7 +65,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
 
         it 'works' do
           get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
-          expect(response).to have_http_status(200)
+          expect(response).to have_http_status(:ok)
           expect(response.media_type).to eq('image/jpeg')
         end
       end
@@ -75,7 +75,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
 
         it 'blocks' do
           get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
-          expect(response).to have_http_status(403)
+          expect(response).to have_http_status(:forbidden)
         end
       end
 
@@ -84,7 +84,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
 
         it 'redirects to the authentication endpoint' do
           get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
-          expect(response).to redirect_to(auth_iiif_url(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001', format: format))
+          expect(response).to redirect_to(auth_iiif_url(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001', format:))
         end
       end
     end
@@ -99,7 +99,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
 
         it 'works' do
           get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
-          expect(response).to have_http_status(200)
+          expect(response).to have_http_status(:ok)
           expect(response.media_type).to eq('image/jpeg')
         end
       end
@@ -109,7 +109,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
 
         it 'blocks' do
           get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
-          expect(response).to have_http_status(403)
+          expect(response).to have_http_status(:forbidden)
         end
       end
     end
@@ -137,7 +137,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
 
         it 'works' do
           get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
-          expect(response).to have_http_status(200)
+          expect(response).to have_http_status(:ok)
           expect(response.media_type).to eq('image/jpeg')
         end
       end
@@ -147,7 +147,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
 
         it 'blocks' do
           get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
-          expect(response).to have_http_status(403)
+          expect(response).to have_http_status(:forbidden)
         end
       end
 
@@ -156,7 +156,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
 
         it 'works' do
           get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
-          expect(response).to have_http_status(200)
+          expect(response).to have_http_status(:ok)
           expect(response.media_type).to eq('image/jpeg')
         end
       end
@@ -166,7 +166,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
 
         it 'works' do
           get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
-          expect(response).to have_http_status(200)
+          expect(response).to have_http_status(:ok)
           expect(response.media_type).to eq('image/jpeg')
         end
       end
@@ -176,7 +176,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
 
         it 'redirects to the authentication endpoint' do
           get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
-          expect(response).to redirect_to(auth_iiif_url(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001', format: format))
+          expect(response).to redirect_to(auth_iiif_url(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001', format:))
         end
       end
     end

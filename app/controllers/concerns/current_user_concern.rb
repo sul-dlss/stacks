@@ -57,7 +57,7 @@ module CurrentUserConcern
     User.new(id: session[:remote_user] || request.remote_user,
              ip_address: request.remote_ip,
              webauth_user: true,
-             ldap_groups: ldap_groups,
+             ldap_groups:,
              jwt_tokens: cookies.encrypted[:tokens]).tap { |user| clean_up_expired_cdl_tokens(user) }
   end
 

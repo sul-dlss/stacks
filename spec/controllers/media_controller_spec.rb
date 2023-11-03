@@ -16,21 +16,21 @@ RSpec.describe MediaController do
     context 'mock #token_valid?' do
       it 'verifies a token when token_valid? returns true' do
         expect(controller).to receive(:token_valid?).with(encrypted_token, id, file_name, ip_addr).and_return true
-        get :verify_token, params: { stacks_token: encrypted_token, id: id, file_name: file_name, user_ip: ip_addr }
+        get :verify_token, params: { stacks_token: encrypted_token, id:, file_name:, user_ip: ip_addr }
         expect(response.body).to eq 'valid token'
         expect(response.status).to eq 200
       end
 
       it 'rejects a token when token_valid? returns false' do
         expect(controller).to receive(:token_valid?).with(encrypted_token, id, file_name, ip_addr).and_return false
-        get :verify_token, params: { stacks_token: encrypted_token, id: id, file_name: file_name, user_ip: ip_addr }
+        get :verify_token, params: { stacks_token: encrypted_token, id:, file_name:, user_ip: ip_addr }
         expect(response.body).to eq 'invalid token'
         expect(response.status).to eq 403
       end
     end
 
     context 'actually try to verify the token' do
-      let(:valid_token) { { stacks_token: encrypted_token, id: id, file_name: file_name, user_ip: ip_addr } }
+      let(:valid_token) { { stacks_token: encrypted_token, id:, file_name:, user_ip: ip_addr } }
       # these tests are a bit more integration-ish, since they actually end up calling
       # StacksMediaToken.verify_encrypted_token? instead of mocking the call to MediaController#token_valid?
       it 'verifies a valid token' do
@@ -88,7 +88,7 @@ RSpec.describe MediaController do
     it 'returns JSON from hash_for_auth_check' do
       test_hash = { foo: :bar }
       expect(controller).to receive(:hash_for_auth_check).and_return(test_hash)
-      get :auth_check, params: { id: id, file_name: file_name, format: :js }
+      get :auth_check, params: { id:, file_name:, format: :js }
       body = JSON.parse(response.body)
       expect(body).to eq('foo' => 'bar')
     end
@@ -101,7 +101,7 @@ RSpec.describe MediaController do
       end
 
       it 'returns json that indicates a successful auth check (including token)' do
-        get :auth_check, params: { id: id, file_name: file_name, format: :js }
+        get :auth_check, params: { id:, file_name:, format: :js }
         body = JSON.parse(response.body)
         expect(body['status']).to eq 'success'
         expect(body['token']).to eq 'sekret-token'

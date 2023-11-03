@@ -40,13 +40,11 @@ class StacksFile
   end
 
   def druid_parts
-    @druid_parts ||= begin
-      id.match(/^([a-z]{2})(\d{3})([a-z]{2})(\d{4})$/i)
-    end
+    @druid_parts ||= id.match(/^([a-z]{2})(\d{3})([a-z]{2})(\d{4})$/i)
   end
 
   def stacks_rights
-    @stacks_rights ||= StacksRights.new(id: id, file_name: file_name)
+    @stacks_rights ||= StacksRights.new(id:, file_name:)
   end
   delegate :rights, to: :stacks_rights
 end

@@ -20,7 +20,7 @@ RSpec.describe IiifController do
 
     let(:iiif_params) do
       {
-        identifier: identifier,
+        identifier:,
         region: '0,640,2552,2552',
         size: '100,100',
         rotation: '0',

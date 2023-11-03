@@ -19,7 +19,7 @@ RSpec.describe WebauthController do
   end
 
   describe '#login_file' do
-    subject { get :login_file, params: params }
+    subject { get :login_file, params: }
     let(:params) { { id: 'xf680rd3068', file_name: 'xf680rd3068_1.jp2' } }
 
     it 'returns the user to the file api' do
@@ -27,12 +27,12 @@ RSpec.describe WebauthController do
     end
 
     it 'stores user information in the session' do
-      get :login_file, params: params
+      get(:login_file, params:)
       expect(session.to_h).to include 'remote_user' => 'username', 'workgroups' => 'a;b'
     end
 
     context 'with a failed login' do
-      subject { get :login_file, params: params }
+      subject { get :login_file, params: }
 
       before do
         allow(controller).to receive(:current_user).and_return(nil)
@@ -45,7 +45,7 @@ RSpec.describe WebauthController do
   end
 
   describe '#login_iiif' do
-    subject { get :login_iiif, params: params }
+    subject { get :login_iiif, params: }
     let(:params) do
       {
         id: 'nr349ct7889',
@@ -59,7 +59,7 @@ RSpec.describe WebauthController do
     end
 
     it 'stores user information in the session' do
-      get :login_iiif, params: params
+      get(:login_iiif, params:)
       expect(session.to_h).to include 'remote_user' => 'username', 'workgroups' => 'a;b'
     end
 

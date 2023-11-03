@@ -1043,7 +1043,7 @@ RSpec.describe 'Ability', type: :model do
 
   describe 'for an object with CDL rights' do
     let(:user) do
-      User.new(id: 'a', webauth_user: true, ldap_groups: %w(stanford:stanford), jwt_tokens: jwt_tokens)
+      User.new(id: 'a', webauth_user: true, ldap_groups: %w(stanford:stanford), jwt_tokens:)
     end
     let(:jwt_tokens) { [] }
     let(:rights_xml) do

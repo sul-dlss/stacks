@@ -31,7 +31,7 @@ RSpec.describe "Authentication for Media requests", type: :request do
     end
 
     let(:mock_media) do
-      sms = StacksMediaStream.new(id: 'bb582xs1304', file_name: 'file', format: format)
+      sms = StacksMediaStream.new(id: 'bb582xs1304', file_name: 'file', format:)
       allow(Purl).to receive(:public_xml).with('bb582xs1304').and_return(public_xml)
       sms
     end

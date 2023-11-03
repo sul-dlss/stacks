@@ -51,7 +51,7 @@ class Projection
             else
               requested_size.width
             end
-    IIIF::Image::Dimension.new(width: width, height: height)
+    IIIF::Image::Dimension.new(width:, height:)
   end
 
   def absolute_region?
@@ -108,7 +108,7 @@ class Projection
 
   # @return [IiifImage]
   def image_source
-    @image_source ||= IiifImage.new(id: id, file_name: file_name, transformation: real_transformation)
+    @image_source ||= IiifImage.new(id:, file_name:, transformation: real_transformation)
   end
 
   def real_transformation

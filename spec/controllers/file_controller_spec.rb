@@ -16,7 +16,7 @@ RSpec.describe FileController do
 
     before do
       path = File.join(Rails.root, 'spec/fixtures/nr/349/ct/7889/image.jp2')
-      allow(file).to receive_messages(mtime: Time.zone.now, path: path)
+      allow(file).to receive_messages(mtime: Time.zone.now, path:)
     end
 
     it 'sends the file to the user' do

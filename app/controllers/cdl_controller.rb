@@ -38,11 +38,11 @@ class CdlController < ApplicationController
   #      - exp (due date)
   #      - barcode (note: the actual item barcode may differ from the one in the SDR item)
   def create
-    render json: 'invalid barcode', status: 400 and return unless barcode
+    render json: 'invalid barcode', status: :bad_request and return unless barcode
 
     checkout_params = {
       id: params[:id],
-      barcode: barcode,
+      barcode:,
       modal: true,
       return_to: cdl_checkout_success_iiif_auth_api_url(params[:id])
     }
@@ -66,12 +66,12 @@ class CdlController < ApplicationController
   def delete
     token = existing_payload[:token]
 
-    checkin_params = { token: token, return_to: cdl_checkin_success_iiif_auth_api_url(params[:id]) }
+    checkin_params = { token:, return_to: cdl_checkin_success_iiif_auth_api_url(params[:id]) }
     redirect_to "#{Settings.cdl.url}/checkin?#{checkin_params.to_param}"
   end
 
   def delete_success
-    # Note: the user may have lost its token already (because it was marked as expired)
+    # NOTE: the user may have lost its token already (because it was marked as expired)
     bad_tokens, good_tokens = current_user.cdl_tokens.partition { |payload| payload['aud'] == params[:id] }
     cookies.encrypted[:tokens] = good_tokens.pluck(:token) if bad_tokens.any?
 
@@ -84,7 +84,7 @@ class CdlController < ApplicationController
   def renew
     token = existing_payload[:token]
 
-    renew_params = { modal: true, token: token, return_to: cdl_renew_success_iiif_auth_api_url(params[:id]) }
+    renew_params = { modal: true, token:, return_to: cdl_renew_success_iiif_auth_api_url(params[:id]) }
     redirect_to "#{Settings.cdl.url}/renew?#{renew_params.to_param}"
   end
 

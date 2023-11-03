@@ -106,7 +106,7 @@ RSpec.describe "Authentication for File requests", type: :request do
           allow_any_instance_of(FileController).to receive(:current_user).and_return(user_webauth_no_stanford_no_loc)
           allow(Purl).to receive(:public_xml).and_return(group_rights)
           get "/file/#{druid}/#{filename}"
-          expect(response).to have_http_status(403)
+          expect(response).to have_http_status(:forbidden)
         end
       end
       it "prompts for webauth when user not webauthed" do
@@ -129,7 +129,7 @@ RSpec.describe "Authentication for File requests", type: :request do
           allow_any_instance_of(FileController).to receive(:current_user).and_return(user_no_loc_no_webauth)
           allow(Purl).to receive(:public_xml).and_return(location_other_rights)
           get "/file/#{druid}/#{filename}"
-          expect(response).to have_http_status(403)
+          expect(response).to have_http_status(:forbidden)
         end
       end
       context 'OR stanford' do
@@ -161,7 +161,7 @@ RSpec.describe "Authentication for File requests", type: :request do
               allow_any_instance_of(FileController).to receive(:current_user).and_return(user_webauth_no_stanford_no_loc)
               allow(Purl).to receive(:public_xml).and_return(stanford_and_location_other_rights)
               get "/file/#{druid}/#{filename}"
-              expect(response).to have_http_status(403)
+              expect(response).to have_http_status(:forbidden)
             end
           end
         end

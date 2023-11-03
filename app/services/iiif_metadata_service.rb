@@ -11,8 +11,8 @@ class IiifMetadataService
   # @param canonical_url [String]
   # @param base_uri [String] base path to the IIIF server
   def initialize(id:, file_name:, canonical_url:, base_uri: Settings.imageserver.base_uri)
-    identifier = CGI.escape(StacksFile.new(id: id, file_name: file_name).treeified_path)
-    @url = IIIF::Image::URI.new(identifier: identifier, base_uri: base_uri).to_s
+    identifier = CGI.escape(StacksFile.new(id:, file_name:).treeified_path)
+    @url = IIIF::Image::URI.new(identifier:, base_uri:).to_s
     @canonical_url = canonical_url
   end
 
@@ -68,11 +68,9 @@ class IiifMetadataService
 
   def json
     retrieved_json = retrieve
-    @json ||= begin
-                JSON.parse(retrieved_json).tap do |data|
-                  data['@id'] = @canonical_url
-                end
-              end
+    @json ||= JSON.parse(retrieved_json).tap do |data|
+      data['@id'] = @canonical_url
+    end
   rescue JSON::ParserError => e
     raise Stacks::UnexpectedMetadataResponseError, "There was a problem fetching #{@url}. #{e}: #{retrieved_json}"
   end
