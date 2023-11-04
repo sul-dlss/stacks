@@ -43,7 +43,7 @@ class Ability
 
     models = [StacksFile, StacksImage, StacksMediaStream]
 
-    can [:download, :read], models do |f|
+    can :download, models do |f|
       value, rule = f.rights.world_rights_for_file f.file_name
 
       value && (rule.nil? || rule != Dor::RightsAuth::NO_DOWNLOAD_RULE)
@@ -56,7 +56,7 @@ class Ability
     end
 
     if user.stanford?
-      can [:download, :read], models do |f|
+      can :download, models do |f|
         value, rule = f.rights.stanford_only_rights_for_file f.file_name
 
         value && (rule.nil? || rule != Dor::RightsAuth::NO_DOWNLOAD_RULE)
@@ -70,7 +70,7 @@ class Ability
     end
 
     if user.app_user?
-      can [:download, :read], models do |f|
+      can :download, models do |f|
         value, rule = f.rights.agent_rights_for_file f.file_name, user.id
 
         value && (rule.nil? || rule != Dor::RightsAuth::NO_DOWNLOAD_RULE)
@@ -84,7 +84,7 @@ class Ability
     end
 
     if user.locations.present?
-      can [:download, :read], models do |f|
+      can :download, models do |f|
         user.locations.any? do |location|
           value, rule = f.rights.location_rights_for_file(f.file_name, location)
           value && (rule.nil? || rule != Dor::RightsAuth::NO_DOWNLOAD_RULE)
