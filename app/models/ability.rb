@@ -70,20 +70,6 @@ class Ability
       end
     end
 
-    if user.app_user?
-      can :download, downloadable_models do |f|
-        value, rule = f.rights.agent_rights_for_file f.file_name, user.id
-
-        value && (rule.nil? || rule != Dor::RightsAuth::NO_DOWNLOAD_RULE)
-      end
-
-      can [:access], access_models do |f|
-        value, _rule = f.rights.agent_rights_for_file f.file_name, user.id
-
-        value
-      end
-    end
-
     if user.locations.present?
       can :download, downloadable_models do |f|
         user.locations.any? do |location|
