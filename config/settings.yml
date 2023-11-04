@@ -45,6 +45,7 @@ cors:
   allow_origin_url: 'https://embed.stanford.edu'
 features:
   streaming_media: true
+  cocina: false
 
 token:
   default_expiry_time: <%= 1.hour %>

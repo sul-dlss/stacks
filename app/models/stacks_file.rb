@@ -46,5 +46,5 @@ class StacksFile
   def stacks_rights
     @stacks_rights ||= StacksRights.new(id:, file_name:)
   end
-  delegate :rights, to: :stacks_rights
+  delegate :rights, :cocina_rights, to: :stacks_rights
 end

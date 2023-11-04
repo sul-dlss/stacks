@@ -5,6 +5,8 @@
 class StacksRights
   attr_reader :id, :file_name
 
+  THUMBNAIL_MIME_TYPE = 'image/jp2'
+
   def initialize(id:, file_name:)
     @id = id
     @file_name = file_name
@@ -36,6 +38,10 @@ class StacksRights
   delegate :embargoed?, :embargo_release_date, to: :rights
 
   def object_thumbnail?
+    use_json? ? cocina_thumbnail? : xml_thumbnail?
+  end
+
+  def xml_thumbnail?
     doc = Nokogiri::XML.parse(public_xml)
 
     thumb_element = doc.xpath('//thumb')
@@ -47,11 +53,45 @@ class StacksRights
     end
   end
 
+  # Based on implementation of ThumbnailService in DSA
+  def cocina_thumbnail?
+    thumbnail_file = public_json.dig('structural', 'contains')
+                                .lazy.flat_map { |file_set| file_set.dig('structural', 'contains') }
+                                .find { |file| file['hasMimeType'] == THUMBNAIL_MIME_TYPE }
+    thumbnail_file == cocina_file
+  end
+
+  def use_json?
+    Settings.features.cocina
+  end
+
   def rights
-    @rights ||= Dor::RightsAuth.parse(rights_xml)
+    use_json? ? cocina_rights : dor_auth_rights
+  end
+
+  def dor_auth_rights
+    @dor_auth_rights ||= Dor::RightsAuth.parse(rights_xml)
+  end
+
+  def cocina_rights
+    @cocina_rights ||= CocinaRights.new(cocina_file['access'])
   end
 
   private
+
+  def cocina_file
+    @cocina_file ||= find_file
+  end
+
+  def find_file
+    public_json.dig('structural', 'contains')
+               .lazy.flat_map { |file_set| file_set.dig('structural', 'contains') }
+               .find { |file| file['filename'] == file_name } || raise("File not found '#{file_name}'")
+  end
+
+  def public_json
+    @public_json ||= Purl.public_json(id)
+  end
 
   def rights_xml
     public_xml
