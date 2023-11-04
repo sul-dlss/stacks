@@ -134,7 +134,7 @@ GEM
     docile (1.4.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
-    dor-rights-auth (1.7.0)
+    dor-rights-auth (1.8.0)
       nokogiri
     dry-configurable (1.1.0)
       dry-core (~> 1.0, < 2)
@@ -427,7 +427,7 @@ DEPENDENCIES
   dalli
   debug
   dlss-capistrano
-  dor-rights-auth
+  dor-rights-auth (~> 1.8)
   faraday
   honeybadger
   http

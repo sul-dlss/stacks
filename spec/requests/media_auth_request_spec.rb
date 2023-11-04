@@ -92,7 +92,12 @@ RSpec.describe "Authentication for Media requests", type: :request do
 
       it 'indicates that the object is stanford restricted and embargoed in the json' do
         get "/media/#{druid}/file.#{format}/auth_check"
-        expect(response.parsed_body['status']).to eq %w[stanford_restricted embargoed]
+        expect(response.parsed_body).to eq(
+          'status' => %w[stanford_restricted embargoed],
+          'embargo' => { 'release_date' => Time.parse('2099-05-15').getlocal.as_json },
+          'service' => { "@id" => "http://www.example.com/auth/iiif", "label" => "Stanford-affiliated? Login to play" }
+        )
+
       end
     end
 
@@ -111,7 +116,10 @@ RSpec.describe "Authentication for Media requests", type: :request do
 
       it 'indicates that the object is embargoed in the json' do
         get "/media/#{druid}/file.#{format}/auth_check.js"
-        expect(response.parsed_body['status']).to eq ['embargoed']
+        expect(response.parsed_body).to eq(
+          'status' => ['embargoed'],
+          'embargo' => { 'release_date' => Time.parse('2099-05-15').getlocal.as_json }
+        )
       end
     end
   end
