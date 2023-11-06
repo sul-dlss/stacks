@@ -10,7 +10,7 @@ class FileController < ApplicationController
   def show
     return unless stale?(**cache_headers)
 
-    authorize! :read, current_file
+    authorize! :download, current_file
     expires_in 10.minutes
     response.headers['Accept-Ranges'] = 'bytes'
     response.headers['Content-Length'] = current_file.content_length
@@ -55,7 +55,7 @@ class FileController < ApplicationController
     {
       etag: [current_file.etag, current_user.try(:etag)],
       last_modified: current_file.mtime,
-      public: anonymous_ability.can?(:read, current_file),
+      public: anonymous_ability.can?(:download, current_file),
       template: false
     }
   end

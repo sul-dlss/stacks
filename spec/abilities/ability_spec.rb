@@ -61,9 +61,6 @@ RSpec.describe 'Ability', type: :model do
       it { is_expected.to be_able_to(:download, file) }
       it { is_expected.to be_able_to(:download, image) }
       it { is_expected.to be_able_to(:download, media) }
-      it { is_expected.to be_able_to(:read, file) }
-      it { is_expected.to be_able_to(:read, image) }
-      it { is_expected.to be_able_to(:read, media) }
       it { is_expected.to be_able_to(:read, tile) }
       it { is_expected.to be_able_to(:stream, media) }
       it { is_expected.to be_able_to(:access, file) }
@@ -88,9 +85,6 @@ RSpec.describe 'Ability', type: :model do
       it { is_expected.to be_able_to(:download, file) }
       it { is_expected.to be_able_to(:download, image) }
       it { is_expected.to be_able_to(:download, media) }
-      it { is_expected.to be_able_to(:read, file) }
-      it { is_expected.to be_able_to(:read, image) }
-      it { is_expected.to be_able_to(:read, media) }
       it { is_expected.to be_able_to(:read, tile) }
       it { is_expected.to be_able_to(:stream, media) }
       it { is_expected.to be_able_to(:access, file) }
@@ -115,9 +109,6 @@ RSpec.describe 'Ability', type: :model do
       it { is_expected.not_to be_able_to(:download, file) }
       it { is_expected.not_to be_able_to(:download, image) }
       it { is_expected.not_to be_able_to(:download, media) }
-      it { is_expected.not_to be_able_to(:read, file) }
-      it { is_expected.not_to be_able_to(:read, image) }
-      it { is_expected.not_to be_able_to(:read, media) }
       it { is_expected.not_to be_able_to(:read, big_image) }
       it { is_expected.to be_able_to(:read, tile) }
       it { is_expected.to be_able_to(:stream, media) }
@@ -143,9 +134,6 @@ RSpec.describe 'Ability', type: :model do
       it { is_expected.not_to be_able_to(:download, file) }
       it { is_expected.not_to be_able_to(:download, image) }
       it { is_expected.not_to be_able_to(:download, media) }
-      it { is_expected.not_to be_able_to(:read, file) }
-      it { is_expected.not_to be_able_to(:read, image) }
-      it { is_expected.not_to be_able_to(:read, media) }
       it { is_expected.not_to be_able_to(:read, tile) }
       it { is_expected.not_to be_able_to(:stream, media) }
       it { is_expected.not_to be_able_to(:access, file) }
@@ -173,9 +161,6 @@ RSpec.describe 'Ability', type: :model do
       it { is_expected.to be_able_to(:download, file) }
       it { is_expected.to be_able_to(:download, image) }
       it { is_expected.to be_able_to(:download, media) }
-      it { is_expected.to be_able_to(:read, file) }
-      it { is_expected.to be_able_to(:read, image) }
-      it { is_expected.to be_able_to(:read, media) }
       it { is_expected.to be_able_to(:read, tile) }
       it { is_expected.to be_able_to(:stream, media) }
       it { is_expected.to be_able_to(:access, file) }
@@ -199,9 +184,6 @@ RSpec.describe 'Ability', type: :model do
       it { is_expected.not_to be_able_to(:download, file) }
       it { is_expected.not_to be_able_to(:download, image) }
       it { is_expected.not_to be_able_to(:download, media) }
-      it { is_expected.not_to be_able_to(:read, file) }
-      it { is_expected.not_to be_able_to(:read, image) }
-      it { is_expected.not_to be_able_to(:read, media) }
       it { is_expected.not_to be_able_to(:read, tile) }
       it { is_expected.not_to be_able_to(:stream, media) }
       it { is_expected.not_to be_able_to(:access, file) }
@@ -270,9 +252,6 @@ RSpec.describe 'Ability', type: :model do
       it { is_expected.not_to be_able_to(:download, file) }
       it { is_expected.not_to be_able_to(:download, image) }
       it { is_expected.not_to be_able_to(:download, media) }
-      it { is_expected.not_to be_able_to(:read, file) }
-      it { is_expected.not_to be_able_to(:read, image) }
-      it { is_expected.not_to be_able_to(:read, media) }
       it { is_expected.not_to be_able_to(:read, tile) }
       it { is_expected.not_to be_able_to(:stream, media) }
       it { is_expected.not_to be_able_to(:access, file) }
@@ -317,9 +296,6 @@ RSpec.describe 'Ability', type: :model do
       it { is_expected.to be_able_to(:download, file) }
       it { is_expected.to be_able_to(:download, image) }
       it { is_expected.to be_able_to(:download, media) }
-      it { is_expected.to be_able_to(:read, file) }
-      it { is_expected.to be_able_to(:read, image) }
-      it { is_expected.to be_able_to(:read, media) }
       it { is_expected.to be_able_to(:read, tile) }
       it { is_expected.to be_able_to(:stream, media) }
       it { is_expected.to be_able_to(:access, file) }
@@ -333,9 +309,6 @@ RSpec.describe 'Ability', type: :model do
       it { is_expected.not_to be_able_to(:download, file) }
       it { is_expected.not_to be_able_to(:download, image) }
       it { is_expected.not_to be_able_to(:download, media) }
-      it { is_expected.not_to be_able_to(:read, file) }
-      it { is_expected.not_to be_able_to(:read, image) }
-      it { is_expected.not_to be_able_to(:read, media) }
       it { is_expected.not_to be_able_to(:read, tile) }
       it { is_expected.not_to be_able_to(:stream, media) }
       it { is_expected.not_to be_able_to(:access, file) }
@@ -361,9 +334,6 @@ RSpec.describe 'Ability', type: :model do
         it { is_expected.not_to be_able_to(:download, file) }
         it { is_expected.not_to be_able_to(:download, image) }
         it { is_expected.not_to be_able_to(:download, media) }
-        it { is_expected.not_to be_able_to(:read, file) }
-        it { is_expected.not_to be_able_to(:read, image) }
-        it { is_expected.not_to be_able_to(:read, media) }
         it { is_expected.to be_able_to(:read, tile) }
         it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:access, file) }
@@ -376,9 +346,6 @@ RSpec.describe 'Ability', type: :model do
         it { is_expected.not_to be_able_to(:download, file) }
         it { is_expected.not_to be_able_to(:download, image) }
         it { is_expected.not_to be_able_to(:download, media) }
-        it { is_expected.not_to be_able_to(:read, file) }
-        it { is_expected.not_to be_able_to(:read, image) }
-        it { is_expected.not_to be_able_to(:read, media) }
         it { is_expected.not_to be_able_to(:read, tile) }
         it { is_expected.not_to be_able_to(:stream, media) }
         it { is_expected.not_to be_able_to(:access, file) }
@@ -407,9 +374,6 @@ RSpec.describe 'Ability', type: :model do
       it { is_expected.to be_able_to(:download, file) }
       it { is_expected.to be_able_to(:download, image) }
       it { is_expected.to be_able_to(:download, media) }
-      it { is_expected.to be_able_to(:read, file) }
-      it { is_expected.to be_able_to(:read, image) }
-      it { is_expected.to be_able_to(:read, media) }
       it { is_expected.to be_able_to(:read, tile) }
       it { is_expected.to be_able_to(:stream, media) }
       it { is_expected.to be_able_to(:access, file) }
@@ -434,9 +398,6 @@ RSpec.describe 'Ability', type: :model do
       it { is_expected.to be_able_to(:download, file) }
       it { is_expected.to be_able_to(:download, image) }
       it { is_expected.to be_able_to(:download, media) }
-      it { is_expected.to be_able_to(:read, file) }
-      it { is_expected.to be_able_to(:read, image) }
-      it { is_expected.to be_able_to(:read, media) }
       it { is_expected.to be_able_to(:read, tile) }
       it { is_expected.to be_able_to(:stream, media) }
       it { is_expected.to be_able_to(:access, file) }
@@ -461,9 +422,6 @@ RSpec.describe 'Ability', type: :model do
       it { is_expected.to be_able_to(:download, file) }
       it { is_expected.to be_able_to(:download, image) }
       it { is_expected.to be_able_to(:download, media) }
-      it { is_expected.to be_able_to(:read, file) }
-      it { is_expected.to be_able_to(:read, image) }
-      it { is_expected.to be_able_to(:read, media) }
       it { is_expected.to be_able_to(:read, tile) }
       it { is_expected.to be_able_to(:stream, media) }
       it { is_expected.to be_able_to(:access, file) }
@@ -487,9 +445,6 @@ RSpec.describe 'Ability', type: :model do
       it { is_expected.to be_able_to(:download, file) }
       it { is_expected.to be_able_to(:download, image) }
       it { is_expected.to be_able_to(:download, media) }
-      it { is_expected.to be_able_to(:read, file) }
-      it { is_expected.to be_able_to(:read, image) }
-      it { is_expected.to be_able_to(:read, media) }
       it { is_expected.to be_able_to(:read, tile) }
       it { is_expected.to be_able_to(:stream, media) }
       it { is_expected.to be_able_to(:access, file) }
@@ -513,9 +468,6 @@ RSpec.describe 'Ability', type: :model do
       it { is_expected.not_to be_able_to(:download, file) }
       it { is_expected.not_to be_able_to(:download, image) }
       it { is_expected.not_to be_able_to(:download, media) }
-      it { is_expected.not_to be_able_to(:read, file) }
-      it { is_expected.not_to be_able_to(:read, image) }
-      it { is_expected.not_to be_able_to(:read, media) }
       it { is_expected.to be_able_to(:read, tile) }
       it { is_expected.to be_able_to(:stream, media) }
       it { is_expected.to be_able_to(:access, file) }
@@ -541,9 +493,6 @@ RSpec.describe 'Ability', type: :model do
       it { is_expected.to be_able_to(:download, file) }
       it { is_expected.to be_able_to(:download, image) }
       it { is_expected.to be_able_to(:download, media) }
-      it { is_expected.to be_able_to(:read, file) }
-      it { is_expected.to be_able_to(:read, image) }
-      it { is_expected.to be_able_to(:read, media) }
       it { is_expected.to be_able_to(:read, tile) }
       it { is_expected.to be_able_to(:stream, media) }
       it { is_expected.to be_able_to(:access, file) }
@@ -567,9 +516,6 @@ RSpec.describe 'Ability', type: :model do
       it { is_expected.not_to be_able_to(:download, file) }
       it { is_expected.not_to be_able_to(:download, image) }
       it { is_expected.not_to be_able_to(:download, media) }
-      it { is_expected.not_to be_able_to(:read, file) }
-      it { is_expected.not_to be_able_to(:read, image) }
-      it { is_expected.not_to be_able_to(:read, media) }
       it { is_expected.not_to be_able_to(:read, tile) }
       it { is_expected.not_to be_able_to(:stream, media) }
       it { is_expected.not_to be_able_to(:access, file) }
@@ -593,9 +539,6 @@ RSpec.describe 'Ability', type: :model do
       it { is_expected.not_to be_able_to(:download, file) }
       it { is_expected.not_to be_able_to(:download, image) }
       it { is_expected.not_to be_able_to(:download, media) }
-      it { is_expected.not_to be_able_to(:read, file) }
-      it { is_expected.not_to be_able_to(:read, image) }
-      it { is_expected.not_to be_able_to(:read, media) }
       it { is_expected.not_to be_able_to(:read, tile) }
       it { is_expected.not_to be_able_to(:stream, media) }
       it { is_expected.not_to be_able_to(:access, file) }
@@ -619,9 +562,6 @@ RSpec.describe 'Ability', type: :model do
       it { is_expected.not_to be_able_to(:download, file) }
       it { is_expected.not_to be_able_to(:download, image) }
       it { is_expected.not_to be_able_to(:download, media) }
-      it { is_expected.not_to be_able_to(:read, file) }
-      it { is_expected.not_to be_able_to(:read, image) }
-      it { is_expected.not_to be_able_to(:read, media) }
       it { is_expected.to be_able_to(:read, tile) }
       it { is_expected.to be_able_to(:stream, media) }
       it { is_expected.to be_able_to(:access, file) }
@@ -654,9 +594,6 @@ RSpec.describe 'Ability', type: :model do
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
         it { is_expected.to be_able_to(:download, media) }
-        it { is_expected.to be_able_to(:read, file) }
-        it { is_expected.to be_able_to(:read, image) }
-        it { is_expected.to be_able_to(:read, media) }
         it { is_expected.to be_able_to(:read, tile) }
         it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:access, file) }
@@ -671,9 +608,6 @@ RSpec.describe 'Ability', type: :model do
         it { is_expected.not_to be_able_to(:download, file) }
         it { is_expected.not_to be_able_to(:download, image) }
         it { is_expected.not_to be_able_to(:download, media) }
-        it { is_expected.not_to be_able_to(:read, file) }
-        it { is_expected.not_to be_able_to(:read, image) }
-        it { is_expected.not_to be_able_to(:read, media) }
         it { is_expected.to be_able_to(:read, tile) }
         it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:access, file) }
@@ -690,9 +624,6 @@ RSpec.describe 'Ability', type: :model do
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
         it { is_expected.to be_able_to(:download, media) }
-        it { is_expected.to be_able_to(:read, file) }
-        it { is_expected.to be_able_to(:read, image) }
-        it { is_expected.to be_able_to(:read, media) }
         it { is_expected.to be_able_to(:read, tile) }
         it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:access, file) }
@@ -709,9 +640,6 @@ RSpec.describe 'Ability', type: :model do
         it { is_expected.not_to be_able_to(:download, file) }
         it { is_expected.not_to be_able_to(:download, image) }
         it { is_expected.not_to be_able_to(:download, media) }
-        it { is_expected.not_to be_able_to(:read, file) }
-        it { is_expected.not_to be_able_to(:read, image) }
-        it { is_expected.not_to be_able_to(:read, media) }
         it { is_expected.to be_able_to(:read, tile) }
         it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:access, file) }
@@ -728,9 +656,6 @@ RSpec.describe 'Ability', type: :model do
         it { is_expected.not_to be_able_to(:download, file) }
         it { is_expected.not_to be_able_to(:download, image) }
         it { is_expected.not_to be_able_to(:download, media) }
-        it { is_expected.not_to be_able_to(:read, file) }
-        it { is_expected.not_to be_able_to(:read, image) }
-        it { is_expected.not_to be_able_to(:read, media) }
         it { is_expected.not_to be_able_to(:read, tile) }
         it { is_expected.not_to be_able_to(:stream, media) }
         it { is_expected.not_to be_able_to(:access, file) }
@@ -762,9 +687,6 @@ RSpec.describe 'Ability', type: :model do
         it { is_expected.not_to be_able_to(:download, file) }
         it { is_expected.not_to be_able_to(:download, image) }
         it { is_expected.not_to be_able_to(:download, media) }
-        it { is_expected.not_to be_able_to(:read, file) }
-        it { is_expected.not_to be_able_to(:read, image) }
-        it { is_expected.not_to be_able_to(:read, media) }
         it { is_expected.to be_able_to(:read, tile) }
         it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:access, file) }
@@ -779,9 +701,6 @@ RSpec.describe 'Ability', type: :model do
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
         it { is_expected.to be_able_to(:download, media) }
-        it { is_expected.to be_able_to(:read, file) }
-        it { is_expected.to be_able_to(:read, image) }
-        it { is_expected.to be_able_to(:read, media) }
         it { is_expected.to be_able_to(:read, tile) }
         it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:access, file) }
@@ -796,9 +715,6 @@ RSpec.describe 'Ability', type: :model do
         it { is_expected.not_to be_able_to(:download, file) }
         it { is_expected.not_to be_able_to(:download, image) }
         it { is_expected.not_to be_able_to(:download, media) }
-        it { is_expected.not_to be_able_to(:read, file) }
-        it { is_expected.not_to be_able_to(:read, image) }
-        it { is_expected.not_to be_able_to(:read, media) }
         it { is_expected.not_to be_able_to(:read, tile) }
         it { is_expected.not_to be_able_to(:stream, media) }
         it { is_expected.not_to be_able_to(:access, file) }
@@ -828,9 +744,6 @@ RSpec.describe 'Ability', type: :model do
         it { is_expected.not_to be_able_to(:download, file) }
         it { is_expected.not_to be_able_to(:download, image) }
         it { is_expected.not_to be_able_to(:download, media) }
-        it { is_expected.not_to be_able_to(:read, file) }
-        it { is_expected.not_to be_able_to(:read, image) }
-        it { is_expected.not_to be_able_to(:read, media) }
         it { is_expected.to be_able_to(:read, tile) }
         it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:access, file) }
@@ -845,9 +758,6 @@ RSpec.describe 'Ability', type: :model do
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
         it { is_expected.to be_able_to(:download, media) }
-        it { is_expected.to be_able_to(:read, file) }
-        it { is_expected.to be_able_to(:read, image) }
-        it { is_expected.to be_able_to(:read, media) }
         it { is_expected.to be_able_to(:read, tile) }
         it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:access, file) }
@@ -882,9 +792,6 @@ RSpec.describe 'Ability', type: :model do
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
         it { is_expected.not_to be_able_to(:download, media) }
-        it { is_expected.to be_able_to(:read, file) }
-        it { is_expected.to be_able_to(:read, image) }
-        it { is_expected.not_to be_able_to(:read, media) }
         it { is_expected.to be_able_to(:read, tile) }
         it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:access, file) }
@@ -920,9 +827,6 @@ RSpec.describe 'Ability', type: :model do
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.not_to be_able_to(:download, image) }
         it { is_expected.to be_able_to(:download, media) }
-        it { is_expected.to be_able_to(:read, file) }
-        it { is_expected.not_to be_able_to(:read, image) }
-        it { is_expected.to be_able_to(:read, media) }
         it { is_expected.not_to be_able_to(:read, tile) }
         it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:access, file) }
@@ -940,9 +844,6 @@ RSpec.describe 'Ability', type: :model do
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
         it { is_expected.to be_able_to(:download, media) }
-        it { is_expected.to be_able_to(:read, file) }
-        it { is_expected.to be_able_to(:read, image) }
-        it { is_expected.to be_able_to(:read, media) }
         it { is_expected.to be_able_to(:read, tile) }
         it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:access, file) }
@@ -956,9 +857,6 @@ RSpec.describe 'Ability', type: :model do
         it { is_expected.not_to be_able_to(:download, file) }
         it { is_expected.not_to be_able_to(:download, image) }
         it { is_expected.not_to be_able_to(:download, media) }
-        it { is_expected.not_to be_able_to(:read, file) }
-        it { is_expected.not_to be_able_to(:read, image) }
-        it { is_expected.not_to be_able_to(:read, media) }
         it { is_expected.not_to be_able_to(:read, tile) }
         it { is_expected.not_to be_able_to(:stream, media) }
         it { is_expected.not_to be_able_to(:access, file) }
@@ -994,9 +892,6 @@ RSpec.describe 'Ability', type: :model do
         it { is_expected.not_to be_able_to(:download, file) }
         it { is_expected.to be_able_to(:download, image) }
         it { is_expected.to be_able_to(:download, media) }
-        it { is_expected.not_to be_able_to(:read, file) }
-        it { is_expected.to be_able_to(:read, image) }
-        it { is_expected.to be_able_to(:read, media) }
         it { is_expected.to be_able_to(:read, tile) }
         it { is_expected.to be_able_to(:stream, media) }
         it { is_expected.not_to be_able_to(:access, file) }
@@ -1011,9 +906,6 @@ RSpec.describe 'Ability', type: :model do
         it { is_expected.not_to be_able_to(:download, file) }
         it { is_expected.not_to be_able_to(:download, image) }
         it { is_expected.not_to be_able_to(:download, media) }
-        it { is_expected.not_to be_able_to(:read, file) }
-        it { is_expected.not_to be_able_to(:read, image) }
-        it { is_expected.not_to be_able_to(:read, media) }
         it { is_expected.not_to be_able_to(:read, tile) }
         it { is_expected.not_to be_able_to(:stream, media) }
         it { is_expected.not_to be_able_to(:access, file) }
@@ -1028,9 +920,6 @@ RSpec.describe 'Ability', type: :model do
         it { is_expected.to be_able_to(:download, file) }
         it { is_expected.not_to be_able_to(:download, image) }
         it { is_expected.not_to be_able_to(:download, media) }
-        it { is_expected.to be_able_to(:read, file) }
-        it { is_expected.not_to be_able_to(:read, image) }
-        it { is_expected.not_to be_able_to(:read, media) }
         it { is_expected.not_to be_able_to(:read, tile) }
         it { is_expected.not_to be_able_to(:stream, media) }
         it { is_expected.to be_able_to(:access, file) }
