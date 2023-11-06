@@ -428,7 +428,7 @@ DEPENDENCIES
   dalli
   debug
   dlss-capistrano
-  dor-rights-auth
+  dor-rights-auth (~> 1.8)
   faraday
   honeybadger
   http

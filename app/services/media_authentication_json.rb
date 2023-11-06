@@ -19,24 +19,13 @@ class MediaAuthenticationJson
   class DenyResponse
     def initialize(auth_url)
       @auth_url = auth_url
-      @status = []
+      @result = { status: [] }
     end
 
-    attr_reader :status, :auth_url
+    attr_reader :result, :auth_url
 
     def as_json
-      return { status: }.compact_blank.merge(login_service) if stanford_restricted?
-
-      { status: }.compact_blank
-    end
-
-    def login_service
-      {
-        service: {
-          '@id' => auth_url,
-          'label' => 'Stanford-affiliated? Login to play'
-        }
-      }
+      result.compact_blank
     end
 
     def stanford_restricted?
@@ -44,15 +33,30 @@ class MediaAuthenticationJson
     end
 
     def add_stanford_restricted!
-      status << :stanford_restricted
+      add_status(:stanford_restricted)
+      result[:service] = login_service
     end
 
     def add_location_restricted!
-      status << :location_restricted
+      add_status(:location_restricted)
     end
 
-    def add_embargo!
-      status << :embargoed
+    def add_embargo!(embargo_release_date)
+      add_status(:embargoed)
+      result[:embargo] = { release_date: embargo_release_date }
+    end
+
+    private
+
+    def add_status(status)
+      result[:status] << status
+    end
+
+    def login_service
+      {
+        '@id' => auth_url,
+        'label' => 'Stanford-affiliated? Login to play'
+      }
     end
   end
 
@@ -60,7 +64,7 @@ class MediaAuthenticationJson
     DenyResponse.new(auth_url).tap do |response|
       response.add_stanford_restricted! if stanford_grants_access?
       response.add_location_restricted! if location_grants_access?
-      response.add_embargo! if embargoed?
+      response.add_embargo!(media.embargo_release_date) if embargoed?
     end
   end
 
