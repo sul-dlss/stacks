@@ -41,28 +41,29 @@ class Ability
     # NOTE: the below ability definitions which reference StacksFile also implicitly
     # cover StacksImage and StacksMediaStream, and any other subclasses of StacksFile.
 
-    models = [StacksFile, StacksImage, StacksMediaStream]
+    downloadable_models = [StacksFile, StacksImage]
+    access_models = downloadable_models + [StacksMediaStream]
 
-    can :download, models do |f|
+    can :download, downloadable_models do |f|
       value, rule = f.rights.world_rights_for_file f.file_name
 
       value && (rule.nil? || rule != Dor::RightsAuth::NO_DOWNLOAD_RULE)
     end
 
-    can [:access], models do |f|
+    can [:access], access_models do |f|
       value, _rule = f.rights.world_rights_for_file f.file_name
 
       value
     end
 
     if user.stanford?
-      can :download, models do |f|
+      can :download, downloadable_models do |f|
         value, rule = f.rights.stanford_only_rights_for_file f.file_name
 
         value && (rule.nil? || rule != Dor::RightsAuth::NO_DOWNLOAD_RULE)
       end
 
-      can [:access], models do |f|
+      can [:access], access_models do |f|
         value, _rule = f.rights.stanford_only_rights_for_file f.file_name
 
         value
@@ -70,13 +71,13 @@ class Ability
     end
 
     if user.app_user?
-      can :download, models do |f|
+      can :download, downloadable_models do |f|
         value, rule = f.rights.agent_rights_for_file f.file_name, user.id
 
         value && (rule.nil? || rule != Dor::RightsAuth::NO_DOWNLOAD_RULE)
       end
 
-      can [:access], models do |f|
+      can [:access], access_models do |f|
         value, _rule = f.rights.agent_rights_for_file f.file_name, user.id
 
         value
@@ -84,14 +85,14 @@ class Ability
     end
 
     if user.locations.present?
-      can :download, models do |f|
+      can :download, downloadable_models do |f|
         user.locations.any? do |location|
           value, rule = f.rights.location_rights_for_file(f.file_name, location)
           value && (rule.nil? || rule != Dor::RightsAuth::NO_DOWNLOAD_RULE)
         end
       end
 
-      can [:access], models do |f|
+      can [:access], access_models do |f|
         user.locations.any? do |location|
           value, _rule = f.rights.location_rights_for_file(f.file_name, location)
           value
@@ -105,7 +106,7 @@ class Ability
       #   ...
       # end
 
-      can [:access], models do |f|
+      can [:access], access_models do |f|
         value, _rule = f.rights.cdl_rights_for_file(f.file_name)
         next unless value
 
@@ -125,7 +126,7 @@ class Ability
       (projection.tile? || projection.thumbnail?) && can?(:access, projection.image)
     end
 
-    can [:access], Projection do |projection|
+    can :access, Projection do |projection|
       can?(:access, projection.image)
     end
 
@@ -135,10 +136,7 @@ class Ability
       projection.thumbnail? && projection.object_thumbnail?
     end
 
-    can :stream, StacksMediaStream do |f|
-      can? :access, f
-    end
-
+    alias_action :stream, to: :access
     can :read_metadata, StacksImage
   end
 end
