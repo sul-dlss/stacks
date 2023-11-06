@@ -7,7 +7,6 @@ class User
 
   attr_accessor :id, :webauth_user, :anonymous_locatable_user, :app_user, :token_user,
                 :ldap_groups, :ip_address, :jwt_tokens
-  attr_writer :expires_at, :expires_in
 
   def ability
     Ability.new(self)
@@ -97,7 +96,7 @@ class User
 
     return nil if expiry < Time.zone.now
 
-    User.new(attributes.merge(token_user: true, expires_at: expiry).merge(additional_attributes))
+    User.new(attributes.merge(token_user: true).merge(additional_attributes))
   end
 
   def token
@@ -110,17 +109,9 @@ class User
         # mint time
         mint_time,
         # expiry time
-        expires_at
+        mint_time + Settings.token.default_expiry_time
       ]
     )
-  end
-
-  def expires_in
-    @expires_in || Settings.token.default_expiry_time
-  end
-
-  def expires_at
-    @expires_at || expires_in.from_now
   end
 
   def self.encryptor
