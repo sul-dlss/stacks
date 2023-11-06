@@ -185,7 +185,7 @@ RSpec.describe IiifInfoService do
       it 'advertises support for both login and external authentication' do
         expect(image_info['service']).to be_present
         expect(image_info['service'].length).to eq 2
-        expect(image_info['service'].map { |x| x['profile'] }).to match_array [
+        expect(image_info['service'].pluck('profile')).to match_array [
           'http://iiif.io/api/auth/1/login',
           'http://iiif.io/api/auth/1/external'
         ]
