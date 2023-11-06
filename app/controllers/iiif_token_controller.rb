@@ -50,7 +50,6 @@ class IiifTokenController < ApplicationController
   def token_eligible_user?
     current_user.token_user? ||
       current_user.webauth_user? ||
-      current_user.app_user? ||
       current_user.location? ||
       current_user.cdl_tokens.any?
   end

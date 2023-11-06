@@ -5,7 +5,7 @@
 class User
   include ActiveModel::Model
 
-  attr_accessor :id, :webauth_user, :anonymous_locatable_user, :app_user, :token_user,
+  attr_accessor :id, :webauth_user, :anonymous_locatable_user, :token_user,
                 :ldap_groups, :ip_address, :jwt_tokens
 
   def ability
@@ -22,10 +22,6 @@ class User
 
   def stanford?
     ldap_groups.present? && (ldap_groups & Settings.user.stanford_groups).any?
-  end
-
-  def app_user?
-    app_user
   end
 
   def token_user?
