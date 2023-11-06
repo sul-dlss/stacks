@@ -1,6 +1,3 @@
-app_users:
-  test-user: 'password'
-
 user:
   locations:
     location1:

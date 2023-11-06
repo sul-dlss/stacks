@@ -345,32 +345,6 @@ RSpec.describe 'Ability', type: :model do
     end
   end
 
-  context 'for an app user' do
-    let(:user) { User.new(id: 'a', app_user: true) }
-
-    context 'with an unrestricted file' do
-      let(:rights_xml) do
-        <<-EOF.strip_heredoc
-        <rightsMetadata>
-            <access type="read">
-              <machine>
-                <world />
-              </machine>
-            </access>
-          </rightsMetadata>
-        EOF
-      end
-      it { is_expected.to be_able_to(:download, file) }
-      it { is_expected.to be_able_to(:download, image) }
-      it { is_expected.to be_able_to(:read, tile) }
-      it { is_expected.to be_able_to(:stream, media) }
-      it { is_expected.to be_able_to(:access, file) }
-      it { is_expected.to be_able_to(:read_metadata, image) }
-      it { is_expected.to be_able_to(:read, thumbnail) }
-      it { is_expected.to be_able_to(:read, square_thumbnail) }
-    end
-  end
-
   context 'for an anonymous user' do
     context 'with a world-readable file' do
       let(:rights_xml) do

@@ -6,9 +6,7 @@ module CurrentUserConcern
   include ActionController::HttpAuthentication::Token
 
   def current_user
-    @current_user ||= if has_basic_credentials?(request)
-                        basic_auth_user
-                      elsif has_bearer_credentials?(request)
+    @current_user ||= if has_bearer_credentials?(request)
                         bearer_auth_user
                       elsif has_bearer_cookie?
                         bearer_cookie_user
@@ -24,13 +22,6 @@ module CurrentUserConcern
   end
 
   private
-
-  def basic_auth_user
-    user_name, password = user_name_and_password(request)
-    credentials = Settings.app_users[user_name]
-
-    User.new(id: user_name, app_user: true) if credentials && credentials == password
-  end
 
   def bearer_auth_user
     token, _options = token_and_options(request)
