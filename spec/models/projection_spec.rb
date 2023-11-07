@@ -20,7 +20,7 @@ RSpec.describe Projection do
     end
   end
 
-  describe '#tiledimensions' do
+  describe '#tile_dimensions' do
     subject { instance.send(:tile_dimensions) }
 
     context "for an unrestricted image" do
