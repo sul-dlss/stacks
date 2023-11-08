@@ -23,4 +23,13 @@ class ApplicationController < ActionController::Base
 
     render file: "#{Rails.root}/public/403.html", status: :forbidden, layout: false
   end
+
+  # Overriding CanCan::ControllerAdditions
+  def current_ability
+    @current_ability ||= ability_class.new(current_user)
+  end
+
+  def ability_class
+    Settings.features.cocina ? CocinaAbility : Ability
+  end
 end
