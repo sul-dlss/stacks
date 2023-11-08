@@ -4,6 +4,7 @@
 # Basic application landing pages
 class StacksController < ApplicationController
   def index
-    head :ok
+    render file: "#{Rails.root}/public/index.html", layout: false
+
   end
 end
