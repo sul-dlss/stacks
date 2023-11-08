@@ -7,8 +7,7 @@ end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 7.0.3'
-# asset pipeline for Rails
-gem 'propshaft'
+
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3', '~> 1.4'
 # Use Puma as the app server
@@ -85,5 +84,3 @@ gem 'connection_pool'
 group :production do
   gem 'newrelic_rpm'
 end
-
-gem "cssbundling-rails", "~> 1.1"
