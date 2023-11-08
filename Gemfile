@@ -85,5 +85,3 @@ gem 'connection_pool'
 group :production do
   gem 'newrelic_rpm'
 end
-
-gem "cssbundling-rails", "~> 1.1"
