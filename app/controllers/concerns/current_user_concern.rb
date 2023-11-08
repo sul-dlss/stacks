@@ -18,7 +18,7 @@ module CurrentUserConcern
   end
 
   def anonymous_ability
-    @anonymous_ability ||= Ability.new(anonymous_locatable_user)
+    @anonymous_ability ||= ability_class.new(anonymous_locatable_user)
   end
 
   private

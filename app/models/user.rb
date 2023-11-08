@@ -9,7 +9,11 @@ class User
                 :ldap_groups, :ip_address, :jwt_tokens
 
   def ability
-    Ability.new(self)
+    ability_class.new(self)
+  end
+
+  def ability_class
+    Settings.features.cocina ? CocinaAbility : Ability
   end
 
   def webauth_user?
