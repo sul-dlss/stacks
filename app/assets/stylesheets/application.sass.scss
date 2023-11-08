@@ -1,26 +1,18 @@
 // Entry point for your Sass build
 @import 'deja-vu-font';
 
-$color-cardinal-red: #8c1515;
-$color-gray: #3f3c30;
-$color-black: #000;
-$color-beige-30: #e3dfd5;
-$color-beige-10: #f2f1eb;
-$color-beige-05: #fbfbf9;
-$color-pantone-401: #b6b1a9;
-
-
 // Color
+$color-cardinal-red: #8c1515;
 $gray-41-percent: #696969;
 
-$sul-footer-bg-color: $color-beige-10;
+$sul-footer-bg-color: #f2f1eb;
 $sul-topnavbar-link-color: $color-cardinal-red;
-$sul-link-color-border: $color-pantone-401;
-$sul-body-bg: $color-beige-05;
-$sul-text-color: $color-black;
+$sul-link-color-border: #b6b1a9;
+$sul-body-bg: #fbfbf9;
+$sul-text-color: #000;
 
-$sul-h1-font-color: $color-gray;
-$sul-h2-border-color: $color-beige-30;
+$sul-h1-font-color: #3f3c30;
+$sul-h2-border-color: #e3dfd5;
 $sul-shadow-color: rgba(0, 0, 0, .2);
 
 @import 'bootstrap-variables';
