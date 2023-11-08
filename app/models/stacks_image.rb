@@ -62,6 +62,6 @@ class StacksImage
   def stacks_rights
     @stacks_rights ||= StacksRights.new(id:, file_name:)
   end
-  delegate :rights, :maybe_downloadable?, :object_thumbnail?,
+  delegate :rights, :cocina_rights, :maybe_downloadable?, :object_thumbnail?,
            :stanford_restricted?, :restricted_by_location?, :cdl_restricted?, to: :stacks_rights
 end

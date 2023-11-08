@@ -24,14 +24,17 @@ Rails:
 Metrics/CyclomaticComplexity:
   Exclude:
     - 'app/models/ability.rb'
+    - 'app/models/cocina_ability.rb'
 
 Metrics/PerceivedComplexity:
   Exclude:
     - 'app/models/ability.rb'
+    - 'app/models/cocina_ability.rb'
 
 Metrics/AbcSize:
   Exclude:
     - 'app/models/ability.rb'
+    - 'app/models/cocina_ability.rb'
     - 'app/controllers/iiif_controller.rb'
 
 Layout/EmptyLinesAroundBlockBody:
@@ -64,6 +67,7 @@ Layout/LineLength:
 Metrics/MethodLength:
   Exclude:
     - 'app/models/ability.rb'
+    - 'app/models/cocina_ability.rb'
     - 'app/services/cdl_service.rb'
 
 Naming/HeredocDelimiterNaming:

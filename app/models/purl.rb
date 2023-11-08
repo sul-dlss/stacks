@@ -11,7 +11,7 @@ class Purl
   end
 
   class << self
-    delegate :public_xml, :files, :barcode, to: :instance
+    delegate :public_xml, :public_json, :files, :barcode, to: :instance
   end
 
   # TODO: was etag a valid key?
@@ -26,9 +26,35 @@ class Purl
     end
   end
 
-  def files(druid)
+  def public_json(druid)
+    Rails.cache.fetch("purl/#{druid}.json", expires_in: 10.minutes) do
+      benchmark "Fetching public json for #{druid}" do
+        response = Faraday.get(public_json_url(druid))
+        raise Purl::Exception, response.status unless response.success?
+
+        JSON.parse(response.body)
+      end
+    end
+  end
+
+  def files(druid, &block)
     return to_enum(:files, druid) unless block_given?
 
+    Settings.features.cocina ? files_from_json(druid, &block) : files_from_xml(druid, &block)
+  end
+
+  def files_from_json(druid)
+    doc = public_json(druid)
+
+    doc.dig('structural', 'contains').each do |fileset|
+      fileset.dig('structural', 'contains').each do |file|
+        file = StacksFile.new(id: druid, file_name: file['filename'])
+        yield file
+      end
+    end
+  end
+
+  def files_from_xml(druid)
     doc = Nokogiri::XML.parse(public_xml(druid))
 
     doc.xpath('//contentMetadata/resource').each do |resource|
@@ -54,6 +80,10 @@ class Purl
 
   def public_xml_url(druid)
     Settings.purl.url + "#{druid}.xml"
+  end
+
+  def public_json_url(druid)
+    "#{Settings.purl.url}#{druid}.json"
   end
 
   def logger
