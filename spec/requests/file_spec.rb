@@ -5,6 +5,29 @@ require 'rails_helper'
 RSpec.describe "File requests", type: :request do
   before do
     allow(Purl).to receive(:public_xml).and_return('<publicObject />')
+    allow(Purl).to receive(:public_json).and_return(public_json)
+  end
+
+  let(:public_json) do
+    {
+      'structural' => {
+        'contains' => [
+          {
+            'structural' => {
+              'contains' => [
+                {
+                  'filename' => 'nr349ct7889_00_0001.jp2',
+                  'access' => {
+                    'view' => 'world',
+                    'download' => 'world'
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
   end
 
   describe 'OPTIONS options' do
@@ -30,6 +53,27 @@ RSpec.describe "File requests", type: :request do
           </rightsMetadata>
         </publicObject>
       EOF
+    end
+    let(:public_json) do
+      {
+        'structural' => {
+          'contains' => [
+            {
+              'structural' => {
+                'contains' => [
+                  {
+                    'filename' => 'path/to/xf680rd3068_1.jp2',
+                    'access' => {
+                      'view' => 'world',
+                      'download' => 'world'
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
     end
 
     before do

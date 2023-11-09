@@ -22,8 +22,31 @@ RSpec.describe 'IIIF API' do
                                 mtime: Time.zone.now)
   end
 
+  let(:public_json) do
+    {
+      'structural' => {
+        'contains' => [
+          {
+            'structural' => {
+              'contains' => [
+                {
+                  'filename' => 'nr349ct7889_00_0001.jp2',
+                  'access' => {
+                    'view' => 'world',
+                    'download' => 'world'
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  end
+
   before do
     stub_rights_xml(world_readable_rights_xml)
+    allow(Purl).to receive(:public_json).and_return(public_json)
 
     # stubbing Rails.cache.fetch is required because you can't dump a singleton (double)
     # which is what happens when writing to the cache.
@@ -49,6 +72,29 @@ RSpec.describe 'IIIF API' do
   end
 
   context 'for location-restricted documents' do
+    let(:public_json) do
+      {
+        'structural' => {
+          'contains' => [
+            {
+              'structural' => {
+                'contains' => [
+                  {
+                    'filename' => 'nr349ct7889_00_0001.jp2',
+                    'access' => {
+                      'view' => 'location-based',
+                      'download' => 'location_based',
+                      'location' => 'location1'
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    end
+
     before do
       stub_rights_xml(location_rights_xml)
     end
@@ -62,6 +108,29 @@ RSpec.describe 'IIIF API' do
       context 'for a thumbnail' do
         before do
           stub_rights_xml(location_thumbnail_rights_xml)
+        end
+        let(:public_json) do
+          {
+            'structural' => {
+              'contains' => [
+                {
+                  'structural' => {
+                    'contains' => [
+                      {
+                        'filename' => 'nr349ct7889_00_0001.jp2',
+                        'access' => {
+                          'view' => 'location-based',
+                          'download' => 'location_based',
+                          'location' => 'location1'
+                        },
+                        'hasMimeType' => 'image/jp2'
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
         end
 
         it 'redirects requests to the degraded info.json' do
@@ -86,6 +155,27 @@ RSpec.describe 'IIIF API' do
   end
 
   context 'for stanford-restricted documents' do
+    let(:public_json) do
+      {
+        'structural' => {
+          'contains' => [
+            {
+              'structural' => {
+                'contains' => [
+                  {
+                    'filename' => 'nr349ct7889_00_0001.jp2',
+                    'access' => {
+                      'view' => 'stanford',
+                      'download' => 'stanford'
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    end
     before do
       stub_rights_xml(stanford_restricted_rights_xml)
     end
@@ -108,6 +198,28 @@ RSpec.describe 'IIIF API' do
   end
 
   context 'rights xml where no one can download' do
+    let(:public_json) do
+      {
+        'structural' => {
+          'contains' => [
+            {
+              'structural' => {
+                'contains' => [
+                  {
+                    'filename' => 'nr349ct7889_00_0001.jp2',
+                    'access' => {
+                      'view' => 'world',
+                      'download' => 'none'
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    end
+
     before do
       stub_rights_xml(world_no_download_xml)
     end
@@ -125,6 +237,27 @@ RSpec.describe 'IIIF API' do
   end
 
   context 'rights xml where stanford only no download' do
+    let(:public_json) do
+      {
+        'structural' => {
+          'contains' => [
+            {
+              'structural' => {
+                'contains' => [
+                  {
+                    'filename' => 'nr349ct7889_00_0001.jp2',
+                    'access' => {
+                      'view' => 'stanford',
+                      'download' => 'none'
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    end
     before do
       stub_rights_xml(stanford_only_no_download_xml)
     end

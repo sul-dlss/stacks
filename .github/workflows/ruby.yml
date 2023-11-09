@@ -29,4 +29,6 @@ jobs:
     - name: Install dependencies
       run: bin/setup
     - name: Run tests
-      run: bundle exec rake
+      run: bin/rake
+    - name: Run tests (with cocina)
+      run: SETTINGS__FEATURES__COCINA=true bin/rake spec

@@ -18,15 +18,17 @@ RSpec.describe ObjectController do
           allow(Faraday).to receive(:get).with('https://purl.stanford.edu/foo.xml').and_return(
             instance_double(Faraday::Response, status: 404, success?: false)
           )
+          allow(Faraday).to receive(:get).with('https://purl.stanford.edu/foo.json').and_return(
+            instance_double(Faraday::Response, status: 404, success?: false)
+          )
           get :show, params: { id: 'foo' }
           expect(response.status).to eq 404
         end
       end
 
       context "with downloadable files" do
-        before do
-          allow(Faraday).to receive(:get).with('https://purl.stanford.edu/fd063dh3727.xml').and_return(
-            instance_double(Faraday::Response, success?: true, body: <<-EOXML)
+        let(:xml) do
+          <<-EOXML
           <publicObject id="druid:fd063dh3727" published="2019-12-19T17:58:11Z" publishVersion="dor-services/8.1.1">
             <contentMetadata objectId="druid:fd063dh3727" type="book">
               <resource id="fd063dh3727_1" sequence="1" type="page">
@@ -59,8 +61,76 @@ RSpec.describe ObjectController do
               </access>
             </rightsMetadata>
           </publicObject>
-            EOXML
-          )
+          EOXML
+        end
+        let(:json) do
+          {
+            'structural' => {
+              'contains' => [
+                {
+                  'structural' => {
+                    'contains' => [
+                      {
+                        'filename' => '36105116040556_0002.pdf',
+                        'access' => {
+                          'view' => 'world',
+                          'download' => 'world'
+                        }
+                      },
+                      {
+                        'filename' => '36105116040556_0002.xml',
+                        'access' => {
+                          'view' => 'world',
+                          'download' => 'world'
+                        }
+                      },
+                      {
+                        'filename' => '36105116040556_0002.jp2',
+                        'access' => {
+                          'view' => 'world',
+                          'download' => 'world'
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  'structural' => {
+                    'contains' => [
+                      {
+                        'filename' => '36105116040556_0003.pdf',
+                        'access' => {
+                          'view' => 'world',
+                          'download' => 'world'
+                        }
+                      },
+                      {
+                        'filename' => '36105116040556_0003.xml',
+                        'access' => {
+                          'view' => 'world',
+                          'download' => 'world'
+                        }
+                      },
+                      {
+                        'filename' => '36105116040556_0003.jp2',
+                        'access' => {
+                          'view' => 'world',
+                          'download' => 'world'
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }.to_json
+        end
+
+        before do
+          allow(Faraday).to receive(:get).with('https://purl.stanford.edu/fd063dh3727.xml')
+                                         .and_return(instance_double(Faraday::Response, success?: true, body: xml))
+          allow(Faraday).to receive(:get).with('https://purl.stanford.edu/fd063dh3727.json')
+                                         .and_return(instance_double(Faraday::Response, success?: true, body: json))
         end
 
         it 'creates a zip' do
@@ -71,9 +141,8 @@ RSpec.describe ObjectController do
       end
 
       context "with a stanford access file" do
-        before do
-          allow(Faraday).to receive(:get).with('https://purl.stanford.edu/bb142ws0723.xml').and_return(
-            instance_double(Faraday::Response, success?: true, body: <<-EOXML)
+        let(:xml) do
+          <<-EOXML
             <publicObject id="druid:bb142ws0723" published="2020-05-09T00:44:17Z" publishVersion="dor-services/9.3.0">
               <contentMetadata objectId="bb142ws0723" type="media">
                 <resource sequence="1" id="bb142ws0723_1" type="video">
@@ -107,8 +176,56 @@ RSpec.describe ObjectController do
                 </access>
               </rightsMetadata>
             </publicObject>
-            EOXML
-          )
+          EOXML
+        end
+
+        let(:json) do
+          {
+            'structural' => {
+              'contains' => [
+                {
+                  'structural' => {
+                    'contains' => [
+                      {
+                        'filename' => 'bb142ws0723_01_sl.mp4',
+                        'access' => {
+                          'view' => 'stanford',
+                          'download' => 'stanford'
+                        }
+                      },
+                      {
+                        'filename' => 'bb142ws0723_01_thumb.jp2',
+                        'access' => {
+                          'view' => 'stanford',
+                          'download' => 'stanford'
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  'structural' => {
+                    'contains' => [
+                      {
+                        'filename' => 'bb142ws0723_program.pdf',
+                        'access' => {
+                          'view' => 'world',
+                          'download' => 'world'
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }.to_json
+        end
+
+        before do
+          allow(Faraday).to receive(:get).with('https://purl.stanford.edu/bb142ws0723.xml')
+                                         .and_return(instance_double(Faraday::Response, success?: true, body: xml))
+          allow(Faraday).to receive(:get).with('https://purl.stanford.edu/bb142ws0723.json')
+                                         .and_return(instance_double(Faraday::Response, success?: true, body: json))
         end
 
         it 'redirects to login' do
@@ -127,9 +244,8 @@ RSpec.describe ObjectController do
       end
 
       context "with a stanford access file" do
-        before do
-          allow(Faraday).to receive(:get).with('https://purl.stanford.edu/bb142ws0723.xml').and_return(
-            instance_double(Faraday::Response, success?: true, body: <<-EOXML)
+        let(:xml) do
+          <<-EOXML
             <publicObject id="druid:bb142ws0723" published="2020-05-09T00:44:17Z" publishVersion="dor-services/9.3.0">
               <contentMetadata objectId="bb142ws0723" type="media">
                 <resource sequence="1" id="bb142ws0723_1" type="video">
@@ -163,8 +279,55 @@ RSpec.describe ObjectController do
                 </access>
               </rightsMetadata>
             </publicObject>
-            EOXML
-          )
+          EOXML
+        end
+        let(:json) do
+          {
+            'structural' => {
+              'contains' => [
+                {
+                  'structural' => {
+                    'contains' => [
+                      {
+                        'filename' => 'bb142ws0723_01_sl.mp4',
+                        'access' => {
+                          'view' => 'stanford',
+                          'download' => 'stanford'
+                        }
+                      },
+                      {
+                        'filename' => 'bb142ws0723_01_thumb.jp2',
+                        'access' => {
+                          'view' => 'stanford',
+                          'download' => 'stanford'
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  'structural' => {
+                    'contains' => [
+                      {
+                        'filename' => 'bb142ws0723_program.pdf',
+                        'access' => {
+                          'view' => 'world',
+                          'download' => 'world'
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }.to_json
+        end
+
+        before do
+          allow(Faraday).to receive(:get).with('https://purl.stanford.edu/bb142ws0723.xml')
+                                         .and_return(instance_double(Faraday::Response, success?: true, body: xml))
+          allow(Faraday).to receive(:get).with('https://purl.stanford.edu/bb142ws0723.json')
+                                         .and_return(instance_double(Faraday::Response, success?: true, body: json))
         end
 
         it 'creates a zip' do

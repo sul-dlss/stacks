@@ -18,6 +18,7 @@ RSpec.describe "Authentication for File requests", type: :request do
   end
 
   before(:each) do
+    allow(Purl).to receive(:public_json).and_return(public_json)
     allow(File).to receive(:world_readable?).with(path).and_return(perms)
   end
 
@@ -64,6 +65,28 @@ RSpec.describe "Authentication for File requests", type: :request do
 
     # NOTE:  stanford only + location rights tested under location context
     context 'stanford only (no location qualifications)' do
+      let(:public_json) do
+        {
+          'structural' => {
+            'contains' => [
+              {
+                'structural' => {
+                  'contains' => [
+                    {
+                      'filename' => 'xf680rd3068_1.jp2',
+                      'access' => {
+                        'view' => 'stanford',
+                        'download' => 'stanford'
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      end
+
       context 'webauthed user' do
         it 'allows when user webauthed and authorized' do
           allow_any_instance_of(FileController).to receive(:current_user).and_return(user_webauth_stanford_no_loc)
@@ -88,6 +111,29 @@ RSpec.describe "Authentication for File requests", type: :request do
     end
     context 'location' do
       context 'not stanford qualified in any way' do
+        let(:public_json) do
+          {
+            'structural' => {
+              'contains' => [
+                {
+                  'structural' => {
+                    'contains' => [
+                      {
+                        'filename' => 'xf680rd3068_1.jp2',
+                        'access' => {
+                          'view' => 'location-based',
+                          'download' => 'location-based',
+                          'location' => 'location1'
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        end
+
         it 'allows when user in location' do
           allow_any_instance_of(FileController).to receive(:current_user).and_return(user_loc_no_webauth)
           allow(Purl).to receive(:public_xml).and_return(location_rights)

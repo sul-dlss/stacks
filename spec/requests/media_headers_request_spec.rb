@@ -11,7 +11,32 @@ def verify_origin_header(allow_origin)
 end
 
 RSpec.describe "CORS headers for Media requests", type: :request do
-  before { stub_rights_xml(world_readable_rights_xml) }
+  before do
+    stub_rights_xml(world_readable_rights_xml)
+    allow(Purl).to receive(:public_json).and_return(public_json)
+  end
+
+  let(:public_json) do
+    {
+      'structural' => {
+        'contains' => [
+          {
+            'structural' => {
+              'contains' => [
+                {
+                  'filename' => filename,
+                  'access' => {
+                    'view' => 'world',
+                    'download' => 'world'
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  end
 
   let(:druid) { 'bb582xs1304' }
   let(:filename) { 'bb582xs1304_sl.mp4' }

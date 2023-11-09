@@ -26,6 +26,28 @@ RSpec.describe "Authentication for Media requests", type: :request do
     EOF
   end
 
+  let(:public_json) do
+    {
+      'structural' => {
+        'contains' => [
+          {
+            'structural' => {
+              'contains' => [
+                {
+                  'filename' => 'file',
+                  'access' => {
+                    'view' => 'stanford',
+                    'download' => 'stanford'
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  end
+
   let(:mock_media) do
     sms = StacksMediaStream.new(id: 'bb582xs1304', file_name: 'file', format:)
     allow(Purl).to receive(:public_xml).with('bb582xs1304').and_return(public_xml)
@@ -33,6 +55,7 @@ RSpec.describe "Authentication for Media requests", type: :request do
   end
 
   before do
+    allow(Purl).to receive(:public_json).and_return(public_json)
     allow_any_instance_of(MediaController).to receive(:current_user).and_return(user)
     allow_any_instance_of(MediaController).to receive(:current_media).and_return(mock_media)
   end
@@ -69,6 +92,28 @@ RSpec.describe "Authentication for Media requests", type: :request do
           </rightsMetadata>
         EOF
       end
+      let(:public_json) do
+        {
+          'structural' => {
+            'contains' => [
+              {
+                'structural' => {
+                  'contains' => [
+                    {
+                      'filename' => 'file',
+                      'access' => {
+                        'view' => 'location-based',
+                        'download' => 'location-based',
+                        'location' => 'spec'
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      end
 
       it 'indicates that the object is location restricted in the json' do
         get "/media/#{druid}/file.#{format}/auth_check"
@@ -94,6 +139,33 @@ RSpec.describe "Authentication for Media requests", type: :request do
         EOF
       end
 
+      let(:public_json) do
+        {
+          'access' => {
+            'embargo' => {
+              "releaseDate" => Time.parse('2099-05-15').getlocal.as_json
+            }
+          },
+          'structural' => {
+            'contains' => [
+              {
+                'structural' => {
+                  'contains' => [
+                    {
+                      'filename' => 'file',
+                      'access' => {
+                        'view' => 'stanford',
+                        'download' => 'stanford'
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      end
+
       it 'indicates that the object is stanford restricted and embargoed in the json' do
         get "/media/#{druid}/file.#{format}/auth_check"
         expect(response.parsed_body).to eq(
@@ -115,6 +187,32 @@ RSpec.describe "Authentication for Media requests", type: :request do
             </access>
           </rightsMetadata>
         EOF
+      end
+      let(:public_json) do
+        {
+          'access' => {
+            'embargo' => {
+              "releaseDate" => Time.parse('2099-05-15').getlocal.as_json
+            }
+          },
+          'structural' => {
+            'contains' => [
+              {
+                'structural' => {
+                  'contains' => [
+                    {
+                      'filename' => 'file',
+                      'access' => {
+                        'view' => 'none',
+                        'download' => 'none'
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
       end
 
       it 'indicates that the object is embargoed in the json' do

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# The rights derived from cocina
+# The file rights derived from cocina
 class CocinaRights
   def initialize(file_rights)
     @file_rights = file_rights
