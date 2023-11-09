@@ -117,8 +117,6 @@ GEM
     crack (0.4.5)
       rexml
     crass (1.0.6)
-    cssbundling-rails (1.3.3)
-      railties (>= 6.0.0)
     dalli (3.2.6)
     date (3.3.3)
     debug (1.8.0)
@@ -424,7 +422,6 @@ DEPENDENCIES
   capybara
   config
   connection_pool
-  cssbundling-rails (~> 1.1)
   dalli
   debug
   dlss-capistrano
