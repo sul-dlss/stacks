@@ -8,11 +8,12 @@ RSpec.describe MediaAuthenticationJson do
       StacksMediaStream,
       restricted_by_location?: false,
       stanford_restricted?: false,
-      embargoed?: false
+      embargoed?: false,
+      location: 'm&m'
     )
   end
   let(:ability) { Ability.new(user) }
-  let(:user) { double('User', locations: [], webauth_user: false, stanford?: false, app_user?: false, cdl_tokens: []) }
+  let(:user) { instance_double(User, locations: [], webauth_user: false, stanford?: false, cdl_tokens: []) }
   subject { described_class.new(media:, user:, auth_url: '/the/auth/url', ability:) }
 
   describe 'Location Restricted Media' do

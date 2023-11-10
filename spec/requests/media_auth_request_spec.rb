@@ -63,7 +63,7 @@ RSpec.describe "Authentication for Media requests", type: :request do
         <rightsMetadata>
             <access type="read">
               <machine>
-                <location>location1</location>
+                <location>spec</location>
               </machine>
             </access>
           </rightsMetadata>
@@ -73,6 +73,10 @@ RSpec.describe "Authentication for Media requests", type: :request do
       it 'indicates that the object is location restricted in the json' do
         get "/media/#{druid}/file.#{format}/auth_check"
         expect(response.parsed_body['status']).to eq ['location_restricted']
+        expect(response.parsed_body).to eq(
+          'status' => %w[location_restricted],
+          'location' => { "code" => "spec", "label" => "Special Collections reading room" }
+        )
       end
     end
 
@@ -97,7 +101,6 @@ RSpec.describe "Authentication for Media requests", type: :request do
           'embargo' => { 'release_date' => Time.parse('2099-05-15').getlocal.as_json },
           'service' => { "@id" => "http://www.example.com/auth/iiif", "label" => "Stanford-affiliated? Login to play" }
         )
-
       end
     end
 
