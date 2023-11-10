@@ -19,5 +19,5 @@ class StacksMediaStream
   end
 
   delegate :rights, :cocina_rights, :restricted_by_location?, :stanford_restricted?, :embargoed?,
-           :embargo_release_date, to: :stacks_rights
+           :embargo_release_date, :location, to: :stacks_rights
 end

@@ -77,6 +77,10 @@ class StacksRights
     @cocina_rights ||= CocinaRights.new(cocina_file['access'])
   end
 
+  def location
+    use_json? ? cocina_rights.location : dor_auth_rights.obj_lvl.location.keys.first
+  end
+
   private
 
   def cocina_file
