@@ -17,8 +17,31 @@ RSpec.describe "It proxies image requests to a remote IIIF server (canteloupe)" 
     "http://imageserver-prod.stanford.edu/iiif/2/nr%2F349%2Fct%2F7889%2Fimage.jp2/full/max/0/default.jpg"
   end
 
+  let(:public_json) do
+    {
+      'structural' => {
+        'contains' => [
+          {
+            'structural' => {
+              'contains' => [
+                {
+                  'filename' => 'image.jp2',
+                  'access' => {
+                    'view' => 'world',
+                    'download' => 'world'
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  end
+
   before do
     stub_rights_xml(world_readable_rights_xml)
+    allow(Purl).to receive(:public_json).and_return(public_json)
     allow(Settings.stacks).to receive(:storage_root).and_return('spec/fixtures')
     stub_request(:get, info_request)
       .to_return(status: 200, body: info_response)

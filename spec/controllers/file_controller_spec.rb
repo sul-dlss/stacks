@@ -6,6 +6,29 @@ RSpec.describe FileController do
   before do
     allow(StacksFile).to receive(:new).and_return(file)
     stub_rights_xml(world_readable_rights_xml)
+    allow(Purl).to receive(:public_json).and_return(public_json)
+  end
+
+  let(:public_json) do
+    {
+      'structural' => {
+        'contains' => [
+          {
+            'structural' => {
+              'contains' => [
+                {
+                  'filename' => 'xf680rd3068_1.jp2',
+                  'access' => {
+                    'view' => 'world',
+                    'download' => 'world'
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
   end
 
   let(:file) { StacksFile.new(id: druid, file_name: 'xf680rd3068_1.jp2') }

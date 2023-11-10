@@ -29,7 +29,7 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
   end
 
   describe "#show" do
-    before(:each) do
+    before do
       allow_any_instance_of(Projection).to receive(:valid?).and_return(true)
       allow(HTTP).to receive(:use)
         .and_return(http_client)
@@ -37,9 +37,32 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
 
       allow_any_instance_of(IiifController).to receive(:current_user).and_return(current_user)
       allow_any_instance_of(IiifController).to receive(:current_image).and_return(current_image)
+      allow(Purl).to receive(:public_json).and_return(public_json)
     end
 
     context 'with a public item' do
+      let(:public_json) do
+        {
+          'structural' => {
+            'contains' => [
+              {
+                'structural' => {
+                  'contains' => [
+                    {
+                      'filename' => 'nr349ct7889_00_0001',
+                      'access' => {
+                        'view' => 'world',
+                        'download' => 'world'
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      end
+
       before do
         stub_rights_xml(world_readable_rights_xml)
       end
@@ -56,6 +79,28 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
     end
 
     context 'with a stanford only item' do
+      let(:public_json) do
+        {
+          'structural' => {
+            'contains' => [
+              {
+                'structural' => {
+                  'contains' => [
+                    {
+                      'filename' => 'nr349ct7889_00_0001',
+                      'access' => {
+                        'view' => 'stanford',
+                        'download' => 'stanford'
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      end
+
       before do
         stub_rights_xml(stanford_restricted_rights_xml)
       end
@@ -90,6 +135,29 @@ RSpec.describe "Authentication for IIIF requests", type: :request do
     end
 
     context 'with a location-restricted item' do
+      let(:public_json) do
+        {
+          'structural' => {
+            'contains' => [
+              {
+                'structural' => {
+                  'contains' => [
+                    {
+                      'filename' => 'nr349ct7889_00_0001',
+                      'access' => {
+                        'view' => 'location-based',
+                        'download' => 'location-based',
+                        'location' => 'location1'
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      end
+
       before do
         stub_rights_xml(location_rights_xml)
       end

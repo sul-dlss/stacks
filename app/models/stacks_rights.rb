@@ -13,29 +13,59 @@ class StacksRights
   end
 
   def maybe_downloadable?
-    rights.world_unrestricted_file?(file_name) ||
-      rights.stanford_only_unrestricted_file?(file_name)
+    if use_json?
+      %w[world stanford].include?(cocina_rights.download)
+    else
+      rights.world_unrestricted_file?(file_name) ||
+        rights.stanford_only_unrestricted_file?(file_name)
+    end
   end
 
   def stanford_restricted?
-    value, _rule = rights.stanford_only_rights_for_file file_name
+    if use_json?
+      cocina_rights.view == 'stanford'
+    else
+      value, _rule = rights.stanford_only_rights_for_file file_name
 
-    value
+      value
+    end
   end
 
   def cdl_restricted?
-    value, _rule = rights.cdl_rights_for_file file_name
+    if use_json?
+      cocina_rights.controlled_digital_lending?
+    else
+      value, _rule = rights.cdl_rights_for_file file_name
 
-    value
+      value
+    end
   end
 
   # Returns true if a given file has any location restrictions.
   #   Falls back to the object-level behavior if none at file level.
   def restricted_by_location?
-    rights.restricted_by_location?(file_name)
+    if use_json?
+      cocina_rights.view == 'location-based' || cocina_rights.download == 'location-based'
+    else
+      rights.restricted_by_location?(file_name)
+    end
   end
 
-  delegate :embargoed?, :embargo_release_date, to: :rights
+  def embargoed?
+    use_json? ? cocina_embargo? : rights.embargoed?
+  end
+
+  def embargo_release_date
+    use_json? ? cocina_embargo_release_date : rights.embargo_release_date
+  end
+
+  def cocina_embargo?
+    cocina_embargo_release_date && Time.parse(cocina_embargo_release_date).getlocal > Time.now.getlocal
+  end
+
+  def cocina_embargo_release_date
+    @cocina_embargo_release_date ||= public_json.dig('access', 'embargo', 'releaseDate')
+  end
 
   def object_thumbnail?
     use_json? ? cocina_thumbnail? : xml_thumbnail?

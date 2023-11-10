@@ -151,8 +151,32 @@ RSpec.describe IiifInfoService do
       let(:downloadable_anonymously) { false }
 
       let(:location_service) { image_info['service'] }
+      let(:public_json) do
+        {
+          'structural' => {
+            'contains' => [
+              {
+                'structural' => {
+                  'contains' => [
+                    {
+                      'filename' => 'nr349ct7889_00_0001',
+                      'access' => {
+                        'view' => 'location-based',
+                        'download' => 'location-based',
+                        'location' => 'spec'
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      end
 
       before do
+        allow(Purl).to receive(:public_json).and_return(public_json)
+
         stub_rights_xml(world_readable_rights_xml)
         allow(image).to receive(:restricted_by_location?).and_return(true)
       end
@@ -176,7 +200,31 @@ RSpec.describe IiifInfoService do
       end
       let(:downloadable_anonymously) { false }
 
+      let(:public_json) do
+        {
+          'structural' => {
+            'contains' => [
+              {
+                'structural' => {
+                  'contains' => [
+                    {
+                      'filename' => 'nr349ct7889_00_0001',
+                      'access' => {
+                        'view' => 'stanford',
+                        'download' => 'stanford'
+                      },
+                      'hasMimeType' => 'text/csv'
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      end
+
       before do
+        allow(Purl).to receive(:public_json).and_return(public_json)
         stub_rights_xml(world_readable_rights_xml)
         allow(image).to receive(:stanford_restricted?).and_return(true)
         allow(image).to receive(:restricted_by_location?).and_return(true)
@@ -197,8 +245,32 @@ RSpec.describe IiifInfoService do
         RestrictedImage.new(id: 'whatever', file_name: 'something')
       end
       let(:downloadable_anonymously) { false }
+      let(:public_json) do
+        {
+          'structural' => {
+            'contains' => [
+              {
+                'structural' => {
+                  'contains' => [
+                    {
+                      'filename' => 'something',
+                      'access' => {
+                        'view' => 'none',
+                        'download' => 'none',
+                        'controlledDigitalLending' => true
+                      },
+                      'hasMimeType' => 'text/csv'
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      end
 
       before do
+        allow(Purl).to receive(:public_json).and_return(public_json)
         stub_rights_xml(world_readable_rights_xml)
         allow(image).to receive(:cdl_restricted?).and_return(true)
       end
