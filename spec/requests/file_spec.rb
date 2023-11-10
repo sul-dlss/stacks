@@ -86,4 +86,11 @@ RSpec.describe "File requests", type: :request do
       expect(response).to be_successful
     end
   end
+
+  describe 'GET missing file' do
+    it 'returns a 400 HTTP response' do
+      get '/file/xf680rd3068/path/to/99999.jp2'
+      expect(response).to have_http_status(Settings.features.cocina ? :not_found : :forbidden)
+    end
+  end
 end

@@ -120,7 +120,7 @@ class StacksRights
   def find_file
     public_json.dig('structural', 'contains')
                .lazy.flat_map { |file_set| file_set.dig('structural', 'contains') }
-               .find { |file| file['filename'] == file_name } || raise("File not found '#{file_name}'")
+               .find { |file| file['filename'] == file_name } || raise(ActionController::MissingFile, "File not found '#{file_name}'")
   end
 
   def public_json
