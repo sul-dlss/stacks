@@ -34,7 +34,7 @@ RSpec.describe Purl do
               </resource>
               <resource id="kn112rm5773_2" sequence="2" type="image">
                 <label>Virtual image</label>
-                <file objectId="def" fileId="123.jp2" mimetype="image/jp2" size="3832255">
+                <file id="123.jp2" mimetype="image/jp2" size="3832255">
                   <imageData width="4850" height="4180"/>
                 </file>
               </resource>
@@ -46,7 +46,7 @@ RSpec.describe Purl do
 
       actual = described_class.files('abc').map { |file| "#{file.id}/#{file.file_name}" }
 
-      expect(actual).to match_array ['abc/26855.jp2', 'def/123.jp2']
+      expect(actual).to match_array ['abc/26855.jp2', 'abc/123.jp2']
     end
   end
 
