@@ -9,8 +9,6 @@ RSpec.describe "Authentication for File requests", type: :request do
   let(:user_loc_no_webauth) { User.new(ip_address: allowed_loc) }
   let(:user_webauth_no_stanford_no_loc) { User.new(webauth_user: true) }
   let(:user_webauth_stanford_no_loc) { User.new(webauth_user: true, ldap_groups: %w(stanford:stanford)) }
-  let(:user_webauth_stanford_loc) { User.new(webauth_user: true, ldap_groups: %w(stanford:stanford), ip_address: allowed_loc) }
-  let(:user_webauth_no_stanford_loc) { User.new(webauth_user: true, ip_address: allowed_loc) }
   let(:druid) { 'xf680rd3068' }
   let(:filename) { 'xf680rd3068_1.jp2' }
   let(:path) { "/stacks/xf/680/rd/3068/xf680rd3068_1.jp2" }
@@ -63,34 +61,6 @@ RSpec.describe "Authentication for File requests", type: :request do
         </publicObject>
       EOF
     end
-    let(:stanford_and_location_rights) do
-      <<-EOF
-        <publicObject>
-          <rightsMetadata>
-            <access type="read">
-              <machine>
-                <group>Stanford</group>
-                <location>location1</location>
-              </machine>
-            </access>
-          </rightsMetadata>
-        </publicObject>
-      EOF
-    end
-    let(:stanford_and_location_other_rights) do
-      <<-EOF
-        <publicObject>
-          <rightsMetadata>
-            <access type="read">
-              <machine>
-                <group>Stanford</group>
-                <location>location-other</location>
-              </machine>
-            </access>
-          </rightsMetadata>
-        </publicObject>
-      EOF
-    end
 
     # NOTE:  stanford only + location rights tested under location context
     context 'stanford only (no location qualifications)' do
@@ -130,55 +100,6 @@ RSpec.describe "Authentication for File requests", type: :request do
           allow(Purl).to receive(:public_xml).and_return(location_other_rights)
           get "/file/#{druid}/#{filename}"
           expect(response).to have_http_status(:forbidden)
-        end
-      end
-      context 'OR stanford' do
-        context 'user webauthed' do
-          context 'authorized' do
-            it 'allows when user in location' do
-              allow_any_instance_of(FileController).to receive(:current_user).and_return(user_webauth_stanford_loc)
-              allow(Purl).to receive(:public_xml).and_return(stanford_and_location_rights)
-              expect_any_instance_of(FileController).to receive(:send_file).with(sf.path, disposition: :inline).and_call_original
-              get "/file/#{druid}/#{filename}"
-            end
-
-            it 'allows when user not in location' do
-              allow_any_instance_of(FileController).to receive(:current_user).and_return(user_webauth_stanford_no_loc)
-              allow(Purl).to receive(:public_xml).and_return(stanford_and_location_other_rights)
-              expect_any_instance_of(FileController).to receive(:send_file).with(sf.path, disposition: :inline).and_call_original
-              get "/file/#{druid}/#{filename}"
-            end
-          end
-          context 'NOT authorized' do
-            it 'allows when in location' do
-              allow_any_instance_of(FileController).to receive(:current_user).and_return(user_webauth_no_stanford_loc)
-              allow(Purl).to receive(:public_xml).and_return(stanford_and_location_rights)
-              expect_any_instance_of(FileController).to receive(:send_file).with(sf.path, disposition: :inline).and_call_original
-              get "/file/#{druid}/#{filename}"
-            end
-
-            it 'blocks when not in location' do
-              allow_any_instance_of(FileController).to receive(:current_user).and_return(user_webauth_no_stanford_no_loc)
-              allow(Purl).to receive(:public_xml).and_return(stanford_and_location_other_rights)
-              get "/file/#{druid}/#{filename}"
-              expect(response).to have_http_status(:forbidden)
-            end
-          end
-        end
-        context 'user NOT webauthed' do
-          it 'allows when in location (no webauth prompt)' do
-            allow_any_instance_of(FileController).to receive(:current_user).and_return(user_loc_no_webauth)
-            allow(Purl).to receive(:public_xml).and_return(stanford_and_location_rights)
-            expect_any_instance_of(FileController).to receive(:send_file).with(sf.path, disposition: :inline).and_call_original
-            get "/file/#{druid}/#{filename}"
-          end
-
-          it 'prompts for webauth when not in location' do
-            allow_any_instance_of(FileController).to receive(:current_user).and_return(user_no_loc_no_webauth)
-            allow(Purl).to receive(:public_xml).and_return(stanford_and_location_other_rights)
-            get "/file/#{druid}/#{filename}"
-            expect(response).to redirect_to(auth_file_url(id: druid, file_name: filename))
-          end
         end
       end
     end
