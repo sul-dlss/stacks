@@ -120,7 +120,7 @@ RSpec.describe "Authentication for Media requests", type: :request do
         expect(response.parsed_body['status']).to eq ['location_restricted']
         expect(response.parsed_body).to eq(
           'status' => %w[location_restricted],
-          'location' => { "code" => "spec", "label" => "Special Collections reading room" }
+          'location' => { "code" => "spec", "label" => "Special Collections" }
         )
       end
     end

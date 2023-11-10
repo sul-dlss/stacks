@@ -25,12 +25,12 @@ class MediaAuthenticationJson
     # Codes from https://github.com/sul-dlss/cocina-models/blob/8fc7b5b9b0e3592a5c81f4c0e4ebff5c926669c6/openapi.yml#L1330-L1339
     # labels from https://consul.stanford.edu/display/chimera/Rights+Metadata+Locations
     LOCATION_LABELS = {
-      'spec' => 'Special Collections reading room',
-      'music' => 'Music Library - main area',
-      'ars' => 'Archive of Recorded Sound listening room',
+      'spec' => 'Special Collections',
+      'music' => 'Music Library',
+      'ars' => 'Archive of Recorded Sound',
       'art' => 'Art Library',
-      'hoover' => 'Hoover Library',
-      'm&m' => 'Media & Microtext'
+      'hoover' => 'Hoover Institution Library & Archives',
+      'm&m' => 'Media & Microtext Center'
     }.freeze
 
     attr_reader :result, :auth_url
