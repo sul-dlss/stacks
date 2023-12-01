@@ -4,6 +4,7 @@
 # API for delivering whole objects from stacks
 class ObjectController < ApplicationController
   include Zipline
+  include MetricsConcern
 
   # Return a zip of all the files if they have access to all the files.
   # This will force a login if any of the files is not access=world
@@ -22,6 +23,7 @@ class ObjectController < ApplicationController
       ]
     end
 
+    track_download druid
     zipline(zip_contents, "#{druid}.zip")
   end
 

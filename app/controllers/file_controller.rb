@@ -3,10 +3,13 @@
 ##
 # API for delivering files from stacks
 class FileController < ApplicationController
+  include MetricsConcern
+
   rescue_from ActionController::MissingFile do
     render plain: 'File not found', status: :not_found
   end
 
+  # rubocop:disable Metrics/AbcSize
   def show
     return unless stale?(**cache_headers)
 
@@ -16,8 +19,10 @@ class FileController < ApplicationController
     response.headers['Content-Length'] = current_file.content_length
     response.headers.delete('X-Frame-Options')
 
+    track_download current_file.id, file: current_file.file_name
     send_file current_file.path, disposition:
   end
+  # rubocop:enable Metrics/AbcSize
 
   def options
     response.headers['Access-Control-Allow-Methods'] = 'GET, OPTIONS'

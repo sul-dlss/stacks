@@ -123,6 +123,7 @@ GEM
       irb (>= 1.5.0)
       reline (>= 0.3.1)
     deep_merge (1.2.2)
+    device_detector (1.1.1)
     diff-lcs (1.5.0)
     dlss-capistrano (4.4.0)
       capistrano (~> 3.0)
@@ -421,6 +422,7 @@ DEPENDENCIES
   connection_pool
   dalli
   debug
+  device_detector (~> 1.1)
   dlss-capistrano
   dor-rights-auth (~> 1.8)
   faraday

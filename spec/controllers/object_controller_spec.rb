@@ -138,6 +138,22 @@ RSpec.describe ObjectController do
           entries = ZipTricks::FileReader.new.read_zip_structure(io: StringIO.new(response.body))
           expect(entries.length).to eq 6
         end
+
+        context 'when metrics tracking is enabled' do
+          before do
+            allow(Settings.features).to receive(:metrics).and_return(true)
+            stub_request :post, 'https://sdr-metrics-api-prod.stanford.edu/ahoy/events'
+            stub_request :post, 'https://sdr-metrics-api-prod.stanford.edu/ahoy/visits'
+          end
+
+          it 'tracks a download event with the druid' do
+            get :show, params: { id: 'fd063dh3727' }
+            expect(a_request(:post, 'https://sdr-metrics-api-prod.stanford.edu/ahoy/events').with do |req|
+              expect(req.body).to include '"name":"download"'
+              expect(req.body).to include '"druid":"fd063dh3727"'
+            end).to have_been_made
+          end
+        end
       end
 
       context "with a stanford access file" do

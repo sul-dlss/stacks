@@ -85,3 +85,4 @@ gem 'connection_pool'
 group :production do
   gem 'newrelic_rpm'
 end
+gem "device_detector", "~> 1.1"

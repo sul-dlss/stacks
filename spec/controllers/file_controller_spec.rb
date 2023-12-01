@@ -73,5 +73,22 @@ RSpec.describe FileController do
       expect(controller).to receive(:send_file).and_raise ActionController::MissingFile
       expect(subject.status).to eq 404
     end
+
+    context 'when metrics tracking is enabled' do
+      before do
+        allow(Settings.features).to receive(:metrics).and_return(true)
+        stub_request :post, 'https://sdr-metrics-api-prod.stanford.edu/ahoy/events'
+        stub_request :post, 'https://sdr-metrics-api-prod.stanford.edu/ahoy/visits'
+      end
+
+      it 'tracks a download event with the druid and file name' do
+        get :show, params: { id: 'xf680rd3068', file_name: 'xf680rd3068_1.jp2' }
+        expect(a_request(:post, 'https://sdr-metrics-api-prod.stanford.edu/ahoy/events').with do |req|
+          expect(req.body).to include '"name":"download"'
+          expect(req.body).to include '"druid":"xf680rd3068"'
+          expect(req.body).to include '"file":"xf680rd3068_1.jp2"'
+        end).to have_been_made
+      end
+    end
   end
 end
