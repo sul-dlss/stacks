@@ -68,6 +68,11 @@ RSpec.describe "Authentication for Media requests", type: :request do
       expect(response.parsed_body['status']).to eq 'success'
       expect(response.parsed_body['token']).to match(/^[%a-zA-Z0-9]+/)
     end
+
+    it 'indicates that the object is stanford restricted' do
+      get "/media/#{druid}/file.#{format}/auth_check"
+      expect(response.parsed_body['access_restrictions']['stanford_restricted']).to eq true
+    end
   end
 
   context 'when the user is not authenticated' do

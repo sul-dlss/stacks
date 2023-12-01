@@ -48,7 +48,16 @@ class MediaController < ApplicationController
 
   def hash_for_auth_check
     if can? :stream, current_media
-      { status: :success, token: URI.encode_www_form_component(encrypted_token) }
+      {
+        status: :success,
+        token: URI.encode_www_form_component(encrypted_token),
+        access_restrictions: {
+          stanford_restricted: current_media.stanford_restricted?,
+          restricted_by_location: current_media.restricted_by_location?,
+          embargoed: current_media.embargoed?,
+          embargo_release_date: current_media.embargo_release_date
+        }
+      }
     else
       MediaAuthenticationJson.new(
         user: current_user,

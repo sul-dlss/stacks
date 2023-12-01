@@ -98,6 +98,15 @@ RSpec.describe MediaController do
       before do
         allow(controller).to receive(:can?).and_return(true)
         allow(StacksMediaToken).to receive(:new).and_return(token)
+
+        next unless Settings.features.cocina # below mocking is only needed if cocina is being parsed instead of legacy rights XML
+
+        # We could be more integration-y and instead e.g. stub_request(:get, "https://purl.stanford.edu/bd786fy6312.json").to_return(...).
+        # But the StacksMediaStream code (and the metadata fetching/parsing code it uses) that'd be exercised by that approach is already
+        # tested elsewhere. This approach is a bit more readable, and less brittle since it doesn't break the StacksMediaStream abstraction.
+        stacks_media_stream = instance_double(StacksMediaStream, stanford_restricted?: false, restricted_by_location?: false,
+                                                                 embargoed?: false, embargo_release_date: nil)
+        allow(controller).to receive(:current_media).and_return(stacks_media_stream)
       end
 
       it 'returns json that indicates a successful auth check (including token)' do
@@ -105,6 +114,17 @@ RSpec.describe MediaController do
         body = JSON.parse(response.body)
         expect(body['status']).to eq 'success'
         expect(body['token']).to eq 'sekret-token'
+      end
+
+      it 'returns info about applicable access restrictions' do
+        get :auth_check, params: { id:, file_name:, format: :js }
+        body = JSON.parse(response.body)
+        expect(body['access_restrictions']).to eq({
+                                                    'stanford_restricted' => false,
+                                                    'restricted_by_location' => false,
+                                                    'embargoed' => false,
+                                                    'embargo_release_date' => nil
+                                                  })
       end
     end
   end
