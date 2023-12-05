@@ -15,6 +15,7 @@ Rails.application.routes.draw do
     get '/file/app/druid::id/*file_name' => 'webauth#login_file', format: false
     get '/file/auth/druid::id/*file_name' => 'webauth#login_file', format: false
     get '/file/auth/druid::id' => 'webauth#login_object', format: false
+    get '/file/:id/:file_name/auth_check' => 'file#auth_check'
   end
 
   if Settings.features.streaming_media

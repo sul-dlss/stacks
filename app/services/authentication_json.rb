@@ -1,16 +1,15 @@
 # frozen_string_literal: true
 
 ###
-# A class to model various authentication checks on media objects
-# and return a hash to be used as JSON in a controller response
-class MediaAuthenticationJson
+# A generic class to model various authentication checks on files/media/etc
+class AuthenticationJson
   # @param [User] user
-  # @param [StacksMediaStream] media
+  # @param [StacksMediaStream|StacksFile] file or media
   # @param [String] auth_url the login url to send to the client if the user could login.
   # @param [Ability] ability the CanCan ability object
-  def initialize(user:, media:, auth_url:, ability:)
+  def initialize(user:, file:, auth_url:, ability:)
     @user = user
-    @media = media
+    @file = file
     @auth_url = auth_url
     @ability = ability
   end
@@ -75,8 +74,8 @@ class MediaAuthenticationJson
   def build_response
     DenyResponse.new(auth_url).tap do |response|
       response.add_stanford_restricted! if stanford_grants_access?
-      response.add_location_restricted!(media.location) if location_grants_access?
-      response.add_embargo!(media.embargo_release_date) if embargoed?
+      response.add_location_restricted!(file.location) if location_grants_access?
+      response.add_embargo!(file.embargo_release_date) if embargoed?
     end
   end
 
@@ -86,12 +85,12 @@ class MediaAuthenticationJson
 
   private
 
-  attr_reader :auth_url, :media, :user, :ability
+  attr_reader :auth_url, :user, :ability, :file
 
-  delegate :embargoed?, :stanford_restricted?, :restricted_by_location?, to: :media
+  delegate :embargoed?, :stanford_restricted?, :restricted_by_location?, to: :file
 
   def user_is_in_location?
-    ability.can? :access, media
+    ability.can? :access, file
   end
 
   def stanford_grants_access?
