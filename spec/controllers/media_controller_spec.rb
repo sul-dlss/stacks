@@ -106,7 +106,7 @@ RSpec.describe MediaController do
         # tested elsewhere. This approach is a bit more readable, and less brittle since it doesn't break the StacksMediaStream abstraction.
         stacks_media_stream = instance_double(StacksMediaStream, stanford_restricted?: false, restricted_by_location?: false,
                                                                  embargoed?: false, embargo_release_date: nil)
-        allow(controller).to receive(:current_media).and_return(stacks_media_stream)
+        allow(controller).to receive(:current_file).and_return(stacks_media_stream)
       end
 
       it 'returns json that indicates a successful auth check (including token)' do

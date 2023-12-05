@@ -57,7 +57,7 @@ RSpec.describe "Authentication for Media requests", type: :request do
   before do
     allow(Purl).to receive(:public_json).and_return(public_json)
     allow_any_instance_of(MediaController).to receive(:current_user).and_return(user)
-    allow_any_instance_of(MediaController).to receive(:current_media).and_return(mock_media)
+    allow_any_instance_of(MediaController).to receive(:current_file).and_return(mock_media)
   end
 
   context 'when the user is stanford authenticated' do
