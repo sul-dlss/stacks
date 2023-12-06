@@ -75,18 +75,13 @@ class IiifTokenController < ApplicationController
   # Handle IIIF Authentication 1.0 JSON Access Token requests
   # See {http://iiif.io/api/auth/1.0/#the-json-access-token-response}
   def create_for_json_access_token_auth(token)
-    respond_to do |format|
-      format.html { redirect_to callback: callback_value, format: 'js' }
-      format.js do
-        status = if callback_value || token
-                   :ok
-                 else
-                   :unauthorized
-                 end
+    status = if callback_value || token
+               :ok
+             else
+               :unauthorized
+             end
 
-        render json: @message.to_json, callback: callback_value, status:
-      end
-    end
+    render json: @message.to_json, callback: callback_value, status:
   end
 
   def json_params
