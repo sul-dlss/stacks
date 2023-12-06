@@ -41,8 +41,8 @@ Rails.application.routes.draw do
   get '/cdl/:id' => 'cdl#show', as: :cdl_info_iiif_auth_api
   match '/cdl/:id' => 'cdl#show_options', via: [:options]
   get '/auth/logout' => 'webauth#logout', as: :logout
-  get '/image/iiif/token' => 'iiif_token#create', as: :iiif_token_api
-  get '/image/iiif/token/:id' => 'iiif_token#create_for_item', as: :cdl_iiif_token_api
+  get '/image/iiif/token' => 'iiif/auth/v1/token#create', as: :iiif_token_api
+  get '/image/iiif/token/:id' => 'iiif/auth/v1/token#create_for_item', as: :cdl_iiif_token_api
 
   constraints id: druid_regex, file_name: %r{[^/]+}, size: %r{[^/]+} do
     get '/image/iiif/:id/:file_name', to: redirect('/image/iiif/%{id}/%{file_name}/info.json', status: 303), as: :iiif_base
