@@ -52,17 +52,7 @@ RSpec.describe IiifTokenController do
 
     context 'JSON API interaction' do
       subject do
-        get :create, params: { format: :js }
-      end
-
-      context 'HTML format' do
-        subject do
-          get :create, params: { format: :html }
-        end
-
-        it 'redirects to JSON' do
-          expect(subject).to redirect_to format: :js
-        end
+        get :create
       end
 
       context 'with a user' do
