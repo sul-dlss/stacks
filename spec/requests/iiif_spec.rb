@@ -281,46 +281,43 @@ RSpec.describe 'IIIF API' do
     end
   end
 
-  describe 'image requests' do
-    let(:image_response) { instance_double(HTTP::Response, body: StringIO.new, status: 200) }
-    let(:projection) { instance_double(Projection, response: image_response, valid?: true) }
-    let(:transformation) { double }
-    let(:image) do
-      instance_double(StacksImage, etag: nil,
-                                   mtime: nil,
-                                   cdl_restricted?: false)
-    end
-
+  describe 'image requests for world readable items' do
     let(:ability) { instance_double(Ability, can?: false) }
 
     before do
       # for the cache headers
       allow_any_instance_of(IiifController).to receive(:anonymous_ability).and_return ability
       # for authorize! in #show
-      allow_any_instance_of(IiifController).to receive(:authorize!).with(:read, projection).and_return(true)
+      allow_any_instance_of(IiifController).to receive(:authorize!).with(:read, Projection).and_return(true)
       # for current_image
-      allow_any_instance_of(IiifController).to receive(:can?).with(:download, image).and_return(true)
-
-      allow(IIIF::Image::OptionDecoder).to receive(:decode)
-        .with(ActionController::Parameters)
-        .and_return(transformation)
-      allow(StacksImage).to receive(:new).and_return(image)
-      allow(image).to receive(:projection_for).with(transformation).and_return(projection)
+      allow_any_instance_of(IiifController).to receive(:can?).with(:download, StacksImage).and_return(true)
     end
 
-    it 'loads the image' do
-      get "/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/0,640,2552,2552/100,100/0/default.jpg"
+    context 'when the request is valid' do
+      before do
+        stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/nr%2F349%2Fct%2F7889%2Fnr349ct7889_00_0001.jp2/0,640,2552,2552/100,100/0/default.jpg")
+          .to_return(status: 200, body: "")
+      end
 
-      expect(StacksImage).to have_received(:new).with(
-        id: "nr349ct7889", file_name: 'nr349ct7889_00_0001.jp2',
-        canonical_url: "http://www.example.com/image/iiif/nr349ct7889/nr349ct7889_00_0001"
-      )
-      expect(response.media_type).to eq 'image/jpeg'
-      expect(response.status).to eq 200
+      it 'loads the image' do
+        get "/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/0,640,2552,2552/100,100/0/default.jpg"
+
+        expect(StacksImage).to have_received(:new).with(
+          id: "nr349ct7889", file_name: 'nr349ct7889_00_0001.jp2',
+          canonical_url: "http://www.example.com/image/iiif/nr349ct7889/nr349ct7889_00_0001"
+        )
+        expect(response.media_type).to eq 'image/jpeg'
+        expect(response.status).to eq 200
+      end
     end
 
-    context 'additional params' do
-      it 'ignored when instantiating StacksImage' do
+    context 'when additional params are provided' do
+      before do
+        stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/nr%2F349%2Fct%2F7889%2Fnr349ct7889_00_0001.jp2/0,640,2552,2552/100,100/0/default.jpg")
+          .to_return(status: 200, body: "")
+      end
+
+      it 'is ignored when instantiating StacksImage' do
         get "/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/0,640,2552,2552/100,100/0/default.jpg?ignored=ignored&host=host"
 
         expect(response.status).to eq 200
@@ -328,7 +325,10 @@ RSpec.describe 'IIIF API' do
     end
 
     context 'when image is missing' do
-      before { allow(projection).to receive(:valid?).and_return(false) }
+      before do
+        stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/nr%2F349%2Fct%2F7889%2Fnr349ct7889_00_0001.jp2/0,640,2552,2552/100,100/0/default.jpg")
+          .to_return(status: 404, body: "")
+      end
 
       it 'returns 404 Not Found' do
         get "/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/0,640,2552,2552/100,100/0/default.jpg?ignored=ignored&host=host"
@@ -337,11 +337,30 @@ RSpec.describe 'IIIF API' do
     end
 
     context 'with the download flag set' do
+      before do
+        stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/nr%2F349%2Fct%2F7889%2Fnr349ct7889_00_0001.jp2/0,640,2552,2552/100,100/0/default.jpg")
+          .to_return(status: 200, body: "")
+      end
+
       it 'sets the content-disposition header' do
         get "/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/0,640,2552,2552/100,100/0/default.jpg?download=true"
 
         expect(response.headers['Content-Disposition']).to start_with 'attachment'
         expect(response.headers['Content-Disposition']).to include 'filename="nr349ct7889_00_0001.jpg"'
+      end
+    end
+
+    context 'with a pct region' do
+      before do
+        stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/nr%2F349%2Fct%2F7889%2Fnr349ct7889_00_0001.jp2/pct:3.0,3.0,77.0,77.0/full/0/default.jpg")
+          .to_return(status: 200, body: "")
+      end
+
+      it 'loads the image' do
+        get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/pct:3,3,77,77/full/0/default.jpg'
+
+        expect(response.media_type).to eq 'image/jpeg'
+        expect(response.status).to eq 200
       end
     end
   end
