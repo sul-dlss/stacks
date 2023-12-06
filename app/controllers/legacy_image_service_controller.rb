@@ -8,6 +8,8 @@ class LegacyImageServiceController < ApplicationController
   ##
   # Redirect legacy image requests to their IIIF equivalents
   def show
+    # Logging to see where these requests are coming from and if we can update them to use the right path
+    logger.info("  HTTP Referer: #{request.referer[0..100]}") if request.referer
     redirect_to iiif_path(iiif_options)
   end
 
