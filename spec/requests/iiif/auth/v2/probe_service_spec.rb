@@ -6,31 +6,37 @@ RSpec.describe 'IIIF auth v2 probe service' do
   let(:id) { 'bb461xx1037' }
   let(:file_name) { 'SC0193_1982-013_b06_f01_1981-09-29.pdf' }
   let(:stacks_uri) { "https://stacks-uat.stanford.edu/file/druid:#{id}/#{file_name}" }
-  let(:user) { instance_double(User, locations: [], webauth_user: false, stanford?: false, cdl_tokens: []) }
-  let(:ability) { Ability.new(user) }
-
-  # TODO: figure out how to correctly mock Ability object so it doesn't actually try to hit PURL to get rights and parse
 
   before do
-    get "/iiif/auth/v2/probe?id=#{stacks_uri}"
-    #allow(ApplicationController).to receive(:current_ability).and_return(ability)
+    allow(Purl).to receive(:public_json).and_return(public_json)
   end
 
   context 'when the user has access to the resource' do
-    let(:file) do
-      instance_double(
-        StacksFile,
-        id:,
-        file_name:,
-        restricted_by_location?: false,
-        stanford_restricted?: false,
-        embargoed?: false,
-        download: true
-      )
+    let(:public_json) do
+      {
+        'structural' => {
+          'contains' => [
+            {
+              'structural' => {
+                'contains' => [
+                  {
+                    'filename' => file_name,
+                    'access' => {
+                      'view' => 'world',
+                      'download' => 'world'
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
     end
 
     before do
-      allow(ability).to receive(:can?).with(:access, file).and_return(false)
+      stub_rights_xml(world_readable_rights_xml)
+      get "/iiif/auth/v2/probe?id=#{stacks_uri}"
     end
 
     it 'returns a success response' do
@@ -44,20 +50,31 @@ RSpec.describe 'IIIF auth v2 probe service' do
   end
 
   context 'when the user does not have access to the resource' do
-    let(:file) do
-      instance_double(
-        StacksFile,
-        id:,
-        file_name:,
-        restricted_by_location?: false,
-        stanford_restricted?: true,
-        embargoed?: false,
-        download: true
-      )
+    let(:public_json) do
+      {
+        'structural' => {
+          'contains' => [
+            {
+              'structural' => {
+                'contains' => [
+                  {
+                    'filename' => file_name,
+                    'access' => {
+                      'view' => 'world',
+                      'download' => 'stanford'
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
     end
 
     before do
-      allow(ability).to receive(:can?).with(:access, file).and_return(false)
+      stub_rights_xml(stanford_restricted_rights_xml)
+      get "/iiif/auth/v2/probe?id=#{stacks_uri}"
     end
 
     it 'returns a not authorized response' do

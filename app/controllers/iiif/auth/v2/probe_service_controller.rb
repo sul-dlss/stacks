@@ -16,14 +16,12 @@ module Iiif
           response = { '@context': 'http://iiif.io/api/auth/2/context.json', type: 'AuthProbeResult2' }
 
           if can? :access, file
-            response.merge!(status: 200)
+            response[:status] = 200
           else
             # TODO: check restrictions on file object and include details in response e.g. like in MediaController#hash_for_auth_check
-            message = {
-              heading: { en: ["You can't see this"] },
-              note: { en: ["Sorry"] }
-            }
-            response.merge!(status: 401, message:)
+            response[:status] = 401
+            response[:heading] = { en: ["You can't see this"] }
+            response[:note] = { en: ["Sorry"] }
           end
 
           render json: response
