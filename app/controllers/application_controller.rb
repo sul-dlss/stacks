@@ -39,4 +39,14 @@ class ApplicationController < ActionController::Base
   def ability_class
     Settings.features.cocina ? CocinaAbility : Ability
   end
+
+  # In order for media authentication to work, the wowza server must have
+  # Access-Control-Allow-Credentials header set (which is set by default when CORS is enabled in wowza),
+  # which means that Access-Control-Allow-Origin cannot be set to * (wowza default) and instead
+  # needs to specify a host (e.g. the embed server of choice, presumably used in purl with
+  # particular stacks). This means that only the specified host will be granted credentialed requests.
+  def set_cors_headers
+    response.headers['Access-Control-Allow-Origin'] = Settings.cors.allow_origin_url
+    response.headers['Access-Control-Allow-Credentials'] = 'true'
+  end
 end
