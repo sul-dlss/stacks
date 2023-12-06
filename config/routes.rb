@@ -80,4 +80,8 @@ Rails.application.routes.draw do
     get '/image/auth/:id/:file_name.:format' => 'legacy_image_service#show'
     get '/image/auth/:id/:file_name' => 'legacy_image_service#show'
   end
+
+  # IIIF Probe Service
+  get '/iiif/auth/v2/probe' => 'iiif/auth/v2/probe_service#show'
+
 end

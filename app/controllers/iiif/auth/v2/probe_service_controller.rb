@@ -8,14 +8,23 @@ module Iiif
       # https://iiif.io/api/auth/2.0/#probe-service
       class ProbeServiceController < ApplicationController
         def show
-          # The HTTP status code that the client should expect to receive if it were to issue
-          # the same request to the resource
-          status = 200
-          response = {
-            '@context' => 'http://iiif.io/api/auth/2/context.json',
-            type: 'AuthProbeResult2',
-            status:
-          }
+          stacks_uri = params[:id] # this is a fully qualified URI to the resource on the stacks that the user is requesting access to
+          druid, file_name = stacks_uri.split('/').last(2) # need the druid (without prefix) and the filename in order to check for access
+
+          file = StacksFile.new(id: druid.delete_prefix('druid:'), file_name:, download: true)
+
+          response = { '@context': 'http://iiif.io/api/auth/2/context.json', type: 'AuthProbeResult2' }
+
+          if can? :access, file
+            response.merge!(status: 200)
+          else
+            # TODO: check restrictions on file object and include details in response e.g. like in MediaController#hash_for_auth_check
+            message = {
+              heading: { en: ["You can't see this"] },
+              note: { en: ["Sorry"] }
+            }
+            response.merge!(status: 401, message:)
+          end
 
           render json: response
         end
