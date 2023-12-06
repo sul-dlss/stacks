@@ -46,8 +46,8 @@ class LegacyImageServiceController < ApplicationController
 
   def iiif_size
     case
-    when zoom
-      "pct:#{zoom}"
+    when allowed_params[:zoom]
+      "pct:#{allowed_params[:zoom]}"
     when allowed_params[:w]
       "#{allowed_params[:w]},#{allowed_params[:h]}"
     when size
@@ -73,11 +73,10 @@ class LegacyImageServiceController < ApplicationController
   end
 
   def iiif_region
+    zoomed_region = Region.new(params[:region], params[:zoom]) if params[:region] && params[:zoom]
     case
-    when region && zoom
-      x, y, w, h = region.split(',')
-      zoom_percent = zoom.to_f / 100.0
-      [x.to_i / zoom_percent, y.to_i / zoom_percent, w.to_i / zoom_percent, h.to_i / zoom_percent].map(&:to_i).join(',')
+    when zoomed_region
+      zoomed_region.to_iiif_region
     when region
       region
     when size == 'square'
@@ -107,7 +106,20 @@ class LegacyImageServiceController < ApplicationController
     allowed_params[:size]
   end
 
-  def zoom
-    allowed_params[:zoom]
+  # A subset of an image defined by a region and zoom level
+  class Region
+    def initialize(raw_region, raw_zoom)
+      raise ActionController::RoutingError, 'zoom is invalid' unless /\A\d*\.?\d+\z/.match?(raw_zoom)
+      raise ActionController::RoutingError, 'region is invalid' unless /\A(\d+,){0,3}\d+\z/.match?(raw_region)
+
+      @zoom_percent = raw_zoom.to_f / 100.0
+      @x, @y, @w, @h = raw_region.split(',')
+    end
+
+    attr_reader :zoom_percent, :x, :y, :w, :h
+
+    def to_iiif_region
+      [x.to_i / zoom_percent, y.to_i / zoom_percent, w.to_i / zoom_percent, h.to_i / zoom_percent].map(&:to_i).join(',')
+    end
   end
 end

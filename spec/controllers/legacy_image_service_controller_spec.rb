@@ -53,7 +53,8 @@ RSpec.describe LegacyImageServiceController do
       end
     end
   end
-  context 'delivering tiles' do
+
+  describe 'delivering tiles' do
     it 'works at 100% zoom' do
       page = get :show, params: { id: 'nr349ct7889',
                                   file_name: 'nr349ct7889_00_0001',
@@ -63,7 +64,7 @@ RSpec.describe LegacyImageServiceController do
       expect(page).to redirect_to '/image/iiif/nr349ct7889/nr349ct7889_00_0001/0,0,256,256/pct:100/0/default.jpg'
     end
 
-    it 'works at 50% zome' do
+    it 'works at 50% zoom' do
       page = get :show, params: { id: 'nr349ct7889',
                                   file_name: 'nr349ct7889_00_0001',
                                   format: 'jpg',
