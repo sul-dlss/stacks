@@ -49,7 +49,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
     end
   end
 
-  context 'when the user does not have access to the resource' do
+  context 'when the user does not have access to a Stanford only resource' do
     let(:public_json) do
       {
         'structural' => {
@@ -83,9 +83,12 @@ RSpec.describe 'IIIF auth v2 probe service' do
                                                 "@context" => "http://iiif.io/api/auth/2/context.json",
                                                 "type" => "AuthProbeResult2",
                                                 "status" => 401,
-                                                "heading" => { "en" => ["You can't see this"] },
-                                                "note" => { "en" => ["Sorry"] }
+                                                "heading" => { "en" => ["Stanford-affiliated? Login to play"] },
+                                                "auth_url" => "http://www.example.com/auth/iiif",
+                                                "note" => { "en" => ["Access restricted"] }
                                               })
     end
   end
+
+  # TODO: add tests for location and embargo restrictions
 end
