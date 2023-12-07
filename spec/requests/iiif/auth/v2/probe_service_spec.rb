@@ -7,6 +7,8 @@ RSpec.describe 'IIIF auth v2 probe service' do
   let(:file_name) { 'SC0193_1982-013_b06_f01_1981-09-29.pdf' }
   let(:stacks_uri) { "https://stacks-uat.stanford.edu/file/druid:#{id}/#{file_name}" }
 
+  # NOTE: For any unauthorized responses, the status from the service is OK...the access status of the resource is in the response body
+
   before do
     allow(Purl).to receive(:public_json).and_return(public_json)
   end
@@ -101,7 +103,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
       end
 
       it 'returns a not authorized response' do
-        expect(response).to have_http_status :ok # NOTE: response status from service is OK, status of the resource is in the response body
+        expect(response).to have_http_status :ok
         expect(response.parsed_body).to include({
                                                   "@context" => "http://iiif.io/api/auth/2/context.json",
                                                   "type" => "AuthProbeResult2",
@@ -110,6 +112,26 @@ RSpec.describe 'IIIF auth v2 probe service' do
                                                   "auth_url" => "http://www.example.com/auth/iiif",
                                                   "note" => { "en" => ["Access restricted"] }
                                                 })
+      end
+
+      context 'when object has a hierarchically nested filename' do
+        let(:file_name) { 'folder/SC0193_1982-013_b06_f01_1981-09-29.pdf' }
+
+        before do
+          get "/iiif/auth/v2/probe?id=#{stacks_uri}"
+        end
+
+        it 'returns a not authorized response' do
+          expect(response).to have_http_status :ok
+          expect(response.parsed_body).to include({
+                                                    "@context" => "http://iiif.io/api/auth/2/context.json",
+                                                    "type" => "AuthProbeResult2",
+                                                    "status" => 401,
+                                                    "heading" => { "en" => ["Stanford-affiliated? Login to play"] },
+                                                    "auth_url" => "http://www.example.com/auth/iiif",
+                                                    "note" => { "en" => ["Access restricted"] }
+                                                  })
+        end
       end
     end
   end
@@ -155,7 +177,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
     end
 
     it 'returns a not authorized response' do
-      expect(response).to have_http_status :ok # NOTE: response status from service is OK, status of the resource is in the response body
+      expect(response).to have_http_status :ok
       expect(response.parsed_body).to include({
                                                 "@context" => "http://iiif.io/api/auth/2/context.json",
                                                 "type" => "AuthProbeResult2",
@@ -214,7 +236,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
     end
 
     it 'returns a not authorized response' do
-      expect(response).to have_http_status :ok # NOTE: response status from service is OK, status of the resource is in the response body
+      expect(response).to have_http_status :ok
       expect(response.parsed_body).to include({
                                                 "@context" => "http://iiif.io/api/auth/2/context.json",
                                                 "type" => "AuthProbeResult2",
@@ -273,7 +295,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
     end
 
     it 'returns a not authorized response' do
-      expect(response).to have_http_status :ok # NOTE: response status from service is OK, status of the resource is in the response body
+      expect(response).to have_http_status :ok
       expect(response.parsed_body).to include({
                                                 "@context" => "http://iiif.io/api/auth/2/context.json",
                                                 "type" => "AuthProbeResult2",
