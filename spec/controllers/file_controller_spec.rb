@@ -41,7 +41,7 @@ RSpec.describe FileController do
                 {
                   'filename' => 'xf680rd3068_1.jp2',
                   'access' => {
-                    'view' => 'world',
+                    'view' => 'stanford',
                     'download' => 'stanford'
                   }
                 }
