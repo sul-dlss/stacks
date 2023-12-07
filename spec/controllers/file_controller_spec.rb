@@ -80,13 +80,18 @@ RSpec.describe FileController do
       get :show, params: { id: 'xf680rd3068', file_name: 'xf680rd3068_1.jp2', download: 'any' }
     end
 
+    it 'sends wildcard CORS header' do
+      subject
+      expect(response.headers.to_h).to include 'Access-Control-Allow-Origin' => '*'
+    end
+
     context 'when Stanford restricted' do
       before do
         stub_rights_xml(stanford_restricted_rights_xml)
         allow(Purl).to receive(:public_json).and_return(stanford_json)
       end
 
-      it 'sends CORs header' do
+      it 'sends host-specific and credentials CORS headers' do
         subject
         expect(response.headers.to_h).to include 'Access-Control-Allow-Origin' => 'https://embed.stanford.edu',
                                                  'Access-Control-Allow-Credentials' => 'true'
