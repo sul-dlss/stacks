@@ -7,6 +7,8 @@
 # are not stubbing a 3rd party class.
 module StubRightsXML
   def stub_rights_xml(xml)
+    return if Settings.features.cocina
+
     allow(Purl).to receive(:public_xml).and_return(xml)
   end
 end
