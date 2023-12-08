@@ -17,7 +17,9 @@ module Iiif
 
           response = { '@context': 'http://iiif.io/api/auth/2/context.json', type: 'AuthProbeResult2' }
 
-          if can? :access, file
+          if !file.readable?
+            response[:status] = 404
+          elsif can? :access, file
             response[:status] = 200
           else
             response[:status] = 401
@@ -56,7 +58,7 @@ module Iiif
             raise ActionDispatch::Http::Parameters::ParseError
           end
           druid = uri_parts.first.delete_prefix('druid:')
-          file_name = uri_parts[1..].join('/')
+          file_name = uri_parts[1..].join('/').gsub(/(\+|%20)/, ' ')
           { druid:, file_name: }
         end
       end
