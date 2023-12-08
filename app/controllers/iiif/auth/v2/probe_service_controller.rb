@@ -50,7 +50,11 @@ module Iiif
 
         # parse the stacks resource URI by taking just full path, removing the '/file/' and then separating druid from filename (with paths)
         def parse_uri(uri)
-          uri_parts = URI(uri).path.delete_prefix('/file/').split('/')
+          uri_parts = begin
+            URI(uri).path.delete_prefix('/file/').split('/')
+          rescue URI::InvalidURIError
+            raise ActionDispatch::Http::Parameters::ParseError
+          end
           druid = uri_parts.first.delete_prefix('druid:')
           file_name = uri_parts[1..].join('/')
           { druid:, file_name: }

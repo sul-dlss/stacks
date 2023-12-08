@@ -5,12 +5,26 @@ require 'rails_helper'
 RSpec.describe 'IIIF auth v2 probe service' do
   let(:id) { 'bb461xx1037' }
   let(:file_name) { 'SC0193_1982-013_b06_f01_1981-09-29.pdf' }
-  let(:stacks_uri) { "https://stacks-uat.stanford.edu/file/druid:#{id}/#{file_name}" }
+  let(:stacks_uri) { CGI.escape "https://stacks-uat.stanford.edu/file/druid:#{id}/#{file_name}" }
+  let(:public_json) { '{}' }
 
   # NOTE: For any unauthorized responses, the status from the service is OK...the access status of the resource is in the response body
 
   before do
     allow(Purl).to receive(:public_json).and_return(public_json)
+  end
+
+  context 'when the URI is not properly encoded' do
+    let(:file_name) { 'this has spaces.pdf' }
+    let(:stacks_uri) { "https://stacks-uat.stanford.edu/file/druid:#{id}/#{file_name}" }
+
+    before do
+      get "/iiif/auth/v2/probe?id=#{stacks_uri}"
+    end
+
+    it 'returns a success response' do
+      expect(response).to have_http_status :bad_request
+    end
   end
 
   context 'when the user has access to the resource because it is world accessible' do
