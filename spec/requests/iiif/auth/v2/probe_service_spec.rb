@@ -78,6 +78,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
       stub_rights_xml(stanford_restricted_rights_xml)
     end
 
+    # rubocop:disable RSpec/AnyInstance
     context 'when the user is logged in as a Stanford user' do
       let(:user_webauth_stanford_no_loc) { User.new(webauth_user: true, ldap_groups: %w[stanford:stanford]) }
       let(:current_user) { user_webauth_stanford_no_loc }
@@ -96,6 +97,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
                                                 })
       end
     end
+    # rubocop:enable RSpec/AnyInstance
 
     context 'when the user is not logged in as a Stanford user' do
       before do

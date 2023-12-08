@@ -30,6 +30,7 @@ module Iiif
         private
 
         # add details to response for when access is denied
+        # rubocop:disable Metrics/AbcSize
         def add_detail(file)
           detail = {}
           if file.stanford_restricted? && !file.embargoed?
@@ -45,6 +46,7 @@ module Iiif
           detail[:note] = { en: ["Access restricted"] }
           detail
         end
+        # rubocop:enable Metrics/AbcSize
 
         # parse the stacks resource URI by taking just full path, removing the '/file/' and then separating druid from filename (with paths)
         def parse_uri(uri)
