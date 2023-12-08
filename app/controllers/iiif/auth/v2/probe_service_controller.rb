@@ -17,7 +17,9 @@ module Iiif
 
           response = { '@context': 'http://iiif.io/api/auth/2/context.json', type: 'AuthProbeResult2' }
 
-          if can? :access, file
+          if !file.readable?
+            response[:status] = 404
+          elsif can? :access, file
             response[:status] = 200
           else
             response[:status] = 401
@@ -48,15 +50,15 @@ module Iiif
         end
         # rubocop:enable Metrics/AbcSize
 
-        # parse the stacks resource URI by taking just full path, removing the '/file/' and then separating druid from filename (with paths)
+        # We expect the incoming stacks URI param to be URI encoded and we then
+        # parse the stacks URI by removing the '/file/druid:' and then separating druid from filename (with paths)
         def parse_uri(uri)
-          uri_parts = begin
-            URI(uri).path.delete_prefix('/file/').split('/')
+          obj = begin
+            URI(uri)
           rescue URI::InvalidURIError
             raise ActionDispatch::Http::Parameters::ParseError
           end
-          druid = uri_parts.first.delete_prefix('druid:')
-          file_name = uri_parts[1..].join('/')
+          druid, file_name = URI.decode_uri_component(obj.path.delete_prefix('/file/druid:')).split('/', 2)
           { druid:, file_name: }
         end
       end
