@@ -22,17 +22,6 @@ class MediaAuthenticationJson
       @result = { status: [] }
     end
 
-    # Codes from https://github.com/sul-dlss/cocina-models/blob/8fc7b5b9b0e3592a5c81f4c0e4ebff5c926669c6/openapi.yml#L1330-L1339
-    # labels from https://consul.stanford.edu/display/chimera/Rights+Metadata+Locations
-    LOCATION_LABELS = {
-      'spec' => 'Special Collections reading room',
-      'music' => 'Music Library - main area',
-      'ars' => 'Archive of Recorded Sound listening room',
-      'art' => 'Art Library',
-      'hoover' => 'Hoover Library',
-      'm&m' => 'Media & Microtext'
-    }.freeze
-
     attr_reader :result, :auth_url
 
     def as_json
@@ -50,7 +39,7 @@ class MediaAuthenticationJson
 
     def add_location_restricted!(location)
       add_status(:location_restricted)
-      result[:location] = { code: location, label: LOCATION_LABELS.fetch(location) }
+      result[:location] = { code: location, label: Settings.user.locations.labels.send(location) }
     end
 
     def add_embargo!(embargo_release_date)
