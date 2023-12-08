@@ -151,7 +151,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
                     'access' => {
                       'view' => 'location-based',
                       'download' => 'location_based',
-                      'location' => 'spec'
+                      'location' => location
                     }
                   }
                 ]
@@ -166,7 +166,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
       <rightsMetadata>
           <access type="read">
             <machine>
-              <location>spec</location>
+              <location>#{xml_location}</location>
             </machine>
           </access>
         </rightsMetadata>
@@ -178,17 +178,40 @@ RSpec.describe 'IIIF auth v2 probe service' do
       get "/iiif/auth/v2/probe?id=#{stacks_uri}"
     end
 
-    it 'returns a not authorized response' do
-      expect(response).to have_http_status :ok
-      expect(response.parsed_body).to include({
-                                                "@context" => "http://iiif.io/api/auth/2/context.json",
-                                                "type" => "AuthProbeResult2",
-                                                "status" => 401,
-                                                "heading" => {
-                                                  "en" => ["Content is restricted to location Special Collections reading room"]
-                                                },
-                                                "note" => { "en" => ["Access restricted"] }
-                                              })
+    context 'when special collections' do
+      let(:location) { 'spec' }
+      let(:xml_location) { 'spec' }
+
+      it 'returns a not authorized response' do
+        expect(response).to have_http_status :ok
+        expect(response.parsed_body).to include({
+                                                  "@context" => "http://iiif.io/api/auth/2/context.json",
+                                                  "type" => "AuthProbeResult2",
+                                                  "status" => 401,
+                                                  "heading" => {
+                                                    "en" => ["Content is restricted to location Special Collections reading room"]
+                                                  },
+                                                  "note" => { "en" => ["Access restricted"] }
+                                                })
+      end
+    end
+
+    context 'when media & microtext' do
+      let(:location) { 'm&m' }
+      let(:xml_location) { 'm&amp;m' }
+
+      it 'returns a not authorized response' do
+        expect(response).to have_http_status :ok
+        expect(response.parsed_body).to include({
+                                                  "@context" => "http://iiif.io/api/auth/2/context.json",
+                                                  "type" => "AuthProbeResult2",
+                                                  "status" => 401,
+                                                  "heading" => {
+                                                    "en" => ["Content is restricted to location Media & Microtext"]
+                                                  },
+                                                  "note" => { "en" => ["Access restricted"] }
+                                                })
+      end
     end
   end
 
