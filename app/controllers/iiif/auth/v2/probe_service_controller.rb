@@ -34,16 +34,16 @@ module Iiif
         def add_detail(file)
           detail = {}
           if file.stanford_restricted? && !file.embargoed?
-            detail[:heading] = { en: ["Stanford-affiliated? Login to play"] }
+            detail[:heading] = { en: [I18n.t('probe_service.stanford')] }
             detail[:auth_url] = iiif_auth_api_url
           elsif file.stanford_restricted? && file.embargoed?
-            detail[:heading] = { en: ["Content is both Stanford restricted and embargoed until #{file.embargo_release_date.to_date}"] }
+            detail[:heading] = { en: [I18n.t('probe_service.stanford_and_embargoed', date: file.embargo_release_date.to_date)] }
           elsif file.embargoed?
-            detail[:heading] = { en: ["Content is embargoed until #{file.embargo_release_date.to_date}"] }
+            detail[:heading] = { en: [I18n.t('probe_service.embargoed', date: file.embargo_release_date.to_date)] }
           elsif file.restricted_by_location?
-            detail[:heading] = { en: ["Content is restricted to location #{Settings.user.locations.labels.send(file.location)}"] }
+            detail[:heading] = { en: [I18n.t('probe_service.location', location: Settings.user.locations.labels.send(file.location))] }
           end
-          detail[:note] = { en: ["Access restricted"] }
+          detail[:note] = { en: [I18n.t('probe_service.access_restricted')] }
           detail
         end
         # rubocop:enable Metrics/AbcSize

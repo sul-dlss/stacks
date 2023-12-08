@@ -30,4 +30,9 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  probe_service:
+    access_restricted: "Access restricted"
+    stanford: "Stanford-affiliated? Login to play"
+    stanford_and_embargoed: "Content is both Stanford restricted and embargoed until %{date}"
+    embargoed: "Content is embargoed until %{date}"
+    location: "Content is restricted to location %{location}"
