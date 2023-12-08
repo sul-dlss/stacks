@@ -5,8 +5,8 @@ require 'rails_helper'
 RSpec.describe 'IIIF auth v2 probe service' do
   let(:id) { 'bb461xx1037' }
   let(:file_name) { 'SC0193_1982-013_b06_f01_1981-09-29.pdf' }
-  let(:stacks_uri) { "https://stacks-uat.stanford.edu/file/druid:#{id}/#{CGI.escape(file_name)}" }
-  let(:stacks_uri_param) { CGI.escape(stacks_uri) }
+  let(:stacks_uri) { "https://stacks-uat.stanford.edu/file/druid:#{id}/#{URI.encode_uri_component(file_name)}" }
+  let(:stacks_uri_param) { URI.encode_uri_component(stacks_uri) }
   let(:public_json) { '{}' }
 
   # NOTE: For any unauthorized responses, the status from the service is OK...the access status of the resource is in the response body
@@ -69,21 +69,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
       end
     end
 
-    context 'when filename with space encoded with %20' do
-      let(:file_name) { 'SC0193 1982-013 b06 f01 1981-09-29.pdf' }
-      let(:stacks_uri_param) { CGI.escape('https://stacks-uat.stanford.edu/file/druid:bb461xx1037/this%20is%20.pdf') }
-
-      it 'returns a success response' do
-        expect(response).to have_http_status :ok
-        expect(response.parsed_body).to include({
-                                                  "@context" => "http://iiif.io/api/auth/2/context.json",
-                                                  "type" => "AuthProbeResult2",
-                                                  "status" => 200
-                                                })
-      end
-    end
-
-    context 'when filename with space encoded with +' do
+    context 'when filename with spaces' do
       let(:file_name) { 'SC0193 1982-013 b06 f01 1981-09-29.pdf' }
 
       it 'returns a success response' do
