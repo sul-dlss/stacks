@@ -9,8 +9,7 @@ end
 gem 'rails', '~> 7.0.3'
 # asset pipeline for Rails
 gem 'propshaft'
-# Use sqlite3 as the database for Active Record
-gem 'sqlite3', '~> 1.4'
+
 # Use Puma as the app server
 gem 'puma', '~> 5.0'
 
