@@ -112,7 +112,7 @@ class Projection
   end
 
   def real_transformation
-    return transformation unless image.is_a? RestrictedImage
+    return transformation unless (image.is_a? RestrictedImage) || use_original_size?
 
     IIIF::Image::Transformation.new(
       region: transformation.region,
@@ -127,7 +127,7 @@ class Projection
     size = transformation.size
     case size
     when IIIF::Image::Size::BestFit
-      max_size = image.max_size(self)
+      max_size = max_image_size
       if size.width <= max_size.width && size.height <= max_size.height
         size
       else
@@ -138,5 +138,33 @@ class Projection
     else
       size
     end
+  end
+
+  # For a full image request, if the requested width and height are larger than the original image,
+  # this method will return true
+  # If this is a percentage region, return false.
+  # Region_dimensions, which is called from image.max_tile_dimensions, will raise an error for percentage regions.
+  def use_original_size?
+    return false if transformation.region.is_a? IIIF::Image::Region::Percent
+
+    size = transformation.size
+    max_size = image.max_tile_dimensions.call(self)
+    (size.is_a? IIIF::Image::Size::BestFit) && max_size.width < size.width && max_size.height < size.height
+  rescue NotImplementedError, ArgumentError => e
+    Honeybadger.notify(e, error_message: "Size check error for #{transformation.inspect}") if Rails.env.production?
+    false
+  end
+
+  # The original restricted image function used max_size, but the StacksImage class does not have that method
+  # Since we are using the restricted image block for both RestrictedImage and StacksImage, we check
+  # which method is available
+  def max_image_size
+    image.respond_to?(:max_size) ? image.max_size(self) : dimensions_to_size(image.max_tile_dimensions.call(self))
+  end
+
+  # StacksImage has max_tile_dimensions, which returns dimensions
+  # We need to create a Size object in order to pass back to create the Iiif image object for image_source
+  def dimensions_to_size(dimensions)
+    IIIF::Image::Size::BestFit.new(dimensions.width, dimensions.height)
   end
 end

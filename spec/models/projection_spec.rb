@@ -112,6 +112,18 @@ RSpec.describe Projection do
           expect(http_client).to have_received(:get).with(%r{/full/max/0/default.jpg})
         end
       end
+
+      context "best fit size" do
+        let(:options) { { size: '!850,700', region: 'full' } }
+
+        it 'returns original size when requested dimensions are larger' do
+          allow(HTTP).to receive(:use)
+            .and_return(http_client)
+          allow(http_client).to receive(:get).and_return(double(body: nil))
+          subject.response
+          expect(http_client).to have_received(:get).with(%r{/full/!800,600/0/default.jpg})
+        end
+      end
     end
 
     context 'for a restricted image' do
@@ -316,6 +328,26 @@ RSpec.describe Projection do
       let(:source_image) { instance_double(IiifImage) }
 
       it { is_expected.to be false }
+    end
+  end
+
+  describe '#use_original_size?' do
+    let(:image) { StacksImage.new id: 'ab123cd4567', file_name: 'b' }
+    subject(:use_original) { described_class.new(image, transformation).send(:use_original_size?) }
+
+    context 'when percentage region is requested' do
+      let(:options) { { size: 'full', region: 'pct:3.0,3.0,77.0,77.0' } }
+      it { is_expected.to be false }
+    end
+
+    context 'when dimensions smaller than original size are requested' do
+      let(:options) { { size: '!460,460', region: 'full' } }
+      it { is_expected.to be false }
+    end
+
+    context 'when dimensions larger than original size are requested' do
+      let(:options) { { size: '!900,900', region: 'full' } }
+      it { is_expected.to be true }
     end
   end
 end
