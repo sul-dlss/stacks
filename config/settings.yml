@@ -4,6 +4,8 @@ stacks:
 imageserver:
   base_uri: 'http://imageserver-prod.stanford.edu/iiif/2/'
 
+metrics_api_url: 'https://sdr-metrics-api-prod.stanford.edu' 
+
 purl:
   url: 'https://purl.stanford.edu/'
 
@@ -56,6 +58,7 @@ cors:
 features:
   streaming_media: true
   cocina: false
+  metrics: false
 
 token:
   default_expiry_time: <%= 1.hour %>
