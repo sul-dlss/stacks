@@ -128,13 +128,12 @@ RSpec.describe 'IIIF auth v2 probe service' do
       stub_rights_xml(stanford_restricted_rights_xml)
     end
 
-    context 'when the user is logged in as a Stanford user' do
+    context 'when the user has a bearer token with the ldap group' do
       let(:user_webauth_stanford_no_loc) { User.new(webauth_user: true, ldap_groups: %w[stanford:stanford]) }
-      let(:current_user) { user_webauth_stanford_no_loc }
+      let(:token) { user_webauth_stanford_no_loc.token }
 
       before do
-        allow_any_instance_of(Iiif::Auth::V2::ProbeServiceController).to receive(:current_user).and_return(current_user)
-        get "/iiif/auth/v2/probe?id=#{stacks_uri_param}"
+        get "/iiif/auth/v2/probe?id=#{stacks_uri_param}", headers: { 'HTTP_AUTHORIZATION' => "Bearer #{token}" }
       end
 
       it 'returns a success response' do
@@ -147,7 +146,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
       end
     end
 
-    context 'when the user is not logged in as a Stanford user' do
+    context 'when the user does not provide a token' do
       before do
         get "/iiif/auth/v2/probe?id=#{stacks_uri_param}"
       end
