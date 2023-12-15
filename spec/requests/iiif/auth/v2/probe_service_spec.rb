@@ -17,6 +17,17 @@ RSpec.describe 'IIIF auth v2 probe service' do
     allow_any_instance_of(StacksFile).to receive(:readable?).and_return('420')
   end
 
+  describe 'pre-flight request' do
+    before do
+      options "/iiif/auth/v2/probe?id=#{stacks_uri_param}"
+    end
+
+    it 'sets the headers' do
+      expect(response).to have_http_status :no_content
+      expect(response.headers['Access-Control-Allow-Origin']).to eq '*'
+    end
+  end
+
   context 'when the URI is not properly encoded' do
     let(:file_name) { 'this has spaces.pdf' }
     let(:stacks_uri) { "https://stacks-uat.stanford.edu/file/druid:#{id}/#{file_name}" }

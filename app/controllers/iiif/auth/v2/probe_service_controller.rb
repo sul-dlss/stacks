@@ -15,18 +15,28 @@ module Iiif
 
           file = StacksFile.new(id: parsed_uri[:druid], file_name: parsed_uri[:file_name], download: true)
 
-          response = { '@context': 'http://iiif.io/api/auth/2/context.json', type: 'AuthProbeResult2' }
+          json = { '@context': 'http://iiif.io/api/auth/2/context.json', type: 'AuthProbeResult2' }
 
           if !file.readable?
-            response[:status] = 404
+            json[:status] = 404
           elsif can? :access, file
-            response[:status] = 200
+            json[:status] = 200
           else
-            response[:status] = 401
-            response.merge!(add_detail(file))
+            json[:status] = 401
+            json.merge!(add_detail(file))
           end
 
-          render json: response
+          render json:
+        end
+
+        # Because the probe request sets the Accept header, the browser is going to preflight the request.
+        # Here we tell the browser, yes, we're good with this.
+        def options_pre_flight
+          response.headers['Access-Control-Allow-Origin'] = '*'
+          response.headers['Access-Control-Allow-Methods'] = 'GET'
+          response.headers['Access-Control-Allow-Headers'] = 'Authorization'
+          response.headers['Access-Control-Max-Age'] = '1728000'
+          head :no_content
         end
 
         private
