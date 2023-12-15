@@ -14,7 +14,8 @@ RSpec.describe 'IIIF auth v2 probe service' do
   # rubocop:disable RSpec/AnyInstance
   before do
     allow(Purl).to receive(:public_json).and_return(public_json)
-    allow_any_instance_of(StacksFile).to receive(:readable?).and_return('420')
+    allow(File).to receive(:world_readable?).and_return('420')
+    allow(StacksFile).to receive(:new).and_call_original
   end
 
   describe 'pre-flight request' do
@@ -69,9 +70,28 @@ RSpec.describe 'IIIF auth v2 probe service' do
       get "/iiif/auth/v2/probe?id=#{stacks_uri_param}"
     end
 
-    context 'when filename without spaces' do
+    context 'when druid has a prefix' do
       it 'returns a success response' do
         expect(response).to have_http_status :ok
+        # Ensure the druid doesn't have a prefix:
+        expect(StacksFile).to have_received(:new).with(hash_including(id: "bb461xx1037"))
+
+        expect(response.parsed_body).to include({
+                                                  "@context" => "http://iiif.io/api/auth/2/context.json",
+                                                  "type" => "AuthProbeResult2",
+                                                  "status" => 200
+                                                })
+      end
+    end
+
+    context 'without a druid prefix' do
+      let(:stacks_uri) { "https://stacks-uat.stanford.edu/file/#{id}/#{URI.encode_uri_component(file_name)}" }
+
+      it 'returns a success response' do
+        expect(response).to have_http_status :ok
+        # Ensure the druid doesn't have a prefix:
+        expect(StacksFile).to have_received(:new).with(hash_including(id: "bb461xx1037"))
+
         expect(response.parsed_body).to include({
                                                   "@context" => "http://iiif.io/api/auth/2/context.json",
                                                   "type" => "AuthProbeResult2",
