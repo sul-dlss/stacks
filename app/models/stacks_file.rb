@@ -5,8 +5,11 @@
 # may be the file that backs a StacksImage or StacksMediaStream
 class StacksFile
   include ActiveModel::Model
+  include ActiveModel::Validations
 
   attr_accessor :id, :file_name, :current_ability, :download
+
+  validates :id, format: { with: /\A[b-df-hjkmnp-tv-z]{2}[0-9]{3}[b-df-hjkmnp-tv-z]{2}[0-9]{4}\z/i }
 
   # Some files exist but have unreadable permissions, treat these as non-existent
   def readable?
