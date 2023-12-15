@@ -68,8 +68,9 @@ module Iiif
           rescue URI::InvalidURIError
             raise ActionDispatch::Http::Parameters::ParseError
           end
-          druid, file_name = URI.decode_uri_component(obj.path.delete_prefix('/file/druid:')).split('/', 2)
-          { druid:, file_name: }
+          path_with_druid_and_filename = URI.decode_uri_component(obj.path.delete_prefix('/file/'))
+          druid, file_name = path_with_druid_and_filename.split('/', 2)
+          { druid: druid.delete_prefix('druid:'), file_name: }
         end
       end
     end

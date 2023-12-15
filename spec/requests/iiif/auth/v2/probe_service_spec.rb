@@ -3,6 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'IIIF auth v2 probe service' do
+  let(:probe_service) { Iiif::Auth::V2::ProbeServiceController }
   let(:id) { 'bb461xx1037' }
   let(:file_name) { 'SC0193_1982-013_b06_f01_1981-09-29.pdf' }
   let(:stacks_uri) { "https://stacks-uat.stanford.edu/file/druid:#{id}/#{URI.encode_uri_component(file_name)}" }
@@ -90,6 +91,19 @@ RSpec.describe 'IIIF auth v2 probe service' do
                                                   "type" => "AuthProbeResult2",
                                                   "status" => 200
                                                 })
+      end
+
+      context 'when uri without druid: prefix' do
+        let(:stacks_uri) { "https://stacks-uat.stanford.edu/file/#{id}/#{URI.encode_uri_component(file_name)}" }
+
+        it 'returns a success response' do
+          expect(response).to have_http_status :ok
+          expect(response.parsed_body).to include({
+                                                    "@context" => "http://iiif.io/api/auth/2/context.json",
+                                                    "type" => "AuthProbeResult2",
+                                                    "status" => 200
+                                                  })
+        end
       end
     end
   end
@@ -386,6 +400,22 @@ RSpec.describe 'IIIF auth v2 probe service' do
                                                 "heading" => { "en" => ["Content is embargoed until 2099-05-15"] },
                                                 "note" => { "en" => ["Access restricted"] }
                                               })
+    end
+  end
+
+  describe '#parse_uri' do
+    context 'when URI includes a druid: prefix' do
+      it 'parses the druid and filename correctly' do
+        expect(probe_service.new.send(:parse_uri, stacks_uri)).to eq({ druid: id, file_name: })
+      end
+    end
+
+    context 'when URI does not include a druid: prefix' do
+      let(:stacks_uri) { "https://stacks-uat.stanford.edu/file/#{id}/#{URI.encode_uri_component(file_name)}" }
+
+      it 'parses the druid and filename correctly' do
+        expect(probe_service.new.send(:parse_uri, stacks_uri)).to eq({ druid: id, file_name: })
+      end
     end
   end
   # rubocop:enable RSpec/AnyInstance
