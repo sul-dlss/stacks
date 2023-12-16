@@ -67,7 +67,7 @@ class IiifInfoService
   #    a array if there are two services or nil if there are none.
   def services
     services = []
-    services << AuthService.to_iiif(context) if current_image.stanford_restricted?
+    services << Iiif::V1::AuthService.to_iiif(context) if current_image.stanford_restricted?
     services << LocationService.to_iiif(context) if current_image.restricted_by_location?
     services << CdlService.to_iiif(context, current_image) if current_image.cdl_restricted?
     return nil if services.empty?
