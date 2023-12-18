@@ -42,6 +42,22 @@ RSpec.describe 'IIIF auth v2 probe service' do
     end
   end
 
+  context "when the passed in uri isn't formatted correctly" do
+    let(:id) { '111' }
+
+    before do
+      get "/iiif/auth/v2/probe?id=#{stacks_uri}"
+    end
+
+    it 'returns a success response' do
+      expect(response).to have_http_status :ok
+      expect(response.parsed_body).to eq("@context" => "http://iiif.io/api/auth/2/context.json",
+                                         "note" => { "en" => ["Id is invalid"] },
+                                         "status" => 400,
+                                         "type" => "AuthProbeResult2")
+    end
+  end
+
   context 'when the user has access to the resource because it is world accessible' do
     let(:public_json) do
       {
