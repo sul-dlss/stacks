@@ -23,7 +23,16 @@ module Iiif
           elsif !file.readable?
             json[:status] = 404
           elsif can? :access, file
-            json[:status] = 200
+            if file.streamable?
+              # See https://iiif.io/api/auth/2.0/#location
+              json[:status] = 302
+              json[:location] = {
+                id: "#{file.streaming_url}?stacks_token=#{current_user.token}",
+                type: "Video"
+              }
+            else
+              json[:status] = 200
+            end
           else
             json[:status] = 401
             json.merge!(add_detail(file))

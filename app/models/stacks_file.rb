@@ -51,4 +51,24 @@ class StacksFile
   end
   delegate :rights, :cocina_rights, :restricted_by_location?, :stanford_restricted?, :embargoed?,
            :embargo_release_date, :location, to: :stacks_rights
+
+  def streamable?
+    accepted_formats = [".mov", ".mp4", ".mpeg", ".m4a", ".mp3"]
+    accepted_formats.include? File.extname(file_name)
+  end
+
+  def streaming_url
+    "#{Settings.stream.url}/#{File.join(druid_parts[1..4])}/#{streaming_url_file_segment}/playlist.m3u8"
+  end
+
+  private
+
+  def streaming_url_file_segment
+    case File.extname(file_name)
+    when '.mp3'
+      "mp3:#{file_name}"
+    else
+      "mp4:#{file_name}"
+    end
+  end
 end
