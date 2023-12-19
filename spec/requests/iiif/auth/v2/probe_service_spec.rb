@@ -130,6 +130,49 @@ RSpec.describe 'IIIF auth v2 probe service' do
     end
   end
 
+  context 'when the user has access to the resource and it is streamable' do
+    let(:file_name) { 'SC0193_1982-013_b06_f01_1981-09-29.mp4' }
+
+    let(:public_json) do
+      {
+        'structural' => {
+          'contains' => [
+            {
+              'structural' => {
+                'contains' => [
+                  {
+                    'filename' => file_name,
+                    'access' => {
+                      'view' => 'world',
+                      'download' => 'world'
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    end
+    let(:stacks_uri) { "https://stacks-uat.stanford.edu/file/#{id}/#{URI.encode_uri_component(file_name)}" }
+
+    before do
+      stub_rights_xml(world_readable_rights_xml)
+      get "/iiif/auth/v2/probe?id=#{stacks_uri_param}"
+    end
+
+    it 'returns a success response' do
+      expect(response).to have_http_status :ok
+
+      expect(response.parsed_body).to include({
+                                                "@context" => "http://iiif.io/api/auth/2/context.json",
+                                                "type" => "AuthProbeResult2",
+                                                "status" => 302
+                                              })
+      expect(response.parsed_body.dig('location', 'id')).to start_with 'https://sul-mediaserver.stanford.edu/stacks/_definst_/bb/461/xx/1037/mp4:SC0193_1982-013_b06_f01_1981-09-29.mp4/playlist.m3u8?stacks_token='
+    end
+  end
+
   context 'when the requested file does not exist' do
     let(:public_json) { {} }
 

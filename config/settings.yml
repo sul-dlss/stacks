@@ -17,6 +17,7 @@ cdl:
 stream:
   # max_token_age is specified in seconds
   max_token_age: 45
+  url: https://sul-mediaserver.stanford.edu/stacks/_definst_
 
 # non-IIIF images
 legacy:
