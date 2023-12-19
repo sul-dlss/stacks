@@ -3,8 +3,6 @@
 ##
 # API for delivering files from stacks
 class FileController < ApplicationController
-  include MetricsConcern
-
   rescue_from ActionController::MissingFile do
     render plain: 'File not found', status: :not_found
   end
@@ -19,7 +17,13 @@ class FileController < ApplicationController
     response.headers['Content-Length'] = current_file.content_length
     response.headers.delete('X-Frame-Options')
 
-    track_download current_file.id, file: current_file.file_name
+    TrackDownloadJob.perform_later(
+      druid: current_file.id,
+      file: current_file.file_name,
+      user_agent: request.user_agent,
+      ip: request.remote_ip
+    )
+
     send_file current_file.path, disposition:
   end
   # rubocop:enable Metrics/AbcSize
