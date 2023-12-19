@@ -3,8 +3,6 @@
 ##
 # API for delivering IIIF-compatible images and image tiles
 class IiifController < ApplicationController
-  include MetricsConcern
-
   skip_forgery_protection
 
   before_action :add_iiif_profile_header
@@ -26,7 +24,12 @@ class IiifController < ApplicationController
 
     set_image_response_headers
 
-    track_download(identifier_params[:id], file: download_filename)
+    TrackDownloadJob.perform_later(
+      druid: identifier_params[:id],
+      file: download_filename,
+      user_agent: request.user_agent,
+      ip: request.remote_ip
+    )
 
     self.content_type = Mime::Type.lookup_by_extension(iiif_params[:format]).to_s
     self.status = projection.response.status

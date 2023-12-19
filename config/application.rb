@@ -43,9 +43,13 @@ module DigitalStacks
                              "172.20.21.192/28" # foa_lb_mgmt_prod_nets
                            ].map { |proxy| IPAddr.new(proxy) }
 
-
     # IIIF Auth v2 makes a request in one window to login and then opens a iframe to get a token.
     # In order for this second request to know who the user is, the session token must created with SameSite=None
     config.action_dispatch.cookies_same_site_protection = :none
+
+    # Use ActiveJob async adapter for all environments – our only jobs are
+    # for tracking metrics and they execute very quickly, so there's no need
+    # for a dedicated redis instance or similar
+    config.active_job.queue_adapter = :async
   end
 end

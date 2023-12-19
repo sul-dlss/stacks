@@ -2,7 +2,9 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Metrics tracking', type: :request do
+RSpec.describe 'Metrics tracking' do
+  include ActiveJob::TestHelper
+
   let(:xml) do
     <<-XML
     <publicObject id="druid:xf680rd3068" published="2019-12-19T17:58:11Z" publishVersion="dor-services/8.1.1">
@@ -83,6 +85,8 @@ RSpec.describe 'Metrics tracking', type: :request do
           headers: { 'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko)' },
           env: { 'REMOTE_ADDR' => '73.235.188.148' }
 
+      perform_enqueued_jobs
+
       expect(a_request(:post, 'https://example.com/ahoy/events').with do |req|
         expect(req.body).to include '"name":"download"'
         expect(req.body).to include '"druid":"xf680rd3068"'
@@ -97,6 +101,8 @@ RSpec.describe 'Metrics tracking', type: :request do
       get file_path('xf680rd3068', 'xf680rd3068_1.jp2'),
           headers: { 'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko)' },
           env: { 'REMOTE_ADDR' => '73.235.188.148' }
+
+      perform_enqueued_jobs
 
       expect(a_request(:post, 'https://example.com/ahoy/events').with do |req|
         expect(req.body).to include '"name":"download"'
@@ -150,6 +156,8 @@ RSpec.describe 'Metrics tracking', type: :request do
         }
       ), headers: { 'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko)' },
          env: { 'REMOTE_ADDR' => '73.235.188.148' }
+
+      perform_enqueued_jobs
 
       expect(a_request(:post, 'https://example.com/ahoy/events').with do |req|
         expect(req.body).to include '"name":"download"'

@@ -12,23 +12,41 @@ class MetricsService
     @base_url = base_url
   end
 
-  def track_event(data, original_request)
-    post_json('/ahoy/events', data, original_request)
+  def track_event(name, properties, user_agent:, ip:)
+    headers = {
+      'User-Agent': user_agent,
+      'X-Forwarded-For': ip
+    }
+
+    post_json('/ahoy/events', event_data(name, properties), headers)
   end
 
   private
 
-  def post_json(url, data, original_request)
+  # Schema: https://github.com/ankane/ahoy#events-1
+  # NOTE: it's possible to batch events this way.
+  def event_data(name, properties)
+    {
+      events: [
+        {
+          id: SecureRandom.uuid,
+          time: Time.current,
+          name:,
+          properties:
+        }
+      ]
+    }
+  end
+
+  def default_headers
+    { 'Content-Type': 'application/json' }
+  end
+
+  def post_json(url, data, headers)
     connection.post(url) do |req|
-      # Pass the original browser info and IP along to the metrics API
-      req.headers['User-Agent'] = original_request.user_agent
-      req.headers['X-Forwarded-For'] = original_request.remote_ip
-      req.headers['Content-Type'] = 'application/json'
+      req.headers = default_headers.merge(headers)
       req.body = data.to_json
     end
-  rescue Faraday::ConnectionFailed => e
-    Rails.logger.error("Error sending metrics: #{e}")
-    nil
   end
 
   def connection
