@@ -69,7 +69,7 @@ class MediaController < ApplicationController
   end
 
   def stacks_media_stream_params
-    allowed_params.slice(:format, :id, :file_name)
+    allowed_params.slice(:id, :file_name)
   end
 
   def id

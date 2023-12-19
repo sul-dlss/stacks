@@ -3,7 +3,11 @@
 require 'rails_helper'
 
 RSpec.describe StacksMediaStream do
-  it 'has a format accessor' do
-    expect(StacksMediaStream.new(format: 'abc').format).to eq 'abc'
+  let(:instance) { StacksMediaStream.new(id: 'bc123gg2323') }
+
+  describe '#id' do
+    subject { instance.id }
+
+    it { is_expected.to eq 'bc123gg2323' }
   end
 end
