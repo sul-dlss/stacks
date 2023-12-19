@@ -10,7 +10,7 @@ class StacksMediaStream
     @file ||= StacksFile.new(id:, file_name:)
   end
 
-  attr_accessor :format, :id, :file_name
+  attr_accessor :id, :file_name
 
   delegate :etag, :mtime, to: :file
 
