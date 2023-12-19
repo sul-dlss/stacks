@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe MediaController do
   let(:video) { StacksMediaStream.new(id: 'bb582xs1304', file_name: 'bb582xs1304_sl', format: 'mp4') }
-  before { stub_rights_xml(world_readable_rights_xml) }
+  before { stub_rights_xml(stanford_restricted_rights_xml) }
 
   describe '#verify_token' do
     let(:id) { 'ab123cd4567' }
@@ -69,6 +69,16 @@ RSpec.describe MediaController do
         get :verify_token, params: valid_token
         expect(response.body).to eq 'invalid token'
         expect(response.status).to eq 403
+      end
+
+      context 'with a publicly accessible file' do
+        before { stub_rights_xml(world_readable_rights_xml) }
+
+        it 'allows a missing token' do
+          get :verify_token, params: valid_token.merge(stacks_token: '')
+          expect(response.body).to eq 'no token needed'
+          expect(response.status).to eq 200
+        end
       end
     end
   end
