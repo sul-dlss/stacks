@@ -24,25 +24,25 @@ RSpec.describe StacksMediaToken do
 
   describe '#token_valid?' do
     it 'returns true for a valid token' do
-      expect(subject.send(:token_valid?, id, file_name, user_ip)).to eq true
+      expect(subject.send(:token_valid?, id, file_name, user_ip)).to be true
     end
 
     it 'returns false if the ids do not match' do
-      expect(subject.send(:token_valid?, 'zy098xv7654', file_name, user_ip)).to eq false
+      expect(subject.send(:token_valid?, 'zy098xv7654', file_name, user_ip)).to be false
     end
 
     it 'returns false if the file names do not match' do
-      expect(subject.send(:token_valid?, id, 'fed', user_ip)).to eq false
+      expect(subject.send(:token_valid?, id, 'fed', user_ip)).to be false
     end
 
     it 'returns false if the IP addresses do not match' do
-      expect(subject.send(:token_valid?, id, file_name, '192.168.1.101')).to eq false
+      expect(subject.send(:token_valid?, id, file_name, '192.168.1.101')).to be false
     end
 
     it 'returns false if the token is too old' do
       expired_timestamp = (StacksMediaToken.max_token_age + 2.seconds).ago
       allow(subject).to receive(:timestamp).and_return(expired_timestamp)
-      expect(subject.send(:token_valid?, id, file_name, user_ip)).to eq false
+      expect(subject.send(:token_valid?, id, file_name, user_ip)).to be false
     end
   end
 
@@ -50,31 +50,31 @@ RSpec.describe StacksMediaToken do
     let(:enc_token_str) { subject.to_encrypted_string }
 
     it 'returns true for a valid token that matches the specified values' do
-      expect(StacksMediaToken.verify_encrypted_token?(enc_token_str, id, file_name, user_ip)).to eq true
+      expect(StacksMediaToken.verify_encrypted_token?(enc_token_str, id, file_name, user_ip)).to be true
     end
 
     it 'returns false if the signature is invalid' do
       invalid_sig_err = ActiveSupport::MessageVerifier::InvalidSignature
       allow(StacksMediaToken).to receive(:create_from_encrypted_string).with(enc_token_str).and_raise(invalid_sig_err)
-      expect(StacksMediaToken.verify_encrypted_token?(enc_token_str, id, file_name, user_ip)).to eq false
+      expect(StacksMediaToken.verify_encrypted_token?(enc_token_str, id, file_name, user_ip)).to be false
     end
 
     it 'returns false if the encrypted message is invalid' do
       invalid_msg_err = ActiveSupport::MessageEncryptor::InvalidMessage
       allow(StacksMediaToken).to receive(:create_from_encrypted_string).with(enc_token_str).and_raise(invalid_msg_err)
-      expect(StacksMediaToken.verify_encrypted_token?(enc_token_str, id, file_name, user_ip)).to eq false
+      expect(StacksMediaToken.verify_encrypted_token?(enc_token_str, id, file_name, user_ip)).to be false
     end
 
     it 'returns false on a token that has been tampered with' do
       invalid_token = enc_token_str + 'invalid'
-      expect(StacksMediaToken.verify_encrypted_token?(invalid_token, id, file_name, user_ip)).to eq false
+      expect(StacksMediaToken.verify_encrypted_token?(invalid_token, id, file_name, user_ip)).to be false
     end
 
     it 'returns false if token_valid? returns false' do
       mock_token = double(StacksMediaToken)
       allow(StacksMediaToken).to receive(:create_from_encrypted_string).with(enc_token_str).and_return(mock_token)
       allow(mock_token).to receive(:token_valid?).with(id, file_name, user_ip).and_return(false)
-      expect(StacksMediaToken.verify_encrypted_token?(enc_token_str, id, file_name, user_ip)).to eq false
+      expect(StacksMediaToken.verify_encrypted_token?(enc_token_str, id, file_name, user_ip)).to be false
     end
   end
 

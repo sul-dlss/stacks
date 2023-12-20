@@ -41,7 +41,7 @@ RSpec.describe 'file routes' do
     end
 
     it 'ü must be url escaped' do
-      skip('problem writing test:  ü decodes to \xC3\xBC')
+      skip('problem writing test: ü decodes to \xC3\xBC')
       filename = "fü.pdf"
       escaped_filename = ERB::Util.url_encode(filename) # becomes %C3%BC
       expect(get: "/file/oo000oo0000/#{escaped_filename}").to route_to(
@@ -49,7 +49,7 @@ RSpec.describe 'file routes' do
     end
 
     it '%20 in actual name (from ck155rf0207)' do
-      skip('problem writing test:  %20 becomes space, over-aggressive param decoding?')
+      skip('problem writing test: %20 becomes space, over-aggressive param decoding?')
       filename = 'ARSCJ%202008.foo.bar.pdf'
       expect(get: "/file/oo000oo0000/#{ERB::Util.url_encode(filename)}").to route_to(
         'file#show', id: 'oo000oo0000', file_name: filename)

@@ -110,8 +110,7 @@ RSpec.describe IiifInfoService do
       let(:auth_service) { image_info['service'] }
 
       before do
-        allow(image).to receive(:stanford_restricted?).and_return(true)
-        allow(image).to receive(:cdl_restricted?).and_return(false)
+        allow(image).to receive_messages(stanford_restricted?: true, cdl_restricted?: false)
       end
 
       it 'the tile height/width is 256' do
@@ -132,8 +131,8 @@ RSpec.describe IiifInfoService do
         expect(auth_service['failureHeader']).to eq 'Unable to authenticate'
         expect(auth_service['failureDescription']).to eq 'The authentication service cannot be reached.'
         expect(auth_service['header']).to eq 'Stanford-affiliated? Log in to view'
-        expect(auth_service['description']).to eq 'Stanford users can click Log'\
-          ' in below to access all features.'
+        expect(auth_service['description']).to eq 'Stanford users can click Log ' \
+                                                  'in below to access all features.'
       end
 
       it 'advertises a logout service' do
@@ -226,17 +225,13 @@ RSpec.describe IiifInfoService do
       before do
         allow(Purl).to receive(:public_json).and_return(public_json)
         stub_rights_xml(world_readable_rights_xml)
-        allow(image).to receive(:stanford_restricted?).and_return(true)
-        allow(image).to receive(:restricted_by_location?).and_return(true)
+        allow(image).to receive_messages(stanford_restricted?: true, restricted_by_location?: true)
       end
 
       it 'advertises support for both login and external authentication' do
         expect(image_info['service']).to be_present
         expect(image_info['service'].length).to eq 2
-        expect(image_info['service'].pluck('profile')).to match_array [
-          'http://iiif.io/api/auth/1/login',
-          'http://iiif.io/api/auth/1/external'
-        ]
+        expect(image_info['service'].pluck('profile')).to contain_exactly('http://iiif.io/api/auth/1/login', 'http://iiif.io/api/auth/1/external')
       end
     end
 

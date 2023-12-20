@@ -2,10 +2,9 @@
 
 require 'rails_helper'
 
-RSpec.describe "File requests", type: :request do
+RSpec.describe "File requests" do
   before do
-    allow(Purl).to receive(:public_xml).and_return('<publicObject />')
-    allow(Purl).to receive(:public_json).and_return(public_json)
+    allow(Purl).to receive_messages(public_xml: '<publicObject />', public_json:)
   end
 
   let(:public_json) do

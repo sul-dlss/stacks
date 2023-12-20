@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'CDL routes', type: :routing do
+RSpec.describe 'CDL routes' do
   it 'routes to #show' do
     expect(get: '/cdl/druid').to route_to('cdl#show', id: 'druid')
   end

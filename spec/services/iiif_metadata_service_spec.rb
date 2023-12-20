@@ -10,11 +10,11 @@ RSpec.describe IiifMetadataService do
   context "When a valid JSON response is received" do
     let(:json) do
       '{"@id":"https://sul-imageserver-uat.stanford.edu/cantaloupe/iiif/2/' \
-      'nr%2F349%2Fct%2F7889%2Fnr349ct7889_00_0001.jp2",' \
-      '"width":3832,' \
-      '"height":2552,' \
-      '"tiles":[{"width":1000,"height":1000,"scaleFactors":[1,2,4,8]}],' \
-      '"sizes":[{"width":1916,"height":1276}]}'
+        'nr%2F349%2Fct%2F7889%2Fnr349ct7889_00_0001.jp2",' \
+        '"width":3832,' \
+        '"height":2552,' \
+        '"tiles":[{"width":1000,"height":1000,"scaleFactors":[1,2,4,8]}],' \
+        '"sizes":[{"width":1916,"height":1276}]}'
     end
     let(:response) { instance_double(HTTP::Response, code: 200, body: json) }
 

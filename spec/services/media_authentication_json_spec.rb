@@ -67,8 +67,7 @@ RSpec.describe MediaAuthenticationJson do
 
   describe 'Stanford Restricted OR Location Restricted Media' do
     before do
-      allow(media).to receive(:restricted_by_location?).and_return(true)
-      allow(media).to receive(:stanford_restricted?).and_return(true)
+      allow(media).to receive_messages(restricted_by_location?: true, stanford_restricted?: true)
     end
 
     it 'returns JSON that indicates that the item is stanford restricted' do

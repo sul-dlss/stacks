@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe CdlController do
   let(:user) { User.new id: 'username', jwt_tokens: [token] }
   let(:token) { JWT.encode(payload, Settings.cdl.jwt.secret, Settings.cdl.jwt.algorithm) }
-  let(:payload) { { aud: 'druid', sub: 'username', exp: (Time.zone.now + 1.day).to_i, barcode: '36105110268922' } }
+  let(:payload) { { aud: 'druid', sub: 'username', exp: 1.day.from_now.to_i, barcode: '36105110268922' } }
 
   before do
     allow(controller).to receive(:current_user).and_return(user)
@@ -21,8 +21,8 @@ RSpec.describe CdlController do
       it 'includes a url to look up availability' do
         get :show, params: { id: 'other-druid' }
 
-        expect(response.status).to eq 200
-        expect(JSON.parse(response.body).with_indifferent_access).to include(
+        expect(response).to have_http_status :ok
+        expect(response.parsed_body.with_indifferent_access).to include(
           availability_url: match(%(cdl/availability/36105110268922))
         )
       end
@@ -31,8 +31,8 @@ RSpec.describe CdlController do
     it 'renders some information from the token' do
       get :show, params: { id: 'druid' }
 
-      expect(response.status).to eq 200
-      expect(JSON.parse(response.body).with_indifferent_access).to include(
+      expect(response).to have_http_status :ok
+      expect(response.parsed_body.with_indifferent_access).to include(
         payload: hash_including(sub: 'username', aud: 'druid', exp: a_kind_of(Numeric))
       )
     end
@@ -40,7 +40,7 @@ RSpec.describe CdlController do
     it 'includes a url to look up availability' do
       get :show, params: { id: 'druid' }
 
-      expect(JSON.parse(response.body).with_indifferent_access).to include(
+      expect(response.parsed_body.with_indifferent_access).to include(
         availability_url: match(%(cdl/availability/36105110268922))
       )
     end
@@ -90,7 +90,7 @@ RSpec.describe CdlController do
         allow(Purl).to receive(:barcode).with('other-druid').and_return(nil)
         get :create, params: { id: 'other-druid' }
 
-        expect(response.status).to eq 400
+        expect(response).to have_http_status :bad_request
       end
     end
   end

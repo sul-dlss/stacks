@@ -18,14 +18,14 @@ RSpec.describe MediaController do
         expect(controller).to receive(:token_valid?).with(encrypted_token, id, file_name, ip_addr).and_return true
         get :verify_token, params: { stacks_token: encrypted_token, id:, file_name:, user_ip: ip_addr }
         expect(response.body).to eq 'valid token'
-        expect(response.status).to eq 200
+        expect(response).to have_http_status :ok
       end
 
       it 'rejects a token when token_valid? returns false' do
         expect(controller).to receive(:token_valid?).with(encrypted_token, id, file_name, ip_addr).and_return false
         get :verify_token, params: { stacks_token: encrypted_token, id:, file_name:, user_ip: ip_addr }
         expect(response.body).to eq 'invalid token'
-        expect(response.status).to eq 403
+        expect(response).to have_http_status :forbidden
       end
     end
 
@@ -36,31 +36,31 @@ RSpec.describe MediaController do
       it 'verifies a valid token' do
         get :verify_token, params: valid_token
         expect(response.body).to eq 'valid token'
-        expect(response.status).to eq 200
+        expect(response).to have_http_status :ok
       end
 
       it 'rejects a token with a corrupted encrypted token string' do
         get :verify_token, params: valid_token.merge(stacks_token: "#{encrypted_token}aaaa")
         expect(response.body).to eq 'invalid token'
-        expect(response.status).to eq 403
+        expect(response).to have_http_status :forbidden
       end
 
       it 'rejects a token for the wrong id' do
         get :verify_token, params: valid_token.merge(id: 'zy098xv7654')
         expect(response.body).to eq 'invalid token'
-        expect(response.status).to eq 403
+        expect(response).to have_http_status :forbidden
       end
 
       it 'rejects a token for the wrong file name' do
         get :verify_token, params: valid_token.merge(file_name: 'some_other_file.mp3')
         expect(response.body).to eq 'invalid token'
-        expect(response.status).to eq 403
+        expect(response).to have_http_status :forbidden
       end
 
       it 'rejects a token from the wrong IP address' do
         get :verify_token, params: valid_token.merge(user_ip: '192.168.1.101')
         expect(response.body).to eq 'invalid token'
-        expect(response.status).to eq 403
+        expect(response).to have_http_status :forbidden
       end
 
       it 'rejects a token that is too old' do
@@ -68,7 +68,7 @@ RSpec.describe MediaController do
         allow_any_instance_of(StacksMediaToken).to receive(:timestamp).and_return(expired_timestamp)
         get :verify_token, params: valid_token
         expect(response.body).to eq 'invalid token'
-        expect(response.status).to eq 403
+        expect(response).to have_http_status :forbidden
       end
     end
   end
@@ -77,7 +77,7 @@ RSpec.describe MediaController do
     it 'should call through to StacksMediaToken.verify_encrypted_token? and return the result' do
       expect(StacksMediaToken).to receive(:verify_encrypted_token?)
         .with('stacks_token', 'id', 'file_name', 'ip_addr').and_return(true)
-      expect(controller.send(:token_valid?, 'stacks_token', 'id', 'file_name', 'ip_addr')).to eq true
+      expect(controller.send(:token_valid?, 'stacks_token', 'id', 'file_name', 'ip_addr')).to be true
     end
   end
 
@@ -89,14 +89,13 @@ RSpec.describe MediaController do
       test_hash = { foo: :bar }
       expect(controller).to receive(:hash_for_auth_check).and_return(test_hash)
       get :auth_check, params: { id:, file_name:, format: :js }
-      body = JSON.parse(response.body)
+      body = response.parsed_body
       expect(body).to eq('foo' => 'bar')
     end
 
     context 'success' do
       let(:token) { instance_double(StacksMediaToken, to_encrypted_string: 'sekret-token') }
       before do
-        allow(controller).to receive(:can?).and_return(true)
         allow(StacksMediaToken).to receive(:new).and_return(token)
 
         next unless Settings.features.cocina # below mocking is only needed if cocina is being parsed instead of legacy rights XML
@@ -106,19 +105,19 @@ RSpec.describe MediaController do
         # tested elsewhere. This approach is a bit more readable, and less brittle since it doesn't break the StacksMediaStream abstraction.
         stacks_media_stream = instance_double(StacksMediaStream, stanford_restricted?: false, restricted_by_location?: false,
                                                                  embargoed?: false, embargo_release_date: nil)
-        allow(controller).to receive(:current_media).and_return(stacks_media_stream)
+        allow(controller).to receive_messages(can?: true, current_media: stacks_media_stream)
       end
 
       it 'returns json that indicates a successful auth check (including token)' do
         get :auth_check, params: { id:, file_name:, format: :js }
-        body = JSON.parse(response.body)
+        body = response.parsed_body
         expect(body['status']).to eq 'success'
         expect(body['token']).to eq 'sekret-token'
       end
 
       it 'returns info about applicable access restrictions' do
         get :auth_check, params: { id:, file_name:, format: :js }
-        body = JSON.parse(response.body)
+        body = response.parsed_body
         expect(body['access_restrictions']).to eq({
                                                     'stanford_restricted' => false,
                                                     'restricted_by_location' => false,

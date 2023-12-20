@@ -54,7 +54,7 @@ RSpec.describe 'IIIF auth v1 tokens' do
         let(:user) { User.new id: 'xyz', webauth_user: true }
 
         it 'returns the token response' do
-          expect(response.status).to eq 200
+          expect(response).to have_http_status :ok
 
           data = response.parsed_body
           expect(data['accessToken']).not_to be_blank
@@ -69,7 +69,7 @@ RSpec.describe 'IIIF auth v1 tokens' do
         end
 
         it 'returns the error response' do
-          expect(response.status).to eq 401
+          expect(response).to have_http_status :unauthorized
 
           expect(response.parsed_body['error']).to eq 'missingCredentials'
         end
@@ -81,7 +81,7 @@ RSpec.describe 'IIIF auth v1 tokens' do
     it 'returns an error response' do
       get '/image/iiif/token/whatever'
 
-      expect(response.status).to eq 401
+      expect(response).to have_http_status :unauthorized
 
       expect(response.parsed_body['error']).to eq 'missingCredentials'
     end
@@ -98,7 +98,7 @@ RSpec.describe 'IIIF auth v1 tokens' do
 
       let(:jwt_tokens) do
         [
-          { jti: 'a', aud: 'whatever', sub: 'xyz', exp: (Time.zone.now + 1.hour).to_i }
+          { jti: 'a', aud: 'whatever', sub: 'xyz', exp: 1.hour.from_now.to_i }
         ]
       end
 

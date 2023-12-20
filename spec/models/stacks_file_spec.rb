@@ -42,7 +42,7 @@ RSpec.describe StacksFile do
     context 'with an unreadable file' do
       let(:permissions) { nil }
 
-      it { is_expected.to eq nil }
+      it { is_expected.to be_nil }
     end
   end
 end

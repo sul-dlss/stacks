@@ -299,14 +299,14 @@ RSpec.describe 'IIIF auth v2 probe service' do
       }
     end
     let(:rights_xml) do
-      <<-EOF.strip_heredoc
-      <rightsMetadata>
-          <access type="read">
-            <machine>
-              <location>#{xml_location}</location>
-            </machine>
-          </access>
-        </rightsMetadata>
+      <<~EOF
+        <rightsMetadata>
+            <access type="read">
+              <machine>
+                <location>#{xml_location}</location>
+              </machine>
+            </access>
+          </rightsMetadata>
       EOF
     end
 
@@ -380,15 +380,15 @@ RSpec.describe 'IIIF auth v2 probe service' do
       }
     end
     let(:rights_xml) do
-      <<-EOF.strip_heredoc
-      <rightsMetadata>
-          <access type="read">
-            <machine>
-              <embargoReleaseDate>2099-05-15</embargoReleaseDate>
-              <group>stanford</group>
-            </machine>
-          </access>
-        </rightsMetadata>
+      <<~EOF
+        <rightsMetadata>
+            <access type="read">
+              <machine>
+                <embargoReleaseDate>2099-05-15</embargoReleaseDate>
+                <group>stanford</group>
+              </machine>
+            </access>
+          </rightsMetadata>
       EOF
     end
 
@@ -440,14 +440,14 @@ RSpec.describe 'IIIF auth v2 probe service' do
       }
     end
     let(:rights_xml) do
-      <<-EOF.strip_heredoc
-      <rightsMetadata>
-          <access type="read">
-            <machine>
-              <embargoReleaseDate>2099-05-15</embargoReleaseDate>
-            </machine>
-          </access>
-        </rightsMetadata>
+      <<~EOF
+        <rightsMetadata>
+            <access type="read">
+              <machine>
+                <embargoReleaseDate>2099-05-15</embargoReleaseDate>
+              </machine>
+            </access>
+          </rightsMetadata>
       EOF
     end
 

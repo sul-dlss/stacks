@@ -47,7 +47,7 @@ RSpec.describe User do
 
     let(:jwt_tokens) do
       [
-        { jti: 'a', sub: 'xyz', exp: (Time.zone.now + 1.hour).to_i }
+        { jti: 'a', sub: 'xyz', exp: 1.hour.from_now.to_i }
       ]
     end
 
@@ -67,7 +67,7 @@ RSpec.describe User do
       context 'with an expired token' do
         let(:jwt_tokens) do
           [
-            { jti: 'a', sub: 'xyz', exp: (Time.zone.now - 1.hour).to_i }
+            { jti: 'a', sub: 'xyz', exp: 1.hour.ago.to_i }
           ]
         end
 
@@ -79,7 +79,7 @@ RSpec.describe User do
       context 'with a token for another user' do
         let(:jwt_tokens) do
           [
-            { jti: 'a', sub: 'abc', exp: (Time.zone.now + 1.hour).to_i }
+            { jti: 'a', sub: 'abc', exp: 1.hour.from_now.to_i }
           ]
         end
 

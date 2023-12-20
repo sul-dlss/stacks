@@ -86,7 +86,7 @@ RSpec.describe Purl do
     it 'gets all the files for a resource' do
       actual = described_class.files('abc').map { |file| "#{file.id}/#{file.file_name}" }
 
-      expect(actual).to match_array ['abc/26855.jp2', 'abc/123.jp2']
+      expect(actual).to contain_exactly('abc/26855.jp2', 'abc/123.jp2')
     end
   end
 

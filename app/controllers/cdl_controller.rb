@@ -17,7 +17,7 @@ class CdlController < ApplicationController
     render json: {
       payload: existing_payload&.except(:token),
       availability_url: ("#{Settings.cdl.url}/availability/#{barcode}" if barcode)
-    }.reject { |_k, v| v.blank? }
+    }.compact_blank
   end
 
   def show_options
