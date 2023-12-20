@@ -8,14 +8,21 @@ class ApplicationController < ActionController::Base
   rescue_from Purl::Exception do
     head :not_found
   end
-  before_action :set_origin_header
+  before_action :set_cors_headers
 
   protect_from_forgery with: :null_session
 
   private
 
-  def set_origin_header
-    response.headers['Access-Control-Allow-Origin'] = '*'
+  def set_cors_headers
+    origin = request.origin
+    permitted_origins = [Settings.cors.allow_origin_url]
+    if permitted_origins.include?(origin)
+      response.headers['Access-Control-Allow-Origin'] = origin
+      response.headers['Access-Control-Allow-Credentials'] = true
+    else
+      response.headers['Access-Control-Allow-Origin'] = '*'
+    end
   end
 
   def rescue_can_can(exception)
