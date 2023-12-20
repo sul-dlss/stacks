@@ -42,5 +42,10 @@ module DigitalStacks
                              "172.20.21.208/28", # foa_lb_mgmt_dev_nets
                              "172.20.21.192/28" # foa_lb_mgmt_prod_nets
                            ].map { |proxy| IPAddr.new(proxy) }
+
+
+    # IIIF Auth v2 makes a request in one window to login and then opens a iframe to get a token.
+    # In order for this second request to know who the user is, the session token must created with SameSite=None
+    config.action_dispatch.cookies_same_site_protection = :none
   end
 end
