@@ -32,6 +32,12 @@ class MediaController < ApplicationController
 
   private
 
+  # TODO: We already globally allow any origin, see
+  # https://github.com/sul-dlss/stacks/blob/main/app/controllers/application_controller.rb#L11-L19
+  # So this method, the `before_action` and the `Settings.cors.allow_origin_url` setting may not
+  # be needed.  We may just need to add the `['Access-Control-Allow-Credentials']` header into
+  # the existing application controller method.
+  #
   # In order for media authentication to work, the wowza server must have
   # Access-Control-Allow-Credentials header set (which is set by default when CORS is enabled in wowza),
   # which means that Access-Control-Allow-Origin cannot be set to * (wowza default) and instead
