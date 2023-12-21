@@ -21,7 +21,7 @@ module Iiif
                          "@context" => "http://iiif.io/api/auth/2/context.json",
                          type: 'AuthAccessToken2',
                          accessToken: token,
-                         expiresIn: 3600,
+                         expiresIn: 3600, # The number of seconds until the token ceases to be valid. (3600 = 1 hr)
                          messageId: params[:messageId]
                        }
                      else
