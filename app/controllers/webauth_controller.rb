@@ -10,7 +10,7 @@ class WebauthController < ApplicationController
   before_action :write_auth_session_info, except: [:logout]
 
   def login
-    flash[:success] = 'You have been successfully logged in.'
+    flash.now[:success] = 'You have been successfully logged in.'
 
     respond_to do |format|
       format.html { render html: '<html><script>window.close();</script></html>'.html_safe }

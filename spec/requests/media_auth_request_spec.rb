@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe "Authentication for Media requests", type: :request do
+RSpec.describe "Authentication for Media requests" do
   let(:druid) { 'bb582xs1304' }
 
   let(:format) { 'mp4' }
@@ -15,14 +15,14 @@ RSpec.describe "Authentication for Media requests", type: :request do
   end
 
   let(:rights_xml) do
-    <<-EOF.strip_heredoc
-    <rightsMetadata>
-        <access type="read">
-          <machine>
-            <group>Stanford</group>
-          </machine>
-        </access>
-      </rightsMetadata>
+    <<~EOF
+      <rightsMetadata>
+          <access type="read">
+            <machine>
+              <group>Stanford</group>
+            </machine>
+          </access>
+        </rightsMetadata>
     EOF
   end
 
@@ -71,7 +71,7 @@ RSpec.describe "Authentication for Media requests", type: :request do
 
     it 'indicates that the object is stanford restricted' do
       get "/media/#{druid}/file.#{format}/auth_check"
-      expect(response.parsed_body['access_restrictions']['stanford_restricted']).to eq true
+      expect(response.parsed_body['access_restrictions']['stanford_restricted']).to be true
     end
   end
 
@@ -87,14 +87,14 @@ RSpec.describe "Authentication for Media requests", type: :request do
 
     context 'location restricted' do
       let(:rights_xml) do
-        <<-EOF.strip_heredoc
-        <rightsMetadata>
-            <access type="read">
-              <machine>
-                <location>spec</location>
-              </machine>
-            </access>
-          </rightsMetadata>
+        <<~EOF
+          <rightsMetadata>
+              <access type="read">
+                <machine>
+                  <location>spec</location>
+                </machine>
+              </access>
+            </rightsMetadata>
         EOF
       end
       let(:public_json) do
@@ -132,15 +132,15 @@ RSpec.describe "Authentication for Media requests", type: :request do
 
     context 'when the file is embargoed or stanford restricted' do
       let(:rights_xml) do
-        <<-EOF.strip_heredoc
-        <rightsMetadata>
-            <access type="read">
-              <machine>
-                <embargoReleaseDate>2099-05-15</embargoReleaseDate>
-                <group>stanford</group>
-              </machine>
-            </access>
-          </rightsMetadata>
+        <<~EOF
+          <rightsMetadata>
+              <access type="read">
+                <machine>
+                  <embargoReleaseDate>2099-05-15</embargoReleaseDate>
+                  <group>stanford</group>
+                </machine>
+              </access>
+            </rightsMetadata>
         EOF
       end
 
@@ -183,14 +183,14 @@ RSpec.describe "Authentication for Media requests", type: :request do
 
     context 'when the file is embargoed' do
       let(:rights_xml) do
-        <<-EOF.strip_heredoc
-        <rightsMetadata>
-            <access type="read">
-              <machine>
-                <embargoReleaseDate>2099-05-15</embargoReleaseDate>
-              </machine>
-            </access>
-          </rightsMetadata>
+        <<~EOF
+          <rightsMetadata>
+              <access type="read">
+                <machine>
+                  <embargoReleaseDate>2099-05-15</embargoReleaseDate>
+                </machine>
+              </access>
+            </rightsMetadata>
         EOF
       end
       let(:public_json) do

@@ -48,11 +48,34 @@ RSpec.describe 'Ability', type: :model, unless: Settings.features.cocina do
 
     context 'with a world-readable file' do
       let(:rights_xml) do
-        <<-EOF.strip_heredoc
-        <rightsMetadata>
+        <<~EOF
+          <rightsMetadata>
+              <access type="read">
+                <machine>
+                  <world/>
+                </machine>
+              </access>
+            </rightsMetadata>
+        EOF
+      end
+      it { is_expected.to be_able_to(:download, file) }
+      it { is_expected.to be_able_to(:download, image) }
+      it { is_expected.to be_able_to(:read, tile) }
+      it { is_expected.to be_able_to(:stream, media) }
+      it { is_expected.to be_able_to(:access, file) }
+      it { is_expected.to be_able_to(:read_metadata, image) }
+      it { is_expected.to be_able_to(:read, thumbnail) }
+      it { is_expected.to be_able_to(:read, square_thumbnail) }
+      it { is_expected.to be_able_to(:read, big_image) }
+    end
+
+    context 'with a stanford-only file' do
+      let(:rights_xml) do
+        <<~EOF
+          <rightsMetadata>
             <access type="read">
               <machine>
-                <world/>
+                <group>Stanford</group>
               </machine>
             </access>
           </rightsMetadata>
@@ -69,39 +92,16 @@ RSpec.describe 'Ability', type: :model, unless: Settings.features.cocina do
       it { is_expected.to be_able_to(:read, big_image) }
     end
 
-    context 'with a stanford-only file' do
-      let(:rights_xml) do
-        <<-EOF.strip_heredoc
-        <rightsMetadata>
-          <access type="read">
-            <machine>
-              <group>Stanford</group>
-            </machine>
-          </access>
-        </rightsMetadata>
-        EOF
-      end
-      it { is_expected.to be_able_to(:download, file) }
-      it { is_expected.to be_able_to(:download, image) }
-      it { is_expected.to be_able_to(:read, tile) }
-      it { is_expected.to be_able_to(:stream, media) }
-      it { is_expected.to be_able_to(:access, file) }
-      it { is_expected.to be_able_to(:read_metadata, image) }
-      it { is_expected.to be_able_to(:read, thumbnail) }
-      it { is_expected.to be_able_to(:read, square_thumbnail) }
-      it { is_expected.to be_able_to(:read, big_image) }
-    end
-
     context 'with read rights but not download' do
       let(:rights_xml) do
-        <<-EOF.strip_heredoc
-        <rightsMetadata>
-          <access type="read">
-            <machine>
-              <group rule="no-download">Stanford</group>
-            </machine>
-          </access>
-        </rightsMetadata>
+        <<~EOF
+          <rightsMetadata>
+            <access type="read">
+              <machine>
+                <group rule="no-download">Stanford</group>
+              </machine>
+            </access>
+          </rightsMetadata>
         EOF
       end
       it { is_expected.not_to be_able_to(:download, file) }
@@ -118,14 +118,14 @@ RSpec.describe 'Ability', type: :model, unless: Settings.features.cocina do
 
     context 'with a file with no read access' do
       let(:rights_xml) do
-        <<-EOF.strip_heredoc
-        <rightsMetadata>
-          <access type="read">
-            <machine>
-              <none/>
-            </machine>
-          </access>
-        </rightsMetadata>
+        <<~EOF
+          <rightsMetadata>
+            <access type="read">
+              <machine>
+                <none/>
+              </machine>
+            </access>
+          </rightsMetadata>
         EOF
       end
       it { is_expected.not_to be_able_to(:download, file) }
@@ -144,14 +144,14 @@ RSpec.describe 'Ability', type: :model, unless: Settings.features.cocina do
 
     context 'with a world-readable file' do
       let(:rights_xml) do
-        <<-EOF.strip_heredoc
-        <rightsMetadata>
-            <access type="read">
-              <machine>
-                <world/>
-              </machine>
-            </access>
-          </rightsMetadata>
+        <<~EOF
+          <rightsMetadata>
+              <access type="read">
+                <machine>
+                  <world/>
+                </machine>
+              </access>
+            </rightsMetadata>
         EOF
       end
       it { is_expected.to be_able_to(:download, file) }
@@ -166,14 +166,14 @@ RSpec.describe 'Ability', type: :model, unless: Settings.features.cocina do
 
     context 'with a stanford-only file' do
       let(:rights_xml) do
-        <<-EOF.strip_heredoc
-        <rightsMetadata>
-          <access type="read">
-            <machine>
-              <group>Stanford</group>
-            </machine>
-          </access>
-        </rightsMetadata>
+        <<~EOF
+          <rightsMetadata>
+            <access type="read">
+              <machine>
+                <group>Stanford</group>
+              </machine>
+            </access>
+          </rightsMetadata>
         EOF
       end
       it { is_expected.not_to be_able_to(:download, file) }
@@ -188,14 +188,14 @@ RSpec.describe 'Ability', type: :model, unless: Settings.features.cocina do
 
     context 'with a stanford-only file that is not the thumbnail' do
       let(:rights_xml) do
-        <<-EOF.strip_heredoc
-        <rightsMetadata>
-          <access type="read">
-            <machine>
-              <group>Stanford</group>
-            </machine>
-          </access>
-        </rightsMetadata>
+        <<~EOF
+          <rightsMetadata>
+            <access type="read">
+              <machine>
+                <group>Stanford</group>
+              </machine>
+            </access>
+          </rightsMetadata>
         EOF
       end
       let(:thumbnail_metadata) { '<thumb>x/y.jpg</thumb>' }
@@ -206,14 +206,14 @@ RSpec.describe 'Ability', type: :model, unless: Settings.features.cocina do
 
     context 'with a stanford-only file that is the first image in an object without an explicit thumbnail' do
       let(:rights_xml) do
-        <<-EOF.strip_heredoc
-        <rightsMetadata>
-          <access type="read">
-            <machine>
-              <group>Stanford</group>
-            </machine>
-          </access>
-        </rightsMetadata>
+        <<~EOF
+          <rightsMetadata>
+            <access type="read">
+              <machine>
+                <group>Stanford</group>
+              </machine>
+            </access>
+          </rightsMetadata>
         EOF
       end
       let(:content_metadata) do
@@ -233,14 +233,14 @@ RSpec.describe 'Ability', type: :model, unless: Settings.features.cocina do
 
     context 'with read rights but not download' do
       let(:rights_xml) do
-        <<-EOF.strip_heredoc
-        <rightsMetadata>
-          <access type="read">
-            <machine>
-              <group rule="no-download">Stanford</group>
-            </machine>
-          </access>
-        </rightsMetadata>
+        <<~EOF
+          <rightsMetadata>
+            <access type="read">
+              <machine>
+                <group rule="no-download">Stanford</group>
+              </machine>
+            </access>
+          </rightsMetadata>
         EOF
       end
       it { is_expected.not_to be_able_to(:download, file) }
@@ -256,14 +256,14 @@ RSpec.describe 'Ability', type: :model, unless: Settings.features.cocina do
 
   context 'with a no-download file that is not the thumbnail' do
     let(:rights_xml) do
-      <<-EOF.strip_heredoc
-      <rightsMetadata>
-        <access type="read">
-          <machine>
-            <world rule="no-download" />
-          </machine>
-        </access>
-      </rightsMetadata>
+      <<~EOF
+        <rightsMetadata>
+          <access type="read">
+            <machine>
+              <world rule="no-download" />
+            </machine>
+          </access>
+        </rightsMetadata>
       EOF
     end
     let(:thumbnail_metadata) { '<thumb>x/y.jpg</thumb>' }
@@ -310,14 +310,14 @@ RSpec.describe 'Ability', type: :model, unless: Settings.features.cocina do
 
     context 'with media that allows read but not download' do
       let(:rights_xml) do
-        <<-EOF.strip_heredoc
-        <rightsMetadata>
-          <access type="read">
-            <machine>
-              <location rule="no-download">location1</location>
-            </machine>
-          </access>
-        </rightsMetadata>
+        <<~EOF
+          <rightsMetadata>
+            <access type="read">
+              <machine>
+                <location rule="no-download">location1</location>
+              </machine>
+            </access>
+          </rightsMetadata>
         EOF
       end
       context 'for an anonymous user from a configured location' do
@@ -348,14 +348,14 @@ RSpec.describe 'Ability', type: :model, unless: Settings.features.cocina do
   context 'for an anonymous user' do
     context 'with a world-readable file' do
       let(:rights_xml) do
-        <<-EOF.strip_heredoc
-        <rightsMetadata>
-            <access type="read">
-              <machine>
-                <world/>
-              </machine>
-            </access>
-          </rightsMetadata>
+        <<~EOF
+          <rightsMetadata>
+              <access type="read">
+                <machine>
+                  <world/>
+                </machine>
+              </access>
+            </rightsMetadata>
         EOF
       end
       it { is_expected.to be_able_to(:download, file) }
@@ -370,14 +370,14 @@ RSpec.describe 'Ability', type: :model, unless: Settings.features.cocina do
 
     context 'with a stanford-only file' do
       let(:rights_xml) do
-        <<-EOF.strip_heredoc
-        <rightsMetadata>
-          <access type="read">
-            <machine>
-              <group>Stanford</group>
-            </machine>
-          </access>
-        </rightsMetadata>
+        <<~EOF
+          <rightsMetadata>
+            <access type="read">
+              <machine>
+                <group>Stanford</group>
+              </machine>
+            </access>
+          </rightsMetadata>
         EOF
       end
       it { is_expected.not_to be_able_to(:download, file) }
@@ -392,14 +392,14 @@ RSpec.describe 'Ability', type: :model, unless: Settings.features.cocina do
 
     context 'with a an unreadable file' do
       let(:rights_xml) do
-        <<-EOF.strip_heredoc
-        <rightsMetadata>
-          <access type="read">
-            <machine>
-              <none/>
-            </machine>
-          </access>
-        </rightsMetadata>
+        <<~EOF
+          <rightsMetadata>
+            <access type="read">
+              <machine>
+                <none/>
+              </machine>
+            </access>
+          </rightsMetadata>
         EOF
       end
       it { is_expected.not_to be_able_to(:download, file) }
@@ -414,14 +414,14 @@ RSpec.describe 'Ability', type: :model, unless: Settings.features.cocina do
 
     context 'with read rights but not download' do
       let(:rights_xml) do
-        <<-EOF.strip_heredoc
-        <rightsMetadata>
-          <access type="read">
-            <machine>
-              <world rule="no-download"/>
-            </machine>
-          </access>
-        </rightsMetadata>
+        <<~EOF
+          <rightsMetadata>
+            <access type="read">
+              <machine>
+                <world rule="no-download"/>
+              </machine>
+            </access>
+          </rightsMetadata>
         EOF
       end
       it { is_expected.not_to be_able_to(:download, file) }
@@ -437,17 +437,17 @@ RSpec.describe 'Ability', type: :model, unless: Settings.features.cocina do
 
   context 'with world (no-download), and full access for stanford users' do
     let(:rights_xml) do
-      <<-EOF.strip_heredoc
-      <rightsMetadata>
-        <access type="read">
-          <machine>
-            <world rule="no-download"/>
-          </machine>
-          <machine>
-            <group>Stanford</group>
-          </machine>
-        </access>
-      </rightsMetadata>
+      <<~EOF
+        <rightsMetadata>
+          <access type="read">
+            <machine>
+              <world rule="no-download"/>
+            </machine>
+            <machine>
+              <group>Stanford</group>
+            </machine>
+          </access>
+        </rightsMetadata>
       EOF
     end
 
@@ -479,20 +479,20 @@ RSpec.describe 'Ability', type: :model, unless: Settings.features.cocina do
   describe 'for objects with file specific rights' do
     context 'with an object that defaults to world, but restricts the video to no-download' do
       let(:rights_xml) do
-        <<-EOF.strip_heredoc
-        <rightsMetadata>
-          <access type="read">
-            <machine>
-              <world/>
-            </machine>
-          </access>
-          <access type="read">
-            <file>movie.mp4</file>
-            <machine>
-              <world rule="no-download"/>
-            </machine>
-          </access>
-        </rightsMetadata>
+        <<~EOF
+          <rightsMetadata>
+            <access type="read">
+              <machine>
+                <world/>
+              </machine>
+            </access>
+            <access type="read">
+              <file>movie.mp4</file>
+              <machine>
+                <world rule="no-download"/>
+              </machine>
+            </access>
+          </rightsMetadata>
         EOF
       end
 
@@ -511,20 +511,20 @@ RSpec.describe 'Ability', type: :model, unless: Settings.features.cocina do
 
     context 'with an object that defaults to stanford, but restricts the image to location1' do
       let(:rights_xml) do
-        <<-EOF.strip_heredoc
-        <rightsMetadata>
-          <access type="read">
-            <machine>
-              <group>Stanford</group>
-            </machine>
-          </access>
-          <access type="read">
-            <file>image.jpg</file>
-            <machine>
-              <location>location1</location>
-            </machine>
-          </access>
-        </rightsMetadata>
+        <<~EOF
+          <rightsMetadata>
+            <access type="read">
+              <machine>
+                <group>Stanford</group>
+              </machine>
+            </access>
+            <access type="read">
+              <file>image.jpg</file>
+              <machine>
+                <location>location1</location>
+              </machine>
+            </access>
+          </rightsMetadata>
         EOF
       end
 
@@ -578,16 +578,16 @@ RSpec.describe 'Ability', type: :model, unless: Settings.features.cocina do
     end
     let(:jwt_tokens) { [] }
     let(:rights_xml) do
-      <<-EOF.strip_heredoc
-      <rightsMetadata>
-        <access type="read">
-          <machine>
-            <cdl>
-              <group rule="no-download">Stanford</group>
-            </cdl>
-          </machine>
-        </access>
-      </rightsMetadata>
+      <<~EOF
+        <rightsMetadata>
+          <access type="read">
+            <machine>
+              <cdl>
+                <group rule="no-download">Stanford</group>
+              </cdl>
+            </machine>
+          </access>
+        </rightsMetadata>
       EOF
     end
 
@@ -598,7 +598,7 @@ RSpec.describe 'Ability', type: :model, unless: Settings.features.cocina do
       let(:jwt_tokens) do
         [
           JWT.encode(
-            { aud: image.id, sub: 'a', exp: (Time.zone.now + 1.hour).to_i },
+            { aud: image.id, sub: 'a', exp: 1.hour.from_now.to_i },
             Settings.cdl.jwt.secret,
             Settings.cdl.jwt.algorithm
           )

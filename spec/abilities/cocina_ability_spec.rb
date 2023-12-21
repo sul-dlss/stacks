@@ -470,7 +470,7 @@ RSpec.describe CocinaAbility, type: :model do
       let(:jwt_tokens) do
         [
           JWT.encode(
-            { aud: image.id, sub: 'a', exp: (Time.zone.now + 1.hour).to_i },
+            { aud: image.id, sub: 'a', exp: 1.hour.from_now.to_i },
             Settings.cdl.jwt.secret,
             Settings.cdl.jwt.algorithm
           )

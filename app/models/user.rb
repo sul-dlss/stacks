@@ -25,7 +25,7 @@ class User
   end
 
   def stanford?
-    ldap_groups.present? && (ldap_groups & Settings.user.stanford_groups).any?
+    ldap_groups.present? && ldap_groups.intersect?(Settings.user.stanford_groups)
   end
 
   def token_user?

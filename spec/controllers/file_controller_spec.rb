@@ -38,7 +38,7 @@ RSpec.describe FileController do
     subject { get :show, params: { id: druid, file_name: 'xf680rd3068_1.jp2' } }
 
     before do
-      path = File.join(Rails.root, 'spec/fixtures/nr/349/ct/7889/image.jp2')
+      path = Rails.root.join('spec/fixtures/nr/349/ct/7889/image.jp2')
       allow(file).to receive_messages(mtime: Time.zone.now, path:)
     end
 

@@ -22,7 +22,7 @@ RSpec.describe ObjectController do
             instance_double(Faraday::Response, status: 404, success?: false)
           )
           get :show, params: { id: 'foo' }
-          expect(response.status).to eq 404
+          expect(response).to have_http_status :not_found
         end
       end
 

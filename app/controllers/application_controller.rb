@@ -26,7 +26,7 @@ class ApplicationController < ActionController::Base
   end
 
   def rescue_can_can(exception)
-    Rails.logger.debug "Access denied on #{exception.action} #{exception.subject.inspect}"
+    Rails.logger.debug { "Access denied on #{exception.action} #{exception.subject.inspect}" }
 
     render file: "#{Rails.root}/public/403.html", status: :forbidden, layout: false
   end

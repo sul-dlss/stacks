@@ -37,10 +37,10 @@ class Purl
     end
   end
 
-  def files(druid, &block)
+  def files(druid, &)
     return to_enum(:files, druid) unless block_given?
 
-    Settings.features.cocina ? files_from_json(druid, &block) : files_from_xml(druid, &block)
+    Settings.features.cocina ? files_from_json(druid, &) : files_from_xml(druid, &)
   end
 
   def files_from_json(druid)

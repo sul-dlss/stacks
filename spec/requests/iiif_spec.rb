@@ -61,7 +61,7 @@ RSpec.describe 'IIIF API' do
       get '/image/iiif/nr349ct7889/abc'
 
       expect(response).to redirect_to('/image/iiif/nr349ct7889/abc/info.json')
-      expect(response.status).to eq 303
+      expect(response).to have_http_status :see_other
     end
   end
 
@@ -70,7 +70,7 @@ RSpec.describe 'IIIF API' do
       get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json', headers: { HTTP_ACCEPT: 'application/json' }
 
       expect(response.media_type).to eq 'application/json'
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['tiles']).to eq [{ 'width' => 256, 'height' => 256, 'scaleFactors' => [1, 2, 4, 8, 16] }]
       expect(response.headers['Link']).to eq '<http://iiif.io/api/image/2/level2.json>;rel="profile"'
     end
@@ -79,7 +79,7 @@ RSpec.describe 'IIIF API' do
       get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json', headers: { HTTP_ACCEPT: 'application/ld+json' }
 
       expect(response.media_type).to eq 'application/ld+json'
-      json = JSON.parse(response.body)
+      json = JSON.parse(response.body) # rubocop:disable Rails/ResponseParsedBody
       expect(json['tiles']).to eq [{ 'width' => 256, 'height' => 256, 'scaleFactors' => [1, 2, 4, 8, 16] }]
     end
 
@@ -242,7 +242,7 @@ RSpec.describe 'IIIF API' do
 
       it 'replaces the sizes element to reflect the only downloadable (thumbnail) size' do
         get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json'
-        json = JSON.parse(response.body)
+        json = response.parsed_body
 
         expect(json['sizes']).to eq [{ 'width' => 266, 'height' => 400 }]
       end
@@ -307,7 +307,7 @@ RSpec.describe 'IIIF API' do
           canonical_url: "http://www.example.com/image/iiif/nr349ct7889/nr349ct7889_00_0001"
         )
         expect(response.media_type).to eq 'image/jpeg'
-        expect(response.status).to eq 200
+        expect(response).to have_http_status :ok
       end
     end
 
@@ -320,7 +320,7 @@ RSpec.describe 'IIIF API' do
       it 'is ignored when instantiating StacksImage' do
         get "/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/0,640,2552,2552/100,100/0/default.jpg?ignored=ignored&host=host"
 
-        expect(response.status).to eq 200
+        expect(response).to have_http_status :ok
       end
     end
 
@@ -332,7 +332,7 @@ RSpec.describe 'IIIF API' do
 
       it 'returns 404 Not Found' do
         get "/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/0,640,2552,2552/100,100/0/default.jpg?ignored=ignored&host=host"
-        expect(response.status).to eq 404
+        expect(response).to have_http_status :not_found
       end
     end
 
@@ -360,7 +360,7 @@ RSpec.describe 'IIIF API' do
         get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/pct:3,3,77,77/full/0/default.jpg'
 
         expect(response.media_type).to eq 'image/jpeg'
-        expect(response.status).to eq 200
+        expect(response).to have_http_status :ok
       end
     end
   end

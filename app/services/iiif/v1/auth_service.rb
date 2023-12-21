@@ -22,8 +22,8 @@ module Iiif
           'profile' => 'http://iiif.io/api/auth/1/login',
           'label' => 'Stanford users: log in to access all available features.',
           'header' => 'Stanford-affiliated? Log in to view',
-          'description' => 'Stanford users can click Log in below to access all fea'\
-            'tures.',
+          'description' => 'Stanford users can click Log in below to access all fea' \
+                           'tures.',
           'confirmLabel' => 'Log in',
           'failureHeader' => 'Unable to authenticate',
           'failureDescription' => 'The authentication service cannot be reached.',

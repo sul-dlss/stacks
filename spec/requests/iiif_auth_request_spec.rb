@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe "Authentication for IIIF requests", type: :request do
+RSpec.describe "Authentication for IIIF requests" do
 
   let(:allowed_loc) { 'ip.address1' }
   let(:user_no_loc_no_webauth) { User.new }

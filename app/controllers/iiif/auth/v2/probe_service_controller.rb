@@ -19,7 +19,7 @@ module Iiif
 
           if !file.valid?
             json[:status] = 400
-            json[:note] = { "en": file.errors.full_messages }
+            json[:note] = { en: file.errors.full_messages }
           elsif !file.readable?
             json[:status] = 404
           elsif can? :access, file
