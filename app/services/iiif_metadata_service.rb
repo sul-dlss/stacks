@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'errors'
-
 # Fetch metadata from the remote IIIF server
 class IiifMetadataService
   attr_reader :id, :file_name, :canonical_url
