@@ -6,12 +6,12 @@ git_source(:github) do |repo_name|
 end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 7.0.3'
+gem 'rails', '~> 7.1.1'
 # asset pipeline for Rails
 gem 'propshaft'
 
 # Use Puma as the app server
-gem 'puma', '~> 5.0'
+gem 'puma', '~> 6.0'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.7'
@@ -22,7 +22,6 @@ gem 'bootsnap', '>= 1.4.2', require: false
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
   gem 'web-console', '>= 4.1.0'
-  gem 'listen', '~> 3.3'
 end
 
 group :development, :test do
@@ -30,7 +29,7 @@ group :development, :test do
   gem "debug", platforms: %i[ mri mingw x64_mingw ]
 
   # RSpec for testing
-  gem 'rspec-rails', '~> 5.0'
+  gem 'rspec-rails', '~> 6.0'
 
   gem 'rails-controller-testing'
 

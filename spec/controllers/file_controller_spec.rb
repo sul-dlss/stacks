@@ -50,7 +50,7 @@ RSpec.describe FileController do
     it 'sends headers for content' do
       expect(controller).to receive(:send_file).with(file.path, disposition: :attachment).and_call_original
       get :show, params: { id: 'xf680rd3068', file_name: 'xf680rd3068_1.jp2', download: 'any' }
-      expect(response.headers.to_h).to include 'Content-Length' => 11_043, 'Accept-Ranges' => 'bytes'
+      expect(response.headers.to_h).to include 'content-length' => 11_043, 'accept-ranges' => 'bytes'
     end
 
     it 'sets disposition attachment with download param' do
