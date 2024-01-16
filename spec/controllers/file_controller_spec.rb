@@ -31,6 +31,28 @@ RSpec.describe FileController do
     }
   end
 
+  let(:stanford_json) do
+    {
+      'structural' => {
+        'contains' => [
+          {
+            'structural' => {
+              'contains' => [
+                {
+                  'filename' => 'xf680rd3068_1.jp2',
+                  'access' => {
+                    'view' => 'stanford',
+                    'download' => 'stanford'
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  end
+
   let(:file) { StacksFile.new(id: druid, file_name: 'xf680rd3068_1.jp2') }
 
   describe '#show' do
@@ -56,6 +78,24 @@ RSpec.describe FileController do
     it 'sets disposition attachment with download param' do
       expect(controller).to receive(:send_file).with(file.path, disposition: :attachment).and_call_original
       get :show, params: { id: 'xf680rd3068', file_name: 'xf680rd3068_1.jp2', download: 'any' }
+    end
+
+    it 'sends wildcard CORS header' do
+      subject
+      expect(response.headers.to_h).to include 'Access-Control-Allow-Origin' => '*'
+    end
+
+    context 'when Stanford restricted' do
+      before do
+        stub_rights_xml(stanford_restricted_rights_xml)
+        allow(Purl).to receive(:public_json).and_return(stanford_json)
+      end
+
+      it 'sends host-specific and credentials CORS headers' do
+        subject
+        expect(response.headers.to_h).to include 'Access-Control-Allow-Origin' => 'https://embed.stanford.edu',
+                                                 'Access-Control-Allow-Credentials' => 'true'
+      end
     end
 
     context 'additional params' do
