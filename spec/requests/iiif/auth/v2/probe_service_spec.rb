@@ -42,11 +42,11 @@ RSpec.describe 'IIIF auth v2 probe service' do
     end
   end
 
-  context "when the passed in uri isn't formatted correctly" do
+  context "when the druid in the passed in uri isn't formatted correctly" do
     let(:id) { '111' }
 
     before do
-      get "/iiif/auth/v2/probe?id=#{stacks_uri}"
+      get "/iiif/auth/v2/probe?id=#{stacks_uri_param}"
     end
 
     it 'returns a success response' do
@@ -55,6 +55,18 @@ RSpec.describe 'IIIF auth v2 probe service' do
                                          "note" => { "en" => ["Id is invalid"] },
                                          "status" => 400,
                                          "type" => "AuthProbeResult2")
+    end
+  end
+
+  context "when the passed in uri isn't a stacks resource" do
+    let(:stacks_uri) { "https://example.com" }
+
+    before do
+      get "/iiif/auth/v2/probe?id=#{stacks_uri_param}"
+    end
+
+    it 'is a bad_request' do
+      expect(response).to have_http_status :bad_request
     end
   end
 
