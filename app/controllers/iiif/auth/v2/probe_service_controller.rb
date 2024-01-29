@@ -81,6 +81,8 @@ module Iiif
             raise ActionDispatch::Http::Parameters::ParseError
           end
           druid, file_name = URI.decode_uri_component(obj.path.delete_prefix('/file/')).split('/', 2)
+          raise ActionDispatch::Http::Parameters::ParseError, "Provided ID is not local" unless druid
+
           { druid: druid.delete_prefix('druid:'), file_name: }
         end
       end
