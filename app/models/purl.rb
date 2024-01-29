@@ -37,10 +37,10 @@ class Purl
     end
   end
 
-  def files(druid, &) # rubocop:disable Style/ArgumentsForwarding
+  def files(druid, &)
     return to_enum(:files, druid) unless block_given?
 
-    Settings.features.cocina ? files_from_json(druid, &) : files_from_xml(druid, &) # rubocop:disable Style/ArgumentsForwarding
+    Settings.features.cocina ? files_from_json(druid, &) : files_from_xml(druid, &)
   end
 
   def files_from_json(druid)
