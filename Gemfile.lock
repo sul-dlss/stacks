@@ -128,8 +128,7 @@ GEM
       bigdecimal
       rexml
     crass (1.0.6)
-    dalli (3.2.7)
-      base64
+    dalli (3.2.8)
     date (3.3.4)
     debug (1.9.1)
       irb (~> 1.10)
@@ -192,7 +191,7 @@ GEM
     globalid (1.2.1)
       activesupport (>= 6.1)
     hashdiff (1.1.0)
-    honeybadger (5.4.1)
+    honeybadger (5.5.0)
     http (5.2.0)
       addressable (~> 2.8)
       base64 (~> 0.1)
@@ -214,7 +213,8 @@ GEM
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
     json (2.7.1)
-    jwt (2.7.1)
+    jwt (2.8.0)
+      base64
     language_server-protocol (3.17.0.3)
     llhttp-ffi (0.5.0)
       ffi-compiler (~> 1.0)
@@ -318,7 +318,7 @@ GEM
       psych (>= 4.0.0)
     redis (5.1.0)
       redis-client (>= 0.17.0)
-    redis-client (0.19.1)
+    redis-client (0.20.0)
       connection_pool
     regexp_parser (2.9.0)
     reline (0.4.2)
