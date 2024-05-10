@@ -3,7 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe "Authentication for File requests" do
-
   let(:allowed_loc) { 'ip.address1' }
   let(:user_no_loc_no_webauth) { User.new }
   let(:user_loc_no_webauth) { User.new(ip_address: allowed_loc) }
@@ -11,7 +10,7 @@ RSpec.describe "Authentication for File requests" do
   let(:user_webauth_stanford_no_loc) { User.new(webauth_user: true, ldap_groups: %w(stanford:stanford)) }
   let(:druid) { 'xf680rd3068' }
   let(:filename) { 'xf680rd3068_1.jp2' }
-  let(:path) { "/stacks/xf/680/rd/3068/xf680rd3068_1.jp2" }
+  let(:path) { "#{Settings.stacks.storage_root}/xf/680/rd/3068/xf680rd3068_1.jp2" }
   let(:perms) { nil }
   let(:sf) do
     StacksFile.new(id: 'xf680rd3068', file_name: 'xf680rd3068_1.jp2')

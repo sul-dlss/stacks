@@ -19,7 +19,7 @@ RSpec.describe "Authentication for IIIF requests" do
   let(:identifier) { 'nr349ct7889%2Fnr349ct7889_00_0001' }
   let(:params_hash) { { id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001', transformation: } }
   let(:transformation) { IIIF::Image::Transformation.new region:, size:, rotation:, quality:, format: }
-  let(:path) { "/stacks/nr/349/ct/7889/nr349ct7889_00_0001" }
+  let(:path) { "#{Settings.stacks.storage_root}/nr/349/ct/7889/nr349ct7889_00_0001" }
   let(:perms) { nil }
   let(:current_image) { StacksImage.new(params_hash) }
   let(:http_client) { instance_double(HTTP::Client) }

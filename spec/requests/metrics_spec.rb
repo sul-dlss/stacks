@@ -55,8 +55,6 @@ RSpec.describe 'Metrics tracking' do
   let(:ability) { instance_double(Ability, can?: true, authorize!: true) }
 
   before do
-    allow(Settings.features).to receive(:metrics).and_return(true)
-    allow(Settings).to receive(:metrics_api_url).and_return('https://example.com')
     allow(Ability).to receive(:new).and_return(ability)
     allow(CocinaAbility).to receive(:new).and_return(ability)
     stub_rights_xml(world_readable_rights_xml)

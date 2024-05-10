@@ -42,7 +42,6 @@ RSpec.describe "It proxies image requests to a remote IIIF server (canteloupe)" 
   before do
     stub_rights_xml(world_readable_rights_xml)
     allow(Purl).to receive(:public_json).and_return(public_json)
-    allow(Settings.stacks).to receive(:storage_root).and_return('spec/fixtures')
     stub_request(:get, info_request)
       .to_return(status: 200, body: info_response)
     stub_request(:get, image_response)
