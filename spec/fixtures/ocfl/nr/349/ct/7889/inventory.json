@@ -1,0 +1,36 @@
+{
+  "id": "druid:nr349ct7889",
+  "type": "https://ocfl.io/1.1/spec/#inventory",
+  "digestAlgorithm": "sha512",
+  "contentDirectory": "data",
+  "head": "v1",
+  "versions": {
+    "v1": {
+      "created": "2024-05-10T17:54:30Z",
+      "state": {
+        "a11f06e5c5a4fd09b1b77c2d67334a2ed8a5f4a784c81f6f24deff228df1399e3bd3594b71f71ebdb5f4eeee59263b07f39a266a2baeb3385d3e1be37d7228ec": [
+          "image.jp2"
+        ],
+        "c81fe7b03b0c3fae1a4c1fdfc406ec75b79c72bbf1214a47c05d6df9acf5f3f93b22d79ed1bb032164067a685ae080b53c64b65777816b376ecd0345921128e2": [
+          "SC0193 1982-013 b06 f01 1981-09-29.pdf",
+          "folder/SC0193_1982-013_b06_f01_1981-09-29.pdf"
+        ],
+        "1c7cc8654781c133f1f48ae050353d1a16349e377e0f5ecbe203ffe34338785b3aabbed6b35d4d5aae572368c9d85e18ece53f276d24ac58a093d34b2bb6f40c": [
+          "SC0193_1982-013_b06_f01_1981-09-29.mp4"
+        ]
+      }
+    }
+  },
+  "manifest": {
+    "a11f06e5c5a4fd09b1b77c2d67334a2ed8a5f4a784c81f6f24deff228df1399e3bd3594b71f71ebdb5f4eeee59263b07f39a266a2baeb3385d3e1be37d7228ec": [
+      "v1/data/image.jp2"
+    ],
+    "c81fe7b03b0c3fae1a4c1fdfc406ec75b79c72bbf1214a47c05d6df9acf5f3f93b22d79ed1bb032164067a685ae080b53c64b65777816b376ecd0345921128e2": [
+      "v1/data/SC0193 1982-013 b06 f01 1981-09-29.pdf",
+      "v1/data/folder/SC0193_1982-013_b06_f01_1981-09-29.pdf"
+    ],
+    "1c7cc8654781c133f1f48ae050353d1a16349e377e0f5ecbe203ffe34338785b3aabbed6b35d4d5aae572368c9d85e18ece53f276d24ac58a093d34b2bb6f40c": [
+      "v1/data/SC0193_1982-013_b06_f01_1981-09-29.mp4"
+    ]
+  }
+}

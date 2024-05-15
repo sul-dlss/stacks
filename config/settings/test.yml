@@ -9,7 +9,6 @@ user:
       - ip.address4
 
 features:
-  read_stacks_from_ocfl_root: true
   metrics: true
 
 metrics_api_url: 'https://example.com'

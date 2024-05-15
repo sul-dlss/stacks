@@ -75,6 +75,7 @@ gem 'retries'
 gem 'zipline', '~> 1.2'
 gem 'jwt'
 gem 'redis'
+gem 'ocfl'
 
 # connection_pool required for thread-safe operations in dalli >= 3.0
 # see https://github.com/petergoldstein/dalli/blob/v3.0.0/3.0-Upgrade.md

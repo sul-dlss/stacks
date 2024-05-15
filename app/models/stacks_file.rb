@@ -9,7 +9,7 @@ class StacksFile
 
   attr_accessor :id, :file_name, :current_ability, :download
 
-  validates :id, format: { with: /\A[b-df-hjkmnp-tv-z]{2}[0-9]{3}[b-df-hjkmnp-tv-z]{2}[0-9]{4}\z/i }
+  validates :id, format: { with: StorageRoot::DRUID_PARTS_PATTERN }
 
   # Some files exist but have unreadable permissions, treat these as non-existent
   def readable?
@@ -29,21 +29,15 @@ class StacksFile
   end
 
   def path
-    @path ||= begin
-      return unless treeified_path
-
-      File.join(Settings.stacks.storage_root, treeified_path)
-    end
+    @path ||= storage_root.absolute_path
   end
 
   def treeified_path
-    return unless druid_parts && file_name
-
-    File.join(druid_parts[1..4], file_name)
+    storage_root.relative_path
   end
 
-  def druid_parts
-    @druid_parts ||= id.match(/^([a-z]{2})(\d{3})([a-z]{2})(\d{4})$/i)
+  def storage_root
+    @storage_root ||= StorageRoot.new(druid: id, file_name:)
   end
 
   def stacks_rights
@@ -58,7 +52,7 @@ class StacksFile
   end
 
   def streaming_url
-    "#{Settings.stream.url}/#{File.join(druid_parts[1..4])}/#{streaming_url_file_segment}/playlist.m3u8"
+    "#{Settings.stream.url}/#{storage_root.treeified_id}/#{streaming_url_file_segment}/playlist.m3u8"
   end
 
   private

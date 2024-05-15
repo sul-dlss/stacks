@@ -16,10 +16,13 @@ RSpec.describe "Authentication for IIIF requests" do
   let(:rotation) { '0' }
   let(:quality) { 'default' }
   let(:format) { 'jpg' }
-  let(:identifier) { 'nr349ct7889%2Fnr349ct7889_00_0001' }
-  let(:params_hash) { { id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001', transformation: } }
+  let(:identifier) { "#{druid}%2F#{file_name}" }
+  let(:params_hash) { { id: druid, file_name:, transformation: } }
   let(:transformation) { IIIF::Image::Transformation.new region:, size:, rotation:, quality:, format: }
-  let(:path) { "#{Settings.stacks.storage_root}/nr/349/ct/7889/nr349ct7889_00_0001" }
+  let(:druid) { 'nr349ct7889' }
+  let(:file_name) { 'image.jp2' }
+  let(:path) { storage_root.absolute_path }
+  let(:storage_root) { StorageRoot.new(druid:, file_name:) }
   let(:perms) { nil }
   let(:current_image) { StacksImage.new(params_hash) }
   let(:http_client) { instance_double(HTTP::Client) }
@@ -31,10 +34,8 @@ RSpec.describe "Authentication for IIIF requests" do
   describe "#show" do
     before do
       allow_any_instance_of(Projection).to receive(:valid?).and_return(true)
-      allow(HTTP).to receive(:use)
-        .and_return(http_client)
+      allow(HTTP).to receive(:use).and_return(http_client)
       allow(http_client).to receive(:get).and_return(instance_double(HTTP::Response, status: 200, body: StringIO.new))
-
       allow_any_instance_of(IiifController).to receive(:current_user).and_return(current_user)
       allow_any_instance_of(IiifController).to receive(:current_image).and_return(current_image)
       allow(Purl).to receive(:public_json).and_return(public_json)
@@ -49,7 +50,7 @@ RSpec.describe "Authentication for IIIF requests" do
                 'structural' => {
                   'contains' => [
                     {
-                      'filename' => 'nr349ct7889_00_0001',
+                      'filename' => file_name,
                       'access' => {
                         'view' => 'world',
                         'download' => 'world'
@@ -87,7 +88,7 @@ RSpec.describe "Authentication for IIIF requests" do
                 'structural' => {
                   'contains' => [
                     {
-                      'filename' => 'nr349ct7889_00_0001',
+                      'filename' => file_name,
                       'access' => {
                         'view' => 'stanford',
                         'download' => 'stanford'
@@ -129,7 +130,7 @@ RSpec.describe "Authentication for IIIF requests" do
 
         it 'redirects to the authentication endpoint' do
           get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
-          expect(response).to redirect_to(auth_iiif_url(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001', format:))
+          expect(response).to redirect_to(auth_iiif_url(id: druid, file_name:, format:))
         end
       end
     end
@@ -143,7 +144,7 @@ RSpec.describe "Authentication for IIIF requests" do
                 'structural' => {
                   'contains' => [
                     {
-                      'filename' => 'nr349ct7889_00_0001',
+                      'filename' => file_name,
                       'access' => {
                         'view' => 'location-based',
                         'download' => 'location-based',

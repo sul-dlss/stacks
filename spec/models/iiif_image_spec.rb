@@ -4,20 +4,22 @@ require 'rails_helper'
 
 RSpec.describe IiifImage do
   let(:base_uri) { 'https://imageserver.example.com/cantaloupe/iiif/2/' }
+  let(:druid) { 'nr349ct7889' }
+  let(:file_name) { 'image.jp2' }
   let(:transformation) { IIIF::Image::Transformation.new(size: 'full', region: 'full') }
   let(:instance) do
-    described_class.new(base_uri:,
-                        id: 'st808xq5141', file_name: 'st808xq5141_00_0001.jp2',
-                        transformation:)
+    described_class.new(base_uri:, id: druid, file_name:, transformation:)
   end
 
   describe "#remote_id" do
     subject { instance.send(:remote_id) }
-    it { is_expected.to eq 'st%2F808%2Fxq%2F5141%2Fst808xq5141_00_0001.jp2' }
+
+    it { is_expected.to eq(image_server_path(druid, file_name)) }
   end
 
   describe "#valid?" do
     subject { instance.valid? }
+
     context 'with good parameters' do
       let(:transformation) do
         IIIF::Image::Transformation.new(size: 'full', region: 'full', quality: 'default', rotation: '0', format: 'jpg')

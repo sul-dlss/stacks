@@ -3,14 +3,17 @@
 require 'rails_helper'
 
 RSpec.describe StacksFile do
-  let(:path) { "#{Settings.stacks.storage_root}/ab/012/cd/3456/def.pdf" }
-  let(:instance) { described_class.new(id: 'ab012cd3456', file_name: 'def.pdf') }
+  let(:druid) { 'nr349ct7889' }
+  let(:file_name) { 'image.jp2' }
+  let(:instance) { described_class.new(id: druid, file_name:) }
+  let(:path) { storage_root.absolute_path }
+  let(:storage_root) { StorageRoot.new(druid:, file_name:) }
 
   describe '#path' do
     subject { instance.path }
 
     it 'is the druid tree path to the file' do
-      expect(subject).to eq "#{Settings.stacks.storage_root}/ab/012/cd/3456/def.pdf"
+      expect(subject).to eq(path)
     end
 
     context 'with a malformed druid' do

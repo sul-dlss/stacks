@@ -2,21 +2,16 @@
 
 require 'rails_helper'
 
-RSpec.describe "It proxies image requests to a remote IIIF server (canteloupe)" do
+RSpec.describe "proxying image requests to a remote IIIF server (cantaloupe)" do
   let(:info_request) do
-    "http://imageserver-prod.stanford.edu/iiif/2/nr%2F349%2Fct%2F7889%2Fimage.jp2/info.json"
+    "http://imageserver-prod.stanford.edu/iiif/2/#{image_server_path('nr349ct7889', 'image.jp2')}/info.json"
   end
   let(:info_response) do
-    '{
-  "width": 11957,
-  "height": 15227
-}'
+    '{"width": 11957,"height": 15227}'
   end
-
   let(:image_response) do
-    "http://imageserver-prod.stanford.edu/iiif/2/nr%2F349%2Fct%2F7889%2Fimage.jp2/full/max/0/default.jpg"
+    "http://imageserver-prod.stanford.edu/iiif/2/#{image_server_path('nr349ct7889', 'image.jp2')}/full/max/0/default.jpg"
   end
-
   let(:public_json) do
     {
       'structural' => {

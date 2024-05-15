@@ -14,14 +14,13 @@ RSpec.describe 'IIIF API' do
                                          image_height: 2552)
   end
   let(:stacks_image) do
-    StacksImage.new(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001.jp2')
+    StacksImage.new(id: 'nr349ct7889', file_name: 'image.jp2')
   end
   let(:file_source) do
     instance_double(StacksFile, readable?: true,
                                 etag: 'etag',
                                 mtime: Time.zone.now)
   end
-
   let(:public_json) do
     {
       'structural' => {
@@ -30,7 +29,7 @@ RSpec.describe 'IIIF API' do
             'structural' => {
               'contains' => [
                 {
-                  'filename' => 'nr349ct7889_00_0001.jp2',
+                  'filename' => 'image.jp2',
                   'access' => {
                     'view' => 'world',
                     'download' => 'world'
@@ -67,7 +66,7 @@ RSpec.describe 'IIIF API' do
 
   describe 'metadata requests' do
     it 'handles JSON requests' do
-      get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json', headers: { HTTP_ACCEPT: 'application/json' }
+      get '/image/iiif/nr349ct7889%2Fimage.jp2/info.json', headers: { HTTP_ACCEPT: 'application/json' }
 
       expect(response.media_type).to eq 'application/json'
       json = response.parsed_body
@@ -76,7 +75,7 @@ RSpec.describe 'IIIF API' do
     end
 
     it 'handles JSON-LD requests' do
-      get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json', headers: { HTTP_ACCEPT: 'application/ld+json' }
+      get '/image/iiif/nr349ct7889%2Fimage.jp2/info.json', headers: { HTTP_ACCEPT: 'application/ld+json' }
 
       expect(response.media_type).to eq 'application/ld+json'
       json = JSON.parse(response.body) # rubocop:disable Rails/ResponseParsedBody
@@ -92,7 +91,7 @@ RSpec.describe 'IIIF API' do
                 'structural' => {
                   'contains' => [
                     {
-                      'filename' => 'nr349ct7889_00_0001.jp2',
+                      'filename' => 'image.jp2',
                       'access' => {
                         'view' => 'location-based',
                         'download' => 'location_based',
@@ -113,7 +112,7 @@ RSpec.describe 'IIIF API' do
 
       context 'outside of the location' do
         it 'uses the unauthorized status code for the response' do
-          get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json'
+          get '/image/iiif/nr349ct7889%2Fimage.jp2/info.json'
           expect(response).to have_http_status :unauthorized
         end
 
@@ -129,7 +128,7 @@ RSpec.describe 'IIIF API' do
                     'structural' => {
                       'contains' => [
                         {
-                          'filename' => 'nr349ct7889_00_0001.jp2',
+                          'filename' => 'image.jp2',
                           'access' => {
                             'view' => 'location-based',
                             'download' => 'location_based',
@@ -146,9 +145,9 @@ RSpec.describe 'IIIF API' do
           end
 
           it 'redirects requests to the degraded info.json' do
-            get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json'
+            get '/image/iiif/nr349ct7889%2Fimage/info.json'
             expect(response).to have_http_status :redirect
-            expect(response).to redirect_to('/image/iiif/degraded/nr349ct7889/nr349ct7889_00_0001/info.json')
+            expect(response).to redirect_to('/image/iiif/degraded/nr349ct7889/image/info.json')
             expect(response.headers['Cache-Control']).to match(/max-age=0/)
           end
         end
@@ -160,7 +159,7 @@ RSpec.describe 'IIIF API' do
           allow_any_instance_of(IiifController).to receive(:current_user).and_return(user)
         end
         it 'uses the ok status code for the response' do
-          get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json'
+          get '/image/iiif/nr349ct7889%2Fimage.jp2/info.json'
           expect(response).to have_http_status :ok
         end
       end
@@ -175,7 +174,7 @@ RSpec.describe 'IIIF API' do
                 'structural' => {
                   'contains' => [
                     {
-                      'filename' => 'nr349ct7889_00_0001.jp2',
+                      'filename' => 'image.jp2',
                       'access' => {
                         'view' => 'stanford',
                         'download' => 'stanford'
@@ -193,15 +192,15 @@ RSpec.describe 'IIIF API' do
       end
 
       it 'redirects requests to the degraded info.json' do
-        get '/image/iiif/nr349ct7889/nr349ct7889_00_0001/info.json'
+        get '/image/iiif/nr349ct7889/image.jp2/info.json'
         expect(response).to have_http_status :redirect
-        expect(response).to redirect_to('/image/iiif/degraded/nr349ct7889/nr349ct7889_00_0001/info.json')
+        expect(response).to redirect_to('/image/iiif/degraded/nr349ct7889/image.jp2/info.json')
         expect(response.headers['Cache-Control']).to match(/max-age=0/)
       end
 
       context 'when connecting to the degraded url' do
         it 'serves a degraded info.json description for the original file' do
-          get '/image/iiif/degraded/nr349ct7889/nr349ct7889_00_0001/info.json'
+          get '/image/iiif/degraded/nr349ct7889/image.jp2/info.json'
 
           expect(response).to have_http_status :ok
           expect(controller.send(:current_image).id).to eq 'nr349ct7889'
@@ -218,7 +217,7 @@ RSpec.describe 'IIIF API' do
                 'structural' => {
                   'contains' => [
                     {
-                      'filename' => 'nr349ct7889_00_0001.jp2',
+                      'filename' => 'image.jp2',
                       'access' => {
                         'view' => 'world',
                         'download' => 'none'
@@ -236,12 +235,12 @@ RSpec.describe 'IIIF API' do
         stub_rights_xml(world_no_download_xml)
       end
       it 'serves up regular info.json (no degraded)' do
-        get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json'
+        get '/image/iiif/nr349ct7889%2Fimage.jp2/info.json'
         expect(response).to have_http_status :ok
       end
 
       it 'replaces the sizes element to reflect the only downloadable (thumbnail) size' do
-        get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/info.json'
+        get '/image/iiif/nr349ct7889%2Fimage.jp2/info.json'
         json = response.parsed_body
 
         expect(json['sizes']).to eq [{ 'width' => 266, 'height' => 400 }]
@@ -257,7 +256,7 @@ RSpec.describe 'IIIF API' do
                 'structural' => {
                   'contains' => [
                     {
-                      'filename' => 'nr349ct7889_00_0001.jp2',
+                      'filename' => 'image.jp2',
                       'access' => {
                         'view' => 'stanford',
                         'download' => 'none'
@@ -274,9 +273,9 @@ RSpec.describe 'IIIF API' do
         stub_rights_xml(stanford_only_no_download_xml)
       end
       it 'redirects to degraded version' do
-        get '/image/iiif/nr349ct7889/nr349ct7889_00_0001/info.json'
+        get '/image/iiif/nr349ct7889/image.jp2/info.json'
         expect(response).to have_http_status :redirect
-        expect(response).to redirect_to('/image/iiif/degraded/nr349ct7889/nr349ct7889_00_0001/info.json')
+        expect(response).to redirect_to('/image/iiif/degraded/nr349ct7889/image.jp2/info.json')
       end
     end
   end
@@ -295,16 +294,16 @@ RSpec.describe 'IIIF API' do
 
     context 'when the request is valid' do
       before do
-        stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/nr%2F349%2Fct%2F7889%2Fnr349ct7889_00_0001.jp2/0,640,2552,2552/100,100/0/default.jpg")
+        stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_server_path('nr349ct7889', 'image.jp2')}/0,640,2552,2552/100,100/0/default.jpg")
           .to_return(status: 200, body: "")
       end
 
       it 'loads the image' do
-        get "/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/0,640,2552,2552/100,100/0/default.jpg"
+        get "/image/iiif/nr349ct7889%2Fimage/0,640,2552,2552/100,100/0/default.jpg"
 
         expect(StacksImage).to have_received(:new).with(
-          id: "nr349ct7889", file_name: 'nr349ct7889_00_0001.jp2',
-          canonical_url: "http://www.example.com/image/iiif/nr349ct7889/nr349ct7889_00_0001"
+          id: "nr349ct7889", file_name: 'image.jp2',
+          canonical_url: "http://www.example.com/image/iiif/nr349ct7889/image"
         )
         expect(response.media_type).to eq 'image/jpeg'
         expect(response).to have_http_status :ok
@@ -313,12 +312,12 @@ RSpec.describe 'IIIF API' do
 
     context 'when additional params are provided' do
       before do
-        stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/nr%2F349%2Fct%2F7889%2Fnr349ct7889_00_0001.jp2/0,640,2552,2552/100,100/0/default.jpg")
+        stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_server_path('nr349ct7889', 'image.jp2')}/0,640,2552,2552/100,100/0/default.jpg")
           .to_return(status: 200, body: "")
       end
 
       it 'is ignored when instantiating StacksImage' do
-        get "/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/0,640,2552,2552/100,100/0/default.jpg?ignored=ignored&host=host"
+        get "/image/iiif/nr349ct7889%2Fimage.jp2/0,640,2552,2552/100,100/0/default.jpg?ignored=ignored&host=host"
 
         expect(response).to have_http_status :ok
       end
@@ -326,38 +325,38 @@ RSpec.describe 'IIIF API' do
 
     context 'when image is missing' do
       before do
-        stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/nr%2F349%2Fct%2F7889%2Fnr349ct7889_00_0001.jp2/0,640,2552,2552/100,100/0/default.jpg")
+        stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_server_path('nr349ct7889', 'image.jp2')}/0,640,2552,2552/100,100/0/default.jpg")
           .to_return(status: 404, body: "")
       end
 
       it 'returns 404 Not Found' do
-        get "/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/0,640,2552,2552/100,100/0/default.jpg?ignored=ignored&host=host"
+        get "/image/iiif/nr349ct7889%2Fimage.jp2/0,640,2552,2552/100,100/0/default.jpg?ignored=ignored&host=host"
         expect(response).to have_http_status :not_found
       end
     end
 
     context 'with the download flag set' do
       before do
-        stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/nr%2F349%2Fct%2F7889%2Fnr349ct7889_00_0001.jp2/0,640,2552,2552/100,100/0/default.jpg")
+        stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_server_path('nr349ct7889', 'image.jp2')}/0,640,2552,2552/100,100/0/default.jpg")
           .to_return(status: 200, body: "")
       end
 
       it 'sets the content-disposition header' do
-        get "/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/0,640,2552,2552/100,100/0/default.jpg?download=true"
+        get "/image/iiif/nr349ct7889%2Fimage/0,640,2552,2552/100,100/0/default.jpg?download=true"
 
         expect(response.headers['Content-Disposition']).to start_with 'attachment'
-        expect(response.headers['Content-Disposition']).to include 'filename="nr349ct7889_00_0001.jpg"'
+        expect(response.headers['Content-Disposition']).to include 'filename="image.jpg"'
       end
     end
 
     context 'with a pct region' do
       before do
-        stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/nr%2F349%2Fct%2F7889%2Fnr349ct7889_00_0001.jp2/pct:3.0,3.0,77.0,77.0/full/0/default.jpg")
+        stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_server_path('nr349ct7889', 'image.jp2')}/pct:3.0,3.0,77.0,77.0/full/0/default.jpg")
           .to_return(status: 200, body: "")
       end
 
       it 'loads the image' do
-        get '/image/iiif/nr349ct7889%2Fnr349ct7889_00_0001/pct:3,3,77,77/full/0/default.jpg'
+        get '/image/iiif/nr349ct7889%2Fimage.jp2/pct:3,3,77,77/full/0/default.jpg'
 
         expect(response.media_type).to eq 'image/jpeg'
         expect(response).to have_http_status :ok

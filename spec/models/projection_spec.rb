@@ -97,16 +97,19 @@ RSpec.describe Projection do
   end
 
   describe '#response' do
+    let(:druid) { 'nr349ct7889' }
+    let(:file_name) { 'image.jp2' }
+
     context 'for an image' do
-      let(:image) { StacksImage.new id: 'ab123cd4567', file_name: 'b' }
+      let(:image) { StacksImage.new(id: druid, file_name:) }
+
       subject(:projection) { described_class.new(image, transformation) }
 
       context "full region" do
         let(:options) { { size: 'max', region: 'full' } }
 
         it 'allows the user to see the full-resolution image' do
-          allow(HTTP).to receive(:use)
-            .and_return(http_client)
+          allow(HTTP).to receive(:use).and_return(http_client)
           allow(http_client).to receive(:get).and_return(double(body: nil))
           subject.response
           expect(http_client).to have_received(:get).with(%r{/full/max/0/default.jpg})
@@ -117,8 +120,7 @@ RSpec.describe Projection do
         let(:options) { { size: '!850,700', region: 'full' } }
 
         it 'returns original size when requested dimensions are larger' do
-          allow(HTTP).to receive(:use)
-            .and_return(http_client)
+          allow(HTTP).to receive(:use).and_return(http_client)
           allow(http_client).to receive(:get).and_return(double(body: nil))
           subject.response
           expect(http_client).to have_received(:get).with(%r{/full/!800,600/0/default.jpg})
@@ -127,7 +129,8 @@ RSpec.describe Projection do
     end
 
     context 'for a restricted image' do
-      let(:image) { RestrictedImage.new id: 'ab123cd4567', file_name: 'b' }
+      let(:image) { RestrictedImage.new(id: druid, file_name:) }
+
       subject(:projection) { described_class.new(image, transformation) }
 
       context "full region" do
@@ -332,7 +335,7 @@ RSpec.describe Projection do
   end
 
   describe '#use_original_size?' do
-    let(:image) { StacksImage.new id: 'ab123cd4567', file_name: 'b' }
+    let(:image) { StacksImage.new id: 'bc123cd4567', file_name: 'b' }
     subject(:use_original) { described_class.new(image, transformation).send(:use_original_size?) }
 
     context 'when percentage region is requested' do

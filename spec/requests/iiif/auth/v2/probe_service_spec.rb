@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe 'IIIF auth v2 probe service' do
-  let(:id) { 'bb461xx1037' }
-  let(:file_name) { 'SC0193_1982-013_b06_f01_1981-09-29.pdf' }
+  let(:id) { 'nr349ct7889' }
+  let(:file_name) { 'image.jp2' }
   let(:stacks_uri) { "https://stacks-uat.stanford.edu/file/druid:#{id}/#{URI.encode_uri_component(file_name)}" }
   let(:stacks_uri_param) { URI.encode_uri_component(stacks_uri) }
   let(:public_json) { '{}' }
@@ -102,7 +102,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
       it 'returns a success response' do
         expect(response).to have_http_status :ok
         # Ensure the druid doesn't have a prefix:
-        expect(StacksFile).to have_received(:new).with(hash_including(id: "bb461xx1037"))
+        expect(StacksFile).to have_received(:new).with(hash_including(id: "nr349ct7889"))
 
         expect(response.parsed_body).to include({
                                                   "@context" => "http://iiif.io/api/auth/2/context.json",
@@ -118,7 +118,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
       it 'returns a success response' do
         expect(response).to have_http_status :ok
         # Ensure the druid doesn't have a prefix:
-        expect(StacksFile).to have_received(:new).with(hash_including(id: "bb461xx1037"))
+        expect(StacksFile).to have_received(:new).with(hash_including(id: "nr349ct7889"))
 
         expect(response.parsed_body).to include({
                                                   "@context" => "http://iiif.io/api/auth/2/context.json",
@@ -144,7 +144,6 @@ RSpec.describe 'IIIF auth v2 probe service' do
 
   context 'when the user has access to the resource and it is streamable' do
     let(:file_name) { 'SC0193_1982-013_b06_f01_1981-09-29.mp4' }
-
     let(:public_json) do
       {
         'structural' => {
@@ -181,7 +180,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
                                                 "type" => "AuthProbeResult2",
                                                 "status" => 302
                                               })
-      expect(response.parsed_body.dig('location', 'id')).to start_with 'https://sul-mediaserver.stanford.edu/stacks/_definst_/bb/461/xx/1037/mp4:SC0193_1982-013_b06_f01_1981-09-29.mp4/playlist.m3u8?stacks_token='
+      expect(response.parsed_body.dig('location', 'id')).to start_with 'https://sul-mediaserver.stanford.edu/stacks/_definst_/nr/349/ct/7889/mp4:SC0193_1982-013_b06_f01_1981-09-29.mp4/playlist.m3u8?stacks_token='
     end
   end
 
