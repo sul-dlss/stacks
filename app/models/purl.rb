@@ -11,7 +11,7 @@ class Purl
   end
 
   class << self
-    delegate :public_xml, :public_json, :files, :barcode, to: :instance
+    delegate :public_xml, :public_json, :files, to: :instance
   end
 
   # TODO: was etag a valid key?
@@ -63,17 +63,6 @@ class Purl
         yield file
       end
     end
-  end
-
-  def barcode(druid)
-    public_xml = Purl.public_xml(druid)
-    doc = Nokogiri::XML.parse(public_xml)
-
-    barcode = doc.xpath('//identityMetadata/otherId[@name="barcode"]')&.text
-    return barcode if barcode.present?
-
-    source_id = doc.xpath('//identityMetadata/sourceId[@source="sul"]')&.text
-    source_id.sub(/^stanford_/, '') if source_id&.start_with?(/(stanford_)?36105/)
   end
 
   private

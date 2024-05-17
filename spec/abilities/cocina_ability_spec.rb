@@ -450,36 +450,4 @@ RSpec.describe CocinaAbility, type: :model do
       it { is_expected.to be_able_to(:read, square_thumbnail) }
     end
   end
-
-  describe 'for an object with CDL rights' do
-    let(:user) do
-      User.new(id: 'a', webauth_user: true, ldap_groups: %w[stanford:stanford], jwt_tokens:)
-    end
-    let(:jwt_tokens) { [] }
-    let(:access) do
-      {
-        'view' => 'none',
-        'download' => 'none',
-        'controlledDigitalLending' => true
-      }
-    end
-
-    it { is_expected.not_to be_able_to(:access, image) }
-    it { is_expected.not_to be_able_to(:access, file) }
-
-    context 'with a Stanford user with a checkout JWT token' do
-      let(:jwt_tokens) do
-        [
-          JWT.encode(
-            { aud: image.id, sub: 'a', exp: 1.hour.from_now.to_i },
-            Settings.cdl.jwt.secret,
-            Settings.cdl.jwt.algorithm
-          )
-        ]
-      end
-
-      it { is_expected.to be_able_to(:access, image) }
-      it { is_expected.not_to be_able_to(:access, file) }
-    end
-  end
 end

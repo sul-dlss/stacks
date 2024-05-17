@@ -78,19 +78,6 @@ class CocinaAbility
       end
     end
 
-    if user.cdl_tokens.present?
-      # TODO: Actually check if the CDL object is downloadable
-      # can [:download, :read], models do |f|
-      #   ...
-      # end
-
-      can [:access], access_models do |f|
-        next unless f.cocina_rights.controlled_digital_lending?
-
-        user.cdl_tokens.any? { |payload| payload['aud'] == f.id }
-      end
-    end
-
     cannot :download, RestrictedImage
 
     # These are called when checking to see if the image response should be served
