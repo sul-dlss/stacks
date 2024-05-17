@@ -1,6 +1,5 @@
 features:
   streaming_media: true
-  cocina: false
   metrics: false
   read_stacks_from_ocfl_root: false
 
@@ -9,17 +8,17 @@ stacks:
   ocfl_root: /stacks/ocfl
 
 imageserver:
-  base_uri: 'http://imageserver-prod.stanford.edu/iiif/2/'
+  base_uri: "http://imageserver-prod.stanford.edu/iiif/2/"
 
-metrics_api_url: 'https://sdr-metrics-api-prod.stanford.edu'
+metrics_api_url: "https://sdr-metrics-api-prod.stanford.edu"
 
 purl:
-  url: 'https://purl.stanford.edu/'
+  url: "https://purl.stanford.edu/"
 
 cdl:
-  url: 'https://requests.stanford.edu/cdl'
+  url: "https://requests.stanford.edu/cdl"
   jwt:
-    algorithm: 'HS256'
+    algorithm: "HS256"
     secret: secret
   redis: {}
 
@@ -51,17 +50,17 @@ user:
     # Codes from https://github.com/sul-dlss/cocina-models/blob/8fc7b5b9b0e3592a5c81f4c0e4ebff5c926669c6/openapi.yml#L1330-L1339
     # labels from https://consul.stanford.edu/display/chimera/Rights+Metadata+Locations
     labels:
-      spec: 'Special Collections reading room'
-      music: 'Music Library - main area'
-      ars: 'Archive of Recorded Sound listening room'
-      art: 'Art Library'
-      hoover: 'Hoover Library'
-      m&m: 'Media & Microtext'
+      spec: "Special Collections reading room"
+      music: "Music Library - main area"
+      ars: "Archive of Recorded Sound listening room"
+      art: "Art Library"
+      hoover: "Hoover Library"
+      m&m: "Media & Microtext"
     spec:
       - an.ip.address
 
 cors:
-  allow_origin_url: 'https://embed.stanford.edu'
+  allow_origin_url: "https://embed.stanford.edu"
 
 token:
   default_expiry_time: <%= 1.hour %>

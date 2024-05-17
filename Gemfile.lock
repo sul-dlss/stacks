@@ -145,8 +145,6 @@ GEM
       ed25519
     docile (1.4.0)
     domain_name (0.6.20240107)
-    dor-rights-auth (1.8.0)
-      nokogiri
     drb (2.2.1)
     dry-configurable (1.1.0)
       dry-core (~> 1.0, < 2)
@@ -258,6 +256,8 @@ GEM
     net-ssh (7.2.3)
     newrelic_rpm (9.9.0)
     nio4r (2.7.3)
+    nokogiri (1.16.5-arm64-darwin)
+      racc (~> 1.4)
     nokogiri (1.16.5-x86_64-darwin)
       racc (~> 1.4)
     nokogiri (1.16.5-x86_64-linux)
@@ -463,7 +463,6 @@ DEPENDENCIES
   dalli
   debug
   dlss-capistrano
-  dor-rights-auth (~> 1.8)
   faraday
   honeybadger
   http

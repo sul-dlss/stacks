@@ -18,6 +18,6 @@ class StacksMediaStream
     @stacks_rights ||= StacksRights.new(id:, file_name:)
   end
 
-  delegate :rights, :cocina_rights, :restricted_by_location?, :stanford_restricted?, :embargoed?,
+  delegate :rights, :restricted_by_location?, :stanford_restricted?, :embargoed?,
            :embargo_release_date, :location, to: :stacks_rights
 end

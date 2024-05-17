@@ -12,7 +12,7 @@ RSpec.describe MediaAuthenticationJson do
       location: 'm&m'
     )
   end
-  let(:ability) { Ability.new(user) }
+  let(:ability) { CocinaAbility.new(user) }
   let(:user) { instance_double(User, locations: [], webauth_user: false, stanford?: false) }
   subject { described_class.new(media:, user:, auth_url: '/the/auth/url', ability:) }
 

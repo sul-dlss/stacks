@@ -64,10 +64,6 @@ RSpec.describe "Authentication for IIIF requests" do
         }
       end
 
-      before do
-        stub_rights_xml(world_readable_rights_xml)
-      end
-
       context 'with an unauthenticated user' do
         let(:current_user) { user_no_loc_no_webauth }
 
@@ -100,10 +96,6 @@ RSpec.describe "Authentication for IIIF requests" do
             ]
           }
         }
-      end
-
-      before do
-        stub_rights_xml(stanford_restricted_rights_xml)
       end
 
       context 'with a authorized webauthed user' do
@@ -157,10 +149,6 @@ RSpec.describe "Authentication for IIIF requests" do
             ]
           }
         }
-      end
-
-      before do
-        stub_rights_xml(location_rights_xml)
       end
 
       context 'with a user in the location' do

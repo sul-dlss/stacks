@@ -94,7 +94,6 @@ RSpec.describe 'IIIF auth v2 probe service' do
     end
 
     before do
-      stub_rights_xml(world_readable_rights_xml)
       get "/iiif/auth/v2/probe?id=#{stacks_uri_param}"
     end
 
@@ -168,7 +167,6 @@ RSpec.describe 'IIIF auth v2 probe service' do
     let(:stacks_uri) { "https://stacks-uat.stanford.edu/file/#{id}/#{URI.encode_uri_component(file_name)}" }
 
     before do
-      stub_rights_xml(world_readable_rights_xml)
       get "/iiif/auth/v2/probe?id=#{stacks_uri_param}"
     end
 
@@ -223,10 +221,6 @@ RSpec.describe 'IIIF auth v2 probe service' do
           ]
         }
       }
-    end
-
-    before do
-      stub_rights_xml(stanford_restricted_rights_xml)
     end
 
     context 'when the user has a bearer token with the ldap group' do
@@ -322,7 +316,6 @@ RSpec.describe 'IIIF auth v2 probe service' do
     end
 
     before do
-      stub_rights_xml(rights_xml)
       get "/iiif/auth/v2/probe?id=#{stacks_uri_param}"
     end
 
@@ -404,7 +397,6 @@ RSpec.describe 'IIIF auth v2 probe service' do
     end
 
     before do
-      stub_rights_xml(rights_xml)
       get "/iiif/auth/v2/probe?id=#{stacks_uri_param}"
     end
 
@@ -463,7 +455,6 @@ RSpec.describe 'IIIF auth v2 probe service' do
     end
 
     before do
-      stub_rights_xml(rights_xml)
       get "/iiif/auth/v2/probe?id=#{stacks_uri_param}"
     end
 

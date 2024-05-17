@@ -4,35 +4,8 @@ require 'rails_helper'
 
 RSpec.describe 'Metrics tracking' do
   include ActiveJob::TestHelper
-
   let(:druid) { 'nr349ct7889' }
   let(:file_name) { 'image.jp2' }
-  let(:xml) do
-    <<-XML
-    <publicObject id="druid:#{druid}" published="2019-12-19T17:58:11Z" publishVersion="dor-services/8.1.1">
-      <contentMetadata objectId="druid:#{druid}" type="book">
-        <resource id="#{druid}_1" sequence="1" type="page">
-          <label>Page 1</label>
-          <file id="#{file_name}" mimetype="image/jp2" size="744853">
-            <imageData width="1738" height="2266"/>
-          </file>
-        </resource>
-      </contentMetadata>
-      <rightsMetadata>
-        <access type="discover">
-          <machine>
-            <world/>
-          </machine>
-        </access>
-        <access type="read">
-          <machine>
-            <world/>
-          </machine>
-        </access>
-      </rightsMetadata>
-    </publicObject>
-    XML
-  end
   let(:json) do
     {
       'structural' => {
@@ -54,14 +27,13 @@ RSpec.describe 'Metrics tracking' do
       }
     }.to_json
   end
-  let(:ability) { instance_double(Ability, can?: true, authorize!: true) }
+  let(:ability) { instance_double(CocinaAbility, can?: true, authorize!: true) }
 
   before do
-    allow(Ability).to receive(:new).and_return(ability)
+    allow(Settings.features).to receive(:metrics).and_return(true)
+    allow(Settings).to receive(:metrics_api_url).and_return('https://example.com')
     allow(CocinaAbility).to receive(:new).and_return(ability)
-    stub_rights_xml(world_readable_rights_xml)
     stub_request(:post, 'https://example.com/ahoy/events')
-    stub_request(:get, "https://purl.stanford.edu/#{druid}.xml").to_return(status: 200, body: xml)
     stub_request(:get, "https://purl.stanford.edu/#{druid}.json").to_return(status: 200, body: json)
   end
 
@@ -128,7 +100,7 @@ RSpec.describe 'Metrics tracking' do
     let(:image_response) { instance_double(HTTP::Response, body: StringIO.new, status: 200) }
     let(:projection) { instance_double(Projection, response: image_response, valid?: true) }
     let(:transformation) { double }
-    let(:ability) { instance_double(Ability, can?: true, authorize!: true) }
+    let(:ability) { instance_double(CocinaAbility, can?: true, authorize!: true) }
 
     before do
       allow(IIIF::Image::OptionDecoder).to receive(:decode)
@@ -136,7 +108,7 @@ RSpec.describe 'Metrics tracking' do
         .and_return(transformation)
       allow(StacksImage).to receive(:new).and_return(image)
       allow(image).to receive(:projection_for).with(transformation).and_return(projection)
-      allow(Ability).to receive(:new).and_return(ability)
+      allow(CocinaAbility).to receive(:new).and_return(ability)
     end
 
     # rubocop:disable RSpec/ExampleLength

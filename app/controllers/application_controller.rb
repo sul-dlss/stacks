@@ -37,6 +37,6 @@ class ApplicationController < ActionController::Base
   end
 
   def ability_class
-    Settings.features.cocina ? CocinaAbility : Ability
+    CocinaAbility
   end
 end
