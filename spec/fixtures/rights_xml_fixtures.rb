@@ -81,7 +81,7 @@ module RightsXMLFixtures
             </machine>
           </access>
         </rightsMetadata>
-        <thumb>nr349ct7889/nr349ct7889_00_0001.jp2</thumb>
+        <thumb>nr349ct7889/image.jp2</thumb>
       </publicObject>
     XML
   end

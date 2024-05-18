@@ -7,3 +7,12 @@ user:
       - ip.address1
       - ip.address3
       - ip.address4
+
+features:
+  metrics: true
+
+metrics_api_url: 'https://example.com'
+
+stacks:
+  storage_root: spec/fixtures
+  ocfl_root: spec/fixtures/ocfl

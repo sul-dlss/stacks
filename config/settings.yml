@@ -1,10 +1,17 @@
+features:
+  streaming_media: true
+  cocina: false
+  metrics: false
+  read_stacks_from_ocfl_root: false
+
 stacks:
   storage_root: /stacks
+  ocfl_root: /stacks/ocfl
 
 imageserver:
   base_uri: 'http://imageserver-prod.stanford.edu/iiif/2/'
 
-metrics_api_url: 'https://sdr-metrics-api-prod.stanford.edu' 
+metrics_api_url: 'https://sdr-metrics-api-prod.stanford.edu'
 
 purl:
   url: 'https://purl.stanford.edu/'
@@ -55,10 +62,6 @@ user:
 
 cors:
   allow_origin_url: 'https://embed.stanford.edu'
-features:
-  streaming_media: true
-  cocina: false
-  metrics: false
 
 token:
   default_expiry_time: <%= 1.hour %>

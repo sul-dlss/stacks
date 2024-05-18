@@ -13,7 +13,10 @@ RSpec.describe StacksImage do
   describe "#info_service" do
     subject { instance.send(:info_service) }
 
-    let(:instance) { described_class.new(id: 'ab012cd3456', file_name: 'def') }
+    let(:druid) { 'nr349ct7889' }
+    let(:file_name) { 'image.jp2' }
+    let(:instance) { described_class.new(id: druid, file_name:) }
+
     it { is_expected.to be_kind_of IiifMetadataService }
   end
 
@@ -55,7 +58,7 @@ RSpec.describe StacksImage do
     end
 
     let(:attributes) do
-      { id: 'ab012cd3456', file_name: 'def',
+      { id: 'bc012cd3456', file_name: 'def',
         canonical_url: 'http://example.com/',
         transformation: }
     end

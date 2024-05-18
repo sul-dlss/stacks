@@ -30,5 +30,7 @@ jobs:
       run: bin/setup
     - name: Run tests
       run: bin/rake
-    - name: Run tests (with cocina)
+    - name: Run tests (with cocina feature flag enabled)
       run: SETTINGS__FEATURES__COCINA=true bin/rake spec
+    - name: Run tests (with OCFL feature flag enabled)
+      run: SETTINGS__FEATURES__READ_STACKS_FROM_OCFL_ROOT=true bin/rake spec

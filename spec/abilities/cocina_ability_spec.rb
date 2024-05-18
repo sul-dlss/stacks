@@ -7,6 +7,7 @@ RSpec.describe CocinaAbility, type: :model do
   subject(:ability) { described_class.new(user) }
 
   before do
+    # Regardless of the value of the Cocina feature flag, these tests *require* the flag flipped on, so stub it.
     allow(Settings.features).to receive(:cocina).and_return(true)
     allow(Purl).to receive(:public_json).and_return(public_json)
     allow(image).to receive_messages(image_width: 11_957, image_height: 15_227)

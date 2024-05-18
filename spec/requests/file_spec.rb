@@ -7,6 +7,8 @@ RSpec.describe "File requests" do
     allow(Purl).to receive_messages(public_xml: '<publicObject />', public_json:)
   end
 
+  let(:druid) { 'nr349ct7889' }
+  let(:file_name) { 'image.jp2' }
   let(:public_json) do
     {
       'structural' => {
@@ -15,7 +17,7 @@ RSpec.describe "File requests" do
             'structural' => {
               'contains' => [
                 {
-                  'filename' => 'nr349ct7889_00_0001.jp2',
+                  'filename' => file_name,
                   'access' => {
                     'view' => 'world',
                     'download' => 'world'
@@ -31,7 +33,7 @@ RSpec.describe "File requests" do
 
   describe 'OPTIONS options' do
     it 'permits Range headers for all origins' do
-      options '/file/xf680rd3068/xf680rd3068_1.jp2'
+      options "/file/#{druid}/#{file_name}"
       expect(response).to be_successful
       expect(response.headers['Access-Control-Allow-Origin']).to eq '*'
       expect(response.headers['Access-Control-Allow-Headers']).to include 'Range'
@@ -39,7 +41,8 @@ RSpec.describe "File requests" do
   end
 
   describe 'GET file with slashes in filename' do
-    let(:stacks_file) { StacksFile.new(id: 'xf680rd3068', file_name: 'path/to/xf680rd3068_1.jp2') }
+    let(:file_name) { 'path/to/image.jp2' }
+    let(:stacks_file) { StacksFile.new(id: druid, file_name:) }
     let(:world_rights) do
       <<-EOF
         <publicObject>
@@ -61,7 +64,7 @@ RSpec.describe "File requests" do
               'structural' => {
                 'contains' => [
                   {
-                    'filename' => 'path/to/xf680rd3068_1.jp2',
+                    'filename' => file_name,
                     'access' => {
                       'view' => 'world',
                       'download' => 'world'
@@ -76,19 +79,28 @@ RSpec.describe "File requests" do
     end
 
     before do
+      allow(StacksFile).to receive(:new).and_return(stacks_file)
+      allow(stacks_file).to receive(:path)
       allow_any_instance_of(FileController).to receive(:send_file).with(stacks_file.path, disposition: :inline)
       allow(Purl).to receive(:public_xml).and_return(world_rights)
     end
 
     it 'returns a successful HTTP response' do
-      get '/file/xf680rd3068/path/to/xf680rd3068_1.jp2'
+      get "/file/#{druid}/#{file_name}"
       expect(response).to be_successful
     end
   end
 
   describe 'GET missing file' do
+    before do
+      allow(StacksFile).to receive(:new).and_return(stacks_file)
+      allow(stacks_file).to receive(:path)
+    end
+
+    let(:stacks_file) { StacksFile.new(id: druid, file_name: 'path/to/99999.jp2') }
+
     it 'returns a 400 HTTP response' do
-      get '/file/xf680rd3068/path/to/99999.jp2'
+      get "/file/#{druid}/path/to/99999.jp2"
       expect(response).to have_http_status(Settings.features.cocina ? :not_found : :forbidden)
     end
   end
