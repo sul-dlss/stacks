@@ -31,16 +31,6 @@ class StacksRights
     end
   end
 
-  def cdl_restricted?
-    if use_json?
-      cocina_rights.controlled_digital_lending?
-    else
-      value, _rule = rights.cdl_rights_for_file file_name
-
-      value
-    end
-  end
-
   # Returns true if a given file has any location restrictions.
   #   Falls back to the object-level behavior if none at file level.
   def restricted_by_location?

@@ -76,36 +76,4 @@ RSpec.describe 'IIIF auth v1 tokens' do
       end
     end
   end
-
-  describe '#create_for_item' do
-    it 'returns an error response' do
-      get '/image/iiif/token/whatever'
-
-      expect(response).to have_http_status :unauthorized
-
-      expect(response.parsed_body['error']).to eq 'missingCredentials'
-    end
-
-    context 'with a token for the item' do
-      let(:user) do
-        User.new(
-          id: 'xyz',
-          jwt_tokens: jwt_tokens.map do |payload|
-            JWT.encode(payload, Settings.cdl.jwt.secret, Settings.cdl.jwt.algorithm)
-          end
-        )
-      end
-
-      let(:jwt_tokens) do
-        [
-          { jti: 'a', aud: 'whatever', sub: 'xyz', exp: 1.hour.from_now.to_i }
-        ]
-      end
-
-      it 'calls the ordinary create method' do
-        get '/image/iiif/token/whatever'
-        expect(response.parsed_body).to include({ 'tokenType' => 'Bearer' })
-      end
-    end
-  end
 end

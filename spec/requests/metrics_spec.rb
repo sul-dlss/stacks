@@ -122,8 +122,7 @@ RSpec.describe 'Metrics tracking' do
         exist?: true,
         etag: nil,
         mtime: nil,
-        restricted: false,
-        cdl_restricted?: false
+        restricted: false
       )
     end
     let(:image_response) { instance_double(HTTP::Response, body: StringIO.new, status: 200) }

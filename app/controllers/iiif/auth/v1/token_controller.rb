@@ -30,22 +30,6 @@ module Iiif
           end
         end
 
-        def create_for_item
-          if current_user.cdl_tokens.none? { |payload| payload['aud'] == params[:id] }
-            @message = { error: 'missingCredentials', description: '' }
-
-            if browser_based_client_auth?
-              create_for_browser_based_client_application_auth
-            else
-              create_for_json_access_token_auth(nil)
-            end
-
-            return
-          end
-
-          create
-        end
-
         private
 
         # An authenticated user can retrieve a token if they are logged in with webauth, as an
@@ -54,8 +38,7 @@ module Iiif
         def token_eligible_user?
           current_user.token_user? ||
             current_user.webauth_user? ||
-            current_user.location? ||
-            current_user.cdl_tokens.any?
+            current_user.location?
         end
 
         # Handle IIIF Authentication 1.0 browser-based client application requests

@@ -48,8 +48,7 @@ module CurrentUserConcern
     User.new(id: session[:remote_user] || request.remote_user,
              ip_address: request.remote_ip,
              webauth_user: true,
-             ldap_groups:,
-             jwt_tokens: cookies.encrypted[:tokens]).tap { |user| clean_up_expired_cdl_tokens(user) }
+             ldap_groups:)
   end
 
   def anonymous_locatable_user
@@ -72,11 +71,5 @@ module CurrentUserConcern
 
   def workgroups_from_env
     request.env.fetch('eduPersonEntitlement', '').split(';')
-  end
-
-  def clean_up_expired_cdl_tokens(user)
-    return unless cookies.encrypted[:tokens] && user.cdl_tokens.count != cookies.encrypted[:tokens].length
-
-    cookies.encrypted[:tokens] = user.cdl_tokens.pluck(:token)
   end
 end

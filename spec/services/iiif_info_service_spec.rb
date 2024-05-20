@@ -110,7 +110,7 @@ RSpec.describe IiifInfoService do
       let(:auth_service) { image_info['service'] }
 
       before do
-        allow(image).to receive_messages(stanford_restricted?: true, cdl_restricted?: false)
+        allow(image).to receive_messages(stanford_restricted?: true)
       end
 
       it 'the tile height/width is 256' do
@@ -232,54 +232,6 @@ RSpec.describe IiifInfoService do
         expect(image_info['service']).to be_present
         expect(image_info['service'].length).to eq 2
         expect(image_info['service'].pluck('profile')).to contain_exactly('http://iiif.io/api/auth/1/login', 'http://iiif.io/api/auth/1/external')
-      end
-    end
-
-    context 'when the item has CDL rights' do
-      let(:image) do
-        RestrictedImage.new(id: 'whatever', file_name: 'something')
-      end
-      let(:downloadable_anonymously) { false }
-      let(:public_json) do
-        {
-          'structural' => {
-            'contains' => [
-              {
-                'structural' => {
-                  'contains' => [
-                    {
-                      'filename' => 'something',
-                      'access' => {
-                        'view' => 'none',
-                        'download' => 'none',
-                        'controlledDigitalLending' => true
-                      },
-                      'hasMimeType' => 'text/csv'
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        }
-      end
-
-      before do
-        allow(Purl).to receive(:public_json).and_return(public_json)
-        stub_rights_xml(world_readable_rights_xml)
-        allow(image).to receive(:cdl_restricted?).and_return(true)
-      end
-
-      it 'advertises support for both login and external authentication' do
-        expect(image_info.dig('service', '@id')).to eq 'http://cdl/out'
-        expect(image_info.dig('service', 'profile')).to eq 'http://iiif.io/api/auth/1/login'
-
-        expect(image_info.dig('service', 'service', 0, 'profile')).to eq 'http://iiif.io/api/auth/1/token'
-        expect(image_info.dig('service', 'service', 0, '@id')).to eq 'http://cdl/token'
-        expect(image_info.dig('service', 'service', 1, 'profile')).to eq 'http://iiif.io/api/auth/1/logout'
-        expect(image_info.dig('service', 'service', 1, '@id')).to eq 'http://cdl/in'
-        expect(image_info.dig('service', 'service', 2, 'profile')).to eq 'http://iiif.io/api/auth/1/info'
-        expect(image_info.dig('service', 'service', 2, '@id')).to eq 'http://cdl/info'
       end
     end
   end

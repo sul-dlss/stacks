@@ -69,7 +69,6 @@ class IiifInfoService
     services = []
     services << Iiif::V1::AuthService.to_iiif(context) if current_image.stanford_restricted?
     services << LocationService.to_iiif(context) if current_image.restricted_by_location?
-    services << CdlService.to_iiif(context, current_image) if current_image.cdl_restricted?
     return nil if services.empty?
 
     services.one? ? services.first : services

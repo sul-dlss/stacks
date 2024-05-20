@@ -186,8 +186,6 @@ class IiifController < ApplicationController
   end
 
   def cache_time
-    return 1.minute if current_image.cdl_restricted?
-
     10.minutes
   end
 end
