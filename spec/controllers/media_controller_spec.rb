@@ -4,7 +4,6 @@ require 'rails_helper'
 
 RSpec.describe MediaController do
   let(:video) { StacksMediaStream.new(id: 'bb582xs1304', file_name: 'bb582xs1304_sl', format: 'mp4') }
-  before { stub_rights_xml(world_readable_rights_xml) }
 
   describe '#verify_token' do
     let(:id) { 'ab123cd4567' }
@@ -97,8 +96,6 @@ RSpec.describe MediaController do
       let(:token) { instance_double(StacksMediaToken, to_encrypted_string: 'sekret-token') }
       before do
         allow(StacksMediaToken).to receive(:new).and_return(token)
-
-        next unless Settings.features.cocina # below mocking is only needed if cocina is being parsed instead of legacy rights XML
 
         # We could be more integration-y and instead e.g. stub_request(:get, "https://purl.stanford.edu/bd786fy6312.json").to_return(...).
         # But the StacksMediaStream code (and the metadata fetching/parsing code it uses) that'd be exercised by that approach is already

@@ -40,7 +40,7 @@ class Purl
   def files(druid, &)
     return to_enum(:files, druid) unless block_given?
 
-    Settings.features.cocina ? files_from_json(druid, &) : files_from_xml(druid, &)
+    files_from_json(druid, &)
   end
 
   def files_from_json(druid)
@@ -49,17 +49,6 @@ class Purl
     doc.dig('structural', 'contains').each do |fileset|
       fileset.dig('structural', 'contains').each do |file|
         file = StacksFile.new(id: druid, file_name: file['filename'])
-        yield file
-      end
-    end
-  end
-
-  def files_from_xml(druid)
-    doc = Nokogiri::XML.parse(public_xml(druid))
-
-    doc.xpath('//contentMetadata/resource').each do |resource|
-      resource.xpath('file|externalFile').each do |attr|
-        file = StacksFile.new(id: druid, file_name: attr['id'])
         yield file
       end
     end

@@ -13,7 +13,7 @@ class User
   end
 
   def ability_class
-    Settings.features.cocina ? CocinaAbility : Ability
+    CocinaAbility
   end
 
   def webauth_user?

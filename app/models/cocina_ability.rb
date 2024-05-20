@@ -45,35 +45,35 @@ class CocinaAbility
     access_models = downloadable_models + [StacksMediaStream]
 
     can :download, downloadable_models do |f|
-      f.cocina_rights.download == 'world'
+      f.rights.download == 'world'
     end
 
     can [:access], access_models do |f|
-      f.cocina_rights.view == 'world'
+      f.rights.view == 'world'
     end
 
     if user.stanford?
       can :download, downloadable_models do |f|
-        f.cocina_rights.download == 'stanford'
+        f.rights.download == 'stanford'
       end
 
       can [:access], access_models do |f|
-        f.cocina_rights.view == 'stanford'
+        f.rights.view == 'stanford'
       end
     end
 
     if user.locations.present?
       can :download, downloadable_models do |f|
-        next unless f.cocina_rights.download == 'location-based'
+        next unless f.rights.download == 'location-based'
 
-        user.locations.include?(f.cocina_rights.location)
+        user.locations.include?(f.rights.location)
       end
 
       can [:access], access_models do |f|
         user.locations.any? do |_location|
-          next unless f.cocina_rights.view == 'location-based'
+          next unless f.rights.view == 'location-based'
 
-          user.locations.include?(f.cocina_rights.location)
+          user.locations.include?(f.rights.location)
         end
       end
     end

@@ -100,8 +100,8 @@ RSpec.describe "File requests" do
     let(:stacks_file) { StacksFile.new(id: druid, file_name: 'path/to/99999.jp2') }
 
     it 'returns a 400 HTTP response' do
-      get "/file/#{druid}/path/to/99999.jp2"
-      expect(response).to have_http_status(Settings.features.cocina ? :not_found : :forbidden)
+      get '/file/xf680rd3068/path/to/99999.jp2'
+      expect(response).to have_http_status(:not_found)
     end
   end
 end

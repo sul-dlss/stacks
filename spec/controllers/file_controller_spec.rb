@@ -5,7 +5,6 @@ require 'rails_helper'
 RSpec.describe FileController do
   before do
     allow(StacksFile).to receive(:new).and_return(file)
-    stub_rights_xml(world_readable_rights_xml)
     allow(Purl).to receive(:public_json).and_return(public_json)
   end
 

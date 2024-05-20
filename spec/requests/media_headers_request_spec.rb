@@ -4,7 +4,6 @@ require 'rails_helper'
 
 RSpec.describe "CORS headers for Media requests" do
   before do
-    stub_rights_xml(world_readable_rights_xml)
     allow(Purl).to receive(:public_json).and_return(public_json)
   end
 

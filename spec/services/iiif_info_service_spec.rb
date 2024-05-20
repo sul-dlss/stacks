@@ -176,7 +176,6 @@ RSpec.describe IiifInfoService do
       before do
         allow(Purl).to receive(:public_json).and_return(public_json)
 
-        stub_rights_xml(world_readable_rights_xml)
         allow(image).to receive(:restricted_by_location?).and_return(true)
       end
 
@@ -224,7 +223,6 @@ RSpec.describe IiifInfoService do
 
       before do
         allow(Purl).to receive(:public_json).and_return(public_json)
-        stub_rights_xml(world_readable_rights_xml)
         allow(image).to receive_messages(stanford_restricted?: true, restricted_by_location?: true)
       end
 

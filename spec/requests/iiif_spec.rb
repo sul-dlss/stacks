@@ -44,7 +44,6 @@ RSpec.describe 'IIIF API' do
   end
 
   before do
-    stub_rights_xml(world_readable_rights_xml)
     allow(Purl).to receive(:public_json).and_return(public_json)
 
     # stubbing Rails.cache.fetch is required because you can't dump a singleton (double)
@@ -106,10 +105,6 @@ RSpec.describe 'IIIF API' do
         }
       end
 
-      before do
-        stub_rights_xml(location_rights_xml)
-      end
-
       context 'outside of the location' do
         it 'uses the unauthorized status code for the response' do
           get '/image/iiif/nr349ct7889%2Fimage.jp2/info.json'
@@ -117,9 +112,6 @@ RSpec.describe 'IIIF API' do
         end
 
         context 'for a thumbnail' do
-          before do
-            stub_rights_xml(location_thumbnail_rights_xml)
-          end
           let(:public_json) do
             {
               'structural' => {
@@ -187,9 +179,6 @@ RSpec.describe 'IIIF API' do
           }
         }
       end
-      before do
-        stub_rights_xml(stanford_restricted_rights_xml)
-      end
 
       it 'redirects requests to the degraded info.json' do
         get '/image/iiif/nr349ct7889/image.jp2/info.json'
@@ -231,9 +220,6 @@ RSpec.describe 'IIIF API' do
         }
       end
 
-      before do
-        stub_rights_xml(world_no_download_xml)
-      end
       it 'serves up regular info.json (no degraded)' do
         get '/image/iiif/nr349ct7889%2Fimage.jp2/info.json'
         expect(response).to have_http_status :ok
@@ -269,9 +255,7 @@ RSpec.describe 'IIIF API' do
           }
         }
       end
-      before do
-        stub_rights_xml(stanford_only_no_download_xml)
-      end
+
       it 'redirects to degraded version' do
         get '/image/iiif/nr349ct7889/image.jp2/info.json'
         expect(response).to have_http_status :redirect
@@ -281,7 +265,7 @@ RSpec.describe 'IIIF API' do
   end
 
   describe 'image requests for world readable items' do
-    let(:ability) { instance_double(Ability, can?: false) }
+    let(:ability) { instance_double(CocinaAbility, can?: false) }
 
     before do
       # for the cache headers
