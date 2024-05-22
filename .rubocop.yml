@@ -16,41 +16,23 @@ AllCops:
     - "db/**/*"
     - "config/**/*"
     - "spec/spec_helper.rb"
-    - "spec/teaspoon_env.rb"
-    - "vendor/**/*"
-    - "app/controllers/concerns/action_controller/**/*"
+    - vendor/bundle/**/* # Needed on Github Actions for airbrussh, which ships an incompatible .rubocop.yml
 
 Rails:
   Enabled: true
 
 Metrics/CyclomaticComplexity:
   Exclude:
-    - "app/models/ability.rb"
     - "app/models/cocina_ability.rb"
 
 Metrics/PerceivedComplexity:
   Exclude:
-    - "app/models/ability.rb"
     - "app/models/cocina_ability.rb"
 
 Metrics/AbcSize:
   Exclude:
-    - "app/models/ability.rb"
     - "app/models/cocina_ability.rb"
     - "app/controllers/iiif_controller.rb"
-
-Layout/EmptyLinesAroundBlockBody:
-  Exclude:
-    - "spec/requests/file_auth_request_spec.rb"
-    - "spec/requests/iiif_auth_request_spec.rb"
-    - "spec/requests/media_auth_request_spec.rb"
-
-Lint/AssignmentInCondition:
-  Enabled: false
-
-Metrics/BlockLength:
-  Exclude:
-    - "spec/**/*"
 
 Metrics/ClassLength:
   Exclude:
@@ -62,19 +44,18 @@ Layout/LineLength:
 
 Metrics/MethodLength:
   Exclude:
-    - "app/models/ability.rb"
     - "app/models/cocina_ability.rb"
-    - "app/services/cdl_service.rb"
 
 Naming/HeredocDelimiterNaming:
-  Enabled: false
+  Exclude:
+    - spec/requests/**/*
 
 Naming/MemoizedInstanceVariableName:
   Exclude:
     - "app/controllers/**/*"
 
 Naming/PredicateName:
-  NamePrefix:
+  ForbiddenPrefixes:
     - "is_"
 
 Style/StringLiterals:
