@@ -265,17 +265,6 @@ RSpec.describe 'IIIF API' do
   end
 
   describe 'image requests for world readable items' do
-    let(:ability) { instance_double(CocinaAbility, can?: false) }
-
-    before do
-      # for the cache headers
-      allow_any_instance_of(IiifController).to receive(:anonymous_ability).and_return ability
-      # for authorize! in #show
-      allow_any_instance_of(IiifController).to receive(:authorize!).with(:read, Projection).and_return(true)
-      # for current_image
-      allow_any_instance_of(IiifController).to receive(:can?).with(:download, StacksImage).and_return(true)
-    end
-
     context 'when the request is valid' do
       before do
         stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_server_path('nr349ct7889', 'image.jp2')}/0,640,2552,2552/100,100/0/default.jpg")
@@ -315,6 +304,19 @@ RSpec.describe 'IIIF API' do
 
       it 'returns 404 Not Found' do
         get "/image/iiif/nr349ct7889%2Fimage.jp2/0,640,2552,2552/100,100/0/default.jpg?ignored=ignored&host=host"
+        expect(response).to have_http_status :not_found
+      end
+    end
+
+    context 'when the object has no filesets (e.g. a collection)' do
+      let(:public_json) do
+        { 'structural' => {} }
+      end
+
+      it 'returns 404 Not Found' do
+        stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/nr%2F349%2Fct%2F7889%2Fimage.jp2/0,640,2552,2552/100,100/0/default.jpg")
+          .to_return(status: 200, body: "", headers: {})
+        get "/image/iiif/nr349ct7889%2Fimage.jp2/0,640,2552,2552/100,100/0/default.jpg"
         expect(response).to have_http_status :not_found
       end
     end
