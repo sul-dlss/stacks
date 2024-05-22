@@ -9,71 +9,71 @@ AllCops:
   TargetRubyVersion: 3.1
   DisplayCopNames: true
   Exclude:
-    - 'Gemfile'
-    - 'bin/**/*'
-    - 'db/**/*'
-    - 'config/**/*'
-    - 'spec/spec_helper.rb'
-    - 'spec/teaspoon_env.rb'
-    - 'vendor/**/*'
-    - 'app/controllers/concerns/action_controller/**/*'
+    - "Gemfile"
+    - "bin/**/*"
+    - "db/**/*"
+    - "config/**/*"
+    - "spec/spec_helper.rb"
+    - "spec/teaspoon_env.rb"
+    - "vendor/**/*"
+    - "app/controllers/concerns/action_controller/**/*"
 
 Rails:
   Enabled: true
 
 Metrics/CyclomaticComplexity:
   Exclude:
-    - 'app/models/ability.rb'
-    - 'app/models/cocina_ability.rb'
+    - "app/models/ability.rb"
+    - "app/models/cocina_ability.rb"
 
 Metrics/PerceivedComplexity:
   Exclude:
-    - 'app/models/ability.rb'
-    - 'app/models/cocina_ability.rb'
+    - "app/models/ability.rb"
+    - "app/models/cocina_ability.rb"
 
 Metrics/AbcSize:
   Exclude:
-    - 'app/models/ability.rb'
-    - 'app/models/cocina_ability.rb'
-    - 'app/controllers/iiif_controller.rb'
+    - "app/models/ability.rb"
+    - "app/models/cocina_ability.rb"
+    - "app/controllers/iiif_controller.rb"
 
 Layout/EmptyLinesAroundBlockBody:
   Exclude:
-    - 'spec/requests/file_auth_request_spec.rb'
-    - 'spec/requests/iiif_auth_request_spec.rb'
-    - 'spec/requests/media_auth_request_spec.rb'
+    - "spec/requests/file_auth_request_spec.rb"
+    - "spec/requests/iiif_auth_request_spec.rb"
+    - "spec/requests/media_auth_request_spec.rb"
 
 Lint/AssignmentInCondition:
   Enabled: false
 
 Metrics/BlockLength:
   Exclude:
-    - 'spec/**/*'
+    - "spec/**/*"
 
 Metrics/ClassLength:
   Exclude:
-    - 'app/controllers/iiif_controller.rb'
-    - 'app/models/projection.rb'
+    - "app/controllers/iiif_controller.rb"
+    - "app/models/projection.rb"
 
 Layout/LineLength:
   Max: 140
 
 Metrics/MethodLength:
   Exclude:
-    - 'app/models/ability.rb'
-    - 'app/models/cocina_ability.rb'
-    - 'app/services/cdl_service.rb'
+    - "app/models/ability.rb"
+    - "app/models/cocina_ability.rb"
+    - "app/services/cdl_service.rb"
 
 Naming/HeredocDelimiterNaming:
   Enabled: false
 
 Naming/MemoizedInstanceVariableName:
   Exclude:
-    - 'app/controllers/**/*'
+    - "app/controllers/**/*"
 
 Naming/PredicateName:
   NamePrefix:
-    - 'is_'
+    - "is_"
 
 Style/StringLiterals:
   Enabled: false
@@ -561,17 +561,17 @@ RSpec/SubjectDeclaration: # new in 2.5
   Enabled: true
 RSpec/VerifiedDoubleReference: # new in 2.10.0
   Enabled: true
-RSpec/Rails/AvoidSetupHook: # new in 2.4
+RSpecRails/AvoidSetupHook: # new in 2.4
   Enabled: true
-RSpec/Rails/HaveHttpStatus: # new in 2.12
+RSpecRails/HaveHttpStatus: # new in 2.12
   Enabled: true
-RSpec/Rails/InferredSpecType: # new in 2.14
+RSpecRails/InferredSpecType: # new in 2.14
   Enabled: true
-RSpec/Rails/MinitestAssertions: # new in 2.17
+RSpecRails/MinitestAssertions: # new in 2.17
   Enabled: true
-RSpec/Rails/NegationBeValid: # new in 2.23
+RSpecRails/NegationBeValid: # new in 2.23
   Enabled: true
-RSpec/Rails/TravelAround: # new in 2.19
+RSpecRails/TravelAround: # new in 2.19
   Enabled: true
 Performance/BlockGivenWithExplicitBlock: # new in 1.9
   Enabled: true
