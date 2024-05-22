@@ -4,76 +4,78 @@ require:
   - rubocop-rails
   - rubocop-rspec
   - rubocop-performance
+  - rubocop-capybara
+  - rubocop-rspec_rails
 
 AllCops:
   TargetRubyVersion: 3.1
   DisplayCopNames: true
   Exclude:
-    - 'Gemfile'
-    - 'bin/**/*'
-    - 'db/**/*'
-    - 'config/**/*'
-    - 'spec/spec_helper.rb'
-    - 'spec/teaspoon_env.rb'
-    - 'vendor/**/*'
-    - 'app/controllers/concerns/action_controller/**/*'
+    - "Gemfile"
+    - "bin/**/*"
+    - "db/**/*"
+    - "config/**/*"
+    - "spec/spec_helper.rb"
+    - "spec/teaspoon_env.rb"
+    - "vendor/**/*"
+    - "app/controllers/concerns/action_controller/**/*"
 
 Rails:
   Enabled: true
 
 Metrics/CyclomaticComplexity:
   Exclude:
-    - 'app/models/ability.rb'
-    - 'app/models/cocina_ability.rb'
+    - "app/models/ability.rb"
+    - "app/models/cocina_ability.rb"
 
 Metrics/PerceivedComplexity:
   Exclude:
-    - 'app/models/ability.rb'
-    - 'app/models/cocina_ability.rb'
+    - "app/models/ability.rb"
+    - "app/models/cocina_ability.rb"
 
 Metrics/AbcSize:
   Exclude:
-    - 'app/models/ability.rb'
-    - 'app/models/cocina_ability.rb'
-    - 'app/controllers/iiif_controller.rb'
+    - "app/models/ability.rb"
+    - "app/models/cocina_ability.rb"
+    - "app/controllers/iiif_controller.rb"
 
 Layout/EmptyLinesAroundBlockBody:
   Exclude:
-    - 'spec/requests/file_auth_request_spec.rb'
-    - 'spec/requests/iiif_auth_request_spec.rb'
-    - 'spec/requests/media_auth_request_spec.rb'
+    - "spec/requests/file_auth_request_spec.rb"
+    - "spec/requests/iiif_auth_request_spec.rb"
+    - "spec/requests/media_auth_request_spec.rb"
 
 Lint/AssignmentInCondition:
   Enabled: false
 
 Metrics/BlockLength:
   Exclude:
-    - 'spec/**/*'
+    - "spec/**/*"
 
 Metrics/ClassLength:
   Exclude:
-    - 'app/controllers/iiif_controller.rb'
-    - 'app/models/projection.rb'
+    - "app/controllers/iiif_controller.rb"
+    - "app/models/projection.rb"
 
 Layout/LineLength:
   Max: 140
 
 Metrics/MethodLength:
   Exclude:
-    - 'app/models/ability.rb'
-    - 'app/models/cocina_ability.rb'
-    - 'app/services/cdl_service.rb'
+    - "app/models/ability.rb"
+    - "app/models/cocina_ability.rb"
+    - "app/services/cdl_service.rb"
 
 Naming/HeredocDelimiterNaming:
   Enabled: false
 
 Naming/MemoizedInstanceVariableName:
   Exclude:
-    - 'app/controllers/**/*'
+    - "app/controllers/**/*"
 
 Naming/PredicateName:
   NamePrefix:
-    - 'is_'
+    - "is_"
 
 Style/StringLiterals:
   Enabled: false
