@@ -65,7 +65,7 @@ class StorageRoot
     end
 
     def absolute_path
-      object_root.path(:head, @file_name)
+      object_root.path(filepath: @file_name)
     end
 
     private
