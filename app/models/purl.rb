@@ -30,7 +30,10 @@ class Purl
     Rails.cache.fetch("purl/#{druid}.json", expires_in: 10.minutes) do
       benchmark "Fetching public json for #{druid}" do
         response = Faraday.get(public_json_url(druid))
-        raise Purl::Exception, response.status unless response.success?
+        unless response.success?
+          logger.warn("Unable to find Public Cocina JSON for #{druid} at #{public_json_url(druid)}")
+          raise Purl::Exception, response.status
+        end
 
         JSON.parse(response.body)
       end
