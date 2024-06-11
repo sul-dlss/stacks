@@ -5,6 +5,7 @@ class StorageRoot
   DRUID_PARTS_PATTERN = /\A([b-df-hjkmnp-tv-z]{2})([0-9]{3})([b-df-hjkmnp-tv-z]{2})([0-9]{4})\z/i
 
   def initialize(druid:, file_name:)
+    @druid = druid
     @druid_parts = druid.match(DRUID_PARTS_PATTERN)
     @file_name = file_name
   end
@@ -27,10 +28,10 @@ class StorageRoot
 
   private
 
-  attr_reader :druid_parts, :file_name
+  attr_reader :druid, :druid_parts, :file_name
 
   def path_finder
-    @path_finder ||= path_finder_class.new(treeified_id:, file_name:)
+    @path_finder ||= path_finder_class.new(treeified_id:, druid:, file_name:)
   end
 
   def path_finder_class
@@ -39,7 +40,7 @@ class StorageRoot
 
   # Calculate file paths in the legacy Stacks structure
   class LegacyPathFinder
-    def initialize(treeified_id:, file_name:)
+    def initialize(treeified_id:, file_name:, druid:) # rubocop:disable Lint/UnusedMethodArgument
       @treeified_id = treeified_id
       @file_name = file_name
     end
@@ -55,8 +56,8 @@ class StorageRoot
 
   # Calculate file paths in the OCFL structure
   class OcflPathFinder
-    def initialize(treeified_id:, file_name:)
-      @treeified_id = treeified_id
+    def initialize(druid:, file_name:, treeified_id:) # rubocop:disable Lint/UnusedMethodArgument
+      @druid = druid
       @file_name = file_name
     end
 
@@ -65,15 +66,14 @@ class StorageRoot
     end
 
     def absolute_path
-      object_root.path(filepath: @file_name)
+      ocfl_object.path(filepath: @file_name)
     end
 
     private
 
-    def object_root
-      @object_root ||= OCFL::Object::Directory.new(
-        object_root: File.join(Settings.stacks.ocfl_root, @treeified_id)
-      )
+    def ocfl_object
+      storage_root = OCFL::StorageRoot.new(base_directory: Settings.stacks.ocfl_root)
+      storage_root.object(@druid)
     end
   end
 end
