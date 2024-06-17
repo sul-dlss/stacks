@@ -469,9 +469,11 @@ DEPENDENCIES
   retries
   rspec-rails (~> 6.0)
   rubocop (~> 1.57)
+  rubocop-capybara
   rubocop-performance
   rubocop-rails
   rubocop-rspec
+  rubocop-rspec_rails
   selenium-webdriver
   simplecov
   web-console (>= 4.1.0)
