@@ -484,20 +484,6 @@ Capybara/RSpec/HaveSelector: # new in 2.19
   Enabled: true
 Capybara/RSpec/PredicateMatcher: # new in 2.19
   Enabled: true
-FactoryBot/AssociationStyle: # new in 2.23
-  Enabled: true
-FactoryBot/ConsistentParenthesesStyle: # new in 2.14
-  Enabled: true
-FactoryBot/FactoryAssociationWithStrategy: # new in 2.23
-  Enabled: true
-FactoryBot/FactoryNameStyle: # new in 2.16
-  Enabled: true
-FactoryBot/IdSequence: # new in <<next>>
-  Enabled: true
-FactoryBot/RedundantFactoryOption: # new in 2.23
-  Enabled: true
-FactoryBot/SyntaxMethods: # new in 2.7
-  Enabled: true
 RSpec/BeEmpty: # new in 2.20
   Enabled: true
 RSpec/BeEq: # new in 2.9.0
@@ -583,8 +569,6 @@ Style/MapIntoArray: # new in 1.63
 Rails/WhereRange: # new in 2.25
   Enabled: true
 Capybara/RedundantWithinFind: # new in 2.20
-  Enabled: true
-FactoryBot/ExcessiveCreateList: # new in 2.25
   Enabled: true
 RSpec/EmptyOutput: # new in 2.29
   Enabled: true

@@ -17,7 +17,7 @@ RSpec.describe StacksImage do
     let(:file_name) { 'image.jp2' }
     let(:instance) { described_class.new(id: druid, file_name:) }
 
-    it { is_expected.to be_kind_of IiifMetadataService }
+    it { is_expected.to be_a IiifMetadataService }
   end
 
   describe '#info' do

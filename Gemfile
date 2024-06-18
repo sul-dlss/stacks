@@ -41,9 +41,11 @@ group :development, :test do
 
   # Rubocop is a static code analyzer to enforce style.
   gem 'rubocop', '~> 1.57', require: false
+  gem 'rubocop-capybara', require: false
   gem 'rubocop-performance', require: false
   gem 'rubocop-rails', require: false
   gem 'rubocop-rspec', require: false
+  gem 'rubocop-rspec_rails', require: false
 
   gem 'simplecov'
   gem 'webmock', '~> 3.0'
