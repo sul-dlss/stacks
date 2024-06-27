@@ -7,40 +7,7 @@ RSpec.describe Purl do
     Rails.cache.clear
   end
 
-  describe '.public_xml' do
-    it 'fetches the public xml' do
-      allow(Faraday).to receive(:get).with('https://purl.stanford.edu/abc.xml').and_return(
-        double(body: '', success?: true)
-      )
-
-      described_class.public_xml('abc')
-
-      expect(Faraday).to have_received(:get).with('https://purl.stanford.edu/abc.xml')
-    end
-  end
-
   describe '.files' do
-    let(:xml) do
-      <<-EOXML
-      <publicObject id="druid:kn112rm5773" published="2018-02-05T18:34:41Z" publishVersion="dor-services/5.23.1">
-        <contentMetadata objectId="kn112rm5773" type="image">
-          <resource id="kn112rm5773_1" sequence="1" type="image">
-            <label>Image 1</label>
-            <file id="26855.jp2" mimetype="image/jp2" size="3832255">
-              <imageData width="4850" height="4180"/>
-            </file>
-          </resource>
-          <resource id="kn112rm5773_2" sequence="2" type="image">
-            <label>Virtual image</label>
-            <file id="123.jp2" mimetype="image/jp2" size="3832255">
-              <imageData width="4850" height="4180"/>
-            </file>
-          </resource>
-        </contentMetadata>
-      </publicObject>
-      EOXML
-    end
-
     let(:json) do
       {
         'structural' => {
@@ -77,8 +44,6 @@ RSpec.describe Purl do
     end
 
     before do
-      allow(Faraday).to receive(:get).with('https://purl.stanford.edu/abc.xml')
-                                     .and_return(double(success?: true, body: xml))
       allow(Faraday).to receive(:get).with('https://purl.stanford.edu/abc.json')
                                      .and_return(double(success?: true, body: json))
     end
