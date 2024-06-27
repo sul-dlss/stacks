@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe "CORS headers for Media requests" do
   before do
-    allow(Purl).to receive(:public_json).and_return(public_json)
+    allow(Cocina).to receive(:find).and_return(Cocina.new(public_json))
   end
 
   let(:public_json) do

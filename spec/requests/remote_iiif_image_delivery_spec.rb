@@ -35,7 +35,7 @@ RSpec.describe "proxying image requests to a remote IIIF server (cantaloupe)" do
   end
 
   before do
-    allow(Purl).to receive(:public_json).and_return(public_json)
+    allow(Cocina).to receive(:find).and_return(Cocina.new(public_json))
     stub_request(:get, info_request)
       .to_return(status: 200, body: info_response)
     stub_request(:get, image_response)

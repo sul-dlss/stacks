@@ -33,7 +33,7 @@ RSpec.describe "Authentication for Media requests" do
   end
 
   before do
-    allow(Purl).to receive(:public_json).and_return(public_json)
+    allow(Cocina).to receive(:find).and_return(Cocina.new(public_json))
     allow_any_instance_of(MediaController).to receive(:current_user).and_return(user)
     allow_any_instance_of(MediaController).to receive(:current_media).and_return(mock_media)
   end

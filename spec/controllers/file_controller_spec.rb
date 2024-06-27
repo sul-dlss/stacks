@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe FileController do
   before do
     allow(StacksFile).to receive(:new).and_return(file)
-    allow(Purl).to receive(:public_json).and_return(public_json)
+    allow(Cocina).to receive(:find).and_return(Cocina.new(public_json))
   end
 
   let(:public_json) do

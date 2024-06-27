@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe "File requests" do
   before do
-    allow(Purl).to receive_messages(public_json:)
+    allow(Cocina).to receive(:find).and_return(Cocina.new(public_json))
   end
 
   let(:druid) { 'nr349ct7889' }

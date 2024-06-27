@@ -44,7 +44,7 @@ RSpec.describe 'IIIF API' do
   end
 
   before do
-    allow(Purl).to receive(:public_json).and_return(public_json)
+    allow(Cocina).to receive(:find).and_return(Cocina.new(public_json))
 
     # stubbing Rails.cache.fetch is required because you can't dump a singleton (double)
     # which is what happens when writing to the cache.

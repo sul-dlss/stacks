@@ -2,53 +2,5 @@
 
 # PURL API service
 class Purl
-  include ActiveSupport::Benchmarkable
-
   class Exception < ::RuntimeError; end
-
-  def self.instance
-    @instance ||= new
-  end
-
-  class << self
-    delegate :public_json, :files, to: :instance
-  end
-
-  def public_json(druid)
-    Rails.cache.fetch("purl/#{druid}.json", expires_in: 10.minutes) do
-      benchmark "Fetching public json for #{druid}" do
-        response = Faraday.get(public_json_url(druid))
-        raise Purl::Exception, response.status unless response.success?
-
-        JSON.parse(response.body)
-      end
-    end
-  end
-
-  def files(druid, &)
-    return to_enum(:files, druid) unless block_given?
-
-    files_from_json(druid, &)
-  end
-
-  def files_from_json(druid)
-    doc = public_json(druid)
-
-    doc.dig('structural', 'contains').each do |fileset|
-      fileset.dig('structural', 'contains').each do |file|
-        file = StacksFile.new(id: druid, file_name: file['filename'])
-        yield file
-      end
-    end
-  end
-
-  private
-
-  def public_json_url(druid)
-    "#{Settings.purl.url}#{druid}.json"
-  end
-
-  def logger
-    Rails.logger
-  end
 end

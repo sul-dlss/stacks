@@ -26,6 +26,7 @@ RSpec.describe ObjectController do
       context "with downloadable files" do
         let(:json) do
           {
+            'externalIdentifier' => 'druid:fd063dh3727',
             'structural' => {
               'contains' => [
                 {
@@ -102,6 +103,7 @@ RSpec.describe ObjectController do
       context "with a stanford access file" do
         let(:json) do
           {
+            'externalIdentifier' => "druid:bb142ws0723",
             'structural' => {
               'contains' => [
                 {
@@ -165,6 +167,7 @@ RSpec.describe ObjectController do
       context "with a stanford access file" do
         let(:json) do
           {
+            'externalIdentifier' => "druid:bb142ws0723",
             'structural' => {
               'contains' => [
                 {
