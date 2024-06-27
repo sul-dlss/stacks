@@ -11,19 +11,7 @@ class Purl
   end
 
   class << self
-    delegate :public_xml, :public_json, :files, to: :instance
-  end
-
-  # TODO: was etag a valid key?
-  def public_xml(druid)
-    Rails.cache.fetch("purl/#{druid}/public_xml", expires_in: 10.minutes) do
-      benchmark "Fetching public xml for #{druid}" do
-        response = Faraday.get(public_xml_url(druid))
-        raise Purl::Exception, response.status unless response.success?
-
-        response.body
-      end
-    end
+    delegate :public_json, :files, to: :instance
   end
 
   def public_json(druid)
@@ -55,10 +43,6 @@ class Purl
   end
 
   private
-
-  def public_xml_url(druid)
-    Settings.purl.url + "#{druid}.xml"
-  end
 
   def public_json_url(druid)
     "#{Settings.purl.url}#{druid}.json"

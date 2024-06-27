@@ -303,17 +303,6 @@ RSpec.describe 'IIIF auth v2 probe service' do
         }
       }
     end
-    let(:rights_xml) do
-      <<~EOF
-        <rightsMetadata>
-            <access type="read">
-              <machine>
-                <location>#{xml_location}</location>
-              </machine>
-            </access>
-          </rightsMetadata>
-      EOF
-    end
 
     before do
       get "/iiif/auth/v2/probe?id=#{stacks_uri_param}"
@@ -321,7 +310,6 @@ RSpec.describe 'IIIF auth v2 probe service' do
 
     context 'when special collections' do
       let(:location) { 'spec' }
-      let(:xml_location) { 'spec' }
 
       it 'returns a not authorized response' do
         expect(response).to have_http_status :ok
@@ -339,7 +327,6 @@ RSpec.describe 'IIIF auth v2 probe service' do
 
     context 'when media & microtext' do
       let(:location) { 'm&m' }
-      let(:xml_location) { 'm&amp;m' }
 
       it 'returns a not authorized response' do
         expect(response).to have_http_status :ok
@@ -382,18 +369,6 @@ RSpec.describe 'IIIF auth v2 probe service' do
           ]
         }
       }
-    end
-    let(:rights_xml) do
-      <<~EOF
-        <rightsMetadata>
-            <access type="read">
-              <machine>
-                <embargoReleaseDate>2099-05-15</embargoReleaseDate>
-                <group>stanford</group>
-              </machine>
-            </access>
-          </rightsMetadata>
-      EOF
     end
 
     before do
@@ -441,17 +416,6 @@ RSpec.describe 'IIIF auth v2 probe service' do
           ]
         }
       }
-    end
-    let(:rights_xml) do
-      <<~EOF
-        <rightsMetadata>
-            <access type="read">
-              <machine>
-                <embargoReleaseDate>2099-05-15</embargoReleaseDate>
-              </machine>
-            </access>
-          </rightsMetadata>
-      EOF
     end
 
     before do

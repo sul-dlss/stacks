@@ -197,7 +197,7 @@ RSpec.describe 'IIIF API' do
       end
     end
 
-    context 'rights xml where no one can download' do
+    context 'where no one can download' do
       let(:public_json) do
         {
           'structural' => {
@@ -233,7 +233,7 @@ RSpec.describe 'IIIF API' do
       end
     end
 
-    context 'rights xml where stanford only no download' do
+    context 'where stanford only no download rights' do
       let(:public_json) do
         {
           'structural' => {

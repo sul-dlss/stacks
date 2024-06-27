@@ -4,27 +4,7 @@ require 'rails_helper'
 
 RSpec.describe "Authentication for Media requests" do
   let(:druid) { 'bb582xs1304' }
-
   let(:format) { 'mp4' }
-  let(:public_xml) do
-    <<-XML
-      <publicObject>
-        #{rights_xml}
-      </publicObject>
-    XML
-  end
-
-  let(:rights_xml) do
-    <<~EOF
-      <rightsMetadata>
-          <access type="read">
-            <machine>
-              <group>Stanford</group>
-            </machine>
-          </access>
-        </rightsMetadata>
-    EOF
-  end
 
   let(:public_json) do
     {
@@ -49,9 +29,7 @@ RSpec.describe "Authentication for Media requests" do
   end
 
   let(:mock_media) do
-    sms = StacksMediaStream.new(id: 'bb582xs1304', file_name: 'file')
-    allow(Purl).to receive(:public_xml).with('bb582xs1304').and_return(public_xml)
-    sms
+    StacksMediaStream.new(id: 'bb582xs1304', file_name: 'file')
   end
 
   before do
@@ -86,17 +64,6 @@ RSpec.describe "Authentication for Media requests" do
     end
 
     context 'location restricted' do
-      let(:rights_xml) do
-        <<~EOF
-          <rightsMetadata>
-              <access type="read">
-                <machine>
-                  <location>spec</location>
-                </machine>
-              </access>
-            </rightsMetadata>
-        EOF
-      end
       let(:public_json) do
         {
           'structural' => {
@@ -131,19 +98,6 @@ RSpec.describe "Authentication for Media requests" do
     end
 
     context 'when the file is embargoed or stanford restricted' do
-      let(:rights_xml) do
-        <<~EOF
-          <rightsMetadata>
-              <access type="read">
-                <machine>
-                  <embargoReleaseDate>2099-05-15</embargoReleaseDate>
-                  <group>stanford</group>
-                </machine>
-              </access>
-            </rightsMetadata>
-        EOF
-      end
-
       let(:public_json) do
         {
           'access' => {
@@ -182,17 +136,6 @@ RSpec.describe "Authentication for Media requests" do
     end
 
     context 'when the file is embargoed' do
-      let(:rights_xml) do
-        <<~EOF
-          <rightsMetadata>
-              <access type="read">
-                <machine>
-                  <embargoReleaseDate>2099-05-15</embargoReleaseDate>
-                </machine>
-              </access>
-            </rightsMetadata>
-        EOF
-      end
       let(:public_json) do
         {
           'access' => {

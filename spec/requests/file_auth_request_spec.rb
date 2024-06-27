@@ -21,46 +21,6 @@ RSpec.describe "Authentication for File requests" do
   end
 
   describe "#show" do
-    let(:group_rights) do
-      <<-EOF
-        <publicObject>
-          <rightsMetadata>
-            <access type="read">
-              <machine>
-                <group>Stanford</group>
-              </machine>
-            </access>
-          </rightsMetadata>
-        </publicObject>
-      EOF
-    end
-    let(:location_rights) do
-      <<-EOF
-        <publicObject>
-          <rightsMetadata>
-            <access type="read">
-              <machine>
-                <location>location1</location>
-              </machine>
-            </access>
-          </rightsMetadata>
-        </publicObject>
-      EOF
-    end
-    let(:location_other_rights) do
-      <<-EOF
-        <publicObject>
-          <rightsMetadata>
-            <access type="read">
-              <machine>
-                <location>location-other</location>
-              </machine>
-            </access>
-          </rightsMetadata>
-        </publicObject>
-      EOF
-    end
-
     # NOTE:  stanford only + location rights tested under location context
     context 'stanford only (no location qualifications)' do
       let(:public_json) do
@@ -88,21 +48,18 @@ RSpec.describe "Authentication for File requests" do
       context 'webauthed user' do
         it 'allows when user webauthed and authorized' do
           allow_any_instance_of(FileController).to receive(:current_user).and_return(user_webauth_stanford_no_loc)
-          allow(Purl).to receive(:public_xml).and_return(group_rights)
           expect_any_instance_of(FileController).to receive(:send_file).with(sf.path, disposition: :inline).and_call_original
           get "/file/#{druid}/#{file_name}"
         end
 
         it 'blocks when user webauthed but NOT authorized' do
           allow_any_instance_of(FileController).to receive(:current_user).and_return(user_webauth_no_stanford_no_loc)
-          allow(Purl).to receive(:public_xml).and_return(group_rights)
           get "/file/#{druid}/#{file_name}"
           expect(response).to have_http_status(:forbidden)
         end
       end
       it "prompts for webauth when user not webauthed" do
         allow_any_instance_of(FileController).to receive(:current_user).and_return(user_no_loc_no_webauth)
-        allow(Purl).to receive(:public_xml).and_return(group_rights)
         get "/file/#{druid}/#{file_name}"
         expect(response).to redirect_to(auth_file_url(id: druid, file_name:))
       end
@@ -134,14 +91,12 @@ RSpec.describe "Authentication for File requests" do
 
         it 'allows when user in location' do
           allow_any_instance_of(FileController).to receive(:current_user).and_return(user_loc_no_webauth)
-          allow(Purl).to receive(:public_xml).and_return(location_rights)
           expect_any_instance_of(FileController).to receive(:send_file).with(sf.path, disposition: :inline).and_call_original
           get "/file/#{druid}/#{file_name}"
         end
 
         it 'blocks when user not in location' do
           allow_any_instance_of(FileController).to receive(:current_user).and_return(user_no_loc_no_webauth)
-          allow(Purl).to receive(:public_xml).and_return(location_other_rights)
           get "/file/#{druid}/#{file_name}"
           expect(response).to have_http_status(:forbidden)
         end
