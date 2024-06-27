@@ -15,7 +15,7 @@ class StacksMediaStream
   delegate :etag, :mtime, to: :file
 
   def stacks_rights
-    @stacks_rights ||= StacksRights.new(id:, file_name:)
+    @stacks_rights ||= StacksRights.new(cocina: Cocina.find(id), file_name:)
   end
 
   delegate :rights, :restricted_by_location?, :stanford_restricted?, :embargoed?,

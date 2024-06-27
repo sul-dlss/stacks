@@ -8,6 +8,7 @@ RSpec.describe 'Metrics tracking' do
   let(:file_name) { 'image.jp2' }
   let(:json) do
     {
+      'externalIdentifier' => "druid:#{druid}",
       'structural' => {
         'contains' => [
           {

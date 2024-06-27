@@ -8,7 +8,8 @@ class ObjectController < ApplicationController
   # Return a zip of all the files if they have access to all the files.
   # This will force a login if any of the files is not access=world
   def show
-    files = Purl.files(druid)
+    cocina = Cocina.find(druid)
+    files = cocina.files
     raise ActionController::RoutingError, 'No downloadable files' if files.none?
 
     files.each do |file|

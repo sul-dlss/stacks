@@ -7,7 +7,7 @@ RSpec.describe CocinaAbility, type: :model do
   subject(:ability) { described_class.new(user) }
 
   before do
-    allow(Purl).to receive(:public_json).and_return(public_json)
+    allow(Cocina).to receive(:find).and_return(Cocina.new(public_json))
     allow(image).to receive_messages(image_width: 11_957, image_height: 15_227)
   end
 

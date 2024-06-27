@@ -60,8 +60,9 @@ class StacksImage
   end
 
   def stacks_rights
-    @stacks_rights ||= StacksRights.new(id:, file_name:)
+    @stacks_rights ||= StacksRights.new(cocina: Cocina.find(id), file_name:)
   end
+
   delegate :rights, :maybe_downloadable?, :object_thumbnail?,
            :stanford_restricted?, :restricted_by_location?, to: :stacks_rights
 end

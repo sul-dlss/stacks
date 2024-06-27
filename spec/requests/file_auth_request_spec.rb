@@ -16,7 +16,7 @@ RSpec.describe "Authentication for File requests" do
   let(:sf) { StacksFile.new(id: druid, file_name:) }
 
   before(:each) do
-    allow(Purl).to receive(:public_json).and_return(public_json)
+    allow(Cocina).to receive(:find).and_return(Cocina.new(public_json))
     allow(File).to receive(:world_readable?).with(path).and_return(perms)
   end
 

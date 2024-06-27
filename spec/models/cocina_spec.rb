@@ -2,14 +2,15 @@
 
 require 'rails_helper'
 
-RSpec.describe Purl do
+RSpec.describe Cocina do
   before do
     Rails.cache.clear
   end
 
-  describe '.files' do
+  describe '#files' do
     let(:json) do
       {
+        'externalIdentifier' => 'abc',
         'structural' => {
           'contains' => [
             {
@@ -44,12 +45,12 @@ RSpec.describe Purl do
     end
 
     before do
-      allow(Faraday).to receive(:get).with('https://purl.stanford.edu/abc.json')
-                                     .and_return(double(success?: true, body: json))
+      stub_request(:get, "https://purl.stanford.edu/abc.json")
+        .to_return(status: 200, body: json)
     end
 
     it 'gets all the files for a resource' do
-      actual = described_class.files('abc').map { |file| "#{file.id}/#{file.file_name}" }
+      actual = described_class.find('abc').files.map { |file| "#{file.id}/#{file.file_name}" }
 
       expect(actual).to contain_exactly('abc/26855.jp2', 'abc/123.jp2')
     end

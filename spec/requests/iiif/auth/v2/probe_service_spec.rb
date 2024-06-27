@@ -13,7 +13,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
 
   # rubocop:disable RSpec/AnyInstance
   before do
-    allow(Purl).to receive(:public_json).and_return(public_json)
+    allow(Cocina).to receive(:find).and_return(Cocina.new(public_json))
     allow(File).to receive(:world_readable?).and_return('420')
     allow(StacksFile).to receive(:new).and_call_original
   end
