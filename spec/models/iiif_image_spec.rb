@@ -13,7 +13,7 @@ RSpec.describe IiifImage do
   describe "#remote_id" do
     subject { instance.send(:remote_id) }
 
-    it { is_expected.to eq(image_server_path(druid, file_name)) }
+    it { is_expected.to eq 'st%2F808%2Fxq%2F5141%2Fst808xq5141_00_0001.jp2' }
   end
 
   describe "#valid?" do

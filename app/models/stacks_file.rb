@@ -37,7 +37,7 @@ class StacksFile
   end
 
   def storage_root
-    @storage_root ||= StorageRoot.new(druid: id, file_name:)
+    @storage_root ||= StorageRoot.new(druid: id, cocina_file: Cocina.find(id).find_file(file_name))
   end
 
   def stacks_rights

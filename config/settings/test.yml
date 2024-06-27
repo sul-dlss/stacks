@@ -11,8 +11,8 @@ user:
 features:
   metrics: true
 
-metrics_api_url: 'https://example.com'
+metrics_api_url: "https://example.com"
 
 stacks:
   storage_root: spec/fixtures
-  ocfl_root: spec/fixtures/ocfl
+  stacks_content_addressable: /stacks/content_addressable

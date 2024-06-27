@@ -252,12 +252,14 @@ RSpec.describe 'IIIF API' do
   end
 
   describe 'image requests for world readable items' do
-    context 'when the request is valid' do
-      before do
-        stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_server_path('nr349ct7889', 'image.jp2')}/0,640,2552,2552/100,100/0/default.jpg")
-          .to_return(status: 200, body: "")
-      end
+    let(:image_server_response_status) { 200 }
 
+    before do
+      stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/nr%2F349%2Fct%2F7889%2Fnr349ct7889_00_0001.jp2/0,640,2552,2552/100,100/0/default.jpg")
+        .to_return(status: image_server_response_status, body: "")
+    end
+
+    context 'when the request is valid' do
       it 'loads the image' do
         get "/image/iiif/nr349ct7889%2Fimage/0,640,2552,2552/100,100/0/default.jpg"
 
@@ -267,11 +269,6 @@ RSpec.describe 'IIIF API' do
     end
 
     context 'when additional params are provided' do
-      before do
-        stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_server_path('nr349ct7889', 'image.jp2')}/0,640,2552,2552/100,100/0/default.jpg")
-          .to_return(status: 200, body: "")
-      end
-
       it 'is ignored when instantiating StacksImage' do
         get "/image/iiif/nr349ct7889%2Fimage/0,640,2552,2552/100,100/0/default.jpg?ignored=ignored&host=host"
 
@@ -280,10 +277,7 @@ RSpec.describe 'IIIF API' do
     end
 
     context 'when image is missing' do
-      before do
-        stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_server_path('nr349ct7889', 'image.jp2')}/0,640,2552,2552/100,100/0/default.jpg")
-          .to_return(status: 404, body: "")
-      end
+      let(:image_server_response_status) { 404 }
 
       it 'returns 404 Not Found' do
         get "/image/iiif/nr349ct7889%2Fimage/0,640,2552,2552/100,100/0/default.jpg?ignored=ignored&host=host"
@@ -297,19 +291,12 @@ RSpec.describe 'IIIF API' do
       end
 
       it 'returns 404 Not Found' do
-        stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/nr%2F349%2Fct%2F7889%2Fimage/0,640,2552,2552/100,100/0/default.jpg")
-          .to_return(status: 200, body: "", headers: {})
         get "/image/iiif/nr349ct7889%2Fimage/0,640,2552,2552/100,100/0/default.jpg"
         expect(response).to have_http_status :not_found
       end
     end
 
     context 'with the download flag set' do
-      before do
-        stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_server_path('nr349ct7889', 'image.jp2')}/0,640,2552,2552/100,100/0/default.jpg")
-          .to_return(status: 200, body: "")
-      end
-
       it 'sets the content-disposition header' do
         get "/image/iiif/nr349ct7889%2Fimage/0,640,2552,2552/100,100/0/default.jpg?download=true"
 
@@ -320,7 +307,7 @@ RSpec.describe 'IIIF API' do
 
     context 'with a pct region' do
       before do
-        stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_server_path('nr349ct7889', 'image.jp2')}/pct:3.0,3.0,77.0,77.0/full/0/default.jpg")
+        stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/nr%2F349%2Fct%2F7889%2Fimage.jp2/pct:3.0,3.0,77.0,77.0/full/0/default.jpg")
           .to_return(status: 200, body: "")
       end
 

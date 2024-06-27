@@ -4,7 +4,8 @@
 class StorageRoot
   DRUID_PARTS_PATTERN = /\A([b-df-hjkmnp-tv-z]{2})([0-9]{3})([b-df-hjkmnp-tv-z]{2})([0-9]{4})\z/i
 
-  def initialize(druid:, file_name:)
+  def initialize(druid:, cocina_file:)
+    # debugger
     @druid = druid
     @druid_parts = druid.match(DRUID_PARTS_PATTERN)
     @file_name = file_name
@@ -35,7 +36,7 @@ class StorageRoot
   end
 
   def path_finder_class
-    Settings.features.read_stacks_from_ocfl_root ? OcflPathFinder : LegacyPathFinder
+    Settings.features.awfl ? ContentAddressablePathFinder : LegacyPathFinder
   end
 
   # Calculate file paths in the legacy Stacks structure
@@ -54,26 +55,30 @@ class StorageRoot
     end
   end
 
-  # Calculate file paths in the OCFL structure
-  class OcflPathFinder
+  # Calculate file paths in the AWFL structure
+  class ContentAddressablePathFinder
     def initialize(druid:, file_name:, treeified_id:) # rubocop:disable Lint/UnusedMethodArgument
       @druid = druid
       @file_name = file_name
     end
 
     def relative_path
-      absolute_path.relative_path_from(Settings.stacks.ocfl_root)
+      debugger
+      1
+      # absolute_path.relative_path_from(Settings.stacks.ocfl_root)
     end
 
     def absolute_path
-      ocfl_object.path(filepath: @file_name)
+      debugger
+      1
+      # ocfl_object.path(filepath: @file_name)
     end
 
     private
 
-    def ocfl_object
-      storage_root = OCFL::StorageRoot.new(base_directory: Settings.stacks.ocfl_root)
-      storage_root.object(@druid)
+    def object_directory
+      awfl_directory = DruidTools::Druid.new(@druid, Settings.filesystems.stacks_content_addressable).path
+      "#{awfl_directory}/content"
     end
   end
 end

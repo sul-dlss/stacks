@@ -16,7 +16,7 @@ class FileController < ApplicationController
     response.headers['Accept-Ranges'] = 'bytes'
     response.headers['Content-Length'] = current_file.content_length
     response.headers.delete('X-Frame-Options')
-
+# debugger
     TrackDownloadJob.perform_later(
       druid: current_file.id,
       file: current_file.file_name,

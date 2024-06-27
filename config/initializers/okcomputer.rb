@@ -17,9 +17,6 @@ OkComputer::Registry.register 'rails_cache', OkComputer::GenericCacheCheck.new
 OkComputer::Registry.register 'stacks_mounted_dir',
   OkComputer::DirectoryCheck.new(Settings.stacks.storage_root)
 
-OkComputer::Registry.register 'stacks_ocfl_mounted_dir',
-                              OkComputer::DirectoryCheck.new(Settings.stacks.ocfl_root) if Settings.features.read_stacks_from_ocfl_root
-
 OkComputer::Registry.register 'purl_url', OkComputer::HttpCheck.new(Settings.purl.url + "status/default.json")
 
 OkComputer::Registry.register 'redis', OkComputer::RedisCheck.new(Settings.cdl.redis.to_h) if Settings.cdl.redis

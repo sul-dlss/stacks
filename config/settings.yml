@@ -1,11 +1,11 @@
 features:
   streaming_media: true
   metrics: false
-  read_stacks_from_ocfl_root: false
+  awfl: false
 
 stacks:
   storage_root: /stacks
-  ocfl_root: /stacks/ocfl
+  stacks_content_addressable: /stacks/content_addressable
 
 imageserver:
   base_uri: "http://imageserver-prod.stanford.edu/iiif/2/"

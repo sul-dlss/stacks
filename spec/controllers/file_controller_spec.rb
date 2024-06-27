@@ -17,6 +17,16 @@ RSpec.describe FileController do
               'contains' => [
                 {
                   'filename' => 'xf680rd3068_1.jp2',
+                  "hasMessageDigests": [
+                    {
+                      "type": "sha1",
+                      "digest": "abc96a21ee52d565054240a499c979e90bd0551e"
+                    },
+                    {
+                      "type": "md5",
+                      "digest": "828cce4fee31e54abfc131da5edd1623"
+                    }
+                  ],
                   'access' => {
                     'view' => 'world',
                     'download' => 'world'

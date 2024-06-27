@@ -10,7 +10,7 @@ class Projection
   end
 
   # @param [StacksImage] image
-  # @transformation [IIIF::Image::Transformation] transformation
+  # @param [IIIF::Image::Transformation] transformation
   def initialize(image, transformation)
     @image = image
     @transformation = transformation

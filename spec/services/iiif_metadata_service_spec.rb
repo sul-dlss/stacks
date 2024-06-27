@@ -11,8 +11,7 @@ RSpec.describe IiifMetadataService do
 
   context "When a valid JSON response is received" do
     let(:json) do
-      '{"@id":"https://sul-imageserver-uat.stanford.edu/cantaloupe/iiif/2/' \
-        "#{image_server_path(druid, file_name)}\"," \
+      '{"@id":"https://sul-imageserver-uat.stanford.edu/cantaloupe/iiif/2/nr%2F349%2Fct%2F7889%2Fimage.jp2",' \
         '"width":3832,' \
         '"height":2552,' \
         '"tiles":[{"width":1000,"height":1000,"scaleFactors":[1,2,4,8]}],' \
@@ -23,7 +22,7 @@ RSpec.describe IiifMetadataService do
     before do
       allow(HTTP).to receive(:use).and_return(http_client)
       allow(http_client).to receive(:get)
-        .with("https://sul-imageserver-uat.stanford.edu/cantaloupe/iiif/2/#{image_server_path(druid, file_name)}/info.json")
+        .with("https://sul-imageserver-uat.stanford.edu/cantaloupe/iiif/2/nr%2F349%2Fct%2F7889%2Fimage.jp2/info.json")
         .and_return(response)
     end
 
