@@ -65,7 +65,7 @@ RSpec.describe 'IIIF API' do
 
   describe 'metadata requests' do
     it 'handles JSON requests' do
-      get '/image/iiif/nr349ct7889%2Fimage.jp2/info.json', headers: { HTTP_ACCEPT: 'application/json' }
+      get '/image/iiif/nr349ct7889%2Fimage/info.json', headers: { HTTP_ACCEPT: 'application/json' }
 
       expect(response.media_type).to eq 'application/json'
       json = response.parsed_body
@@ -74,7 +74,7 @@ RSpec.describe 'IIIF API' do
     end
 
     it 'handles JSON-LD requests' do
-      get '/image/iiif/nr349ct7889%2Fimage.jp2/info.json', headers: { HTTP_ACCEPT: 'application/ld+json' }
+      get '/image/iiif/nr349ct7889%2Fimage/info.json', headers: { HTTP_ACCEPT: 'application/ld+json' }
 
       expect(response.media_type).to eq 'application/ld+json'
       json = JSON.parse(response.body) # rubocop:disable Rails/ResponseParsedBody
@@ -107,7 +107,7 @@ RSpec.describe 'IIIF API' do
 
       context 'outside of the location' do
         it 'uses the unauthorized status code for the response' do
-          get '/image/iiif/nr349ct7889%2Fimage.jp2/info.json'
+          get '/image/iiif/nr349ct7889%2Fimage/info.json'
           expect(response).to have_http_status :unauthorized
         end
 
@@ -151,7 +151,7 @@ RSpec.describe 'IIIF API' do
           allow_any_instance_of(IiifController).to receive(:current_user).and_return(user)
         end
         it 'uses the ok status code for the response' do
-          get '/image/iiif/nr349ct7889%2Fimage.jp2/info.json'
+          get '/image/iiif/nr349ct7889%2Fimage/info.json'
           expect(response).to have_http_status :ok
         end
       end
@@ -221,12 +221,12 @@ RSpec.describe 'IIIF API' do
       end
 
       it 'serves up regular info.json (no degraded)' do
-        get '/image/iiif/nr349ct7889%2Fimage.jp2/info.json'
+        get '/image/iiif/nr349ct7889%2Fimage/info.json'
         expect(response).to have_http_status :ok
       end
 
       it 'replaces the sizes element to reflect the only downloadable (thumbnail) size' do
-        get '/image/iiif/nr349ct7889%2Fimage.jp2/info.json'
+        get '/image/iiif/nr349ct7889%2Fimage/info.json'
         json = response.parsed_body
 
         expect(json['sizes']).to eq [{ 'width' => 266, 'height' => 400 }]
@@ -290,7 +290,7 @@ RSpec.describe 'IIIF API' do
       end
 
       it 'is ignored when instantiating StacksImage' do
-        get "/image/iiif/nr349ct7889%2Fimage.jp2/0,640,2552,2552/100,100/0/default.jpg?ignored=ignored&host=host"
+        get "/image/iiif/nr349ct7889%2Fimage/0,640,2552,2552/100,100/0/default.jpg?ignored=ignored&host=host"
 
         expect(response).to have_http_status :ok
       end
@@ -303,7 +303,7 @@ RSpec.describe 'IIIF API' do
       end
 
       it 'returns 404 Not Found' do
-        get "/image/iiif/nr349ct7889%2Fimage.jp2/0,640,2552,2552/100,100/0/default.jpg?ignored=ignored&host=host"
+        get "/image/iiif/nr349ct7889%2Fimage/0,640,2552,2552/100,100/0/default.jpg?ignored=ignored&host=host"
         expect(response).to have_http_status :not_found
       end
     end
@@ -314,9 +314,9 @@ RSpec.describe 'IIIF API' do
       end
 
       it 'returns 404 Not Found' do
-        stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/nr%2F349%2Fct%2F7889%2Fimage.jp2/0,640,2552,2552/100,100/0/default.jpg")
+        stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/nr%2F349%2Fct%2F7889%2Fimage/0,640,2552,2552/100,100/0/default.jpg")
           .to_return(status: 200, body: "", headers: {})
-        get "/image/iiif/nr349ct7889%2Fimage.jp2/0,640,2552,2552/100,100/0/default.jpg"
+        get "/image/iiif/nr349ct7889%2Fimage/0,640,2552,2552/100,100/0/default.jpg"
         expect(response).to have_http_status :not_found
       end
     end
@@ -342,7 +342,7 @@ RSpec.describe 'IIIF API' do
       end
 
       it 'loads the image' do
-        get '/image/iiif/nr349ct7889%2Fimage.jp2/pct:3,3,77,77/full/0/default.jpg'
+        get '/image/iiif/nr349ct7889%2Fimage/pct:3,3,77,77/full/0/default.jpg'
 
         expect(response.media_type).to eq 'image/jpeg'
         expect(response).to have_http_status :ok
