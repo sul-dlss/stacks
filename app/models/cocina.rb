@@ -60,7 +60,7 @@ class Cocina
   def files_from_json
     data.dig('structural', 'contains').each do |fileset|
       fileset.dig('structural', 'contains').each do |file|
-        file = StacksFile.new(id: data.fetch('externalIdentifier').delete_prefix('druid:'), file_name: file['filename'])
+        file = StacksFile.new(id: data.fetch('externalIdentifier').delete_prefix('druid:'), file_name: file['filename'], cocina: self)
         yield file
       end
     end

@@ -152,7 +152,11 @@ class IiifController < ApplicationController
   end
 
   def stacks_file
-    StacksFile.new(id: identifier_params[:id], file_name: "#{identifier_params[:file_name]}.jp2")
+    StacksFile.new(
+      id: identifier_params[:id],
+      file_name: "#{identifier_params[:file_name]}.jp2",
+      cocina: Cocina.find(identifier_params[:id])
+    )
   end
 
   # @return [IIIF::Image::Transformation] returns the transformation for the parameters

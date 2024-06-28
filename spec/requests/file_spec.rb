@@ -42,7 +42,6 @@ RSpec.describe "File requests" do
 
   describe 'GET file with slashes in filename' do
     let(:file_name) { 'path/to/image.jp2' }
-    let(:stacks_file) { StacksFile.new(id: druid, file_name:) }
     let(:public_json) do
       {
         'structural' => {
@@ -66,9 +65,8 @@ RSpec.describe "File requests" do
     end
 
     before do
-      allow(StacksFile).to receive(:new).and_return(stacks_file)
-      allow(stacks_file).to receive(:path)
-      allow_any_instance_of(FileController).to receive(:send_file).with(stacks_file.path, disposition: :inline)
+      allow_any_instance_of(FileController).to receive(:send_file)
+        .with('spec/fixtures/nr/349/ct/7889/path/to/image.jp2', disposition: :inline)
     end
 
     it 'returns a successful HTTP response' do
@@ -78,13 +76,6 @@ RSpec.describe "File requests" do
   end
 
   describe 'GET missing file' do
-    before do
-      allow(StacksFile).to receive(:new).and_return(stacks_file)
-      allow(stacks_file).to receive(:path)
-    end
-
-    let(:stacks_file) { StacksFile.new(id: druid, file_name: 'path/to/99999.jp2') }
-
     it 'returns a 400 HTTP response' do
       get '/file/xf680rd3068/path/to/99999.jp2'
       expect(response).to have_http_status(:not_found)

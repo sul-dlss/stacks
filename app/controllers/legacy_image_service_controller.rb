@@ -27,7 +27,11 @@ class LegacyImageServiceController < ApplicationController
   end
 
   def load_image
-    @image ||= StacksImage.new(transformation: iiif_params, stacks_file: StacksFile.new(id:, file_name:))
+    @image ||= StacksImage.new(transformation: iiif_params, stacks_file:)
+  end
+
+  def stacks_file
+    StacksFile.new(id:, file_name:, cocina: Cocina.find(id))
   end
 
   def iiif_params

@@ -6,7 +6,8 @@ RSpec.describe IiifMetadataService do
   let(:base_uri) { 'https://sul-imageserver-uat.stanford.edu/cantaloupe/iiif/2/' } # 'image-server-path'
   let(:druid) { 'nr349ct7889' }
   let(:file_name) { 'image.jp2' }
-  let(:service) { described_class.new(id: druid, file_name:, canonical_url: 'foo', base_uri:) }
+  let(:stacks_file) { StacksFile.new(id: druid, file_name:, cocina: Cocina.new({})) }
+  let(:service) { described_class.new(stacks_file:, canonical_url: 'foo', base_uri:) }
   let(:http_client) { instance_double(HTTP::Client) }
 
   context "When a valid JSON response is received" do

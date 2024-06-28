@@ -3,6 +3,32 @@
 require 'rails_helper'
 
 RSpec.describe LegacyImageServiceController do
+  before do
+    allow(Cocina).to receive(:find).and_return(Cocina.new(public_json))
+  end
+
+  let(:public_json) do
+    {
+      'structural' => {
+        'contains' => [
+          {
+            'structural' => {
+              'contains' => [
+                {
+                  'filename' => 'image.jp2',
+                  'access' => {
+                    'view' => 'world',
+                    'download' => 'world'
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  end
+
   describe 'Precast sizes' do
     context 'squares' do
       it 'works' do

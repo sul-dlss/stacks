@@ -3,6 +3,31 @@
 require 'rails_helper'
 
 RSpec.describe MediaController do
+  before do
+    allow(Cocina).to receive(:find).and_return(Cocina.new(public_json))
+  end
+
+  let(:public_json) do
+    {
+      'structural' => {
+        'contains' => [
+          {
+            'structural' => {
+              'contains' => [
+                {
+                  'filename' => 'bb582xs1304_sl.mp4',
+                  'access' => {
+                    'view' => 'world',
+                    'download' => 'world'
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  end
   let(:video) { StacksMediaStream.new(id: 'bb582xs1304', file_name: 'bb582xs1304_sl', format: 'mp4') }
 
   describe '#verify_token' do

@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe StacksFile do
   let(:druid) { 'nr349ct7889' }
   let(:file_name) { 'image.jp2' }
-  let(:instance) { described_class.new(id: druid, file_name:) }
+  let(:instance) { described_class.new(id: druid, file_name:, cocina: Cocina.new({})) }
   let(:path) { storage_root.absolute_path }
   let(:storage_root) { StorageRoot.new(druid:, file_name:) }
 
@@ -17,13 +17,13 @@ RSpec.describe StacksFile do
     end
 
     context 'with a malformed druid' do
-      let(:instance) { described_class.new(id: 'abcdef', file_name: 'def.pdf') }
+      let(:druid) { 'abcdef' }
 
       it { is_expected.to be_nil }
     end
 
     context 'with a missing file name' do
-      let(:instance) { described_class.new(id: 'abcdef', file_name: nil) }
+      let(:file_name) { nil }
 
       it { is_expected.to be_nil }
     end

@@ -12,7 +12,7 @@ RSpec.describe StacksImage do
 
   describe "#info_service" do
     subject { instance.send(:info_service) }
-    let(:stacks_file) { StacksFile.new(id: 'nr349ct7889', file_name: 'image.jp2') }
+    let(:stacks_file) { StacksFile.new(id: 'nr349ct7889', file_name: 'image.jp2', cocina: Cocina.new({})) }
     let(:instance) { described_class.new(stacks_file:) }
 
     it { is_expected.to be_a IiifMetadataService }

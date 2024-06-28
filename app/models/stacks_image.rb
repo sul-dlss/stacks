@@ -53,7 +53,7 @@ class StacksImage
 
   # @return [InfoService]
   def info_service
-    @info_service ||= IiifMetadataService.new(id: stacks_file.id, file_name: stacks_file.file_name, canonical_url:)
+    @info_service ||= IiifMetadataService.new(stacks_file:, canonical_url:)
   end
 
   delegate :rights, :maybe_downloadable?, :object_thumbnail?,

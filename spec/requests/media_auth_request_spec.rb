@@ -29,11 +29,16 @@ RSpec.describe "Authentication for Media requests" do
   end
 
   let(:mock_media) do
-    StacksMediaStream.new(stacks_file: StacksFile.new(id: 'bb582xs1304', file_name: 'file'))
+    StacksMediaStream.new(
+      stacks_file: StacksFile.new(id: 'bb582xs1304',
+                                  file_name: 'file',
+                                  cocina:)
+    )
   end
+  let(:cocina) { Cocina.new(public_json) }
 
   before do
-    allow(Cocina).to receive(:find).and_return(Cocina.new(public_json))
+    allow(Cocina).to receive(:find).and_return(cocina)
     allow_any_instance_of(MediaController).to receive(:current_user).and_return(user)
     allow_any_instance_of(MediaController).to receive(:current_media).and_return(mock_media)
   end

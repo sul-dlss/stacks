@@ -6,12 +6,13 @@
 class StacksFile
   include ActiveModel::Validations
 
-  def initialize(id:, file_name:)
+  def initialize(id:, file_name:, cocina:)
     @id = id
     @file_name = file_name
+    @cocina = cocina
   end
 
-  attr_reader :id, :file_name
+  attr_reader :id, :file_name, :cocina
 
   validates :id, format: { with: StorageRoot::DRUID_PARTS_PATTERN }
 
@@ -45,7 +46,7 @@ class StacksFile
   end
 
   def stacks_rights
-    @stacks_rights ||= StacksRights.new(cocina: Cocina.find(id), file_name:)
+    @stacks_rights ||= StacksRights.new(cocina:, file_name:)
   end
 
   delegate :rights, :restricted_by_location?, :stanford_restricted?, :embargoed?,
