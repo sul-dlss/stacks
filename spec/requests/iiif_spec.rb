@@ -13,14 +13,7 @@ RSpec.describe 'IIIF API' do
                                          image_width: 1702,
                                          image_height: 2552)
   end
-  let(:stacks_image) do
-    StacksImage.new(id: 'nr349ct7889', file_name: 'image.jp2')
-  end
-  let(:file_source) do
-    instance_double(StacksFile, readable?: true,
-                                etag: 'etag',
-                                mtime: Time.zone.now)
-  end
+
   let(:public_json) do
     {
       'structural' => {
@@ -45,12 +38,6 @@ RSpec.describe 'IIIF API' do
 
   before do
     allow(Cocina).to receive(:find).and_return(Cocina.new(public_json))
-
-    # stubbing Rails.cache.fetch is required because you can't dump a singleton (double)
-    # which is what happens when writing to the cache.
-    allow(Rails.cache).to receive(:fetch).and_yield
-    allow(StacksImage).to receive(:new).and_return(stacks_image)
-    allow(stacks_image).to receive(:file_source).and_return(file_source)
     allow(IiifMetadataService).to receive(:new).and_return(metadata_service)
   end
 
@@ -192,7 +179,7 @@ RSpec.describe 'IIIF API' do
           get '/image/iiif/degraded/nr349ct7889/image/info.json'
 
           expect(response).to have_http_status :ok
-          expect(controller.send(:current_image).id).to eq 'nr349ct7889'
+          expect(controller.send(:current_image).stacks_file.id).to eq 'nr349ct7889'
         end
       end
     end
@@ -274,10 +261,6 @@ RSpec.describe 'IIIF API' do
       it 'loads the image' do
         get "/image/iiif/nr349ct7889%2Fimage/0,640,2552,2552/100,100/0/default.jpg"
 
-        expect(StacksImage).to have_received(:new).with(
-          id: "nr349ct7889", file_name: 'image.jp2',
-          canonical_url: "http://www.example.com/image/iiif/nr349ct7889/image"
-        )
         expect(response.media_type).to eq 'image/jpeg'
         expect(response).to have_http_status :ok
       end

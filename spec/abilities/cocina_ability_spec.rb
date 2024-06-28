@@ -58,10 +58,10 @@ RSpec.describe CocinaAbility, type: :model do
     StacksFile.new(id: 'xxxxxxx', file_name: 'file.csv')
   end
   let(:image) do
-    StacksImage.new(id: 'yx350pf4616', file_name: 'image.jpg')
+    StacksImage.new(stacks_file: StacksFile.new(id: 'yx350pf4616', file_name: 'image.jpg'))
   end
   let(:media) do
-    StacksMediaStream.new(id: 'xxxxxxx', file_name: 'movie.mp4')
+    StacksMediaStream.new(stacks_file: StacksFile.new(id: 'xxxxxxx', file_name: 'movie.mp4'))
   end
 
   let(:thumbnail_transformation) { IIIF::Image::OptionDecoder.decode(region: 'full', size: '!400,400') }

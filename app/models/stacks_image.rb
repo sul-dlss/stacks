@@ -3,16 +3,18 @@
 ##
 # An image that can be delivered over the IIIF endpoint
 class StacksImage
-  include ActiveModel::Model
+  def initialize(stacks_file:, canonical_url: nil, transformation: nil)
+    @stacks_file = stacks_file
+    @canonical_url = canonical_url
+    @transformation = transformation
+  end
 
-  attr_accessor :id, :file_name
-  attr_accessor :canonical_url, :transformation
+  attr_accessor :canonical_url, :transformation, :stacks_file
 
   # @return [RestrictedImage] the restricted version of this image
   def restricted
-    RestrictedImage.new(transformation:,
-                        id:,
-                        file_name:,
+    RestrictedImage.new(stacks_file:,
+                        transformation:,
                         canonical_url:)
   end
 
@@ -32,11 +34,11 @@ class StacksImage
   end
 
   def exist?
-    file_source.readable? && image_width.positive?
+    readable? && image_width.positive?
   end
 
   delegate :image_width, :image_height, to: :info_service
-  delegate :etag, :mtime, to: :file_source
+  delegate :etag, :mtime, :stacks_rights, :readable?, to: :stacks_file
 
   # This is overriden in RestrictedImage
   def max_tile_dimensions
@@ -49,18 +51,9 @@ class StacksImage
 
   private
 
-  # @return [StacksFile]
-  def file_source
-    @file_source ||= StacksFile.new(id:, file_name:)
-  end
-
   # @return [InfoService]
   def info_service
-    @info_service ||= IiifMetadataService.new(id:, file_name:, canonical_url:)
-  end
-
-  def stacks_rights
-    @stacks_rights ||= StacksRights.new(cocina: Cocina.find(id), file_name:)
+    @info_service ||= IiifMetadataService.new(id: stacks_file.id, file_name: stacks_file.file_name, canonical_url:)
   end
 
   delegate :rights, :maybe_downloadable?, :object_thumbnail?,

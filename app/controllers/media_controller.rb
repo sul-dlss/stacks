@@ -57,10 +57,6 @@ class MediaController < ApplicationController
     end
   end
 
-  def stacks_media_stream_params
-    allowed_params.slice(:id, :file_name)
-  end
-
   def id
     allowed_params[:id]
   end
@@ -70,7 +66,7 @@ class MediaController < ApplicationController
   end
 
   def load_media
-    @media ||= StacksMediaStream.new(stacks_media_stream_params)
+    @media ||= StacksMediaStream.new(stacks_file: StacksFile.new(id:, file_name:))
   end
 
   def current_media

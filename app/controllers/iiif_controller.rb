@@ -131,7 +131,7 @@ class IiifController < ApplicationController
 
   def current_image
     @image ||= begin
-      img = StacksImage.new(stacks_image_params)
+      img = StacksImage.new(stacks_file:, canonical_url:)
       can?(:download, img) ? img : img.restricted
     end
   end
@@ -147,12 +147,12 @@ class IiifController < ApplicationController
     [File.basename(identifier_params[:file_name], '.*'), iiif_params[:format]].join('.')
   end
 
-  def stacks_image_params
-    {
-      id: identifier_params[:id],
-      file_name: identifier_params[:file_name] + '.jp2',
-      canonical_url: iiif_base_url(id: identifier_params[:id], file_name: identifier_params[:file_name], host: request.host_with_port)
-    }
+  def canonical_url
+    iiif_base_url(id: identifier_params[:id], file_name: identifier_params[:file_name], host: request.host_with_port)
+  end
+
+  def stacks_file
+    StacksFile.new(id: identifier_params[:id], file_name: "#{identifier_params[:file_name]}.jp2")
   end
 
   # @return [IIIF::Image::Transformation] returns the transformation for the parameters

@@ -91,7 +91,6 @@ RSpec.describe 'Metrics tracking' do
     let(:image) do
       instance_double(
         StacksImage,
-        valid?: true,
         exist?: true,
         etag: nil,
         mtime: nil,

@@ -16,14 +16,14 @@ RSpec.describe "Authentication for IIIF requests" do
   let(:quality) { 'default' }
   let(:format) { 'jpg' }
   let(:identifier) { "#{druid}%2F#{file_name}" }
-  let(:params_hash) { { id: druid, file_name:, transformation: } }
   let(:transformation) { IIIF::Image::Transformation.new region:, size:, rotation:, quality:, format: }
   let(:druid) { 'nr349ct7889' }
   let(:file_name) { 'image.jp2' }
   let(:path) { storage_root.absolute_path }
   let(:storage_root) { StorageRoot.new(druid:, file_name:) }
   let(:perms) { nil }
-  let(:current_image) { StacksImage.new(params_hash) }
+  let(:stacks_file) { StacksFile.new(id: druid, file_name:) }
+  let(:current_image) { StacksImage.new(stacks_file:, transformation:) }
   let(:http_client) { instance_double(HTTP::Client) }
 
   before(:each) do

@@ -27,11 +27,7 @@ class LegacyImageServiceController < ApplicationController
   end
 
   def load_image
-    @image ||= StacksImage.new(stacks_image_params)
-  end
-
-  def stacks_image_params
-    { transformation: iiif_params }.merge(identifier_params)
+    @image ||= StacksImage.new(transformation: iiif_params, stacks_file: StacksFile.new(id:, file_name:))
   end
 
   def iiif_params
@@ -84,10 +80,6 @@ class LegacyImageServiceController < ApplicationController
     else
       'full'
     end
-  end
-
-  def identifier_params
-    { id:, file_name: }
   end
 
   def id

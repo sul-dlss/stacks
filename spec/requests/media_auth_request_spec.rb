@@ -29,7 +29,7 @@ RSpec.describe "Authentication for Media requests" do
   end
 
   let(:mock_media) do
-    StacksMediaStream.new(id: 'bb582xs1304', file_name: 'file')
+    StacksMediaStream.new(stacks_file: StacksFile.new(id: 'bb582xs1304', file_name: 'file'))
   end
 
   before do

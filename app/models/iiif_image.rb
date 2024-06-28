@@ -3,13 +3,11 @@
 # Represents a remote Iiif endpoint
 class IiifImage
   include ActiveSupport::Benchmarkable
-  # @params id [String]
-  # @params file_name [String]
+  # @params stacks_file [StacksFile]
   # @params transformation [IIIF::Image::Transformation]
   # @params base_uri [String]
-  def initialize(id:, file_name:, transformation:, base_uri: Settings.imageserver.base_uri)
-    @id = id
-    @file_name = file_name
+  def initialize(stacks_file:, transformation:, base_uri: Settings.imageserver.base_uri)
+    @stacks_file = stacks_file
     @transformation = transformation
     @base_uri = base_uri
   end
@@ -37,10 +35,10 @@ class IiifImage
   end
 
   def remote_id
-    CGI.escape(StacksFile.new(id:, file_name:).treeified_path)
+    CGI.escape(stacks_file.treeified_path)
   end
 
-  attr_reader :transformation, :id, :file_name
+  attr_reader :transformation, :stacks_file
 
   delegate :logger, to: Rails
 end
