@@ -7,7 +7,7 @@ class StacksFile
   include ActiveModel::Model
   include ActiveModel::Validations
 
-  attr_accessor :id, :file_name, :current_ability, :download
+  attr_accessor :id, :file_name
 
   validates :id, format: { with: StorageRoot::DRUID_PARTS_PATTERN }
 
