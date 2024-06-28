@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe RestrictedImage do
-  let(:instance) { described_class.new }
+  let(:instance) { described_class.new(stacks_file: instance_double(StacksImage)) }
 
   describe '#info' do
     subject { instance.info }

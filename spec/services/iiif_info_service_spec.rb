@@ -20,9 +20,8 @@ RSpec.describe IiifInfoService do
              cdl_renew_iiif_auth_api_url: 'http://cdl/renew')
     end
     let(:downloadable_anonymously) { true }
-    let(:image) do
-      StacksImage.new(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001')
-    end
+    let(:image) { StacksImage.new(stacks_file:) }
+    let(:stacks_file) { StacksFile.new(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001') }
     let(:source_info) { {} }
 
     before do
@@ -102,9 +101,7 @@ RSpec.describe IiifInfoService do
     end
 
     context 'when the image is not downloadable' do
-      let(:image) do
-        RestrictedImage.new(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001')
-      end
+      let(:image) { RestrictedImage.new(stacks_file:) }
       let(:downloadable_anonymously) { false }
       let(:source_info) { { tile_height: 256, tile_width: 256 } }
       let(:auth_service) { image_info['service'] }
@@ -144,9 +141,8 @@ RSpec.describe IiifInfoService do
     end
 
     context 'when the image is location-restricted' do
-      let(:image) do
-        RestrictedImage.new(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001')
-      end
+      let(:image) { RestrictedImage.new(stacks_file:) }
+      let(:stacks_file) { StacksFile.new(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001') }
       let(:downloadable_anonymously) { false }
 
       let(:location_service) { image_info['service'] }
@@ -193,9 +189,8 @@ RSpec.describe IiifInfoService do
     end
 
     context 'when the item has location and stanford-only rights' do
-      let(:image) do
-        RestrictedImage.new(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001')
-      end
+      let(:image) { RestrictedImage.new(stacks_file:) }
+      let(:stacks_file) { StacksFile.new(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001') }
       let(:downloadable_anonymously) { false }
 
       let(:public_json) do

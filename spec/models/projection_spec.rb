@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Projection do
-  let(:image) { StacksImage.new }
+  let(:image) { StacksImage.new(stacks_file: instance_double(StacksFile)) }
   let(:instance) { described_class.new(image, transformation) }
   let(:transformation) { IIIF::Image::OptionDecoder.decode(options) }
   let(:http_client) { instance_double(HTTP::Client) }
@@ -68,7 +68,7 @@ RSpec.describe Projection do
     end
 
     context "for a restricted image" do
-      let(:image) { RestrictedImage.new }
+      let(:image) { RestrictedImage.new(stacks_file: instance_double(StacksFile)) }
 
       context "full region" do
         let(:options) { { size: 'max', region: 'full' } }
@@ -101,7 +101,7 @@ RSpec.describe Projection do
     let(:file_name) { 'image.jp2' }
 
     context 'for an image' do
-      let(:image) { StacksImage.new(id: druid, file_name:) }
+      let(:image) { StacksImage.new(stacks_file: StacksFile.new(id: druid, file_name:)) }
 
       subject(:projection) { described_class.new(image, transformation) }
 
@@ -129,7 +129,7 @@ RSpec.describe Projection do
     end
 
     context 'for a restricted image' do
-      let(:image) { RestrictedImage.new(id: druid, file_name:) }
+      let(:image) { RestrictedImage.new(stacks_file: StacksFile.new(id: druid, file_name:)) }
 
       subject(:projection) { described_class.new(image, transformation) }
 
@@ -306,11 +306,11 @@ RSpec.describe Projection do
 
   describe '#valid?' do
     let(:options) { { size: 'max', region: 'full' } }
+    let(:image) { StacksImage.new(stacks_file: file) }
     subject { instance.valid? }
 
     before do
       allow(IiifImage).to receive(:new).and_return(source_image)
-      allow(StacksFile).to receive(:new).and_return(file)
     end
 
     context 'when file exists and transformation is valid' do
@@ -335,7 +335,8 @@ RSpec.describe Projection do
   end
 
   describe '#use_original_size?' do
-    let(:image) { StacksImage.new id: 'bc123cd4567', file_name: 'b' }
+    let(:image) { StacksImage.new(stacks_file: instance_double(StacksFile)) }
+
     subject(:use_original) { described_class.new(image, transformation).send(:use_original_size?) }
 
     context 'when percentage region is requested' do

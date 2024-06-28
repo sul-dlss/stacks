@@ -7,9 +7,8 @@ RSpec.describe IiifImage do
   let(:druid) { 'nr349ct7889' }
   let(:file_name) { 'image.jp2' }
   let(:transformation) { IIIF::Image::Transformation.new(size: 'full', region: 'full') }
-  let(:instance) do
-    described_class.new(base_uri:, id: druid, file_name:, transformation:)
-  end
+  let(:stacks_file) { StacksFile.new(id: druid, file_name:) }
+  let(:instance) { described_class.new(stacks_file:, base_uri:, transformation:) }
 
   describe "#remote_id" do
     subject { instance.send(:remote_id) }

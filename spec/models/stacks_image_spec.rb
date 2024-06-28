@@ -3,19 +3,17 @@
 require 'rails_helper'
 
 RSpec.describe StacksImage do
-  subject { instance }
-  let(:instance) { described_class.new }
+  subject(:instance) { described_class.new(stacks_file:) }
+  let(:stacks_file) { instance_double(StacksFile) }
 
   before do
-    allow(instance).to receive_messages(image_width: 800, image_height: 600)
+    allow(instance).to receive_messages(image_width: 800, image_height: 600) # rubocop:disable RSpec/SubjectStub
   end
 
   describe "#info_service" do
     subject { instance.send(:info_service) }
-
-    let(:druid) { 'nr349ct7889' }
-    let(:file_name) { 'image.jp2' }
-    let(:instance) { described_class.new(id: druid, file_name:) }
+    let(:stacks_file) { StacksFile.new(id: 'nr349ct7889', file_name: 'image.jp2') }
+    let(:instance) { described_class.new(stacks_file:) }
 
     it { is_expected.to be_a IiifMetadataService }
   end
@@ -26,10 +24,10 @@ RSpec.describe StacksImage do
     let(:info_service) { instance_double(IiifMetadataService, fetch: {}) }
 
     before do
-      allow(instance).to receive(:info_service).and_return(info_service)
+      allow(instance).to receive(:info_service).and_return(info_service) # rubocop:disable RSpec/SubjectStub
     end
 
-    it "gets the info from the djatoka response" do
+    it "gets the info from the image server response" do
       subject
       expect(info_service).to have_received(:fetch).with(nil)
     end
@@ -45,7 +43,9 @@ RSpec.describe StacksImage do
     subject { image.restricted }
 
     let(:image) do
-      described_class.new(attributes)
+      described_class.new(stacks_file:,
+                          canonical_url: 'http://example.com/',
+                          transformation:)
     end
 
     let(:transformation) do
@@ -57,17 +57,10 @@ RSpec.describe StacksImage do
       )
     end
 
-    let(:attributes) do
-      { id: 'bc012cd3456', file_name: 'def',
-        canonical_url: 'http://example.com/',
-        transformation: }
-    end
-
     it 'passes all the parameters' do
-      expect(subject.transformation).to eq attributes[:transformation]
-      expect(subject.id).to eq attributes[:id]
-      expect(subject.file_name).to eq attributes[:file_name]
-      expect(subject.canonical_url).to eq attributes[:canonical_url]
+      expect(subject.transformation).to eq transformation
+      expect(subject.stacks_file).to eq stacks_file
+      expect(subject.canonical_url).to eq 'http://example.com/'
     end
   end
 end

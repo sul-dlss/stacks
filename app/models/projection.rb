@@ -9,6 +9,8 @@ class Projection
     new(image, IIIF::Image::Transformation.new(size: THUMBNAIL_BOUNDS, region: IIIF::Image::Region::Full.new))
   end
 
+  # @param [StacksImage] image
+  # @transformation [IIIF::Image::Transformation] transformation
   def initialize(image, transformation)
     @image = image
     @transformation = transformation
@@ -62,7 +64,7 @@ class Projection
     image.exist? && image_source.valid?
   end
 
-  delegate :object_thumbnail?, :id, :file_name, to: :image
+  delegate :object_thumbnail?, :stacks_file, to: :image
 
   delegate :response, to: :image_source
 
@@ -108,7 +110,7 @@ class Projection
 
   # @return [IiifImage]
   def image_source
-    @image_source ||= IiifImage.new(id:, file_name:, transformation: real_transformation)
+    @image_source ||= IiifImage.new(stacks_file:, transformation: real_transformation)
   end
 
   def real_transformation
