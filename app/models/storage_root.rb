@@ -35,7 +35,7 @@ class StorageRoot
   end
 
   def path_finder_class
-    Settings.features.read_stacks_from_ocfl_root ? OcflPathFinder : LegacyPathFinder
+    LegacyPathFinder
   end
 
   # Calculate file paths in the legacy Stacks structure
@@ -51,29 +51,6 @@ class StorageRoot
 
     def absolute_path
       File.join(Settings.stacks.storage_root, relative_path)
-    end
-  end
-
-  # Calculate file paths in the OCFL structure
-  class OcflPathFinder
-    def initialize(druid:, file_name:, treeified_id:) # rubocop:disable Lint/UnusedMethodArgument
-      @druid = druid
-      @file_name = file_name
-    end
-
-    def relative_path
-      absolute_path.relative_path_from(Settings.stacks.ocfl_root)
-    end
-
-    def absolute_path
-      ocfl_object.path(filepath: @file_name)
-    end
-
-    private
-
-    def ocfl_object
-      storage_root = OCFL::StorageRoot.new(base_directory: Settings.stacks.ocfl_root)
-      storage_root.object(@druid)
     end
   end
 end
