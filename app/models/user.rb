@@ -70,7 +70,7 @@ class User
 
   def self.encryptor
     salt = 'user'
-    key = ActiveSupport::KeyGenerator.new(Rails.application.secrets.secret_key_base).generate_key(salt, 32)
+    key = ActiveSupport::KeyGenerator.new(Rails.application.secret_key_base).generate_key(salt, 32)
     ActiveSupport::MessageEncryptor.new(key)
   end
 
