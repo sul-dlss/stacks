@@ -4,10 +4,14 @@
 # Represents a file on disk in stacks. A StacksFile may be downloaded and
 # may be the file that backs a StacksImage or StacksMediaStream
 class StacksFile
-  include ActiveModel::Model
   include ActiveModel::Validations
 
-  attr_accessor :id, :file_name
+  def initialize(id:, file_name:)
+    @id = id
+    @file_name = file_name
+  end
+
+  attr_reader :id, :file_name
 
   validates :id, format: { with: StorageRoot::DRUID_PARTS_PATTERN }
 
