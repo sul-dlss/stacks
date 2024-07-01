@@ -7,6 +7,8 @@ class FileController < ApplicationController
     render plain: 'File not found', status: :not_found
   end
 
+  before_action :set_cors_headers, only: [:show], if: proc { current_file.stacks_rights.stanford_restricted? }
+
   # rubocop:disable Metrics/AbcSize
   def show
     return unless stale?(**cache_headers)
