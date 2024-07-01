@@ -70,7 +70,7 @@ class FileController < ApplicationController
   end
 
   def current_file
-    @file ||= StacksFile.new(id: params[:id], file_name: params[:file_name], cocina:)
+    @file ||= StacksFile.new(file_name: params[:file_name], cocina:)
   end
 
   def cocina

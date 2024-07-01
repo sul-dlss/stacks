@@ -7,7 +7,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
   let(:file_name) { 'image.jp2' }
   let(:stacks_uri) { "https://stacks-uat.stanford.edu/file/druid:#{id}/#{URI.encode_uri_component(file_name)}" }
   let(:stacks_uri_param) { URI.encode_uri_component(stacks_uri) }
-  let(:public_json) { '{}' }
+  let(:public_json) { { "externalIdentifier" => "druid:nr349ct7889" } }
 
   # NOTE: For any unauthorized responses, the status from the service is OK...the access status of the resource is in the response body
 
@@ -46,14 +46,15 @@ RSpec.describe 'IIIF auth v2 probe service' do
     let(:id) { '111' }
 
     before do
+      allow(Cocina).to receive(:find).and_raise(Purl::Exception)
       get "/iiif/auth/v2/probe?id=#{stacks_uri_param}"
     end
 
     it 'returns a success response' do
       expect(response).to have_http_status :ok
       expect(response.parsed_body).to eq("@context" => "http://iiif.io/api/auth/2/context.json",
-                                         "note" => { "en" => ["Id is invalid"] },
-                                         "status" => 400,
+                                         "note" => { "en" => ["Unable to find 111"] },
+                                         "status" => 404,
                                          "type" => "AuthProbeResult2")
     end
   end
@@ -73,6 +74,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
   context 'when the user has access to the resource because it is world accessible' do
     let(:public_json) do
       {
+        "externalIdentifier" => "druid:nr349ct7889",
         'structural' => {
           'contains' => [
             {
@@ -100,9 +102,6 @@ RSpec.describe 'IIIF auth v2 probe service' do
     context 'when druid has a prefix' do
       it 'returns a success response' do
         expect(response).to have_http_status :ok
-        # Ensure the druid doesn't have a prefix:
-        expect(StacksFile).to have_received(:new).with(hash_including(id: "nr349ct7889"))
-
         expect(response.parsed_body).to include({
                                                   "@context" => "http://iiif.io/api/auth/2/context.json",
                                                   "type" => "AuthProbeResult2",
@@ -116,9 +115,6 @@ RSpec.describe 'IIIF auth v2 probe service' do
 
       it 'returns a success response' do
         expect(response).to have_http_status :ok
-        # Ensure the druid doesn't have a prefix:
-        expect(StacksFile).to have_received(:new).with(hash_including(id: "nr349ct7889"))
-
         expect(response.parsed_body).to include({
                                                   "@context" => "http://iiif.io/api/auth/2/context.json",
                                                   "type" => "AuthProbeResult2",
@@ -145,6 +141,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
     let(:file_name) { 'SC0193_1982-013_b06_f01_1981-09-29.mp4' }
     let(:public_json) do
       {
+        "externalIdentifier" => "druid:nr349ct7889",
         'structural' => {
           'contains' => [
             {
@@ -183,8 +180,6 @@ RSpec.describe 'IIIF auth v2 probe service' do
   end
 
   context 'when the requested file does not exist' do
-    let(:public_json) { {} }
-
     before do
       allow_any_instance_of(StacksFile).to receive(:readable?).and_return(nil)
       get "/iiif/auth/v2/probe?id=#{stacks_uri_param}"
@@ -203,6 +198,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
   context 'when a Stanford only resource' do
     let(:public_json) do
       {
+        "externalIdentifier" => "druid:nr349ct7889",
         'structural' => {
           'contains' => [
             {
@@ -283,6 +279,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
   context 'when the user does not have access to a location restricted resource' do
     let(:public_json) do
       {
+        "externalIdentifier" => "druid:nr349ct7889",
         'structural' => {
           'contains' => [
             {
@@ -346,6 +343,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
   context 'when the user does not have access to a stanford restricted embargoed resource' do
     let(:public_json) do
       {
+        "externalIdentifier" => "druid:nr349ct7889",
         'access' => {
           'embargo' => {
             "releaseDate" => Time.parse('2099-05-15').getlocal.as_json
@@ -393,6 +391,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
   context 'when the user does not have access to an embargoed resource' do
     let(:public_json) do
       {
+        "externalIdentifier" => "druid:nr349ct7889",
         'access' => {
           'embargo' => {
             "releaseDate" => Time.parse('2099-05-15').getlocal.as_json

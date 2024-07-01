@@ -7,7 +7,7 @@ RSpec.describe IiifImage do
   let(:druid) { 'nr349ct7889' }
   let(:file_name) { 'image.jp2' }
   let(:transformation) { IIIF::Image::Transformation.new(size: 'full', region: 'full') }
-  let(:stacks_file) { StacksFile.new(id: druid, file_name:, cocina: Cocina.new({})) }
+  let(:stacks_file) { StacksFile.new(file_name:, cocina: Cocina.new({ "externalIdentifier" => druid })) }
   let(:instance) { described_class.new(stacks_file:, base_uri:, transformation:) }
 
   describe "#remote_id" do

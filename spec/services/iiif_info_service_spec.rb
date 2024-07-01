@@ -23,7 +23,7 @@ RSpec.describe IiifInfoService do
     let(:image) { StacksImage.new(stacks_file:) }
     let(:cocina) { Cocina.new(public_json) }
     let(:public_json) { {} }
-    let(:stacks_file) { StacksFile.new(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001', cocina:) }
+    let(:stacks_file) { StacksFile.new(file_name: 'nr349ct7889_00_0001', cocina:) }
     let(:source_info) { {} }
 
     before do
@@ -149,6 +149,7 @@ RSpec.describe IiifInfoService do
       let(:location_service) { image_info['service'] }
       let(:public_json) do
         {
+          'externalIdentifier' => 'nr349ct7889',
           'structural' => {
             'contains' => [
               {

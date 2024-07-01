@@ -11,9 +11,9 @@ RSpec.describe "Authentication for File requests" do
   let(:druid) { 'nr349ct7889' }
   let(:file_name) { 'image.jp2' }
   let(:path) { storage_root.absolute_path }
-  let(:storage_root) { StorageRoot.new(druid:, file_name:) }
+  let(:storage_root) { StorageRoot.new(cocina:, file_name:) }
   let(:perms) { nil }
-  let(:stacks_file) { StacksFile.new(id: druid, file_name:, cocina:) }
+  let(:stacks_file) { StacksFile.new(file_name:, cocina:) }
   let(:cocina) { Cocina.new(public_json) }
 
   before do
@@ -26,6 +26,7 @@ RSpec.describe "Authentication for File requests" do
     context 'stanford only (no location qualifications)' do
       let(:public_json) do
         {
+          'externalIdentifier' => druid,
           'structural' => {
             'contains' => [
               {
@@ -69,6 +70,7 @@ RSpec.describe "Authentication for File requests" do
       context 'not stanford qualified in any way' do
         let(:public_json) do
           {
+            'externalIdentifier' => druid,
             'structural' => {
               'contains' => [
                 {

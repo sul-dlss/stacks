@@ -8,6 +8,7 @@ RSpec.describe "Authentication for Media requests" do
 
   let(:public_json) do
     {
+      'externalIdentifier' => druid,
       'structural' => {
         'contains' => [
           {
@@ -30,8 +31,7 @@ RSpec.describe "Authentication for Media requests" do
 
   let(:mock_media) do
     StacksMediaStream.new(
-      stacks_file: StacksFile.new(id: 'bb582xs1304',
-                                  file_name: 'file',
+      stacks_file: StacksFile.new(file_name: 'file',
                                   cocina:)
     )
   end

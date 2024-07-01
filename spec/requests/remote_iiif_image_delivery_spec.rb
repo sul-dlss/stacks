@@ -14,6 +14,7 @@ RSpec.describe "proxying image requests to a remote IIIF server (cantaloupe)" do
   end
   let(:public_json) do
     {
+      'externalIdentifier' => 'druid:nr349ct7889',
       'structural' => {
         'contains' => [
           {

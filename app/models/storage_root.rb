@@ -4,10 +4,17 @@
 class StorageRoot
   DRUID_PARTS_PATTERN = /\A([b-df-hjkmnp-tv-z]{2})([0-9]{3})([b-df-hjkmnp-tv-z]{2})([0-9]{4})\z/i
 
-  def initialize(druid:, file_name:)
-    @druid = druid
-    @druid_parts = druid.match(DRUID_PARTS_PATTERN)
+  # @param [String] file_name
+  # @param [Cocina] cocina
+  def initialize(file_name:, cocina:)
     @file_name = file_name
+    @cocina = cocina
+  end
+
+  delegate :druid, to: :cocina
+
+  def druid_parts
+    @druid_parts ||= druid.match(DRUID_PARTS_PATTERN)
   end
 
   def absolute_path
@@ -28,7 +35,7 @@ class StorageRoot
 
   private
 
-  attr_reader :druid, :druid_parts, :file_name
+  attr_reader :cocina, :file_name
 
   def path_finder
     @path_finder ||= path_finder_class.new(treeified_id:, druid:, file_name:)
