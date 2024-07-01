@@ -22,7 +22,7 @@ RSpec.describe "Authentication for IIIF requests" do
   let(:path) { storage_root.absolute_path }
   let(:storage_root) { StorageRoot.new(druid:, file_name:) }
   let(:perms) { nil }
-  let(:stacks_file) { StacksFile.new(id: druid, file_name:) }
+  let(:stacks_file) { StacksFile.new(id: druid, file_name:, cocina: Cocina.new(public_json)) }
   let(:current_image) { StacksImage.new(stacks_file:, transformation:) }
   let(:http_client) { instance_double(HTTP::Client) }
 
@@ -37,7 +37,6 @@ RSpec.describe "Authentication for IIIF requests" do
       allow(http_client).to receive(:get).and_return(instance_double(HTTP::Response, status: 200, body: StringIO.new))
       allow_any_instance_of(IiifController).to receive(:current_user).and_return(current_user)
       allow_any_instance_of(IiifController).to receive(:current_image).and_return(current_image)
-      allow(Cocina).to receive(:find).and_return(Cocina.new(public_json))
     end
 
     context 'with a public item' do

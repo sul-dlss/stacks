@@ -21,7 +21,9 @@ RSpec.describe IiifInfoService do
     end
     let(:downloadable_anonymously) { true }
     let(:image) { StacksImage.new(stacks_file:) }
-    let(:stacks_file) { StacksFile.new(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001') }
+    let(:cocina) { Cocina.new(public_json) }
+    let(:public_json) { {} }
+    let(:stacks_file) { StacksFile.new(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001', cocina:) }
     let(:source_info) { {} }
 
     before do
@@ -142,7 +144,6 @@ RSpec.describe IiifInfoService do
 
     context 'when the image is location-restricted' do
       let(:image) { RestrictedImage.new(stacks_file:) }
-      let(:stacks_file) { StacksFile.new(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001') }
       let(:downloadable_anonymously) { false }
 
       let(:location_service) { image_info['service'] }
@@ -170,8 +171,6 @@ RSpec.describe IiifInfoService do
       end
 
       before do
-        allow(Cocina).to receive(:find).and_return(Cocina.new(public_json))
-
         allow(image).to receive(:restricted_by_location?).and_return(true)
       end
 
@@ -190,7 +189,6 @@ RSpec.describe IiifInfoService do
 
     context 'when the item has location and stanford-only rights' do
       let(:image) { RestrictedImage.new(stacks_file:) }
-      let(:stacks_file) { StacksFile.new(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001') }
       let(:downloadable_anonymously) { false }
 
       let(:public_json) do
@@ -217,7 +215,6 @@ RSpec.describe IiifInfoService do
       end
 
       before do
-        allow(Cocina).to receive(:find).and_return(Cocina.new(public_json))
         allow(image).to receive_messages(stanford_restricted?: true, restricted_by_location?: true)
       end
 

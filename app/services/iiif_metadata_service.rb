@@ -2,14 +2,13 @@
 
 # Fetch metadata from the remote IIIF server
 class IiifMetadataService
-  attr_reader :id, :file_name, :canonical_url
+  attr_reader :canonical_url
 
-  # @param id [String]
-  # @param file_name [String]
+  # @param stacks_file [StacksFile]
   # @param canonical_url [String]
   # @param base_uri [String] base path to the IIIF server
-  def initialize(id:, file_name:, canonical_url:, base_uri: Settings.imageserver.base_uri)
-    identifier = CGI.escape(StacksFile.new(id:, file_name:).treeified_path)
+  def initialize(stacks_file:, canonical_url:, base_uri: Settings.imageserver.base_uri)
+    identifier = CGI.escape(stacks_file.treeified_path)
     @url = IIIF::Image::URI.new(identifier:, base_uri:).to_s
     @canonical_url = canonical_url
   end

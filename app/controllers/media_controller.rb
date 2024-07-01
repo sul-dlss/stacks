@@ -66,7 +66,11 @@ class MediaController < ApplicationController
   end
 
   def load_media
-    @media ||= StacksMediaStream.new(stacks_file: StacksFile.new(id:, file_name:))
+    @media ||= StacksMediaStream.new(stacks_file:)
+  end
+
+  def stacks_file
+    StacksFile.new(id: params[:id], file_name: params[:file_name], cocina: Cocina.find(params[:id]))
   end
 
   def current_media

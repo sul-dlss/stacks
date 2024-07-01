@@ -13,7 +13,7 @@ module Iiif
           stacks_uri = params[:id] # this is a fully qualified URI to the resource on the stacks that the user is requesting access to
           parsed_uri = parse_uri(stacks_uri)
 
-          file = StacksFile.new(id: parsed_uri[:druid], file_name: parsed_uri[:file_name])
+          file = StacksFile.new(id: parsed_uri[:druid], file_name: parsed_uri[:file_name], cocina: Cocina.find(parsed_uri[:druid]))
 
           json = { '@context': 'http://iiif.io/api/auth/2/context.json', type: 'AuthProbeResult2' }
 
