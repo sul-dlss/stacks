@@ -10,26 +10,7 @@ RSpec.describe "File requests" do
   let(:druid) { 'nr349ct7889' }
   let(:file_name) { 'image.jp2' }
   let(:public_json) do
-    {
-      'externalIdentifier' => druid,
-      'structural' => {
-        'contains' => [
-          {
-            'structural' => {
-              'contains' => [
-                {
-                  'filename' => file_name,
-                  'access' => {
-                    'view' => 'world',
-                    'download' => 'world'
-                  }
-                }
-              ]
-            }
-          }
-        ]
-      }
-    }
+    Factories.cocina_with_file
   end
 
   describe 'OPTIONS options' do
@@ -44,26 +25,7 @@ RSpec.describe "File requests" do
   describe 'GET file with slashes in filename' do
     let(:file_name) { 'path/to/image.jp2' }
     let(:public_json) do
-      {
-        'externalIdentifier' => druid,
-        'structural' => {
-          'contains' => [
-            {
-              'structural' => {
-                'contains' => [
-                  {
-                    'filename' => file_name,
-                    'access' => {
-                      'view' => 'world',
-                      'download' => 'world'
-                    }
-                  }
-                ]
-              }
-            }
-          ]
-        }
-      }
+      Factories.cocina_with_file(file_name:)
     end
 
     before do
