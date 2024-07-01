@@ -19,16 +19,9 @@ RSpec.describe "Authentication for IIIF requests" do
   let(:transformation) { IIIF::Image::Transformation.new region:, size:, rotation:, quality:, format: }
   let(:druid) { 'nr349ct7889' }
   let(:file_name) { 'image.jp2' }
-  let(:path) { storage_root.absolute_path }
-  let(:storage_root) { StorageRoot.new(druid:, file_name:) }
-  let(:perms) { nil }
   let(:stacks_file) { StacksFile.new(id: druid, file_name:, cocina: Cocina.new(public_json)) }
   let(:current_image) { StacksImage.new(stacks_file:, transformation:) }
   let(:http_client) { instance_double(HTTP::Client) }
-
-  before(:each) do
-    allow(File).to receive(:world_readable?).with(path).and_return(perms)
-  end
 
   describe "#show" do
     before do
