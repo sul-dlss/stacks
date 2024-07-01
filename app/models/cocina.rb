@@ -7,14 +7,15 @@ class Cocina
   THUMBNAIL_MIME_TYPE = 'image/jp2'
 
   def self.find(druid)
-    Rails.cache.fetch("purl/#{druid}.json", expires_in: 10.minutes) do
+    data = Rails.cache.fetch("purl/#{druid}.json", expires_in: 10.minutes) do
       benchmark "Fetching public json for #{druid}" do
         response = Faraday.get(public_json_url(druid))
         raise Purl::Exception, response.status unless response.success?
 
-        new(JSON.parse(response.body))
+        JSON.parse(response.body)
       end
     end
+    new(data)
   end
 
   def self.public_json_url(druid)
