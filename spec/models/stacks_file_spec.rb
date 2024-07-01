@@ -5,9 +5,10 @@ require 'rails_helper'
 RSpec.describe StacksFile do
   let(:druid) { 'nr349ct7889' }
   let(:file_name) { 'image.jp2' }
-  let(:instance) { described_class.new(id: druid, file_name:, cocina: Cocina.new({})) }
+  let(:cocina) {  Cocina.new({ 'externalIdentifier' => druid }) }
+  let(:instance) { described_class.new(file_name:, cocina:) }
   let(:path) { storage_root.absolute_path }
-  let(:storage_root) { StorageRoot.new(druid:, file_name:) }
+  let(:storage_root) { StorageRoot.new(cocina:, file_name:) }
 
   describe '#path' do
     subject { instance.path }

@@ -11,6 +11,7 @@ RSpec.describe "File requests" do
   let(:file_name) { 'image.jp2' }
   let(:public_json) do
     {
+      'externalIdentifier' => druid,
       'structural' => {
         'contains' => [
           {
@@ -44,6 +45,7 @@ RSpec.describe "File requests" do
     let(:file_name) { 'path/to/image.jp2' }
     let(:public_json) do
       {
+        'externalIdentifier' => druid,
         'structural' => {
           'contains' => [
             {

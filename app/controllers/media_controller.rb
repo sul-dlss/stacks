@@ -70,7 +70,7 @@ class MediaController < ApplicationController
   end
 
   def stacks_file
-    StacksFile.new(id: params[:id], file_name: params[:file_name], cocina: Cocina.find(params[:id]))
+    StacksFile.new(file_name: params[:file_name], cocina: Cocina.find(params[:id]))
   end
 
   def current_media

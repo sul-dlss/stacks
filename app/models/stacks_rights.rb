@@ -5,6 +5,8 @@
 class StacksRights
   attr_reader :cocina_file, :cocina
 
+  # @param [String] file_name
+  # @param [Cocina] cocina
   def initialize(file_name:, cocina:)
     @cocina = cocina
     @cocina_file = cocina.find_file(file_name)

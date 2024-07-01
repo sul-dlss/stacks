@@ -5,7 +5,8 @@
 # reading from OCFL or not
 module ImageServerPath
   def image_server_path(druid, file_name)
-    CGI.escape(StorageRoot.new(druid:, file_name:).relative_path)
+    cocina = instance_double(Cocina, druid:)
+    CGI.escape(StorageRoot.new(cocina:, file_name:).relative_path)
   end
 end
 

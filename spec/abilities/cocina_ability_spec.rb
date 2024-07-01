@@ -15,6 +15,7 @@ RSpec.describe CocinaAbility, type: :model do
 
   let(:public_json) do
     {
+      'externalIdentifier' => 'yx350pf4616',
       'structural' => {
         'contains' => [
           {
@@ -56,13 +57,13 @@ RSpec.describe CocinaAbility, type: :model do
 
   let(:cocina) { Cocina.new(public_json) }
   let(:file) do
-    StacksFile.new(id: 'xxxxxxx', file_name: 'file.csv', cocina:)
+    StacksFile.new(file_name: 'file.csv', cocina:)
   end
   let(:image) do
-    StacksImage.new(stacks_file: StacksFile.new(id: 'yx350pf4616', file_name: 'image.jpg', cocina:))
+    StacksImage.new(stacks_file: StacksFile.new(file_name: 'image.jpg', cocina:))
   end
   let(:media) do
-    StacksMediaStream.new(stacks_file: StacksFile.new(id: 'xxxxxxx', file_name: 'movie.mp4', cocina:))
+    StacksMediaStream.new(stacks_file: StacksFile.new(file_name: 'movie.mp4', cocina:))
   end
 
   let(:thumbnail_transformation) { IIIF::Image::OptionDecoder.decode(region: 'full', size: '!400,400') }

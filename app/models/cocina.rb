@@ -32,6 +32,10 @@ class Cocina
 
   attr_accessor :data
 
+  def druid
+    @druid ||= data.fetch('externalIdentifier').delete_prefix('druid:')
+  end
+
   def find_file(file_name)
     file_sets = data.dig('structural', 'contains')
     raise(ActionController::MissingFile, "File not found '#{file_name}'") unless file_sets # Trap for Collections
@@ -61,7 +65,7 @@ class Cocina
   def files_from_json
     data.dig('structural', 'contains').each do |fileset|
       fileset.dig('structural', 'contains').each do |file|
-        file = StacksFile.new(id: data.fetch('externalIdentifier').delete_prefix('druid:'), file_name: file['filename'], cocina: self)
+        file = StacksFile.new(file_name: file['filename'], cocina: self)
         yield file
       end
     end

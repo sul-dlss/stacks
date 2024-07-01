@@ -16,6 +16,7 @@ RSpec.describe 'IIIF API' do
 
   let(:public_json) do
     {
+      'externalIdentifier' => 'druid:nr349ct7889',
       'structural' => {
         'contains' => [
           {
@@ -71,6 +72,7 @@ RSpec.describe 'IIIF API' do
     context 'for location-restricted documents' do
       let(:public_json) do
         {
+          'externalIdentifier' => 'druid:nr349ct7889',
           'structural' => {
             'contains' => [
               {
@@ -101,6 +103,7 @@ RSpec.describe 'IIIF API' do
         context 'for a thumbnail' do
           let(:public_json) do
             {
+              'externalIdentifier' => 'druid:nr349ct7889',
               'structural' => {
                 'contains' => [
                   {
@@ -147,6 +150,7 @@ RSpec.describe 'IIIF API' do
     context 'for stanford-restricted documents' do
       let(:public_json) do
         {
+          'externalIdentifier' => 'druid:nr349ct7889',
           'structural' => {
             'contains' => [
               {
@@ -187,6 +191,7 @@ RSpec.describe 'IIIF API' do
     context 'where no one can download' do
       let(:public_json) do
         {
+          'externalIdentifier' => 'druid:nr349ct7889',
           'structural' => {
             'contains' => [
               {
@@ -223,6 +228,7 @@ RSpec.describe 'IIIF API' do
     context 'where stanford only no download rights' do
       let(:public_json) do
         {
+          'externalIdentifier' => 'druid:nr349ct7889',
           'structural' => {
             'contains' => [
               {

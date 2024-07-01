@@ -19,7 +19,8 @@ RSpec.describe "Authentication for IIIF requests" do
   let(:transformation) { IIIF::Image::Transformation.new region:, size:, rotation:, quality:, format: }
   let(:druid) { 'nr349ct7889' }
   let(:file_name) { 'image.jp2' }
-  let(:stacks_file) { StacksFile.new(id: druid, file_name:, cocina: Cocina.new(public_json)) }
+  let(:cocina) { Cocina.new(public_json) }
+  let(:stacks_file) { StacksFile.new(file_name:, cocina:) }
   let(:current_image) { StacksImage.new(stacks_file:, transformation:) }
   let(:http_client) { instance_double(HTTP::Client) }
 
@@ -35,6 +36,7 @@ RSpec.describe "Authentication for IIIF requests" do
     context 'with a public item' do
       let(:public_json) do
         {
+          'externalIdentifier' => druid,
           'structural' => {
             'contains' => [
               {
@@ -69,6 +71,7 @@ RSpec.describe "Authentication for IIIF requests" do
     context 'with a stanford only item' do
       let(:public_json) do
         {
+          'externalIdentifier' => druid,
           'structural' => {
             'contains' => [
               {
@@ -121,6 +124,7 @@ RSpec.describe "Authentication for IIIF requests" do
     context 'with a location-restricted item' do
       let(:public_json) do
         {
+          'externalIdentifier' => druid,
           'structural' => {
             'contains' => [
               {

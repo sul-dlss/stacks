@@ -99,10 +99,10 @@ RSpec.describe Projection do
   describe '#response' do
     let(:druid) { 'nr349ct7889' }
     let(:file_name) { 'image.jp2' }
-    let(:cocina) { Cocina.new({}) }
+    let(:cocina) { Cocina.new({ 'externalIdentifier' => druid }) }
 
     context 'for an image' do
-      let(:image) { StacksImage.new(stacks_file: StacksFile.new(id: druid, file_name:, cocina:)) }
+      let(:image) { StacksImage.new(stacks_file: StacksFile.new(file_name:, cocina:)) }
 
       subject(:projection) { described_class.new(image, transformation) }
 
@@ -130,7 +130,7 @@ RSpec.describe Projection do
     end
 
     context 'for a restricted image' do
-      let(:image) { RestrictedImage.new(stacks_file: StacksFile.new(id: druid, file_name:, cocina:)) }
+      let(:image) { RestrictedImage.new(stacks_file: StacksFile.new(file_name:, cocina:)) }
 
       subject(:projection) { described_class.new(image, transformation) }
 

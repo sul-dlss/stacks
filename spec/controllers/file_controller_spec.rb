@@ -9,6 +9,7 @@ RSpec.describe FileController do
 
   let(:public_json) do
     {
+      'externalIdentifier' => druid,
       'structural' => {
         'contains' => [
           {

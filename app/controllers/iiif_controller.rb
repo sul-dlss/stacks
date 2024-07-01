@@ -153,7 +153,6 @@ class IiifController < ApplicationController
 
   def stacks_file
     StacksFile.new(
-      id: identifier_params[:id],
       file_name: "#{identifier_params[:file_name]}.jp2",
       cocina: Cocina.find(identifier_params[:id])
     )

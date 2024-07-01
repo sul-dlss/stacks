@@ -31,7 +31,7 @@ class LegacyImageServiceController < ApplicationController
   end
 
   def stacks_file
-    StacksFile.new(id:, file_name:, cocina: Cocina.find(id))
+    StacksFile.new(file_name:, cocina: Cocina.find(id))
   end
 
   def iiif_params
