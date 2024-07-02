@@ -35,26 +35,7 @@ RSpec.describe "Authentication for IIIF requests" do
 
     context 'with a public item' do
       let(:public_json) do
-        {
-          'externalIdentifier' => druid,
-          'structural' => {
-            'contains' => [
-              {
-                'structural' => {
-                  'contains' => [
-                    {
-                      'filename' => file_name,
-                      'access' => {
-                        'view' => 'world',
-                        'download' => 'world'
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        }
+        Factories.cocina_with_file
       end
 
       context 'with an unauthenticated user' do
@@ -70,26 +51,7 @@ RSpec.describe "Authentication for IIIF requests" do
 
     context 'with a stanford only item' do
       let(:public_json) do
-        {
-          'externalIdentifier' => druid,
-          'structural' => {
-            'contains' => [
-              {
-                'structural' => {
-                  'contains' => [
-                    {
-                      'filename' => file_name,
-                      'access' => {
-                        'view' => 'stanford',
-                        'download' => 'stanford'
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        }
+        Factories.cocina_with_file(file_access: { 'view' => 'stanford', 'download' => 'stanford' })
       end
 
       context 'with a authorized webauthed user' do
@@ -121,29 +83,10 @@ RSpec.describe "Authentication for IIIF requests" do
       end
     end
 
-    context 'with a location-restricted item' do
+    context 'with a location-restricted item that is not a thumbnail' do
       let(:public_json) do
-        {
-          'externalIdentifier' => druid,
-          'structural' => {
-            'contains' => [
-              {
-                'structural' => {
-                  'contains' => [
-                    {
-                      'filename' => file_name,
-                      'access' => {
-                        'view' => 'location-based',
-                        'download' => 'location-based',
-                        'location' => 'location1'
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        }
+        Factories.cocina_with_file(file_access: { 'view' => 'location-based', 'download' => 'location-based', 'location' => 'location1' },
+                                   mime_type: 'image/jpeg')
       end
 
       context 'with a user in the location' do
