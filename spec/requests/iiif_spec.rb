@@ -15,7 +15,26 @@ RSpec.describe 'IIIF API' do
   end
 
   let(:public_json) do
-    Factories.cocina_with_file
+    {
+      'externalIdentifier' => 'druid:nr349ct7889',
+      'structural' => {
+        'contains' => [
+          {
+            'structural' => {
+              'contains' => [
+                {
+                  'filename' => 'image.jp2',
+                  'access' => {
+                    'view' => 'world',
+                    'download' => 'world'
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
   end
 
   before do
@@ -51,22 +70,60 @@ RSpec.describe 'IIIF API' do
     end
 
     context 'for location-restricted documents' do
-      context 'outside of the location' do
-        context 'when the file is not a thumbnail' do
-          let(:public_json) do
-            Factories.cocina_with_file(file_access: { 'view' => 'location-based', 'download' => 'location-based', 'location' => 'location1' },
-                                       mime_type: 'image/jpeg')
-          end
+      let(:public_json) do
+        {
+          'externalIdentifier' => 'druid:nr349ct7889',
+          'structural' => {
+            'contains' => [
+              {
+                'structural' => {
+                  'contains' => [
+                    {
+                      'filename' => 'image.jp2',
+                      'access' => {
+                        'view' => 'location-based',
+                        'download' => 'location_based',
+                        'location' => 'location1'
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      end
 
-          it 'uses the unauthorized status code for the response' do
-            get '/image/iiif/nr349ct7889%2Fimage/info.json'
-            expect(response).to have_http_status :unauthorized
-          end
+      context 'outside of the location' do
+        it 'uses the unauthorized status code for the response' do
+          get '/image/iiif/nr349ct7889%2Fimage/info.json'
+          expect(response).to have_http_status :unauthorized
         end
 
-        context 'when the files is a thumbnail' do
+        context 'for a thumbnail' do
           let(:public_json) do
-            Factories.cocina_with_file(file_access: { 'view' => 'location-based', 'download' => 'location-based', 'location' => 'location1' })
+            {
+              'externalIdentifier' => 'druid:nr349ct7889',
+              'structural' => {
+                'contains' => [
+                  {
+                    'structural' => {
+                      'contains' => [
+                        {
+                          'filename' => 'image.jp2',
+                          'access' => {
+                            'view' => 'location-based',
+                            'download' => 'location_based',
+                            'location' => 'location1'
+                          },
+                          'hasMimeType' => 'image/jp2'
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
           end
 
           it 'redirects requests to the degraded info.json' do
@@ -80,9 +137,6 @@ RSpec.describe 'IIIF API' do
 
       context 'at the location' do
         let(:user) { User.new(ip_address: 'ip.address1') }
-        let(:public_json) do
-          Factories.cocina_with_file(file_access: { 'view' => 'location-based', 'download' => 'location-based', 'location' => 'location1' })
-        end
         before do
           allow_any_instance_of(IiifController).to receive(:current_user).and_return(user)
         end
@@ -95,7 +149,26 @@ RSpec.describe 'IIIF API' do
 
     context 'for stanford-restricted documents' do
       let(:public_json) do
-        Factories.cocina_with_file(file_access: { 'view' => 'stanford', 'download' => 'stanford' })
+        {
+          'externalIdentifier' => 'druid:nr349ct7889',
+          'structural' => {
+            'contains' => [
+              {
+                'structural' => {
+                  'contains' => [
+                    {
+                      'filename' => 'image.jp2',
+                      'access' => {
+                        'view' => 'stanford',
+                        'download' => 'stanford'
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
       end
 
       it 'redirects requests to the degraded info.json' do
@@ -117,7 +190,26 @@ RSpec.describe 'IIIF API' do
 
     context 'where no one can download' do
       let(:public_json) do
-        Factories.cocina_with_file(file_access: { 'view' => 'world', 'download' => 'none' })
+        {
+          'externalIdentifier' => 'druid:nr349ct7889',
+          'structural' => {
+            'contains' => [
+              {
+                'structural' => {
+                  'contains' => [
+                    {
+                      'filename' => 'image.jp2',
+                      'access' => {
+                        'view' => 'world',
+                        'download' => 'none'
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
       end
 
       it 'serves up regular info.json (no degraded)' do
@@ -135,7 +227,26 @@ RSpec.describe 'IIIF API' do
 
     context 'where stanford only no download rights' do
       let(:public_json) do
-        Factories.cocina_with_file(file_access: { 'view' => 'stanford', 'download' => 'none' })
+        {
+          'externalIdentifier' => 'druid:nr349ct7889',
+          'structural' => {
+            'contains' => [
+              {
+                'structural' => {
+                  'contains' => [
+                    {
+                      'filename' => 'image.jp2',
+                      'access' => {
+                        'view' => 'stanford',
+                        'download' => 'none'
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
       end
 
       it 'redirects to degraded version' do

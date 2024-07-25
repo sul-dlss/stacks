@@ -44,13 +44,6 @@ class Cocina
              .find { |file| file['filename'] == file_name } || raise(ActionController::MissingFile, "File not found '#{file_name}'")
   end
 
-  def find_file_md5(file_name)
-    file_node = find_file(file_name)
-    file_node.fetch('hasMessageDigests')
-             .find { |digest_node| digest_node.fetch('type') == 'md5' }
-             .fetch('digest')
-  end
-
   def thumbnail_file
     data.dig('structural', 'contains')
         .lazy.flat_map { |file_set| file_set.dig('structural', 'contains') }

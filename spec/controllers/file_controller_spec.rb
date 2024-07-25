@@ -8,7 +8,26 @@ RSpec.describe FileController do
   end
 
   let(:public_json) do
-    Factories.cocina_with_file
+    {
+      'externalIdentifier' => druid,
+      'structural' => {
+        'contains' => [
+          {
+            'structural' => {
+              'contains' => [
+                {
+                  'filename' => 'image.jp2',
+                  'access' => {
+                    'view' => 'world',
+                    'download' => 'world'
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
   end
 
   describe '#show' do

@@ -7,7 +7,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
   let(:file_name) { 'image.jp2' }
   let(:stacks_uri) { "https://stacks-uat.stanford.edu/file/druid:#{id}/#{URI.encode_uri_component(file_name)}" }
   let(:stacks_uri_param) { URI.encode_uri_component(stacks_uri) }
-  let(:public_json) { Factories.cocina }
+  let(:public_json) { { "externalIdentifier" => "druid:nr349ct7889" } }
 
   # NOTE: For any unauthorized responses, the status from the service is OK...the access status of the resource is in the response body
 
@@ -73,7 +73,26 @@ RSpec.describe 'IIIF auth v2 probe service' do
 
   context 'when the user has access to the resource because it is world accessible' do
     let(:public_json) do
-      Factories.cocina_with_file(file_name:)
+      {
+        "externalIdentifier" => "druid:nr349ct7889",
+        'structural' => {
+          'contains' => [
+            {
+              'structural' => {
+                'contains' => [
+                  {
+                    'filename' => file_name,
+                    'access' => {
+                      'view' => 'world',
+                      'download' => 'world'
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
     end
 
     before do
@@ -121,7 +140,26 @@ RSpec.describe 'IIIF auth v2 probe service' do
   context 'when the user has access to the resource and it is streamable' do
     let(:file_name) { 'SC0193_1982-013_b06_f01_1981-09-29.mp4' }
     let(:public_json) do
-      Factories.cocina_with_file(file_name:)
+      {
+        "externalIdentifier" => "druid:nr349ct7889",
+        'structural' => {
+          'contains' => [
+            {
+              'structural' => {
+                'contains' => [
+                  {
+                    'filename' => file_name,
+                    'access' => {
+                      'view' => 'world',
+                      'download' => 'world'
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
     end
     let(:stacks_uri) { "https://stacks-uat.stanford.edu/file/#{id}/#{URI.encode_uri_component(file_name)}" }
 
@@ -147,10 +185,6 @@ RSpec.describe 'IIIF auth v2 probe service' do
       get "/iiif/auth/v2/probe?id=#{stacks_uri_param}"
     end
 
-    let(:public_json) do
-      Factories.cocina_with_file(file_name:)
-    end
-
     it 'returns a 404 response' do
       expect(response).to have_http_status :ok
       expect(response.parsed_body).to include({
@@ -163,7 +197,26 @@ RSpec.describe 'IIIF auth v2 probe service' do
 
   context 'when a Stanford only resource' do
     let(:public_json) do
-      Factories.cocina_with_file(file_access: { 'view' => 'stanford', 'download' => 'stanford' }, file_name:)
+      {
+        "externalIdentifier" => "druid:nr349ct7889",
+        'structural' => {
+          'contains' => [
+            {
+              'structural' => {
+                'contains' => [
+                  {
+                    'filename' => file_name,
+                    'access' => {
+                      'view' => 'stanford',
+                      'download' => 'stanford'
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
     end
 
     context 'when the user has a bearer token with the ldap group' do
@@ -225,7 +278,27 @@ RSpec.describe 'IIIF auth v2 probe service' do
 
   context 'when the user does not have access to a location restricted resource' do
     let(:public_json) do
-      Factories.cocina_with_file(file_access: { 'view' => 'location-based', 'download' => 'location-based', 'location' => location })
+      {
+        "externalIdentifier" => "druid:nr349ct7889",
+        'structural' => {
+          'contains' => [
+            {
+              'structural' => {
+                'contains' => [
+                  {
+                    'filename' => file_name,
+                    'access' => {
+                      'view' => 'location-based',
+                      'download' => 'location_based',
+                      'location' => location
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
     end
 
     before do
@@ -269,8 +342,31 @@ RSpec.describe 'IIIF auth v2 probe service' do
 
   context 'when the user does not have access to a stanford restricted embargoed resource' do
     let(:public_json) do
-      Factories.cocina_with_file(access: { 'embargo' => { "releaseDate" => Time.parse('2099-05-15').getlocal.as_json } },
-                                 file_access: { 'view' => 'stanford', 'download' => 'stanford' })
+      {
+        "externalIdentifier" => "druid:nr349ct7889",
+        'access' => {
+          'embargo' => {
+            "releaseDate" => Time.parse('2099-05-15').getlocal.as_json
+          }
+        },
+        'structural' => {
+          'contains' => [
+            {
+              'structural' => {
+                'contains' => [
+                  {
+                    'filename' => file_name,
+                    'access' => {
+                      'view' => 'stanford',
+                      'download' => 'stanford'
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
     end
 
     before do
@@ -294,8 +390,31 @@ RSpec.describe 'IIIF auth v2 probe service' do
 
   context 'when the user does not have access to an embargoed resource' do
     let(:public_json) do
-      Factories.cocina_with_file(access: { 'embargo' => { "releaseDate" => Time.parse('2099-05-15').getlocal.as_json } },
-                                 file_access: { 'view' => 'none', 'download' => 'none' })
+      {
+        "externalIdentifier" => "druid:nr349ct7889",
+        'access' => {
+          'embargo' => {
+            "releaseDate" => Time.parse('2099-05-15').getlocal.as_json
+          }
+        },
+        'structural' => {
+          'contains' => [
+            {
+              'structural' => {
+                'contains' => [
+                  {
+                    'filename' => file_name,
+                    'access' => {
+                      'view' => 'none',
+                      'download' => 'none'
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
     end
 
     before do
