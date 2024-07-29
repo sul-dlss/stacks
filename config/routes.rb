@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   druid_regex = /([a-z]{2})(\d{3})([a-z]{2})(\d{4})/i
 
   get '/object/:id' => 'object#show', as: :object
+  get '/object/:id/version/:version', to: 'object#show', constraints: { version: /v\d+/ }
 
   constraints id: druid_regex do
     get '/file/:id/*file_name' => 'file#show', format: false, as: :file

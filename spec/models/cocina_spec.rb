@@ -45,7 +45,7 @@ RSpec.describe Cocina do
     end
 
     before do
-      stub_request(:get, "https://purl.stanford.edu/abc.json")
+      stub_request(:get, "https://purl.stanford.edu/abc/v1.json")
         .to_return(status: 200, body: json)
     end
 
