@@ -9,7 +9,6 @@ class StacksFile
   def initialize(file_name:, cocina:)
     @file_name = file_name
     @cocina = cocina
-    validate!
   end
 
   attr_reader :file_name, :cocina
@@ -18,7 +17,7 @@ class StacksFile
     cocina.druid
   end
 
-  validates :file_name, presence: true
+  validates :id, format: { with: StorageRoot::DRUID_PARTS_PATTERN }
 
   # Some files exist but have unreadable permissions, treat these as non-existent
   def readable?
@@ -41,7 +40,6 @@ class StacksFile
     @path ||= storage_root.absolute_path
   end
 
-  # Used as the IIIF identifier for retrieving this file from the image server
   def treeified_path
     storage_root.relative_path
   end

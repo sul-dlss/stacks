@@ -9,7 +9,6 @@ RSpec.describe LegacyImageServiceController do
 
   let(:public_json) do
     {
-      'externalIdentifier' => 'druid:nr349ct7889',
       'structural' => {
         'contains' => [
           {

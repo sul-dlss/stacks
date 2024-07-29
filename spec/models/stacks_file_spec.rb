@@ -5,25 +5,28 @@ require 'rails_helper'
 RSpec.describe StacksFile do
   let(:druid) { 'nr349ct7889' }
   let(:file_name) { 'image.jp2' }
-  let(:cocina) { Cocina.new(public_json) }
+  let(:cocina) {  Cocina.new({ 'externalIdentifier' => druid }) }
   let(:instance) { described_class.new(file_name:, cocina:) }
   let(:path) { storage_root.absolute_path }
   let(:storage_root) { StorageRoot.new(cocina:, file_name:) }
-  let(:public_json) { Factories.cocina_with_file }
-
-  context 'with a missing file name' do
-    let(:file_name) { nil }
-
-    it 'raises an error' do
-      expect { instance }.to raise_error ActiveModel::ValidationError
-    end
-  end
 
   describe '#path' do
     subject { instance.path }
 
     it 'is the druid tree path to the file' do
       expect(subject).to eq(path)
+    end
+
+    context 'with a malformed druid' do
+      let(:druid) { 'abcdef' }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'with a missing file name' do
+      let(:file_name) { nil }
+
+      it { is_expected.to be_nil }
     end
   end
 

@@ -6,8 +6,27 @@ RSpec.describe 'Metrics tracking' do
   include ActiveJob::TestHelper
   let(:druid) { 'nr349ct7889' }
   let(:file_name) { 'image.jp2' }
-  let(:public_json) do
-    Factories.cocina_with_file
+  let(:json) do
+    {
+      'externalIdentifier' => "druid:#{druid}",
+      'structural' => {
+        'contains' => [
+          {
+            'structural' => {
+              'contains' => [
+                {
+                  'filename' => file_name,
+                  'access' => {
+                    'view' => 'world',
+                    'download' => 'world'
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }.to_json
   end
   let(:ability) { instance_double(CocinaAbility, can?: true, authorize!: true) }
 
@@ -16,7 +35,7 @@ RSpec.describe 'Metrics tracking' do
     allow(Settings).to receive(:metrics_api_url).and_return('https://example.com')
     allow(CocinaAbility).to receive(:new).and_return(ability)
     stub_request(:post, 'https://example.com/ahoy/events')
-    stub_request(:get, "https://purl.stanford.edu/#{druid}.json").to_return(status: 200, body: public_json.to_json)
+    stub_request(:get, "https://purl.stanford.edu/#{druid}.json").to_return(status: 200, body: json)
   end
 
   context 'with an object' do
