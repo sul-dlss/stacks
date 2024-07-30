@@ -35,7 +35,7 @@ RSpec.describe 'Metrics tracking' do
     allow(Settings).to receive(:metrics_api_url).and_return('https://example.com')
     allow(CocinaAbility).to receive(:new).and_return(ability)
     stub_request(:post, 'https://example.com/ahoy/events')
-    stub_request(:get, "https://purl.stanford.edu/#{druid}/v1.json").to_return(status: 200, body: json)
+    stub_request(:get, "https://purl.stanford.edu/#{druid}.json").to_return(status: 200, body: json)
   end
 
   context 'with an object' do

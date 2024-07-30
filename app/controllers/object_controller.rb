@@ -39,7 +39,7 @@ class ObjectController < ApplicationController
   end
 
   def version
-    params[:version] || 'v1'
+    params[:version_id] || :head
   end
 
   # called when CanCan::AccessDenied error is raised by authorize!

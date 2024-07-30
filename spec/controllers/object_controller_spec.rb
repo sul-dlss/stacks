@@ -15,7 +15,7 @@ RSpec.describe ObjectController do
         let(:druid) { 'foo' }
 
         it 'returns a 404 Not Found' do
-          allow(Faraday).to receive(:get).with('https://purl.stanford.edu/foo/v1.json').and_return(
+          allow(Faraday).to receive(:get).with('https://purl.stanford.edu/foo.json').and_return(
             instance_double(Faraday::Response, status: 404, success?: false)
           )
           get :show, params: { id: 'foo' }
@@ -89,7 +89,7 @@ RSpec.describe ObjectController do
         end
 
         before do
-          allow(Faraday).to receive(:get).with('https://purl.stanford.edu/fd063dh3727/v1.json')
+          allow(Faraday).to receive(:get).with('https://purl.stanford.edu/fd063dh3727.json')
                                          .and_return(instance_double(Faraday::Response, success?: true, body: json))
         end
 
@@ -145,7 +145,7 @@ RSpec.describe ObjectController do
         end
 
         before do
-          allow(Faraday).to receive(:get).with('https://purl.stanford.edu/bb142ws0723/v1.json')
+          allow(Faraday).to receive(:get).with('https://purl.stanford.edu/bb142ws0723.json')
                                          .and_return(instance_double(Faraday::Response, success?: true, body: json))
         end
 
@@ -209,7 +209,7 @@ RSpec.describe ObjectController do
         end
 
         before do
-          allow(Faraday).to receive(:get).with('https://purl.stanford.edu/bb142ws0723/v1.json')
+          allow(Faraday).to receive(:get).with('https://purl.stanford.edu/bb142ws0723.json')
                                          .and_return(instance_double(Faraday::Response, success?: true, body: json))
         end
 

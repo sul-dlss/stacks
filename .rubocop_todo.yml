@@ -50,6 +50,7 @@ RSpec/AnyInstance:
     - 'spec/features/status_spec.rb'
     - 'spec/requests/file_auth_request_spec.rb'
     - 'spec/requests/file_spec.rb'
+    - 'spec/requests/versioned_file_spec.rb'
     - 'spec/requests/iiif/auth/v1/tokens_spec.rb'
     - 'spec/requests/iiif/auth/v2/tokens_spec.rb'
     - 'spec/requests/iiif_auth_request_spec.rb'
@@ -169,6 +170,7 @@ RSpec/LeadingSubject:
 RSpec/MessageSpies:
   Exclude:
     - 'spec/controllers/file_controller_spec.rb'
+    - 'spec/controllers/v2/versions_controller_spec.rb'
     - 'spec/controllers/media_controller_spec.rb'
 
 # Offense count: 85
@@ -182,6 +184,7 @@ RSpec/NamedSubject:
   Exclude:
     - 'spec/controllers/application_controller_spec.rb'
     - 'spec/controllers/file_controller_spec.rb'
+    - 'spec/controllers/v2/versions_controller_spec.rb'
     - 'spec/controllers/webauth_controller_spec.rb'
     - 'spec/models/approved_location_spec.rb'
     - 'spec/models/projection_spec.rb'
@@ -208,6 +211,7 @@ RSpec/RepeatedDescription:
 RSpec/StubbedMock:
   Exclude:
     - 'spec/controllers/file_controller_spec.rb'
+    - 'spec/controllers/v2/versions_controller_spec.rb'
     - 'spec/controllers/media_controller_spec.rb'
 
 # Offense count: 1
