@@ -39,6 +39,15 @@ RSpec.describe "File requests" do
       expect(response.headers['Access-Control-Allow-Origin']).to eq '*'
       expect(response.headers['Access-Control-Allow-Headers']).to include 'Range'
     end
+
+    context 'with a versioned file' do
+      it 'returns a successful HTTP response' do
+        options "/v2/file/#{druid}/v2/#{file_name}"
+        expect(response).to be_successful
+        expect(response.headers['Access-Control-Allow-Origin']).to eq '*'
+        expect(response.headers['Access-Control-Allow-Headers']).to include 'Range'
+      end
+    end
   end
 
   describe 'GET file with slashes in filename' do
@@ -74,6 +83,15 @@ RSpec.describe "File requests" do
     it 'returns a successful HTTP response' do
       get "/file/#{druid}/#{file_name}"
       expect(response).to be_successful
+      expect(Cocina).to have_received(:find).with(druid, :head)
+    end
+
+    context 'with a versioned file' do
+      it 'returns a successful HTTP response' do
+        get "/v2/file/#{druid}/v2/#{file_name}"
+        expect(response).to be_successful
+        expect(Cocina).to have_received(:find).with(druid, 'v2')
+      end
     end
   end
 
