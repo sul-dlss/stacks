@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe "Versioned File requests" do
   before do
-    allow(Cocina).to receive(:find).and_return(Cocina.new(public_json))
+    allow(Cocina).to receive(:find).and_call_original
   end
 
   let(:druid) { 'nr349ct7889' }
@@ -71,6 +71,8 @@ RSpec.describe "Versioned File requests" do
     before do
       allow_any_instance_of(FileController).to receive(:send_file)
         .with('spec/fixtures/nr/349/ct/7889/path/to/image.jp2', disposition: :inline)
+      stub_request(:get, "https://purl.stanford.edu/#{druid}/#{version_id}.json")
+        .to_return(status: 200, body: public_json.to_json)
     end
 
     it 'returns a successful HTTP response' do
@@ -81,6 +83,11 @@ RSpec.describe "Versioned File requests" do
   end
 
   describe 'GET missing file' do
+    before do
+      stub_request(:get, "https://purl.stanford.edu/xf680rd3068/v1.json")
+        .to_return(status: 200, body: public_json.to_json)
+    end
+
     it 'returns a 400 HTTP response' do
       get '/v2/file/xf680rd3068/v1/path/to/99999.jp2'
       expect(response).to have_http_status(:not_found)
