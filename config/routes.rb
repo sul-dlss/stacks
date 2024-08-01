@@ -6,7 +6,9 @@ Rails.application.routes.draw do
 
   constraints id: druid_regex do
     get '/file/:id/*file_name' => 'file#show', format: false, as: :file
+    get '/v2/file/:id/:version_id/*file_name', to: 'file#show', format: false, constraints: { version_id: /v\d+/ }
     options '/file/:id/*file_name', to: 'file#options', format: false
+    options '/v2/file/:id/:version_id/*file_name', to: 'file#options', format: false, constraints: { version_id: /v\d+/ }
     get '/file/app/:id/*file_name' => 'webauth#login_file', format: false
     get '/file/auth/:id/*file_name' => 'webauth#login_file', format: false, as: :auth_file
     get '/file/auth/:id' => 'webauth#login_object', format: false, as: :auth_object
@@ -16,10 +18,6 @@ Rails.application.routes.draw do
     get '/file/app/druid::id/*file_name' => 'webauth#login_file', format: false
     get '/file/auth/druid::id/*file_name' => 'webauth#login_file', format: false
     get '/file/auth/druid::id' => 'webauth#login_object', format: false
-
-    namespace 'v2' do
-      get '/file/:id/:version_id/*file_name', to: 'versions#show', format: false, constraints: { version_id: /v\d+/ }
-    end
   end
 
   if Settings.features.streaming_media

@@ -35,7 +35,7 @@ RSpec.describe "Versioned File requests" do
 
   describe 'OPTIONS options' do
     it 'permits Range headers for all origins' do
-      options "/file/#{druid}/#{version_id}/#{file_name}"
+      options "/v2/file/#{druid}/#{version_id}/#{file_name}"
       expect(response).to be_successful
       expect(response.headers['Access-Control-Allow-Origin']).to eq '*'
       expect(response.headers['Access-Control-Allow-Headers']).to include 'Range'
@@ -69,13 +69,14 @@ RSpec.describe "Versioned File requests" do
     end
 
     before do
-      allow_any_instance_of(V2::VersionsController).to receive(:send_file)
+      allow_any_instance_of(FileController).to receive(:send_file)
         .with('spec/fixtures/nr/349/ct/7889/path/to/image.jp2', disposition: :inline)
     end
 
     it 'returns a successful HTTP response' do
       get "/v2/file/#{druid}/#{version_id}/#{file_name}"
       expect(response).to be_successful
+      expect(Cocina).to have_received(:find).with(druid, version_id)
     end
   end
 
@@ -83,6 +84,7 @@ RSpec.describe "Versioned File requests" do
     it 'returns a 400 HTTP response' do
       get '/v2/file/xf680rd3068/v1/path/to/99999.jp2'
       expect(response).to have_http_status(:not_found)
+      expect(Cocina).to have_received(:find).with('xf680rd3068', 'v1')
     end
   end
 end
