@@ -6,7 +6,7 @@ Rails.application.routes.draw do
 
   constraints id: druid_regex do
     get '/file/:id/*file_name' => 'file#show', format: false, as: :file
-    get '/v2/file/:id/:version_id/*file_name', to: 'file#show', format: false, constraints: { version_id: /v\d+/ }
+    get '/v2/file/:id/:version_id/*file_name', to: 'file#show', format: false, as: :versioned_file, constraints: { version_id: /v\d+/ }
     options '/file/:id/*file_name', to: 'file#options', format: false
     options '/v2/file/:id/:version_id/*file_name', to: 'file#options', format: false, constraints: { version_id: /v\d+/ }
     get '/file/app/:id/*file_name' => 'webauth#login_file', format: false
