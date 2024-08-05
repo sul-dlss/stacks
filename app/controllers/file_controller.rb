@@ -24,7 +24,7 @@ class FileController < ApplicationController
       ip: request.remote_ip
     )
 
-    send_file current_file.path, disposition:
+    send_file current_file.path, filename: current_file.file_name, disposition:
   end
   # rubocop:enable Metrics/AbcSize
 

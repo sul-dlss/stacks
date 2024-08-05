@@ -46,31 +46,12 @@ RSpec.describe "Versioned File requests" do
     let(:file_name) { 'path/to/image.jp2' }
     let(:version_id) { 'v1' }
     let(:public_json) do
-      {
-        'externalIdentifier' => druid,
-        'structural' => {
-          'contains' => [
-            {
-              'structural' => {
-                'contains' => [
-                  {
-                    'filename' => file_name,
-                    'access' => {
-                      'view' => 'world',
-                      'download' => 'world'
-                    }
-                  }
-                ]
-              }
-            }
-          ]
-        }
-      }
+      Factories.cocina_with_file(file_name:)
     end
 
     before do
       allow_any_instance_of(FileController).to receive(:send_file)
-        .with('spec/fixtures/nr/349/ct/7889/path/to/image.jp2', disposition: :inline)
+        .with('spec/fixtures/nr/349/ct/7889/path/to/image.jp2', filename: 'path/to/image.jp2', disposition: :inline)
       stub_request(:get, "https://purl.stanford.edu/#{druid}/#{version_id}.json")
         .to_return(status: 200, body: public_json.to_json)
     end

@@ -25,32 +25,14 @@ RSpec.describe "Authentication for File requests" do
     # NOTE:  stanford only + location rights tested under location context
     context 'stanford only (no location qualifications)' do
       let(:public_json) do
-        {
-          'externalIdentifier' => druid,
-          'structural' => {
-            'contains' => [
-              {
-                'structural' => {
-                  'contains' => [
-                    {
-                      'filename' => file_name,
-                      'access' => {
-                        'view' => 'stanford',
-                        'download' => 'stanford'
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        }
+        Factories.cocina_with_file(file_access: { 'view' => 'stanford', 'download' => 'stanford' })
       end
 
       context 'webauthed user' do
         it 'allows when user webauthed and authorized' do
           allow_any_instance_of(FileController).to receive(:current_user).and_return(user_webauth_stanford_no_loc)
-          expect_any_instance_of(FileController).to receive(:send_file).with(stacks_file.path, disposition: :inline).and_call_original
+          expect_any_instance_of(FileController).to receive(:send_file).with(stacks_file.path, filename: 'image.jp2',
+                                                                                               disposition: :inline).and_call_original
           get "/file/#{druid}/#{file_name}"
         end
 
@@ -69,32 +51,14 @@ RSpec.describe "Authentication for File requests" do
     context 'location' do
       context 'not stanford qualified in any way' do
         let(:public_json) do
-          {
-            'externalIdentifier' => druid,
-            'structural' => {
-              'contains' => [
-                {
-                  'structural' => {
-                    'contains' => [
-                      {
-                        'filename' => file_name,
-                        'access' => {
-                          'view' => 'location-based',
-                          'download' => 'location-based',
-                          'location' => 'location1'
-                        }
-                      }
-                    ]
-                  }
-                }
-              ]
-            }
-          }
+          Factories.cocina_with_file(file_access: { 'view' => 'location-based', 'download' => 'location-based',
+                                                    'location' => 'location1' })
         end
 
         it 'allows when user in location' do
           allow_any_instance_of(FileController).to receive(:current_user).and_return(user_loc_no_webauth)
-          expect_any_instance_of(FileController).to receive(:send_file).with(stacks_file.path, disposition: :inline).and_call_original
+          expect_any_instance_of(FileController).to receive(:send_file).with(stacks_file.path, filename: 'image.jp2',
+                                                                                               disposition: :inline).and_call_original
           get "/file/#{druid}/#{file_name}"
         end
 
