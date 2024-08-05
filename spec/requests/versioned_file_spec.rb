@@ -51,7 +51,7 @@ RSpec.describe "Versioned File requests" do
 
     before do
       allow_any_instance_of(FileController).to receive(:send_file)
-        .with('spec/fixtures/nr/349/ct/7889/path/to/image.jp2', disposition: :inline)
+        .with('spec/fixtures/nr/349/ct/7889/path/to/image.jp2', filename: 'path/to/image.jp2', disposition: :inline)
       stub_request(:get, "https://purl.stanford.edu/#{druid}/#{version_id}.json")
         .to_return(status: 200, body: public_json.to_json)
     end

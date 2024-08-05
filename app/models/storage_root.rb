@@ -59,7 +59,7 @@ class StorageRoot
     def content_addressable_path
       @content_addressable_path ||= begin
         md5 = @cocina.find_file_md5(@file_name)
-        File.join(Settings.stacks.content_addressable_storage_root, @treeified_id, @cocina.druid, 'content', md5)
+        File.join(Settings.stacks.storage_root, @treeified_id, @cocina.druid, 'content', md5)
       end
     end
   end

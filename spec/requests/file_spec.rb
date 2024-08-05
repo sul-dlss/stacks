@@ -30,7 +30,7 @@ RSpec.describe "File requests" do
 
     before do
       allow_any_instance_of(FileController).to receive(:send_file)
-        .with('spec/fixtures/nr/349/ct/7889/path/to/image.jp2', disposition: :inline)
+        .with('spec/fixtures/nr/349/ct/7889/path/to/image.jp2', filename: 'path/to/image.jp2', disposition: :inline)
     end
 
     it 'returns a successful HTTP response' do

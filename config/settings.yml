@@ -4,7 +4,6 @@ features:
 
 stacks:
   storage_root: /stacks
-  content_addressable_storage_root: /stacks/content_addressable
 
 imageserver:
   base_uri: "http://imageserver-prod.stanford.edu/iiif/2/"

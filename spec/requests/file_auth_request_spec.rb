@@ -31,7 +31,8 @@ RSpec.describe "Authentication for File requests" do
       context 'webauthed user' do
         it 'allows when user webauthed and authorized' do
           allow_any_instance_of(FileController).to receive(:current_user).and_return(user_webauth_stanford_no_loc)
-          expect_any_instance_of(FileController).to receive(:send_file).with(stacks_file.path, disposition: :inline).and_call_original
+          expect_any_instance_of(FileController).to receive(:send_file).with(stacks_file.path, filename: 'image.jp2',
+                                                                                               disposition: :inline).and_call_original
           get "/file/#{druid}/#{file_name}"
         end
 
@@ -56,7 +57,8 @@ RSpec.describe "Authentication for File requests" do
 
         it 'allows when user in location' do
           allow_any_instance_of(FileController).to receive(:current_user).and_return(user_loc_no_webauth)
-          expect_any_instance_of(FileController).to receive(:send_file).with(stacks_file.path, disposition: :inline).and_call_original
+          expect_any_instance_of(FileController).to receive(:send_file).with(stacks_file.path, filename: 'image.jp2',
+                                                                                               disposition: :inline).and_call_original
           get "/file/#{druid}/#{file_name}"
         end
 
