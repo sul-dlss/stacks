@@ -22,8 +22,18 @@ RSpec.describe WebauthController do
     subject { get :login_file, params: }
     let(:params) { { id: 'xf680rd3068', file_name: 'xf680rd3068_1.jp2' } }
 
-    it 'returns the user to the file api' do
-      expect(subject).to redirect_to file_url(params)
+    context 'without a version specified' do
+      it 'returns the user to the file api' do
+        expect(subject).to redirect_to file_url(params)
+      end
+    end
+
+    context 'with version specified' do
+      let(:params) { { id: 'xf680rd3068', file_name: 'xf680rd3068_1.jp2', version_id: 'v1' } }
+
+      it 'returns the user to the versioned file api' do
+        expect(subject).to redirect_to versioned_file_url(params)
+      end
     end
 
     it 'stores user information in the session' do

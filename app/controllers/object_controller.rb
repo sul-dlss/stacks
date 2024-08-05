@@ -8,7 +8,7 @@ class ObjectController < ApplicationController
   # Return a zip of all the files if they have access to all the files.
   # This will force a login if any of the files is not access=world
   def show
-    cocina = Cocina.find(druid)
+    cocina = Cocina.find(druid, version)
     files = cocina.files
     raise ActionController::RoutingError, 'No downloadable files' if files.none?
 
@@ -36,6 +36,10 @@ class ObjectController < ApplicationController
 
   def druid
     params[:id]
+  end
+
+  def version
+    params[:version_id] || :head
   end
 
   # called when CanCan::AccessDenied error is raised by authorize!

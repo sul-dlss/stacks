@@ -6,10 +6,10 @@ class Cocina
 
   THUMBNAIL_MIME_TYPE = 'image/jp2'
 
-  def self.find(druid)
-    data = Rails.cache.fetch("purl/#{druid}.json", expires_in: 10.minutes) do
-      benchmark "Fetching public json for #{druid}" do
-        response = Faraday.get(public_json_url(druid))
+  def self.find(druid, version = :head)
+    data = Rails.cache.fetch(metadata_cache_key(druid, version), expires_in: 10.minutes) do
+      benchmark "Fetching public json for #{druid} version #{version}" do
+        response = Faraday.get(public_json_url(druid, version))
         raise Purl::Exception, response.status unless response.success?
 
         JSON.parse(response.body)
@@ -18,7 +18,15 @@ class Cocina
     new(data)
   end
 
-  def self.public_json_url(druid)
+  def self.metadata_cache_key(druid, version)
+    return "purl/#{druid}.json" if version == :head
+
+    "purl/#{druid}.#{version}.json"
+  end
+
+  def self.public_json_url(druid, version)
+    return "#{Settings.purl.url}#{druid}/#{version}.json" unless version == :head
+
     "#{Settings.purl.url}#{druid}.json"
   end
 

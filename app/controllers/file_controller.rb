@@ -45,7 +45,7 @@ class FileController < ApplicationController
   end
 
   def file_params
-    params.permit(:id, :file_name, :download)
+    params.permit(:id, :file_name, :download, :version_id)
   end
 
   # called when CanCan::AccessDenied error is raised, typically by authorize!
@@ -74,6 +74,10 @@ class FileController < ApplicationController
   end
 
   def cocina
-    @cocina ||= Cocina.find(params[:id])
+    @cocina ||= Cocina.find(params[:id], version)
+  end
+
+  def version
+    params[:version_id] || :head
   end
 end

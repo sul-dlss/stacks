@@ -29,7 +29,11 @@ class WebauthController < ApplicationController
   # TODO: we may want one method for all the below, with a referer param to know where to redirect
 
   def login_file
-    redirect_to file_path(params.to_unsafe_h.symbolize_keys)
+    if params[:version_id]
+      redirect_to versioned_file_path(params.to_unsafe_h.symbolize_keys)
+    else
+      redirect_to file_path(params.to_unsafe_h.symbolize_keys)
+    end
   end
 
   # For zip files
