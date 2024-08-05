@@ -13,26 +13,7 @@ RSpec.describe "proxying image requests to a remote IIIF server (cantaloupe)" do
     "http://imageserver-prod.stanford.edu/iiif/2/#{image_server_path('nr349ct7889', 'image.jp2')}/full/max/0/default.jpg"
   end
   let(:public_json) do
-    {
-      'externalIdentifier' => 'druid:nr349ct7889',
-      'structural' => {
-        'contains' => [
-          {
-            'structural' => {
-              'contains' => [
-                {
-                  'filename' => 'image.jp2',
-                  'access' => {
-                    'view' => 'world',
-                    'download' => 'world'
-                  }
-                }
-              ]
-            }
-          }
-        ]
-      }
-    }
+    Factories.cocina_with_file
   end
 
   before do

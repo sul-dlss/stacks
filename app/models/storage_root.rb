@@ -13,21 +13,9 @@ class StorageRoot
 
   delegate :druid, to: :cocina
 
-  def druid_parts
-    @druid_parts ||= druid.match(DRUID_PARTS_PATTERN)
-  end
+  delegate :absolute_path, to: :path_finder
 
-  def absolute_path
-    return unless relative_path
-
-    path_finder.absolute_path.to_s
-  end
-
-  def relative_path
-    return unless druid_parts && file_name
-
-    path_finder.relative_path.to_s
-  end
+  delegate :relative_path, to: :path_finder
 
   def treeified_id
     File.join(druid_parts[1..4])
@@ -38,26 +26,41 @@ class StorageRoot
   attr_reader :cocina, :file_name
 
   def path_finder
-    @path_finder ||= path_finder_class.new(treeified_id:, druid:, file_name:)
+    @path_finder ||= path_finder_class.new(treeified_id:, file_name:, cocina:)
   end
 
   def path_finder_class
     LegacyPathFinder
   end
 
+  def druid_parts
+    @druid_parts ||= druid.match(DRUID_PARTS_PATTERN)
+  end
+
   # Calculate file paths in the legacy Stacks structure
   class LegacyPathFinder
-    def initialize(treeified_id:, file_name:, druid:) # rubocop:disable Lint/UnusedMethodArgument
+    def initialize(treeified_id:, file_name:, cocina:)
       @treeified_id = treeified_id
       @file_name = file_name
+      @cocina = cocina
     end
 
+    # As this is used for external service URLs (Canteloupe image server), we don't want to put content addressable path here.'
     def relative_path
       File.join(@treeified_id, @file_name)
     end
 
     def absolute_path
+      return content_addressable_path if File.exist?(content_addressable_path)
+
       File.join(Settings.stacks.storage_root, relative_path)
+    end
+
+    def content_addressable_path
+      @content_addressable_path ||= begin
+        md5 = @cocina.find_file_md5(@file_name)
+        File.join(Settings.stacks.content_addressable_storage_root, @treeified_id, @cocina.druid, 'content', md5)
+      end
     end
   end
 end
