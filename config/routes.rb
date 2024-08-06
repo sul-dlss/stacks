@@ -5,19 +5,28 @@ Rails.application.routes.draw do
   get '/object/:id/:version_id', to: 'object#show', constraints: { version_id: /v\d+/ }
 
   constraints id: druid_regex do
-    get '/file/:id/*file_name' => 'file#show', format: false, as: :file
-    get '/v2/file/:id/:version_id/*file_name', to: 'file#show', format: false, as: :versioned_file, constraints: { version_id: /v\d+/ }
-    options '/file/:id/*file_name', to: 'file#options', format: false
-    options '/v2/file/:id/:version_id/*file_name', to: 'file#options', format: false, constraints: { version_id: /v\d+/ }
-    get '/file/app/:id/*file_name' => 'webauth#login_file', format: false
-    get '/file/auth/:id/*file_name' => 'webauth#login_file', format: false, as: :auth_file
-    get '/file/auth/:id' => 'webauth#login_object', format: false, as: :auth_object
+    scope format: false do  # Tell rails not to separate out the filename suffixes
+      scope '/v2' do # versionable files
+        constraints version_id: /v\d+/ do
+          get '/file/:id/:version_id/*file_name', to: 'file#show', as: :versioned_file
+          options '/file/:id/:version_id/*file_name', to: 'file#options'
+        end
+      end
 
-    get '/file/druid::id/*file_name' => 'file#show', format: false
-    options '/file/druid::id/*file_name', to: 'file#options', format: false
-    get '/file/app/druid::id/*file_name' => 'webauth#login_file', format: false
-    get '/file/auth/druid::id/*file_name' => 'webauth#login_file', format: false
-    get '/file/auth/druid::id' => 'webauth#login_object', format: false
+      # File/auth routes without druid namespace
+      get '/file/:id/*file_name' => 'file#show', as: :file
+      options '/file/:id/*file_name', to: 'file#options'
+      get '/file/app/:id/*file_name' => 'webauth#login_file'
+      get '/file/auth/:id/*file_name' => 'webauth#login_file', as: :auth_file
+      get '/file/auth/:id' => 'webauth#login_object', as: :auth_object
+
+      # File/auth routes with druid namespace
+      get '/file/druid::id/*file_name' => 'file#show'
+      options '/file/druid::id/*file_name', to: 'file#options'
+      get '/file/app/druid::id/*file_name' => 'webauth#login_file'
+      get '/file/auth/druid::id/*file_name' => 'webauth#login_file'
+      get '/file/auth/druid::id' => 'webauth#login_object'
+    end
   end
 
   if Settings.features.streaming_media
