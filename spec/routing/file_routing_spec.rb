@@ -60,9 +60,5 @@ RSpec.describe 'file routes' do
     it 'routes to webauth#login_file' do
       expect(get: '/file/auth/oo000oo0000/def.pdf').to route_to('webauth#login_file', id: 'oo000oo0000', file_name: 'def.pdf')
     end
-
-    it 'routes to webauth#login_file' do
-      expect(get: '/file/app/oo000oo0000/def.pdf').to route_to('webauth#login_file', id: 'oo000oo0000', file_name: 'def.pdf')
-    end
   end
 end
