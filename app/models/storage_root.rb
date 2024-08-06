@@ -26,19 +26,15 @@ class StorageRoot
   attr_reader :cocina, :file_name
 
   def path_finder
-    @path_finder ||= path_finder_class.new(treeified_id:, file_name:, cocina:)
-  end
-
-  def path_finder_class
-    LegacyPathFinder
+    @path_finder ||= PathFinder.new(treeified_id:, file_name:, cocina:)
   end
 
   def druid_parts
     @druid_parts ||= druid.match(DRUID_PARTS_PATTERN)
   end
 
-  # Calculate file paths in the legacy Stacks structure
-  class LegacyPathFinder
+  # Calculate file paths in the Stacks structure (legacy or content-addressable)
+  class PathFinder
     def initialize(treeified_id:, file_name:, cocina:)
       @treeified_id = treeified_id
       @file_name = file_name
