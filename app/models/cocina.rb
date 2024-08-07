@@ -25,7 +25,7 @@ class Cocina
   end
 
   def self.public_json_url(druid, version)
-    return "#{Settings.purl.url}#{druid}/#{version}.json" unless version == :head
+    return "#{Settings.purl.url}#{druid}/version/#{version}.json" unless version == :head
 
     "#{Settings.purl.url}#{druid}.json"
   end

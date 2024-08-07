@@ -59,12 +59,12 @@ RSpec.describe Cocina do
 
     context 'when requesting a specific version' do
       before do
-        stub_request(:get, "https://purl.stanford.edu/abc/v2.json")
+        stub_request(:get, "https://purl.stanford.edu/abc/version/2.json")
           .to_return(status: 200, body: json)
       end
 
       it 'gets all the files for a resource' do
-        actual = described_class.find('abc', 'v2').files.map { |file| "#{file.id}/#{file.file_name}" }
+        actual = described_class.find('abc', '2').files.map { |file| "#{file.id}/#{file.file_name}" }
 
         expect(actual).to contain_exactly('abc/26855.jp2', 'abc/123.jp2')
       end
