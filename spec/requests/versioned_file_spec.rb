@@ -8,7 +8,7 @@ RSpec.describe "Versioned File requests" do
   end
 
   let(:druid) { 'nr349ct7889' }
-  let(:version_id) { 'v1' }
+  let(:version_id) { '1' }
   let(:file_name) { 'image.jp2' }
   let(:public_json) do
     {
@@ -35,7 +35,7 @@ RSpec.describe "Versioned File requests" do
 
   describe 'OPTIONS options' do
     it 'permits Range headers for all origins' do
-      options "/v2/file/#{druid}/#{version_id}/#{file_name}"
+      options "/v2/file/#{druid}/version/#{version_id}/#{file_name}"
       expect(response).to be_successful
       expect(response.headers['Access-Control-Allow-Origin']).to eq '*'
       expect(response.headers['Access-Control-Allow-Headers']).to include 'Range'
@@ -52,12 +52,12 @@ RSpec.describe "Versioned File requests" do
     before do
       allow_any_instance_of(FileController).to receive(:send_file)
         .with('spec/fixtures/nr/349/ct/7889/path/to/image.jp2', filename: 'path/to/image.jp2', disposition: :inline)
-      stub_request(:get, "https://purl.stanford.edu/#{druid}/#{version_id}.json")
+      stub_request(:get, "https://purl.stanford.edu/#{druid}/version/#{version_id}.json")
         .to_return(status: 200, body: public_json.to_json)
     end
 
     it 'returns a successful HTTP response' do
-      get "/v2/file/#{druid}/#{version_id}/#{file_name}"
+      get "/v2/file/#{druid}/version/#{version_id}/#{file_name}"
       expect(response).to be_successful
       expect(Cocina).to have_received(:find).with(druid, version_id)
     end
@@ -65,14 +65,14 @@ RSpec.describe "Versioned File requests" do
 
   describe 'GET missing file' do
     before do
-      stub_request(:get, "https://purl.stanford.edu/xf680rd3068/v1.json")
+      stub_request(:get, "https://purl.stanford.edu/xf680rd3068/version/1.json")
         .to_return(status: 200, body: public_json.to_json)
     end
 
     it 'returns a 400 HTTP response' do
-      get '/v2/file/xf680rd3068/v1/path/to/99999.jp2'
+      get '/v2/file/xf680rd3068/version/1/path/to/99999.jp2'
       expect(response).to have_http_status(:not_found)
-      expect(Cocina).to have_received(:find).with('xf680rd3068', 'v1')
+      expect(Cocina).to have_received(:find).with('xf680rd3068', '1')
     end
   end
 end

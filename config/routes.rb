@@ -2,15 +2,13 @@ Rails.application.routes.draw do
   druid_regex = /([a-z]{2})(\d{3})([a-z]{2})(\d{4})/i
 
   get '/object/:id' => 'object#show', as: :object
-  get '/object/:id/:version_id', to: 'object#show', constraints: { version_id: /v\d+/ }
+  get '/object/:id/version/:version_id', to: 'object#show'
 
   constraints id: druid_regex do
     scope format: false do  # Tell rails not to separate out the filename suffixes
       scope '/v2' do # versionable files
-        constraints version_id: /v\d+/ do
-          get '/file/:id/:version_id/*file_name', to: 'file#show', as: :versioned_file
-          options '/file/:id/:version_id/*file_name', to: 'file#options'
-        end
+        get '/file/:id/version/:version_id/*file_name', to: 'file#show', as: :versioned_file
+        options '/file/:id/version/:version_id/*file_name', to: 'file#options'
       end
 
       # File/auth routes without druid namespace
@@ -68,7 +66,7 @@ Rails.application.routes.draw do
     match '/image/iiif/:identifier/info.json' => 'iiif#metadata_options', via: [:options]
   end
 
-  # As of Sept 2017, the legacy service was still used by Revs and Bassi Verati/FRDA
+  # As of Aug 2024, the legacy service was still used by Bassi Verati/FRDA
   # It's also likely used by other applications too.
   # The LegacyImageService is just a facade that redirects to the appropriate IIIF URI
   constraints id: druid_regex, file_name: %r{[^/]+}, format: %r{(jpg|png|gif|jp2)}, size: %r{(#{Settings.legacy.sizes.join('|')})} do
