@@ -14,14 +14,12 @@ Rails.application.routes.draw do
       # File/auth routes without druid namespace
       get '/file/:id/*file_name' => 'file#show', as: :file
       options '/file/:id/*file_name', to: 'file#options'
-      get '/file/app/:id/*file_name' => 'webauth#login_file'
       get '/file/auth/:id/*file_name' => 'webauth#login_file', as: :auth_file
       get '/file/auth/:id' => 'webauth#login_object', as: :auth_object
 
       # File/auth routes with druid namespace
       get '/file/druid::id/*file_name' => 'file#show'
       options '/file/druid::id/*file_name', to: 'file#options'
-      get '/file/app/druid::id/*file_name' => 'webauth#login_file'
       get '/file/auth/druid::id/*file_name' => 'webauth#login_file'
       get '/file/auth/druid::id' => 'webauth#login_object'
     end
