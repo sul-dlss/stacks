@@ -8,28 +8,25 @@
     <title>Stacks</title>
 
     <%= favicon_link_tag 'favicon.ico' %>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <%= stylesheet_link_tag "application" %>
-    <link href="https://www-media.stanford.edu/su-identity/css/su-identity.css" rel="stylesheet">
-    <%= stylesheet_link_tag "https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700" %>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sul-dlss/component-library@v2024-08-13/styles/sul.css" />
+    <style>
+      .bg-cardinal {
+        --stanford-cardinal-rgb: 143, 20, 20;
+        --bs-dark-rgb: var(--stanford-cardinal-rgb);
+      }
+    </style>
     <%= content_for(:head) %>
   </head>
 
   <body data-analytics-id="<%= Settings.GOOGLE_ANALYTICS_ID %>">
-    <!--[if lte IE 9]>
-      <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
-    <![endif]-->
-    <div id="su-wrap"> <!-- #su-wrap start -->
-      <div id="su-content"> <!-- #su-content start -->
-        <div id="outer-container" class="container-fluid">
-          <%= render 'shared/top_navbar' %>
-          <section id="main-container" role="main">
-            <%= yield %>
-          </section>
-        </div>
-      </div>
-    </div>
-
+    <%= render 'shared/top_navbar' %>
+    <main id="main-container" class="container py-4" style="height: calc(100vh - 411px)">
+      <%= yield %>
+    </main>
     <%= render 'shared/su_footer' %>
   </body>
 </html>
