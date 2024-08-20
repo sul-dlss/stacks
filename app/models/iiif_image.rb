@@ -19,7 +19,7 @@ class IiifImage
   def response
     with_retries max_tries: 3, rescue: [HTTP::ConnectionError] do
       benchmark "Fetch #{image_url}" do
-        HTTP.use({ normalize_uri: { normalizer: lambda(&:itself) } }).get(image_url)
+        HTTP.timeout(connect: 15).use({ normalize_uri: { normalizer: lambda(&:itself) } }).get(image_url)
       end
     end
   end
