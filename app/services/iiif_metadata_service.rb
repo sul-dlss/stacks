@@ -47,7 +47,7 @@ class IiifMetadataService
       handle_response(
         # Disable url normalization as an upstream bug in addressable causes issues for `+`
         # https://github.com/sporkmonger/addressable/issues/386
-        HTTP.timeout(connect: 15)
+        HTTP.timeout(connect: 15, read_timeout: 5.minutes)
             .headers(user_agent: "#{HTTP::Request::USER_AGENT} (#{Settings.user_agent})")
             .use({ normalize_uri: { normalizer: lambda(&:itself) } }).get(@url)
       )
