@@ -19,7 +19,7 @@ class IiifImage
   def response
     with_retries max_tries: 3, rescue: [HTTP::ConnectionError] do
       benchmark "Fetch #{image_url}" do
-        HTTP.timeout(connect: 15)
+        HTTP.timeout(connect: 15, read_timeout: 5.minutes)
             .headers(user_agent: "#{HTTP::Request::USER_AGENT} (#{Settings.user_agent})")
             .use({ normalize_uri: { normalizer: lambda(&:itself) } })
             .get(image_url)
