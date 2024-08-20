@@ -9,13 +9,16 @@ RSpec.describe ObjectController do
     allow_any_instance_of(StacksFile).to receive(:path).and_return(Rails.root + 'Gemfile')
   end
 
+  let(:connection) { instance_double(Faraday::Connection) }
+
   describe '#show' do
     context 'when not logged in' do
       context "with an invalid druid" do
         let(:druid) { 'foo' }
 
         it 'returns a 404 Not Found' do
-          allow(Faraday).to receive(:get).with('https://purl.stanford.edu/foo.json').and_return(
+          allow(Faraday).to receive(:new).with(hash_including(url: 'https://purl.stanford.edu/foo.json')).and_return(connection)
+          allow(connection).to receive(:get).and_return(
             instance_double(Faraday::Response, status: 404, success?: false)
           )
           get :show, params: { id: 'foo' }
@@ -89,8 +92,8 @@ RSpec.describe ObjectController do
         end
 
         before do
-          allow(Faraday).to receive(:get).with('https://purl.stanford.edu/fd063dh3727.json')
-                                         .and_return(instance_double(Faraday::Response, success?: true, body: json))
+          allow(Faraday).to receive(:new).with(hash_including(url: 'https://purl.stanford.edu/fd063dh3727.json')).and_return(connection)
+          allow(connection).to receive(:get).and_return(instance_double(Faraday::Response, success?: true, body: json))
         end
 
         it 'creates a zip' do
@@ -145,8 +148,8 @@ RSpec.describe ObjectController do
         end
 
         before do
-          allow(Faraday).to receive(:get).with('https://purl.stanford.edu/bb142ws0723.json')
-                                         .and_return(instance_double(Faraday::Response, success?: true, body: json))
+          allow(Faraday).to receive(:new).with(hash_including(url: 'https://purl.stanford.edu/bb142ws0723.json')).and_return(connection)
+          allow(connection).to receive(:get).and_return(instance_double(Faraday::Response, success?: true, body: json))
         end
 
         it 'redirects to login' do
@@ -209,8 +212,8 @@ RSpec.describe ObjectController do
         end
 
         before do
-          allow(Faraday).to receive(:get).with('https://purl.stanford.edu/bb142ws0723.json')
-                                         .and_return(instance_double(Faraday::Response, success?: true, body: json))
+          allow(Faraday).to receive(:new).with(hash_including(url: 'https://purl.stanford.edu/bb142ws0723.json')).and_return(connection)
+          allow(connection).to receive(:get).and_return(instance_double(Faraday::Response, success?: true, body: json))
         end
 
         it 'creates a zip' do

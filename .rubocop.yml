@@ -64,6 +64,9 @@ Style/StringLiterals:
 RSpec/MultipleMemoizedHelpers:
   Enabled: false
 
+RSpec/MessageChain:
+  Enabled: false
+
 Layout/EmptyLinesAroundAttributeAccessor:
   Enabled: true
 Layout/SpaceAroundMethodCallOperator:

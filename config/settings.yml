@@ -62,3 +62,5 @@ cors:
 
 token:
   default_expiry_time: <%= 1.hour %>
+
+user_agent: 'stacks.stanford.edu'
