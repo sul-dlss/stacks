@@ -39,7 +39,10 @@ class MetricsService
   end
 
   def default_headers
-    { 'Content-Type': 'application/json' }
+    {
+      'Content-Type': 'application/json',
+      'User-Agent': Settings.user_agent
+    }
   end
 
   def post_json(url, data, headers)
@@ -50,6 +53,6 @@ class MetricsService
   end
 
   def connection
-    @connection ||= Faraday.new(base_url)
+    @connection ||= Faraday.new({ url: base_url, request: { open_timeout: 5 } })
   end
 end

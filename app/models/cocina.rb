@@ -9,7 +9,11 @@ class Cocina
   def self.find(druid, version = :head)
     data = Rails.cache.fetch(metadata_cache_key(druid, version), expires_in: 10.minutes) do
       benchmark "Fetching public json for #{druid} version #{version}" do
-        response = Faraday.get(public_json_url(druid, version))
+        connection = Faraday.new({ url: public_json_url(druid, version),
+                                   headers: { user_agent: Settings.user_agent },
+                                   request: { open_timeout: 5 } })
+
+        response = connection.get
         raise Purl::Exception, response.status unless response.success?
 
         JSON.parse(response.body)
