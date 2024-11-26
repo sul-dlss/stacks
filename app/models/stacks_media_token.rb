@@ -90,7 +90,7 @@ class StacksMediaToken
   end
 
   def self.create_from_hash(token_hash)
-    new token_hash[:id], token_hash[:file_name], token_hash[:user_ip]
+    new token_hash['id'], token_hash['file_name'], token_hash['user_ip']
   end
   private_class_method :create_from_hash
 
