@@ -73,7 +73,7 @@ gem 'http'
 gem 'cancancan'
 gem 'dalli'
 gem 'retries'
-gem 'zipline', '~> 2.0'
+gem 'zip_kit', '~> 6.3'
 gem 'jwt'
 gem 'redis'
 

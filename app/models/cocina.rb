@@ -6,6 +6,7 @@ class Cocina
 
   THUMBNAIL_MIME_TYPE = 'image/jp2'
 
+  # @return [Cocina] Returns the cocina object for the given druid and version
   def self.find(druid, version = :head)
     data = Rails.cache.fetch(metadata_cache_key(druid, version), expires_in: 10.minutes) do
       benchmark "Fetching public json for #{druid} version #{version}" do
@@ -73,6 +74,7 @@ class Cocina
     data.dig('access', 'embargo', 'releaseDate')
   end
 
+  # @return [Enumerator<StacksFile>] when no block is passed
   def files(&)
     return to_enum(:files) unless block_given?
 
