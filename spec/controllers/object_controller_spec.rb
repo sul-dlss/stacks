@@ -98,7 +98,7 @@ RSpec.describe ObjectController do
 
         it 'creates a zip' do
           get :show, params: { id: 'fd063dh3727' }
-          entries = ZipTricks::FileReader.new.read_zip_structure(io: StringIO.new(response.body))
+          entries = ZipKit::FileReader.new.read_zip_structure(io: StringIO.new(response.body))
           expect(entries.length).to eq 6
         end
       end
@@ -218,7 +218,7 @@ RSpec.describe ObjectController do
 
         it 'creates a zip' do
           get :show, params: { id: 'bb142ws0723' }
-          entries = ZipTricks::FileReader.new.read_zip_structure(io: StringIO.new(response.body))
+          entries = ZipKit::FileReader.new.read_zip_structure(io: StringIO.new(response.body))
           expect(entries.length).to eq 3
         end
       end
