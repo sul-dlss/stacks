@@ -29,7 +29,7 @@ group :development, :test do
   gem "debug", platforms: %i[ mri mingw x64_mingw ]
 
   # RSpec for testing
-  gem 'rspec-rails', '~> 6.0'
+  gem 'rspec-rails', '~> 7.0'
 
   gem 'rails-controller-testing'
 
