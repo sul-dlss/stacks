@@ -3,8 +3,6 @@
 ##
 # API for delivering whole objects from stacks
 class ObjectController < ApplicationController
-  include Zipline
-
   # Return a zip of all the files if they have access to all the files.
   # This will force a login if any of the files is not access=world
   def show
@@ -15,24 +13,27 @@ class ObjectController < ApplicationController
     files.each do |file|
       authorize! :download, file
     end
-    zip_contents = files.map do |file|
-      [
-        file,
-        file.file_name,
-        modification_time: file.mtime
-      ]
-    end
 
+    track_download
+
+    zip_kit_stream(filename: "#{druid}.zip") do |zip|
+      files.each do |stacks_file|
+        zip.write_file(stacks_file.file_name, modification_time: stacks_file.mtime) do |sink|
+          File.open(stacks_file.path, "rb") { |file_input| IO.copy_stream(file_input, sink) }
+        end
+      end
+    end
+  end
+
+  private
+
+  def track_download
     TrackDownloadJob.perform_later(
       druid:,
       user_agent: request.user_agent,
       ip: request.remote_ip
     )
-
-    zipline(zip_contents, "#{druid}.zip")
   end
-
-  private
 
   def druid
     params[:id]
