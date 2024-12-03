@@ -36,8 +36,6 @@ group :development, :test do
   # Capybara for feature/integration tests
   gem 'capybara'
   gem 'selenium-webdriver'
-  # Easy installation and use of web drivers to run system tests with browsers
-  gem 'webdrivers'
 
   # Rubocop is a static code analyzer to enforce style.
   gem 'rubocop', '~> 1.57', require: false
