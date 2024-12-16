@@ -18,15 +18,17 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-      - uses: actions/cache@v4
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gems-202103-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gems-202103-
-      - name: Bundle install
-        run: bundle config path vendor/bundle
-      - name: Install dependencies
-        run: bin/setup
+          bundler-cache: true
       - name: Run tests
-        run: bin/rake
+        run: bin/rake test:prepare spec
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3
+          bundler-cache: true
+      - name: Lint Ruby files
+        run: bin/rubocop --parallel
