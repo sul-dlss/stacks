@@ -611,7 +611,29 @@ Style/SuperArguments: # new in 1.64
   Enabled: true
 Rails/EnumSyntax: # new in 2.26
   Enabled: true
-RSpec/StringAsInstanceDoubleConstant: # new in 3.1
-  Enabled: true
 Performance/StringBytesize: # new in 1.23
+  Enabled: true
+Lint/ConstantReassignment: # new in 1.70
+  Enabled: true
+Lint/HashNewWithKeywordArgumentsAsDefault: # new in 1.69
+  Enabled: true
+Lint/NumericOperationWithConstantResult: # new in 1.69
+  Enabled: true
+Lint/SharedMutableDefault: # new in 1.70
+  Enabled: true
+Lint/UselessDefined: # new in 1.69
+  Enabled: true
+Style/DigChain: # new in 1.69
+  Enabled: true
+Style/FileNull: # new in 1.69
+  Enabled: true
+Style/FileTouch: # new in 1.69
+  Enabled: true
+Style/ItAssignment: # new in 1.70
+  Enabled: true
+Rails/MultipleRoutePaths: # new in 2.29
+  Enabled: true
+Rails/StrongParametersExpect: # new in 2.29
+  Enabled: true
+RSpec/StringAsInstanceDoubleConstant: # new in 3.1
   Enabled: true
