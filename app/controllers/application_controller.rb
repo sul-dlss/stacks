@@ -2,6 +2,7 @@
 
 # :nodoc:
 class ApplicationController < ActionController::Base
+  allow_browser versions: :modern
   include CurrentUserConcern
 
   rescue_from CanCan::AccessDenied, with: :rescue_can_can
