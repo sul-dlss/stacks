@@ -137,7 +137,9 @@ RSpec.describe 'IIIF auth v2 probe service' do
                                                 "type" => "AuthProbeResult2",
                                                 "status" => 302
                                               })
-      expect(response.parsed_body.dig('location', 'id')).to start_with 'https://sul-mediaserver.stanford.edu/stacks/_definst_/nr/349/ct/7889/mp4:SC0193_1982-013_b06_f01_1981-09-29.mp4/playlist.m3u8?stacks_token='
+      location = response.parsed_body.dig('location', 'id')
+      expect(location).to start_with 'https://sul-mediaserver.stanford.edu/stacks/_definst_/nr/349/ct/7889/mp4:SC0193_1982-013_b06_f01_1981-09-29.mp4/playlist.m3u8?stacks_token='
+      expect(location).to end_with('%3D%3D') # Token is uri encoded (e.g. '==' becomes '%3D%3D')
     end
   end
 
