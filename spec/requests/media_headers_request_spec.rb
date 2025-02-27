@@ -9,6 +9,7 @@ RSpec.describe "CORS headers for Media requests" do
 
   let(:public_json) do
     {
+      'externalIdentifier' => "druid:#{druid}",
       'structural' => {
         'contains' => [
           {

@@ -66,6 +66,12 @@ class StacksFile
     "#{Settings.stream.url}/#{storage_root.treeified_id}/#{streaming_url_file_segment}/playlist.m3u8"
   end
 
+  def encrypted_token(ip:)
+    # we use IP from which request originated -- we want the end user IP, not
+    #   a service on the user's behalf (load-balancer, etc.)
+    StacksMediaToken.new(id, file_name, ip).to_encrypted_string
+  end
+
   private
 
   def streaming_url_file_segment

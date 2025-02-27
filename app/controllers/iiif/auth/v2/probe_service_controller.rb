@@ -29,8 +29,10 @@ module Iiif
             if file.streamable?
               # See https://iiif.io/api/auth/2.0/#location
               json[:status] = 302
+
+              encrypted_token = file.encrypted_token(ip: request.remote_ip)
               json[:location] = {
-                id: "#{file.streaming_url}?stacks_token=#{URI.encode_uri_component(current_user.token)}",
+                id: "#{file.streaming_url}?stacks_token=#{URI.encode_uri_component(encrypted_token)}",
                 type: "Video"
               }
             else

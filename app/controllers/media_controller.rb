@@ -37,9 +37,12 @@ class MediaController < ApplicationController
 
   def hash_for_auth_check
     if can? :stream, current_media
+      # we use IP from which request originated -- we want the end user IP, not
+      #   a service on the user's behalf (load-balancer, etc.)
+      token = URI.encode_www_form_component(current_media.encrypted_token(ip: request.remote_ip))
       {
         status: :success,
-        token: URI.encode_www_form_component(encrypted_token),
+        token:,
         access_restrictions: {
           stanford_restricted: current_media.stanford_restricted?,
           restricted_by_location: current_media.restricted_by_location?,
@@ -79,11 +82,5 @@ class MediaController < ApplicationController
 
   def token_valid?(token, expected_id, expected_file_name, expected_user_ip)
     StacksMediaToken.verify_encrypted_token? token, expected_id, expected_file_name, expected_user_ip
-  end
-
-  def encrypted_token
-    # we use IP from which request originated -- we want the end user IP, not
-    #   a service on the user's behalf (load-balancer, etc.)
-    StacksMediaToken.new(id, file_name, request.remote_ip).to_encrypted_string
   end
 end
