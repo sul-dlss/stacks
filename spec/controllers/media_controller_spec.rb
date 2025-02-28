@@ -118,15 +118,13 @@ RSpec.describe MediaController do
     end
 
     context 'success' do
-      let(:token) { instance_double(StacksMediaToken, to_encrypted_string: 'sekret-token') }
       before do
-        allow(StacksMediaToken).to receive(:new).and_return(token)
-
         # We could be more integration-y and instead e.g. stub_request(:get, "https://purl.stanford.edu/bd786fy6312.json").to_return(...).
         # But the StacksMediaStream code (and the metadata fetching/parsing code it uses) that'd be exercised by that approach is already
         # tested elsewhere. This approach is a bit more readable, and less brittle since it doesn't break the StacksMediaStream abstraction.
         stacks_media_stream = instance_double(StacksMediaStream, stanford_restricted?: false, restricted_by_location?: false,
-                                                                 embargoed?: false, embargo_release_date: nil)
+                                                                 embargoed?: false, embargo_release_date: nil,
+                                                                 encrypted_token: 'sekret-token')
         allow(controller).to receive_messages(can?: true, current_media: stacks_media_stream)
       end
 

@@ -9,7 +9,7 @@ class StacksMediaStream
   end
   attr_accessor :stacks_file
 
-  delegate :etag, :mtime, :stacks_rights, to: :stacks_file
+  delegate :etag, :mtime, :stacks_rights, :encrypted_token, to: :stacks_file
 
   delegate :rights, :restricted_by_location?, :stanford_restricted?, :embargoed?,
            :embargo_release_date, :location, to: :stacks_rights
