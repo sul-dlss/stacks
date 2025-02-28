@@ -17,6 +17,7 @@ class LocationService
     {
       '@context' => 'http://iiif.io/api/auth/1/context.json',
       'profile' => 'http://iiif.io/api/auth/1/external',
+      '@id' => 'https://sul-stacks-uat.stanford.edu/auth/iiif',
       'label' => 'External Authentication Required',
       'failureHeader' => 'Restricted Material',
       'failureDescription' => 'Restricted content cannot be accessed from your location',
