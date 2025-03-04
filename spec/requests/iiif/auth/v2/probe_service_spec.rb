@@ -197,7 +197,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
                                                   "@context" => "http://iiif.io/api/auth/2/context.json",
                                                   "type" => "AuthProbeResult2",
                                                   "status" => 401,
-                                                  "heading" => { "en" => ["Stanford-affiliated? Login to play"] },
+                                                  "heading" => { "en" => ["Stanford users: log in to access all available features"] },
                                                   "auth_url" => "http://www.example.com/auth/iiif",
                                                   "note" => { "en" => ["Access restricted"] }
                                                 })
@@ -216,7 +216,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
                                                     "@context" => "http://iiif.io/api/auth/2/context.json",
                                                     "type" => "AuthProbeResult2",
                                                     "status" => 401,
-                                                    "heading" => { "en" => ["Stanford-affiliated? Login to play"] },
+                                                    "heading" => { "en" => ["Stanford users: log in to access all available features"] },
                                                     "auth_url" => "http://www.example.com/auth/iiif",
                                                     "note" => { "en" => ["Access restricted"] }
                                                   })
