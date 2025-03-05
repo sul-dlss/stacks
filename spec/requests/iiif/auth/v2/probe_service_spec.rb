@@ -197,7 +197,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
                                                   "@context" => "http://iiif.io/api/auth/2/context.json",
                                                   "type" => "AuthProbeResult2",
                                                   "status" => 401,
-                                                  "heading" => { "en" => ["Stanford-affiliated? Login to play"] },
+                                                  "heading" => { "en" => ["Stanford users: log in to access all available features."] },
                                                   "auth_url" => "http://www.example.com/auth/iiif",
                                                   "note" => { "en" => ["Access restricted"] }
                                                 })
@@ -216,7 +216,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
                                                     "@context" => "http://iiif.io/api/auth/2/context.json",
                                                     "type" => "AuthProbeResult2",
                                                     "status" => 401,
-                                                    "heading" => { "en" => ["Stanford-affiliated? Login to play"] },
+                                                    "heading" => { "en" => ["Stanford users: log in to access all available features."] },
                                                     "auth_url" => "http://www.example.com/auth/iiif",
                                                     "note" => { "en" => ["Access restricted"] }
                                                   })
@@ -244,7 +244,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
                                                   "type" => "AuthProbeResult2",
                                                   "status" => 401,
                                                   "heading" => {
-                                                    "en" => ["Content is restricted to location Special Collections reading room"]
+                                                    "en" => ["Access is restricted to the Special Collections reading room. See Access conditions for more information."]
                                                   },
                                                   "note" => { "en" => ["Access restricted"] }
                                                 })
@@ -261,7 +261,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
                                                   "type" => "AuthProbeResult2",
                                                   "status" => 401,
                                                   "heading" => {
-                                                    "en" => ["Content is restricted to location Media & Microtext"]
+                                                    "en" => ["Access is restricted to the Media & Microtext. See Access conditions for more information."]
                                                   },
                                                   "note" => { "en" => ["Access restricted"] }
                                                 })
@@ -287,7 +287,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
                                                 "status" => 401,
                                                 "heading" => {
                                                   "en" =>
-                                                    ["Content is both Stanford restricted and embargoed until 2099-05-15"]
+                                                    ["Access is restricted to Stanford-affiliated patrons until 2099-05-15."]
                                                 },
                                                 "note" => { "en" => ["Access restricted"] }
                                               })
@@ -310,7 +310,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
                                                 "@context" => "http://iiif.io/api/auth/2/context.json",
                                                 "type" => "AuthProbeResult2",
                                                 "status" => 401,
-                                                "heading" => { "en" => ["Content is embargoed until 2099-05-15"] },
+                                                "heading" => { "en" => ["Access is restricted until 2099-05-15."] },
                                                 "note" => { "en" => ["Access restricted"] }
                                               })
     end
