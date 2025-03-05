@@ -229,6 +229,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
     let(:public_json) do
       Factories.cocina_with_file(file_access: { 'view' => 'location-based', 'download' => 'location-based', 'location' => location })
     end
+    let(:message_suffix) { 'See Access conditions for more information.' }
 
     before do
       get "/iiif/auth/v2/probe?id=#{stacks_uri_param}"
@@ -236,6 +237,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
 
     context 'when special collections' do
       let(:location) { 'spec' }
+      let(:location_name) { 'Special Collections reading room' }
 
       it 'returns a not authorized response' do
         expect(response).to have_http_status :ok
@@ -244,7 +246,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
                                                   "type" => "AuthProbeResult2",
                                                   "status" => 401,
                                                   "heading" => {
-                                                    "en" => ["Access is restricted to the Special Collections reading room. See Access conditions for more information."]
+                                                    "en" => ["Access is restricted to the #{location_name}. #{message_suffix}"]
                                                   },
                                                   "note" => { "en" => ["Access restricted"] }
                                                 })
@@ -253,6 +255,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
 
     context 'when media & microtext' do
       let(:location) { 'm&m' }
+      let(:location_name) { 'Media & Microtext' }
 
       it 'returns a not authorized response' do
         expect(response).to have_http_status :ok
@@ -261,7 +264,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
                                                   "type" => "AuthProbeResult2",
                                                   "status" => 401,
                                                   "heading" => {
-                                                    "en" => ["Access is restricted to the Media & Microtext. See Access conditions for more information."]
+                                                    "en" => ["Access is restricted to the #{location_name}. #{message_suffix}"]
                                                   },
                                                   "note" => { "en" => ["Access restricted"] }
                                                 })
