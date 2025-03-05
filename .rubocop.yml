@@ -1,14 +1,16 @@
 inherit_from: .rubocop_todo.yml
 
-require:
+plugins:
   - rubocop-rails
   - rubocop-rspec
   - rubocop-performance
+
+require:
   - rubocop-capybara
   - rubocop-rspec_rails
 
 AllCops:
-  TargetRubyVersion: 3.2
+  TargetRubyVersion: 3.3
   DisplayCopNames: true
   Exclude:
     - "Gemfile"
@@ -638,4 +640,16 @@ Rails/StrongParametersExpect: # new in 2.29
 Lint/ArrayLiteralInRegexp: # new in 1.71
   Enabled: true
 Style/HashSlice: # new in 1.71
+  Enabled: true
+Lint/CopDirectiveSyntax: # new in 1.72
+  Enabled: true
+Lint/RedundantTypeConversion: # new in 1.72
+  Enabled: true
+Lint/SuppressedExceptionInNumberConversion: # new in 1.72
+  Enabled: true
+Lint/UselessConstantScoping: # new in 1.72
+  Enabled: true
+Style/RedundantFormat: # new in 1.72
+  Enabled: true
+Performance/ZipWithoutBlock: # new in 1.24
   Enabled: true

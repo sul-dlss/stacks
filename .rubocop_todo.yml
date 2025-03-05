@@ -12,10 +12,10 @@
 # URISchemes: http, https
 Layout/LineLength:
   Exclude:
-    - 'spec/requests/iiif_spec.rb'
-    - 'spec/routing/iiif_routing_spec.rb'
-    - 'spec/routing/legacy_image_api_spec.rb'
-    - 'spec/services/iiif_metadata_service_spec.rb'
+    - "spec/requests/iiif_spec.rb"
+    - "spec/routing/iiif_routing_spec.rb"
+    - "spec/routing/legacy_image_api_spec.rb"
+    - "spec/services/iiif_metadata_service_spec.rb"
 
 # Offense count: 7
 # This cop supports safe autocorrection (--autocorrect).
@@ -23,8 +23,8 @@ Layout/LineLength:
 # SupportedStyles: symmetrical, new_line, same_line
 Layout/MultilineMethodCallBraceLayout:
   Exclude:
-    - 'spec/routing/file_routing_spec.rb'
-    - 'spec/routing/media_routing_spec.rb'
+    - "spec/routing/file_routing_spec.rb"
+    - "spec/routing/media_routing_spec.rb"
 
 # Offense count: 9
 # Configuration parameters: AllowedMethods, AllowedPatterns, CountRepeatedAttributes.
@@ -44,35 +44,35 @@ Metrics/MethodLength:
 # Offense count: 26
 RSpec/AnyInstance:
   Exclude:
-    - 'spec/controllers/media_controller_spec.rb'
-    - 'spec/controllers/object_controller_spec.rb'
-    - 'spec/features/iiif_spec.rb'
-    - 'spec/features/status_spec.rb'
-    - 'spec/requests/file_auth_request_spec.rb'
-    - 'spec/requests/file_spec.rb'
-    - 'spec/requests/versioned_file_spec.rb'
-    - 'spec/requests/iiif/auth/v1/tokens_spec.rb'
-    - 'spec/requests/iiif/auth/v2/tokens_spec.rb'
-    - 'spec/requests/iiif_auth_request_spec.rb'
-    - 'spec/requests/iiif_spec.rb'
-    - 'spec/requests/media_auth_request_spec.rb'
+    - "spec/controllers/media_controller_spec.rb"
+    - "spec/controllers/object_controller_spec.rb"
+    - "spec/features/iiif_spec.rb"
+    - "spec/features/status_spec.rb"
+    - "spec/requests/file_auth_request_spec.rb"
+    - "spec/requests/file_spec.rb"
+    - "spec/requests/versioned_file_spec.rb"
+    - "spec/requests/iiif/auth/v1/tokens_spec.rb"
+    - "spec/requests/iiif/auth/v2/tokens_spec.rb"
+    - "spec/requests/iiif_auth_request_spec.rb"
+    - "spec/requests/iiif_spec.rb"
+    - "spec/requests/media_auth_request_spec.rb"
 
 # Offense count: 66
 # Configuration parameters: Prefixes, AllowedPatterns.
 # Prefixes: when, with, without
 RSpec/ContextWording:
   Exclude:
-    - 'spec/abilities/ability_spec.rb'
-    - 'spec/controllers/file_controller_spec.rb'
-    - 'spec/controllers/legacy_image_service_controller_spec.rb'
-    - 'spec/controllers/media_controller_spec.rb'
-    - 'spec/features/status_spec.rb'
-    - 'spec/models/projection_spec.rb'
-    - 'spec/requests/file_auth_request_spec.rb'
-    - 'spec/requests/iiif_spec.rb'
-    - 'spec/requests/media_auth_request_spec.rb'
-    - 'spec/services/iiif_metadata_service_spec.rb'
-    - 'spec/services/media_authentication_json_spec.rb'
+    - "spec/abilities/ability_spec.rb"
+    - "spec/controllers/file_controller_spec.rb"
+    - "spec/controllers/legacy_image_service_controller_spec.rb"
+    - "spec/controllers/media_controller_spec.rb"
+    - "spec/features/status_spec.rb"
+    - "spec/models/projection_spec.rb"
+    - "spec/requests/file_auth_request_spec.rb"
+    - "spec/requests/iiif_spec.rb"
+    - "spec/requests/media_auth_request_spec.rb"
+    - "spec/services/iiif_metadata_service_spec.rb"
+    - "spec/services/media_authentication_json_spec.rb"
 
 # Offense count: 27
 # This cop supports unsafe autocorrection (--autocorrect-all).
@@ -80,49 +80,49 @@ RSpec/ContextWording:
 # SupportedStyles: described_class, explicit
 RSpec/DescribedClass:
   Exclude:
-    - 'spec/models/stacks_media_stream_spec.rb'
-    - 'spec/models/stacks_media_token_spec.rb'
-    - 'spec/models/user_spec.rb'
+    - "spec/models/stacks_media_stream_spec.rb"
+    - "spec/models/stacks_media_token_spec.rb"
+    - "spec/models/user_spec.rb"
 
 # Offense count: 3
 # This cop supports safe autocorrection (--autocorrect).
 RSpec/EmptyLineAfterExampleGroup:
   Exclude:
-    - 'spec/abilities/ability_spec.rb'
-    - 'spec/requests/file_auth_request_spec.rb'
+    - "spec/abilities/ability_spec.rb"
+    - "spec/requests/file_auth_request_spec.rb"
 
 # Offense count: 37
 # This cop supports safe autocorrection (--autocorrect).
 RSpec/EmptyLineAfterFinalLet:
   Exclude:
-    - 'spec/abilities/ability_spec.rb'
-    - 'spec/controllers/file_controller_spec.rb'
-    - 'spec/controllers/media_controller_spec.rb'
-    - 'spec/models/projection_spec.rb'
-    - 'spec/models/stacks_media_token_spec.rb'
-    - 'spec/requests/iiif_spec.rb'
-    - 'spec/services/iiif_metadata_service_spec.rb'
-    - 'spec/services/media_authentication_json_spec.rb'
+    - "spec/abilities/ability_spec.rb"
+    - "spec/controllers/file_controller_spec.rb"
+    - "spec/controllers/media_controller_spec.rb"
+    - "spec/models/projection_spec.rb"
+    - "spec/models/stacks_media_token_spec.rb"
+    - "spec/requests/iiif_spec.rb"
+    - "spec/services/iiif_metadata_service_spec.rb"
+    - "spec/services/media_authentication_json_spec.rb"
 
 # Offense count: 7
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: AllowConsecutiveOneLiners.
 RSpec/EmptyLineAfterHook:
   Exclude:
-    - 'spec/controllers/application_controller_spec.rb'
-    - 'spec/features/status_spec.rb'
-    - 'spec/requests/iiif_spec.rb'
+    - "spec/controllers/application_controller_spec.rb"
+    - "spec/features/status_spec.rb"
+    - "spec/requests/iiif_spec.rb"
 
 # Offense count: 11
 # This cop supports safe autocorrection (--autocorrect).
 RSpec/EmptyLineAfterSubject:
   Exclude:
-    - 'spec/abilities/ability_spec.rb'
-    - 'spec/controllers/webauth_controller_spec.rb'
-    - 'spec/models/iiif_image_spec.rb'
-    - 'spec/models/projection_spec.rb'
-    - 'spec/models/stacks_image_spec.rb'
-    - 'spec/services/iiif_metadata_service_spec.rb'
+    - "spec/abilities/ability_spec.rb"
+    - "spec/controllers/webauth_controller_spec.rb"
+    - "spec/models/iiif_image_spec.rb"
+    - "spec/models/projection_spec.rb"
+    - "spec/models/stacks_image_spec.rb"
+    - "spec/services/iiif_metadata_service_spec.rb"
 
 # Offense count: 37
 # Configuration parameters: CountAsOne.
@@ -135,10 +135,10 @@ RSpec/ExampleLength:
 # DisallowedExamples: works
 RSpec/ExampleWording:
   Exclude:
-    - 'spec/controllers/legacy_image_service_controller_spec.rb'
-    - 'spec/controllers/media_controller_spec.rb'
-    - 'spec/models/stacks_media_token_spec.rb'
-    - 'spec/requests/iiif_auth_request_spec.rb'
+    - "spec/controllers/legacy_image_service_controller_spec.rb"
+    - "spec/controllers/media_controller_spec.rb"
+    - "spec/models/stacks_media_token_spec.rb"
+    - "spec/requests/iiif_auth_request_spec.rb"
 
 # Offense count: 2
 # This cop supports safe autocorrection (--autocorrect).
@@ -146,32 +146,32 @@ RSpec/ExampleWording:
 # SupportedStyles: implicit, each, example
 RSpec/HookArgument:
   Exclude:
-    - 'spec/requests/file_auth_request_spec.rb'
-    - 'spec/requests/iiif_auth_request_spec.rb'
+    - "spec/requests/file_auth_request_spec.rb"
+    - "spec/requests/iiif_auth_request_spec.rb"
 
 # Offense count: 2
 # Configuration parameters: Max, AllowedIdentifiers, AllowedPatterns.
 RSpec/IndexedLet:
   Exclude:
-    - 'spec/models/stacks_media_token_spec.rb'
+    - "spec/models/stacks_media_token_spec.rb"
 
 # Offense count: 7
 # This cop supports safe autocorrection (--autocorrect).
 RSpec/LeadingSubject:
   Exclude:
-    - 'spec/controllers/file_controller_spec.rb'
-    - 'spec/models/projection_spec.rb'
-    - 'spec/models/stacks_media_token_spec.rb'
-    - 'spec/services/media_authentication_json_spec.rb'
+    - "spec/controllers/file_controller_spec.rb"
+    - "spec/models/projection_spec.rb"
+    - "spec/models/stacks_media_token_spec.rb"
+    - "spec/services/media_authentication_json_spec.rb"
 
 # Offense count: 8
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: have_received, receive
 RSpec/MessageSpies:
   Exclude:
-    - 'spec/controllers/file_controller_spec.rb'
-    - 'spec/controllers/v2/versions_controller_spec.rb'
-    - 'spec/controllers/media_controller_spec.rb'
+    - "spec/controllers/file_controller_spec.rb"
+    - "spec/controllers/v2/versions_controller_spec.rb"
+    - "spec/controllers/media_controller_spec.rb"
 
 # Offense count: 85
 RSpec/MultipleExpectations:
@@ -182,19 +182,19 @@ RSpec/MultipleExpectations:
 # SupportedStyles: always, named_only
 RSpec/NamedSubject:
   Exclude:
-    - 'spec/controllers/application_controller_spec.rb'
-    - 'spec/controllers/file_controller_spec.rb'
-    - 'spec/controllers/v2/versions_controller_spec.rb'
-    - 'spec/controllers/webauth_controller_spec.rb'
-    - 'spec/models/approved_location_spec.rb'
-    - 'spec/models/projection_spec.rb'
-    - 'spec/models/restricted_image_spec.rb'
-    - 'spec/models/stacks_file_spec.rb'
-    - 'spec/models/stacks_image_spec.rb'
-    - 'spec/models/stacks_media_token_spec.rb'
-    - 'spec/models/user_spec.rb'
-    - 'spec/services/iiif_metadata_service_spec.rb'
-    - 'spec/services/media_authentication_json_spec.rb'
+    - "spec/controllers/application_controller_spec.rb"
+    - "spec/controllers/file_controller_spec.rb"
+    - "spec/controllers/v2/versions_controller_spec.rb"
+    - "spec/controllers/webauth_controller_spec.rb"
+    - "spec/models/approved_location_spec.rb"
+    - "spec/models/projection_spec.rb"
+    - "spec/models/restricted_image_spec.rb"
+    - "spec/models/stacks_file_spec.rb"
+    - "spec/models/stacks_image_spec.rb"
+    - "spec/models/stacks_media_token_spec.rb"
+    - "spec/models/user_spec.rb"
+    - "spec/services/iiif_metadata_service_spec.rb"
+    - "spec/services/media_authentication_json_spec.rb"
 
 # Offense count: 47
 # Configuration parameters: AllowedGroups.
@@ -204,30 +204,30 @@ RSpec/NestedGroups:
 # Offense count: 4
 RSpec/RepeatedDescription:
   Exclude:
-    - 'spec/routing/file_routing_spec.rb'
-    - 'spec/routing/legacy_image_api_spec.rb'
+    - "spec/routing/file_routing_spec.rb"
+    - "spec/routing/legacy_image_api_spec.rb"
 
 # Offense count: 5
 RSpec/StubbedMock:
   Exclude:
-    - 'spec/controllers/file_controller_spec.rb'
-    - 'spec/controllers/v2/versions_controller_spec.rb'
-    - 'spec/controllers/media_controller_spec.rb'
+    - "spec/controllers/file_controller_spec.rb"
+    - "spec/controllers/v2/versions_controller_spec.rb"
+    - "spec/controllers/media_controller_spec.rb"
 
 # Offense count: 1
 RSpec/SubjectStub:
   Exclude:
-    - 'spec/models/stacks_media_token_spec.rb'
+    - "spec/models/stacks_media_token_spec.rb"
 
 # Offense count: 14
 # Configuration parameters: IgnoreNameless, IgnoreSymbolicNames.
 RSpec/VerifiedDoubles:
   Exclude:
-    - 'spec/models/approved_location_spec.rb'
-    - 'spec/models/projection_spec.rb'
-    - 'spec/models/purl_spec.rb'
-    - 'spec/models/stacks_media_token_spec.rb'
-    - 'spec/services/iiif_info_service_spec.rb'
+    - "spec/models/approved_location_spec.rb"
+    - "spec/models/projection_spec.rb"
+    - "spec/models/purl_spec.rb"
+    - "spec/models/stacks_media_token_spec.rb"
+    - "spec/services/iiif_info_service_spec.rb"
 
 # Offense count: 1
 # This cop supports safe autocorrection (--autocorrect).
@@ -235,12 +235,12 @@ RSpec/VerifiedDoubles:
 # SupportedStyles: slashes, arguments
 Rails/FilePath:
   Exclude:
-    - 'app/controllers/application_controller.rb'
+    - "app/controllers/application_controller.rb"
 
 # Offense count: 1
 Rails/I18nLocaleTexts:
   Exclude:
-    - 'app/controllers/webauth_controller.rb'
+    - "app/controllers/webauth_controller.rb"
 
 # Offense count: 2
 # This cop supports safe autocorrection (--autocorrect).
@@ -248,13 +248,13 @@ Rails/I18nLocaleTexts:
 # SupportedStyles: separated, grouped
 Style/AccessorGrouping:
   Exclude:
-    - 'app/models/stacks_image.rb'
+    - "app/models/stacks_image.rb"
 
 # Offense count: 2
 # This cop supports safe autocorrection (--autocorrect).
 Style/EmptyCaseCondition:
   Exclude:
-    - 'app/controllers/legacy_image_service_controller.rb'
+    - "app/controllers/legacy_image_service_controller.rb"
 
 # Offense count: 1
 # This cop supports safe autocorrection (--autocorrect).
@@ -262,27 +262,27 @@ Style/EmptyCaseCondition:
 # SupportedStyles: braces, no_braces
 Style/HashAsLastArrayItem:
   Exclude:
-    - 'app/controllers/object_controller.rb'
+    - "app/controllers/object_controller.rb"
 
 # Offense count: 12
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: PreferredDelimiters.
 Style/PercentLiteralDelimiters:
   Exclude:
-    - 'spec/abilities/ability_spec.rb'
-    - 'spec/models/user_spec.rb'
-    - 'spec/requests/file_auth_request_spec.rb'
-    - 'spec/requests/iiif_auth_request_spec.rb'
-    - 'spec/requests/media_auth_request_spec.rb'
+    - "spec/abilities/ability_spec.rb"
+    - "spec/models/user_spec.rb"
+    - "spec/requests/file_auth_request_spec.rb"
+    - "spec/requests/iiif_auth_request_spec.rb"
+    - "spec/requests/media_auth_request_spec.rb"
 
 # Offense count: 3
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: Mode.
 Style/StringConcatenation:
   Exclude:
-    - 'app/controllers/iiif_controller.rb'
-    - 'spec/controllers/object_controller_spec.rb'
-    - 'spec/models/stacks_media_token_spec.rb'
+    - "app/controllers/iiif_controller.rb"
+    - "spec/controllers/object_controller_spec.rb"
+    - "spec/models/stacks_media_token_spec.rb"
 
 # Offense count: 4
 # This cop supports safe autocorrection (--autocorrect).

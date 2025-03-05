@@ -7,7 +7,7 @@ module Iiif
       # Check access for IIIF auth v2
       # https://iiif.io/api/auth/2.0/#probe-service
       class ProbeServiceController < ApplicationController
-        def show # rubocop:disable Metrics:AbcSize
+        def show # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
           # Example call:
           # /iiif/auth/v2/probe?id=https://stacks-uat.stanford.edu/file/druid:bb461xx1037/folder/SC0193_1982-013_b06_f01_1981-09-29.pdf
           stacks_uri = params[:id] # this is a fully qualified URI to the resource on the stacks that the user is requesting access to
