@@ -58,7 +58,7 @@ user:
       - an.ip.address
 
 cors:
-  allow_origin_url: "https://embed.stanford.edu"
+  allow_origin_url: "https://embed-stage.stanford.edu"
 
 token:
   default_expiry_time: <%= 1.hour %>
