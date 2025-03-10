@@ -83,6 +83,7 @@ Rails.application.routes.draw do
   # IIIF Auth V2
   get '/iiif/auth/v2/token' => 'iiif/auth/v2/token#create'
   get '/iiif/auth/v2/probe' => 'iiif/auth/v2/probe_service#show'
+  get '/proxy/geoserver' => 'restricted_geo_server_proxies#show'
   options '/iiif/auth/v2/probe' => 'iiif/auth/v2/probe_service#options_pre_flight'
 
 end

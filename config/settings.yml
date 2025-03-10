@@ -25,6 +25,10 @@ stream:
   max_token_age: 45
   url: https://sul-mediaserver.stanford.edu/stacks/_definst_
 
+geo:
+  proxy_url:
+  restricted_wms_url:
+
 # non-IIIF images
 legacy:
   sizes:
