@@ -49,6 +49,14 @@ class Cocina
     @druid ||= data.fetch('externalIdentifier').delete_prefix('druid:')
   end
 
+  def type
+    data['type']
+  end
+
+  def geo?
+    type == 'https://cocina.sul.stanford.edu/models/geo'
+  end
+
   def find_file(file_name)
     file_sets = data.dig('structural', 'contains')
     raise(ActionController::MissingFile, "File not found '#{file_name}'") unless file_sets # Trap for Collections

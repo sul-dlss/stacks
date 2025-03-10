@@ -25,6 +25,10 @@ stream:
   max_token_age: 45
   url: https://sul-mediaserver.stanford.edu/stacks/_definst_
 
+geo:
+  proxy_url: https://earthworks.stanford.edu/restricted_proxy/geoserver/wms
+  proxy_secret: my$ecretK3y
+
 # non-IIIF images
 legacy:
   sizes:
