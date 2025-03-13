@@ -26,8 +26,8 @@ stream:
   url: https://sul-mediaserver.stanford.edu/stacks/_definst_
 
 geo:
-  proxy_url:
-  restricted_wms_url:
+  proxy_url: https://earthworks-stage.stanford.edu/restricted_proxy/geoserver/wms
+  hmac_secret: my$ecretK3y
 
 # non-IIIF images
 legacy:

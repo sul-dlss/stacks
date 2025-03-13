@@ -44,7 +44,8 @@ module Iiif
         end
 
         def iiif_location(is_geo, file)
-          return { id: Settings.geo.proxy_url, type: "Geo" } if is_geo
+          token = JWT.encode({data: 'geo_token', exp: Time.now.to_i + 4 * 3600}, Settings.geo.hmac_secret, 'HS256')
+          return { id: "#{Settings.geo.proxy_url}?stacks_token=#{URI.encode_uri_component(token)}", type: "Geo" } if is_geo
 
           encrypted_token = file.encrypted_token(ip: request.remote_ip)
           {

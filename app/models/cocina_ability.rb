@@ -53,6 +53,7 @@ class CocinaAbility
     end
 
     if user.stanford?
+      can :show, RestrictedGeoServerProxiesController
       can :download, downloadable_models do |f|
         f.rights.download == 'stanford'
       end
