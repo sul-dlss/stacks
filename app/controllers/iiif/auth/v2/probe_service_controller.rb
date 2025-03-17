@@ -7,7 +7,7 @@ module Iiif
       # Check access for IIIF auth v2
       # https://iiif.io/api/auth/2.0/#probe-service
       class ProbeServiceController < ApplicationController
-        def show # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+        def show # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
           # Example call:
           # /iiif/auth/v2/probe?id=https://stacks-uat.stanford.edu/file/druid:bb461xx1037/folder/SC0193_1982-013_b06_f01_1981-09-29.pdf
           stacks_uri = params[:id] # this is a fully qualified URI to the resource on the stacks that the user is requesting access to
@@ -15,7 +15,8 @@ module Iiif
 
           json = { '@context': 'http://iiif.io/api/auth/2/context.json', type: 'AuthProbeResult2' }
           begin
-            file = StacksFile.new(file_name: parsed_uri[:file_name], cocina: Cocina.find(parsed_uri[:druid]))
+            cocina = Cocina.find(parsed_uri[:druid])
+            file = StacksFile.new(file_name: parsed_uri[:file_name], cocina:)
           rescue Purl::Exception
             return render json: json.merge(status: 404, note: { en: ["Unable to find #{parsed_uri[:druid]}"] })
           end
@@ -26,15 +27,10 @@ module Iiif
           elsif !file.readable?
             json[:status] = 404
           elsif can? :access, file
-            if file.streamable?
+            if file.streamable? || cocina.geo?
               # See https://iiif.io/api/auth/2.0/#location
               json[:status] = 302
-
-              encrypted_token = file.encrypted_token(ip: request.remote_ip)
-              json[:location] = {
-                id: "#{file.streaming_url}?stacks_token=#{URI.encode_uri_component(encrypted_token)}",
-                type: "Video"
-              }
+              json[:location] = iiif_location(cocina.geo?, file)
             else
               json[:status] = 200
             end
@@ -44,6 +40,20 @@ module Iiif
           end
 
           render json:
+        end
+
+        def iiif_location(is_geo, file)
+          if is_geo
+            # 4 hour token
+            token = JWT.encode({ data: 'geo_token', exp: Time.now.to_i + (4 * 3600) }, Settings.geo.proxy_secret, 'HS256')
+            url = Settings.geo.proxy_url
+            type = "Geo"
+          else
+            token = file.encrypted_token(ip: request.remote_ip)
+            url = file.streaming_url
+            type = "Video"
+          end
+          { id: "#{url}?stacks_token=#{URI.encode_uri_component(token)}", type: }
         end
 
         # Because the probe request sets the Accept header, the browser is going to preflight the request.
