@@ -38,7 +38,7 @@ class StacksImage
   end
 
   delegate :image_width, :image_height, to: :info_service
-  delegate :etag, :mtime, :stacks_rights, :readable?, to: :stacks_file
+  delegate :etag, :mtime, :stacks_rights, :readable?, :not_proxied?, to: :stacks_file
 
   # This is overriden in RestrictedImage
   def max_tile_dimensions
@@ -57,5 +57,5 @@ class StacksImage
   end
 
   delegate :rights, :maybe_downloadable?, :object_thumbnail?,
-           :stanford_restricted?, :restricted_by_location?, to: :stacks_rights
+           :stanford_restricted?, :restricted_by_location?, :world_viewable?, :no_download?, to: :stacks_rights
 end

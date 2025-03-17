@@ -20,6 +20,8 @@ class StacksFile
 
   validates :file_name, presence: true
 
+  delegate :not_proxied?, to: :cocina
+
   # Some files exist but have unreadable permissions, treat these as non-existent
   def readable?
     path && File.world_readable?(path)
@@ -55,7 +57,7 @@ class StacksFile
   end
 
   delegate :rights, :restricted_by_location?, :stanford_restricted?, :embargoed?,
-           :embargo_release_date, :location, to: :stacks_rights
+           :embargo_release_date, :location, :no_download?, :world_viewable?, to: :stacks_rights
 
   def streamable?
     accepted_formats = [".mov", ".mp4", ".mpeg", ".m4a", ".mp3"]

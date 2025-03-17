@@ -22,6 +22,14 @@ class StacksRights
     rights.view == 'stanford'
   end
 
+  def no_download?
+    rights.download == 'none'
+  end
+
+  def world_viewable?
+    rights.view == 'world'
+  end
+
   # Returns true if a given file has any location restrictions.
   #   Falls back to the object-level behavior if none at file level.
   def restricted_by_location?

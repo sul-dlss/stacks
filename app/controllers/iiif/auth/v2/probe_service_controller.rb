@@ -48,6 +48,7 @@ module Iiif
 
         private
 
+        # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
         def auth_probe_result(file, cocina)
           if !file.valid?
             AuthProbeResult2.bad_request(file.errors.full_messages)
@@ -59,21 +60,33 @@ module Iiif
             else
               AuthProbeResult2.ok
             end
+          elsif file.stanford_restricted?
+            AuthProbeResult2.unauthorized(**unauthorized_fields(file))
           else
-            AuthProbeResult2.unauthorized(unauthorized_heading(file))
+            AuthProbeResult2.forbidden(**forbidden_fields(file))
+          end
+        end
+        # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
+
+        def forbidden_fields(file)
+          if file.embargoed?
+            { heading: I18n.t('probe_service.embargoed', date: file.embargo_release_date.to_date),
+              icon: I18n.t('probe_service.embargoed_icon') }
+          elsif file.restricted_by_location?
+            { heading: I18n.t('probe_service.location', location: Settings.user.locations.labels.send(file.location)),
+              icon: I18n.t('probe_service.location_icon') }
+          else
+            { heading: I18n.t("probe_service.no_download"), icon: I18n.t('probe_service.no_download_icon') }
           end
         end
 
-        # add details to response for when access is denied
-        def unauthorized_heading(file)
-          if file.stanford_restricted? && !file.embargoed?
-            I18n.t('probe_service.stanford')
-          elsif file.stanford_restricted? && file.embargoed?
-            I18n.t('probe_service.stanford_and_embargoed', date: file.embargo_release_date.to_date)
-          elsif file.embargoed?
-            I18n.t('probe_service.embargoed', date: file.embargo_release_date.to_date)
-          elsif file.restricted_by_location?
-            I18n.t('probe_service.location', location: Settings.user.locations.labels.send(file.location))
+        # add details to response for when stanford_restricted?
+        def unauthorized_fields(file)
+          if file.embargoed?
+            { heading: I18n.t('probe_service.stanford_and_embargoed', date: file.embargo_release_date.to_date),
+              icon: I18n.t('probe_service.embargoed_icon') }
+          else
+            { heading: I18n.t('probe_service.stanford'), icon: I18n.t('probe_service.stanford_icon') }
           end
         end
 
