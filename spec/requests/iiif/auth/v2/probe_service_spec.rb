@@ -316,5 +316,27 @@ RSpec.describe 'IIIF auth v2 probe service' do
                                               })
     end
   end
+
+  context 'when called on a citation-only item' do
+    let(:public_json) do
+      Factories.cocina_with_file(access: {},
+                                 file_access: { 'view' => 'none', 'download' => 'none' })
+    end
+
+    before do
+      get "/iiif/auth/v2/probe?id=#{stacks_uri_param}"
+    end
+
+    it 'returns a not authorized response' do
+      expect(response).to have_http_status :ok
+      expect(response.parsed_body).to include({
+                                                "@context" => "http://iiif.io/api/auth/2/context.json",
+                                                "type" => "AuthProbeResult2",
+                                                "status" => 401,
+                                                "heading" => { "en" => ["This item cannot be accessed online. See Access conditions for more information."] },
+                                                "note" => { "en" => ["Access restricted"] }
+                                              })
+    end
+  end
   # rubocop:enable RSpec/AnyInstance
 end

@@ -36,4 +36,4 @@ en:
     stanford_and_embargoed: "Access is restricted to Stanford-affiliated patrons until %{date}."
     embargoed: "Access is restricted until %{date}."
     location: "Access is restricted to the %{location}. See Access conditions for more information."
-
+    not_accessible: This item cannot be accessed online. See Access conditions for more information.

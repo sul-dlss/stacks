@@ -60,6 +60,7 @@ module Iiif
               AuthProbeResult2.ok
             end
           else
+            # Either they need to log in or it's just impossible for them to access this (location access or citation only)
             AuthProbeResult2.unauthorized(unauthorized_heading(file))
           end
         end
@@ -74,6 +75,8 @@ module Iiif
             I18n.t('probe_service.embargoed', date: file.embargo_release_date.to_date)
           elsif file.restricted_by_location?
             I18n.t('probe_service.location', location: Settings.user.locations.labels.send(file.location))
+          else
+            I18n.t('probe_service.not_accessible')
           end
         end
 
