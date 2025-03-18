@@ -198,7 +198,6 @@ RSpec.describe 'IIIF auth v2 probe service' do
                                                   "type" => "AuthProbeResult2",
                                                   "status" => 401,
                                                   "heading" => { "en" => ["Stanford users: log in to access all available features."] },
-                                                  "auth_url" => "http://www.example.com/auth/iiif",
                                                   "note" => { "en" => ["Access restricted"] }
                                                 })
       end
@@ -217,7 +216,6 @@ RSpec.describe 'IIIF auth v2 probe service' do
                                                     "type" => "AuthProbeResult2",
                                                     "status" => 401,
                                                     "heading" => { "en" => ["Stanford users: log in to access all available features."] },
-                                                    "auth_url" => "http://www.example.com/auth/iiif",
                                                     "note" => { "en" => ["Access restricted"] }
                                                   })
         end
