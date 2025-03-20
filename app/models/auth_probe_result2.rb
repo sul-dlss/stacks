@@ -32,15 +32,16 @@ class AuthProbeResult2
 
   # When not authorized to view the resource.
   class ErrorResult < AuthProbeResult2
-    def initialize(heading:, **)
+    def initialize(heading:, icon: nil, **)
       super(status: 401, **)
       @heading = heading
+      @icon = icon
     end
 
-    attr_reader :heading
+    attr_reader :heading, :icon
 
     def as_json
-      super.merge(heading:)
+      super.merge(heading:, icon:)
     end
   end
 
@@ -52,8 +53,16 @@ class AuthProbeResult2
     new(status: 400, note: { en: messages })
   end
 
-  def self.unauthorized(heading)
-    ErrorResult.new(note: { en: [I18n.t('probe_service.access_restricted')] }, heading: { en: [heading] })
+  # return 403 since there is nothing a user can do to get access
+  # IIIF has the API return 401 for views that can be logged into,
+  # which we don't want for no_download, embargo with no stanford login, location restricted
+  # https://iiif.io/api/auth/2.0/#71-authorization-flow-algorithm
+  def self.forbidden(heading:, icon:)
+    ErrorResult.new(status: 403, note: { en: [I18n.t('probe_service.access_restricted')] }, heading: { en: [heading] }, icon:)
+  end
+
+  def self.unauthorized(heading:, icon:)
+    ErrorResult.new(note: { en: [I18n.t('probe_service.access_restricted')] }, heading: { en: [heading] }, icon:)
   end
 
   def self.not_found(druid)

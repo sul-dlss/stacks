@@ -49,7 +49,7 @@ class CocinaAbility
     end
 
     can [:access], access_models do |f|
-      f.rights.view == 'world'
+      f.world_viewable? && (!f.not_proxied? || !f.no_download?)
     end
 
     if user.stanford?

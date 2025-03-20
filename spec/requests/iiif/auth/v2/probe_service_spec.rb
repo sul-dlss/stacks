@@ -167,14 +167,28 @@ RSpec.describe 'IIIF auth v2 probe service' do
     let(:public_json) do
       Factories.cocina_with_file(file_access: { 'view' => 'stanford', 'download' => 'stanford' }, file_name:)
     end
+    let(:token) { nil }
+
+    before do
+      get "/iiif/auth/v2/probe?id=#{stacks_uri_param}", headers: { 'HTTP_AUTHORIZATION' => "Bearer #{token}" }
+    end
+
+    context 'when the user does not have a token' do
+      it 'returns a unauthorized response' do
+        expect(response).to have_http_status :ok
+        expect(response.parsed_body).to include({
+                                                  "@context" => "http://iiif.io/api/auth/2/context.json",
+                                                  "type" => "AuthProbeResult2",
+                                                  "heading" => { "en" => [I18n.t('probe_service.stanford')] },
+                                                  "icon" => I18n.t('probe_service.stanford_icon'),
+                                                  "status" => 401
+                                                })
+      end
+    end
 
     context 'when the user has a bearer token with the ldap group' do
       let(:user_webauth_stanford_no_loc) { User.new(webauth_user: true, ldap_groups: %w[stanford:stanford]) }
       let(:token) { user_webauth_stanford_no_loc.token }
-
-      before do
-        get "/iiif/auth/v2/probe?id=#{stacks_uri_param}", headers: { 'HTTP_AUTHORIZATION' => "Bearer #{token}" }
-      end
 
       it 'returns a success response' do
         expect(response).to have_http_status :ok
@@ -225,26 +239,25 @@ RSpec.describe 'IIIF auth v2 probe service' do
 
   context 'when the user does not have access to a location restricted resource' do
     let(:public_json) do
-      Factories.cocina_with_file(file_access: { 'view' => 'location-based', 'download' => 'location-based', 'location' => location })
+      Factories.cocina_with_file(file_access: { 'view' => 'location-based', 'download' => 'location-based', 'location' => location_code })
     end
-    let(:message_suffix) { 'See Access conditions for more information.' }
 
     before do
       get "/iiif/auth/v2/probe?id=#{stacks_uri_param}"
     end
 
     context 'when special collections' do
-      let(:location) { 'spec' }
-      let(:location_name) { 'Special Collections reading room' }
+      let(:location_code) { 'spec' }
+      let(:location) { 'Special Collections reading room' }
 
       it 'returns a not authorized response' do
         expect(response).to have_http_status :ok
         expect(response.parsed_body).to include({
                                                   "@context" => "http://iiif.io/api/auth/2/context.json",
                                                   "type" => "AuthProbeResult2",
-                                                  "status" => 401,
+                                                  "status" => 403,
                                                   "heading" => {
-                                                    "en" => ["Access is restricted to the #{location_name}. #{message_suffix}"]
+                                                    "en" => [I18n.t('probe_service.location', location:)]
                                                   },
                                                   "note" => { "en" => ["Access restricted"] }
                                                 })
@@ -252,18 +265,19 @@ RSpec.describe 'IIIF auth v2 probe service' do
     end
 
     context 'when media & microtext' do
-      let(:location) { 'm&m' }
-      let(:location_name) { 'Media & Microtext' }
+      let(:location_code) { 'm&m' }
+      let(:location) { 'Media & Microtext' }
 
       it 'returns a not authorized response' do
         expect(response).to have_http_status :ok
         expect(response.parsed_body).to include({
                                                   "@context" => "http://iiif.io/api/auth/2/context.json",
                                                   "type" => "AuthProbeResult2",
-                                                  "status" => 401,
+                                                  "status" => 403,
                                                   "heading" => {
-                                                    "en" => ["Access is restricted to the #{location_name}. #{message_suffix}"]
+                                                    "en" => [I18n.t('probe_service.location', location:)]
                                                   },
+                                                  "icon" => I18n.t('probe_service.location_icon'),
                                                   "note" => { "en" => ["Access restricted"] }
                                                 })
       end
@@ -295,6 +309,31 @@ RSpec.describe 'IIIF auth v2 probe service' do
     end
   end
 
+  context 'when the resource is download none and a document' do
+    let(:public_json) do
+      Factories.cocina_with_file(access: {},
+                                 file_access: { 'view' => 'none', 'download' => 'none' })
+    end
+
+    before do
+      get "/iiif/auth/v2/probe?id=#{stacks_uri_param}"
+    end
+
+    it 'returns a not authorized response' do
+      expect(response).to have_http_status :ok
+      expect(response.parsed_body).to include({
+                                                "@context" => "http://iiif.io/api/auth/2/context.json",
+                                                "type" => "AuthProbeResult2",
+                                                "status" => 403,
+                                                "heading" => {
+                                                  "en" => [I18n.t('probe_service.no_download')]
+                                                },
+                                                "icon" => I18n.t('probe_service.no_download_icon'),
+                                                "note" => { "en" => ["Access restricted"] }
+                                              })
+    end
+  end
+
   context 'when the user does not have access to an embargoed resource' do
     let(:public_json) do
       Factories.cocina_with_file(access: { 'embargo' => { "releaseDate" => Time.parse('2099-05-15').getlocal.as_json } },
@@ -310,8 +349,9 @@ RSpec.describe 'IIIF auth v2 probe service' do
       expect(response.parsed_body).to include({
                                                 "@context" => "http://iiif.io/api/auth/2/context.json",
                                                 "type" => "AuthProbeResult2",
-                                                "status" => 401,
+                                                "status" => 403,
                                                 "heading" => { "en" => ["Access is restricted until 2099-05-15."] },
+                                                "icon" => I18n.t('probe_service.embargoed_icon'),
                                                 "note" => { "en" => ["Access restricted"] }
                                               })
     end
