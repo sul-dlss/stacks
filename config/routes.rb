@@ -30,10 +30,7 @@ Rails.application.routes.draw do
     #  other dots do not need to be URL encoded (see media routing specs)
     constraints id: druid_regex, file_name: %r{[^/]+\.\w+} do
       get '/media/:id/:file_name/verify_token' => 'media#verify_token'
-      get '/media/:id/:file_name/auth_check' => 'media#auth_check'
-
       get '/media/druid::id/:file_name/verify_token' => 'media#verify_token'
-      get '/media/druid::id/:file_name/auth_check' => 'media#auth_check'
     end
   end
 
