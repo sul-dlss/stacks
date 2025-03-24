@@ -63,25 +63,4 @@ class StacksFile
     accepted_formats = [".mov", ".mp4", ".mpeg", ".m4a", ".mp3"]
     accepted_formats.include? File.extname(file_name)
   end
-
-  def streaming_url
-    "#{Settings.stream.url}/#{storage_root.treeified_id}/#{streaming_url_file_segment}/playlist.m3u8"
-  end
-
-  def encrypted_token(ip:)
-    # we use IP from which request originated -- we want the end user IP, not
-    #   a service on the user's behalf (load-balancer, etc.)
-    StacksMediaToken.new(id, file_name, ip).to_encrypted_string
-  end
-
-  private
-
-  def streaming_url_file_segment
-    case File.extname(file_name)
-    when '.mp3'
-      "mp3:#{file_name}"
-    else
-      "mp4:#{file_name}"
-    end
-  end
 end

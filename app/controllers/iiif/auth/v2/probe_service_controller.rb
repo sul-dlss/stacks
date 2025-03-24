@@ -22,18 +22,15 @@ module Iiif
           render json: auth_probe_result(file, cocina)
         end
 
-        def iiif_location(is_geo, file)
+        def iiif_location(is_geo, stacks_file)
           if is_geo
             # 4 hour token
             token = JWT.encode({ data: 'geo_token', exp: Time.now.to_i + (4 * 3600) }, Settings.geo.proxy_secret, 'HS256')
-            url = Settings.geo.proxy_url
-            type = "Geo"
+            { id: "#{Settings.geo.proxy_url}?stacks_token=#{URI.encode_uri_component(token)}", type: 'Geo' }
           else
-            token = file.encrypted_token(ip: request.remote_ip)
-            url = file.streaming_url
-            type = "Video"
+            stream_url = StacksMediaStream.new(stacks_file:).streaming_url(ip: request.remote_ip)
+            { id: stream_url, type: 'Video' }
           end
-          { id: "#{url}?stacks_token=#{URI.encode_uri_component(token)}", type: }
         end
 
         # Because the probe request sets the Accept header, the browser is going to preflight the request.
