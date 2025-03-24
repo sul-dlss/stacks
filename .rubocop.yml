@@ -4,13 +4,11 @@ plugins:
   - rubocop-rails
   - rubocop-rspec
   - rubocop-performance
-
-require:
   - rubocop-capybara
   - rubocop-rspec_rails
 
 AllCops:
-  TargetRubyVersion: 3.3
+  TargetRubyVersion: 3.4
   DisplayCopNames: true
   Exclude:
     - "Gemfile"
@@ -652,4 +650,10 @@ Lint/UselessConstantScoping: # new in 1.72
 Style/RedundantFormat: # new in 1.72
   Enabled: true
 Performance/ZipWithoutBlock: # new in 1.24
+  Enabled: true
+Style/ComparableBetween: # new in 1.74
+  Enabled: true
+Capybara/FindAllFirst: # new in 2.22
+  Enabled: true
+Capybara/NegationMatcherAfterVisit: # new in 2.22
   Enabled: true
