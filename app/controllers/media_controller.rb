@@ -5,6 +5,7 @@
 class MediaController < ApplicationController
   skip_forgery_protection
 
+  # TODO: This can go away when we switch Wowza to use SecureToken
   def verify_token
     # the media service calling verify_token provides the end-user IP address,
     # as we care about the (user) IP address that made a request to the media service with the

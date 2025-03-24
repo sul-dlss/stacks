@@ -28,7 +28,7 @@ module Iiif
             token = JWT.encode({ data: 'geo_token', exp: Time.now.to_i + (4 * 3600) }, Settings.geo.proxy_secret, 'HS256')
             { id: "#{Settings.geo.proxy_url}?stacks_token=#{URI.encode_uri_component(token)}", type: 'Geo' }
           else
-            stream_url = StacksMediaStream.new(stacks_file:).streaming_url(ip: request.remote_ip)
+            stream_url = StacksMediaStream.new(stacks_file:).streaming_url
             { id: stream_url, type: 'Video' }
           end
         end
