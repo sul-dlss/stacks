@@ -43,7 +43,7 @@ class IiifMetadataService
 
   # @return [String] the IIIF info response
   def retrieve
-    with_retries max_tries: 3, rescue: [HTTP::ConnectionError] do
+    with_retries max_tries: 3, rescue: [HTTP::ConnectionError, HTTP::TimeoutError] do
       handle_response(
         # Disable url normalization as an upstream bug in addressable causes issues for `+`
         # https://github.com/sporkmonger/addressable/issues/386
