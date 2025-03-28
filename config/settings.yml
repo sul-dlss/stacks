@@ -1,5 +1,4 @@
 features:
-  streaming_media: true
   metrics: false
 
 stacks:
@@ -67,4 +66,4 @@ cors:
 token:
   default_expiry_time: <%= 1.hour %>
 
-user_agent: 'stacks.stanford.edu'
+user_agent: "stacks.stanford.edu"
