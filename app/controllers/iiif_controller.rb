@@ -79,7 +79,8 @@ class IiifController < ApplicationController
       IiifInfoService.info(
         current_image,
         anonymous_ability.can?(:download, current_image),
-        self
+        self,
+        degraded?
       )
     )
   end
