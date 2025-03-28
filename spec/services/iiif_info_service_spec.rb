@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe IiifInfoService do
   describe '#info' do
     subject(:image_info) do
-      described_class.info(image, downloadable_anonymously, context)
+      described_class.info(image, downloadable_anonymously, context, degraded)
     end
 
     let(:context) do
@@ -20,6 +20,7 @@ RSpec.describe IiifInfoService do
     let(:public_json) { {} }
     let(:stacks_file) { StacksFile.new(file_name: 'nr349ct7889_00_0001', cocina:) }
     let(:source_info) { {} }
+    let(:degraded) { false }
 
     before do
       allow(image).to receive_messages(info: source_info,
