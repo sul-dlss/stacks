@@ -3,15 +3,17 @@
 # Represents IIIF Auth V2 probe service response
 # See https://iiif.io/api/auth/2.0/#probe-service-response
 class AuthProbeResult2
-  def initialize(status:, note: nil)
+  def initialize(status:, note: nil, heading: nil)
     @status = status
     @note = note
+    @heading = heading
   end
 
-  attr_reader :status, :note
+  attr_reader :status, :note, :heading
 
   def as_json
     json = { '@context': 'http://iiif.io/api/auth/2/context.json', type: 'AuthProbeResult2', status: status }
+    json[:heading] = heading if heading
     json[:note] = note if note
     json
   end
@@ -32,16 +34,15 @@ class AuthProbeResult2
 
   # When not authorized to view the resource.
   class ErrorResult < AuthProbeResult2
-    def initialize(heading:, icon: nil, **)
+    def initialize(icon: nil, **)
       super(status: 401, **)
-      @heading = heading
       @icon = icon
     end
 
-    attr_reader :heading, :icon
+    attr_reader :icon
 
     def as_json
-      super.merge(heading:, icon:)
+      super.merge(icon:)
     end
   end
 
@@ -50,7 +51,7 @@ class AuthProbeResult2
   end
 
   def self.bad_request(messages)
-    new(status: 400, note: { en: messages })
+    new(status: 400, heading: { en: messages })
   end
 
   # return 403 since there is nothing a user can do to get access
@@ -66,7 +67,7 @@ class AuthProbeResult2
   end
 
   def self.not_found(druid)
-    new(status: 404, note: { en: ["Unable to find #{druid}"] })
+    new(status: 404, heading: { en: ["Unable to find #{druid}"] })
   end
 
   # See https://iiif.io/api/auth/2.0/#location

@@ -53,7 +53,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
     it 'returns a success response' do
       expect(response).to have_http_status :ok
       expect(response.parsed_body).to eq("@context" => "http://iiif.io/api/auth/2/context.json",
-                                         "note" => { "en" => ["Unable to find 111"] },
+                                         "heading" => { "en" => ["Unable to find 111"] },
                                          "status" => 404,
                                          "type" => "AuthProbeResult2")
     end
