@@ -24,6 +24,8 @@ stream:
   # max_token_age is specified in seconds
   max_token_age: 45
   url: https://sul-mediaserver.stanford.edu/stacks/_definst_
+  security_token_secret: ~
+  security_token_prefix: wowzatoken
 
 geo:
   proxy_url: https://earthworks.stanford.edu/restricted_proxy/geoserver/wms
@@ -67,4 +69,4 @@ cors:
 token:
   default_expiry_time: <%= 1.hour %>
 
-user_agent: 'stacks.stanford.edu'
+user_agent: "stacks.stanford.edu"
