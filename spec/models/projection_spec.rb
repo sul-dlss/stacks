@@ -110,7 +110,7 @@ RSpec.describe Projection do
         let(:options) { { size: 'max', region: 'full' } }
 
         it 'allows the user to see the full-resolution image' do
-          allow(HTTP).to receive_message_chain(:timeout, :headers, :use).and_return(http_client)
+          allow(HTTP).to receive_message_chain(:timeout, :headers).and_return(http_client)
           allow(http_client).to receive(:get).and_return(double(body: nil))
           subject.response
           expect(http_client).to have_received(:get).with(%r{/full/max/0/default.jpg})
@@ -121,7 +121,7 @@ RSpec.describe Projection do
         let(:options) { { size: '!850,700', region: 'full' } }
 
         it 'returns original size when requested dimensions are larger' do
-          allow(HTTP).to receive_message_chain(:timeout, :headers, :use).and_return(http_client)
+          allow(HTTP).to receive_message_chain(:timeout, :headers).and_return(http_client)
           allow(http_client).to receive(:get).and_return(double(body: nil))
           subject.response
           expect(http_client).to have_received(:get).with(%r{/full/!800,600/0/default.jpg})
@@ -133,14 +133,16 @@ RSpec.describe Projection do
       let(:image) { RestrictedImage.new(stacks_file: StacksFile.new(file_name:, cocina:)) }
 
       subject(:projection) { described_class.new(image, transformation) }
+      before do
+        allow(HTTP).to receive_message_chain(:timeout, :headers)
+          .and_return(http_client)
+        allow(http_client).to receive(:get).and_return(double(body: nil))
+      end
 
       context "full region" do
         let(:options) { { size: 'max', region: 'full' } }
 
         it 'limits users to a thumbnail' do
-          allow(HTTP).to receive_message_chain(:timeout, :headers, :use)
-            .and_return(http_client)
-          allow(http_client).to receive(:get).and_return(double(body: nil))
           subject.response
           expect(http_client).to have_received(:get).with(%r{/full/!400,400/0/default.jpg})
         end
@@ -150,9 +152,6 @@ RSpec.describe Projection do
         let(:options) { { size: '!100,100', region: 'full' } }
 
         it 'limits users to a thumbnail' do
-          allow(HTTP).to receive_message_chain(:timeout, :headers, :use)
-            .and_return(http_client)
-          allow(http_client).to receive(:get).and_return(double(body: nil))
           subject.response
           expect(http_client).to have_received(:get).with(%r{/full/!100,100/0/default.jpg})
         end
@@ -162,9 +161,6 @@ RSpec.describe Projection do
         let(:options) { { size: '!800,880', region: 'full' } }
 
         it 'limits users to a thumbnail' do
-          allow(HTTP).to receive_message_chain(:timeout, :headers, :use)
-            .and_return(http_client)
-          allow(http_client).to receive(:get).and_return(double(body: nil))
           subject.response
           expect(http_client).to have_received(:get).with(%r{/full/!400,400/0/default.jpg})
         end
@@ -174,9 +170,6 @@ RSpec.describe Projection do
         let(:options) { { size: '100,100', region: 'square' } }
 
         it 'limits users to a thumbnail' do
-          allow(HTTP).to receive_message_chain(:timeout, :headers, :use)
-            .and_return(http_client)
-          allow(http_client).to receive(:get).and_return(double(body: nil))
           subject.response
           expect(http_client).to have_received(:get).with(%r{/square/100,100/0/default.jpg})
         end
