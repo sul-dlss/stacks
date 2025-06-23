@@ -27,7 +27,7 @@ RSpec.describe "Authentication for IIIF requests" do
   describe "#show" do
     before do
       allow_any_instance_of(Projection).to receive(:valid?).and_return(true)
-      allow(HTTP).to receive_message_chain(:timeout, :headers, :use).and_return(http_client)
+      allow(HTTP).to receive_message_chain(:timeout, :headers).and_return(http_client)
       allow(http_client).to receive(:get).and_return(instance_double(HTTP::Response, status: 200, body: StringIO.new))
       allow_any_instance_of(IiifController).to receive(:current_user).and_return(current_user)
       allow_any_instance_of(IiifController).to receive(:current_image).and_return(current_image)
