@@ -19,6 +19,12 @@ module Iiif
             return render json: AuthProbeResult2.not_found(parsed_uri[:druid])
           end
 
+          # When Firefox does a probe request, it sometimes hits an error saying:
+          # The loading of “https://stacks.stanford.edu/file/fx315vb0777/Finkelstein%2021st%20Century%20JCCs%20Building%20Community.pdf” in
+          #  a frame is denied by “X-Frame-Options“ directive set to “sameorigin“.
+          # This is an experiment to fix this issue. https://github.com/sul-dlss/sul-embed/issues/2894
+          response.headers.delete('X-Frame-Options')
+
           render json: auth_probe_result(file, cocina)
         end
 
