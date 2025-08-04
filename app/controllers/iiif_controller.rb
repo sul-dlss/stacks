@@ -152,10 +152,32 @@ class IiifController < ApplicationController
   end
 
   def stacks_file
+    cocina = Cocina.find(identifier_params[:id])
+
+    # TODO: Fallback if file not found
+    # This matches an MD5 hash (encoded as alphanumeric)
+    file_name = if identifier_params[:file_name].match?(/\A[0-9a-f]{32}\z/)
+                  file = cocina.find_file_by_md5(identifier_params[:file_name])
+                  file['filename']
+                else
+                  # Legacy layout
+                  "#{identifier_params[:file_name]}.jp2"
+                end
     StacksFile.new(
-      file_name: "#{identifier_params[:file_name]}.jp2",
-      cocina: Cocina.find(identifier_params[:id])
+      file_name:,
+      cocina:
     )
+  end
+
+  # @return [IIIF::Image::Transformation] returns the transformation for the parameters
+  def transformation
+    return unless iiif_params.key?(:size)
+
+    IIIF::Image::OptionDecoder.decode(iiif_params)
+  end
+
+  def add_iiif_profile_header
+    headers['Link'] = '<http://iiif.io/api/image/2/level2.json>;rel="profile"'
   end
 
   # @return [IIIF::Image::Transformation] returns the transformation for the parameters

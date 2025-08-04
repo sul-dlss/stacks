@@ -72,6 +72,17 @@ class Cocina
              .find { |file| file['filename'] == file_name } || raise(ActionController::MissingFile, "File not found '#{file_name}'")
   end
 
+  def find_file_by_md5(md5)
+    file_sets = data['structural']['contains']
+    files = file_sets.flat_map { |file_set| file_set['structural']['contains'] }
+    files.find do |file|
+      file['hasMessageDigests'].any? do |digest|
+        digest['type'] == 'md5' && digest['digest'] == md5
+      end
+    end
+  end
+
+  # @return [String] MD5 hash of the file
   def find_file_md5(file_name)
     file_node = find_file(file_name)
     file_node.fetch('hasMessageDigests')

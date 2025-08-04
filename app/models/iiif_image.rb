@@ -9,6 +9,7 @@ class IiifImage
   def initialize(stacks_file:, transformation:, base_uri: Settings.imageserver.base_uri)
     @stacks_file = stacks_file
     @transformation = transformation
+    debugger
     @base_uri = base_uri
   end
 

@@ -19,7 +19,7 @@ module Factories
                   'filename' => file_name,
                   'hasMessageDigests' => [
                     { 'type' => 'sha1', 'digest' => 'b1a2922356709cc53b85f1b8027982d23b573f80' },
-                    { 'type' => 'md5', 'digest' => '02f77c96c40ad3c7c843baa9c7b2ff2c' }
+                    { 'type' => 'md5', 'digest' => '8ff299eda08d7c506273840d52a03bf3' }
                   ],
                   'hasMimeType' => mime_type,
                   'access' => file_access
