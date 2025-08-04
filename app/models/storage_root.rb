@@ -43,20 +43,27 @@ class StorageRoot
 
     # As this is used for external service URLs (Canteloupe image server), we don't want to put content addressable path here.'
     def relative_path
-      File.join(@treeified_id, @file_name)
+      return relative_content_addressable_path if File.exist?(content_addressable_path)
+
+      File.join(@treeified_id, @file_name) # For legacy files
     end
 
     def absolute_path
       return content_addressable_path if File.exist?(content_addressable_path)
 
-      File.join(Settings.stacks.storage_root, relative_path)
+      File.join(Settings.stacks.storage_root, relative_path) # For legacy files
     end
 
+    private
+
     def content_addressable_path
-      @content_addressable_path ||= begin
-        md5 = @cocina.find_file_md5(@file_name)
-        File.join(Settings.stacks.storage_root, @treeified_id, @cocina.druid, 'content', md5)
-      end
+      @content_addressable_path ||= File.join(Settings.stacks.storage_root, relative_content_addressable_path)
+    end
+
+    def relative_content_addressable_path
+      md5 = @cocina.find_file_md5(@file_name)
+
+      File.join(@treeified_id, @cocina.druid, 'content', md5)
     end
   end
 end

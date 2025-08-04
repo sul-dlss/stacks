@@ -6,7 +6,7 @@ RSpec.describe IiifMetadataService do
   let(:base_uri) { 'https://sul-imageserver-uat.stanford.edu/cantaloupe/iiif/2/' } # 'image-server-path'
   let(:druid) { 'nr349ct7889' }
   let(:file_name) { 'image.jp2' }
-  let(:stacks_file) { StacksFile.new(file_name:, cocina: Cocina.new({ 'externalIdentifier' => "druid:#{druid}" })) }
+  let(:stacks_file) { StacksFile.new(file_name:, cocina: Cocina.new(Factories.legacy_cocina_with_file)) }
   let(:service) { described_class.new(stacks_file:, canonical_url: 'foo', base_uri:) }
   let(:http_client) { instance_double(HTTP::Client) }
 

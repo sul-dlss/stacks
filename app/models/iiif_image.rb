@@ -31,15 +31,11 @@ class IiifImage
   private
 
   def image_uri
-    @image_uri ||= IIIF::Image::URI.new(base_uri: @base_uri, identifier: remote_id, transformation:)
+    @image_uri ||= IIIF::Image::URI.new(base_uri: @base_uri, identifier: stacks_file.cantaloupe_identifier, transformation:)
   end
 
   def image_url
     image_uri.to_s
-  end
-
-  def remote_id
-    CGI.escape(stacks_file.treeified_path)
   end
 
   attr_reader :transformation, :stacks_file
