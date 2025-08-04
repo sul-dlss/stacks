@@ -35,7 +35,7 @@ RSpec.describe FileController do
     end
 
     context 'when file is in a content addressable path' do
-      let(:path) { 'spec/fixtures/nr/349/ct/7889/nr349ct7889/content/02f77c96c40ad3c7c843baa9c7b2ff2c' }
+      let(:path) { 'spec/fixtures/nr/349/ct/7889/nr349ct7889/content/8ff299eda08d7c506273840d52a03bf3' }
       around do |ex|
         FileUtils.mkdir_p('spec/fixtures/nr/349/ct/7889/nr349ct7889/content/')
         File.link('spec/fixtures/nr/349/ct/7889/image.jp2', path)

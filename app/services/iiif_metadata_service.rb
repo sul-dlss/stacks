@@ -7,6 +7,7 @@ class IiifMetadataService
   # @param stacks_file [StacksFile]
   # @param canonical_url [String]
   # @param base_uri [String] base path to the IIIF server
+  # TODO: Fixme
   def initialize(stacks_file:, canonical_url:, base_uri: Settings.imageserver.base_uri)
     identifier = CGI.escape(stacks_file.treeified_path)
     @url = IIIF::Image::URI.new(identifier:, base_uri:).to_s

@@ -42,6 +42,17 @@ RSpec.describe 'IIIF API' do
       expect(response.headers['Link']).to eq '<http://iiif.io/api/image/2/level2.json>;rel="profile"'
     end
 
+    context 'with versioned file layout' do
+      it 'handles JSON requests' do
+        get '/image/iiif/nr349ct7889%2F8ff299eda08d7c506273840d52a03bf3/info.json', headers: { HTTP_ACCEPT: 'application/json' }
+
+        expect(response.media_type).to eq 'application/json'
+        json = response.parsed_body
+        expect(json['tiles']).to eq [{ 'width' => 256, 'height' => 256, 'scaleFactors' => [1, 2, 4, 8, 16] }]
+        expect(response.headers['Link']).to eq '<http://iiif.io/api/image/2/level2.json>;rel="profile"'
+      end
+    end
+
     it 'handles JSON-LD requests' do
       get '/image/iiif/nr349ct7889%2Fimage/info.json', headers: { HTTP_ACCEPT: 'application/ld+json' }
 
@@ -155,6 +166,20 @@ RSpec.describe 'IIIF API' do
 
       it 'loads the image' do
         get "/image/iiif/nr349ct7889%2Fimage/0,640,2552,2552/100,100/0/default.jpg"
+
+        expect(response.media_type).to eq 'image/jpeg'
+        expect(response).to have_http_status :ok
+      end
+    end
+
+    context 'when the request is valid for versioned file layout' do
+      before do
+        stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_server_path('nr349ct7889', 'image.jp2')}/0,640,2552,2552/100,100/0/default.jpg")
+          .to_return(status: 200, body: "")
+      end
+
+      it 'loads the image' do
+        get "/image/iiif/nr349ct7889%2F8ff299eda08d7c506273840d52a03bf3/0,640,2552,2552/100,100/0/default.jpg"
 
         expect(response.media_type).to eq 'image/jpeg'
         expect(response).to have_http_status :ok
