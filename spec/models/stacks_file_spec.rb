@@ -9,7 +9,7 @@ RSpec.describe StacksFile do
   let(:instance) { described_class.new(file_name:, cocina:) }
   let(:path) { storage_root.absolute_path }
   let(:storage_root) { StorageRoot.new(cocina:, file_name:) }
-  let(:public_json) { Factories.cocina_with_file }
+  let(:public_json) { Factories.legacy_cocina_with_file }
 
   context 'with a missing file name' do
     let(:file_name) { nil }
