@@ -7,7 +7,7 @@ RSpec.describe 'Metrics tracking' do
   let(:druid) { 'nr349ct7889' }
   let(:file_name) { 'image.jp2' }
   let(:public_json) do
-    Factories.cocina_with_file
+    Factories.legacy_cocina_with_file
   end
   let(:ability) { instance_double(CocinaAbility, can?: true, authorize!: true) }
 

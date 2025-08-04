@@ -73,7 +73,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
 
   context 'when the user has access to the resource because it is world accessible' do
     let(:public_json) do
-      Factories.cocina_with_file(file_name:)
+      Factories.legacy_cocina_with_file(file_name:)
     end
 
     before do
@@ -121,7 +121,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
   context 'when the user has access to the resource and it is streamable' do
     let(:file_name) { 'SC0193_1982-013_b06_f01_1981-09-29.mp4' }
     let(:public_json) do
-      Factories.cocina_with_file(file_name:)
+      Factories.legacy_cocina_with_file(file_name:)
     end
     let(:stacks_uri) { "https://stacks-uat.stanford.edu/file/#{id}/#{URI.encode_uri_component(file_name)}" }
 
@@ -150,7 +150,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
     end
 
     let(:public_json) do
-      Factories.cocina_with_file(file_name:)
+      Factories.legacy_cocina_with_file(file_name:)
     end
 
     it 'returns a 404 response' do
@@ -165,7 +165,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
 
   context 'when a Stanford only resource' do
     let(:public_json) do
-      Factories.cocina_with_file(file_access: { 'view' => 'stanford', 'download' => 'stanford' }, file_name:)
+      Factories.legacy_cocina_with_file(file_access: { 'view' => 'stanford', 'download' => 'stanford' }, file_name:)
     end
     let(:token) { nil }
 
@@ -239,7 +239,8 @@ RSpec.describe 'IIIF auth v2 probe service' do
 
   context 'when the user does not have access to a location restricted resource' do
     let(:public_json) do
-      Factories.cocina_with_file(file_access: { 'view' => 'location-based', 'download' => 'location-based', 'location' => location_code })
+      Factories.legacy_cocina_with_file(file_access: { 'view' => 'location-based', 'download' => 'location-based',
+                                                       'location' => location_code })
     end
 
     before do
@@ -286,8 +287,8 @@ RSpec.describe 'IIIF auth v2 probe service' do
 
   context 'when the user does not have access to a stanford restricted embargoed resource' do
     let(:public_json) do
-      Factories.cocina_with_file(access: { 'embargo' => { "releaseDate" => Time.parse('2099-05-15').getlocal.as_json } },
-                                 file_access: { 'view' => 'stanford', 'download' => 'stanford' })
+      Factories.legacy_cocina_with_file(access: { 'embargo' => { "releaseDate" => Time.parse('2099-05-15').getlocal.as_json } },
+                                        file_access: { 'view' => 'stanford', 'download' => 'stanford' })
     end
 
     before do
@@ -311,8 +312,8 @@ RSpec.describe 'IIIF auth v2 probe service' do
 
   context 'when the resource is download none and a document' do
     let(:public_json) do
-      Factories.cocina_with_file(access: {},
-                                 file_access: { 'view' => 'none', 'download' => 'none' })
+      Factories.legacy_cocina_with_file(access: {},
+                                        file_access: { 'view' => 'none', 'download' => 'none' })
     end
 
     before do
@@ -336,8 +337,8 @@ RSpec.describe 'IIIF auth v2 probe service' do
 
   context 'when the user does not have access to an embargoed resource' do
     let(:public_json) do
-      Factories.cocina_with_file(access: { 'embargo' => { "releaseDate" => Time.parse('2099-05-15').getlocal.as_json } },
-                                 file_access: { 'view' => 'none', 'download' => 'none' })
+      Factories.legacy_cocina_with_file(access: { 'embargo' => { "releaseDate" => Time.parse('2099-05-15').getlocal.as_json } },
+                                        file_access: { 'view' => 'none', 'download' => 'none' })
     end
 
     before do

@@ -35,7 +35,7 @@ RSpec.describe "Authentication for IIIF requests" do
 
     context 'with a public item' do
       let(:public_json) do
-        Factories.cocina_with_file
+        Factories.legacy_cocina_with_file
       end
 
       context 'with an unauthenticated user' do
@@ -51,7 +51,7 @@ RSpec.describe "Authentication for IIIF requests" do
 
     context 'with a stanford only item' do
       let(:public_json) do
-        Factories.cocina_with_file(file_access: { 'view' => 'stanford', 'download' => 'stanford' })
+        Factories.legacy_cocina_with_file(file_access: { 'view' => 'stanford', 'download' => 'stanford' })
       end
 
       context 'with a authorized webauthed user' do
@@ -85,8 +85,8 @@ RSpec.describe "Authentication for IIIF requests" do
 
     context 'with a location-restricted item that is not a thumbnail' do
       let(:public_json) do
-        Factories.cocina_with_file(file_access: { 'view' => 'location-based', 'download' => 'location-based', 'location' => 'location1' },
-                                   mime_type: 'image/jpeg')
+        Factories.legacy_cocina_with_file(file_access: { 'view' => 'location-based', 'download' => 'location-based', 'location' => 'location1' },
+                                          mime_type: 'image/jpeg')
       end
 
       context 'with a user in the location' do

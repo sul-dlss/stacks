@@ -8,7 +8,7 @@ RSpec.describe FileController do
   end
 
   let(:public_json) do
-    Factories.cocina_with_file
+    Factories.legacy_cocina_with_file
   end
 
   describe '#show' do

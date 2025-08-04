@@ -46,7 +46,7 @@ RSpec.describe "Versioned File requests" do
     let(:file_name) { 'path/to/image.jp2' }
     let(:version_id) { 'v1' }
     let(:public_json) do
-      Factories.cocina_with_file(file_name:)
+      Factories.legacy_cocina_with_file(file_name:)
     end
 
     before do
