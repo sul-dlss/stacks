@@ -3,6 +3,7 @@
 # Represents a remote Iiif endpoint
 class IiifImage
   include ActiveSupport::Benchmarkable
+
   # @params stacks_file [StacksFile]
   # @params transformation [IIIF::Image::Transformation]
   # @params base_uri [String]
