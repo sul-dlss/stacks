@@ -111,7 +111,7 @@ module Iiif
           # /file/druid/filename.ext
           # /v2/file/druid/version/version_number/filename.ext
           # /v2/file/druid/version/version_number/folder%2Ffilename.ext
-          split_path = URI.decode_uri_component(obj.path.split('/file/')[-1]).split("/").reject(&:empty?)
+          split_path = URI.decode_uri_component(obj.path).split('/file/')[-1].split("/").reject(&:empty?)
 
           druid = split_path[0]
           if split_path[1] == "version"
