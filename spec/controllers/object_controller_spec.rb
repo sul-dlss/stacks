@@ -6,7 +6,7 @@ RSpec.describe ObjectController do
   render_views
 
   before do
-    allow_any_instance_of(StacksFile).to receive(:path).and_return(Rails.root + 'Gemfile')
+    allow_any_instance_of(StacksFile).to receive(:path).and_return(Rails.root.join('Gemfile'))
   end
 
   let(:connection) { instance_double(Faraday::Connection) }

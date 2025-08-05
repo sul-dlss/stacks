@@ -66,7 +66,7 @@ RSpec.describe StacksMediaToken do
     end
 
     it 'returns false on a token that has been tampered with' do
-      invalid_token = enc_token_str + 'invalid'
+      invalid_token = "#{enc_token_str}invalid"
       expect(StacksMediaToken.verify_encrypted_token?(invalid_token, id, file_name, user_ip)).to be false
     end
 
