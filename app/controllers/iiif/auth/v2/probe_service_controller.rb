@@ -13,7 +13,11 @@ module Iiif
           stacks_uri = params[:id] # this is a fully qualified URI to the resource on the stacks that the user is requesting access to
           parsed_uri = parse_uri(stacks_uri)
           begin
-            cocina = Cocina.find(parsed_uri[:druid])
+            cocina = if parsed_uri[:version]
+                       Cocina.find(parsed_uri[:druid], parsed_uri[:version])
+                     else
+                       Cocina.find(parsed_uri[:druid])
+                     end
             file = StacksFile.new(file_name: parsed_uri[:file_name], cocina:)
           rescue Purl::Exception
             return render json: AuthProbeResult2.not_found(parsed_uri[:druid])
@@ -87,18 +91,42 @@ module Iiif
           end
         end
 
-        # We expect the incoming stacks URI param to be URI encoded and we then
-        # parse the stacks URI by removing the '/file/druid:' and then separating druid from filename (with paths)
-        def parse_uri(uri)
+        def convert_uri(uri)
           obj = begin
             URI(uri)
           rescue URI::InvalidURIError
             raise ActionDispatch::Http::Parameters::ParseError
           end
-          druid, file_name = URI.decode_uri_component(obj.path.delete_prefix('/file/')).split('/', 2)
+
+          raise ActionDispatch::Http::Parameters::ParseError, "No file params" if obj.path.blank?
+
+          obj
+        end
+
+        # We expect the incoming stacks URI param to be URI encoded and we then
+        # parse the stacks URI by removing the '/file/druid:' and then separating druid from filename (with paths)
+        def parse_uri(uri)
+          obj = convert_uri(uri)
+          # Expects files in the following formats
+          # /file/druid/filename.ext
+          # /v2/file/druid/version/version_number/filename.ext
+          # /v2/file/druid/version/version_number/folder%2Ffilename.ext
+          split_path = URI.decode_uri_component(obj.path.split('/file/')[-1]).split("/").reject(&:empty?)
+
+          druid = split_path[0]
+          if split_path[1] == "version"
+            version = split_path[2]
+            # join is needed for nested files
+            file_name = split_path[3..].join("/")
+          else
+            version = nil
+            # join is needed for nested files
+            file_name = split_path[1..].join("/")
+          end
+
           raise ActionDispatch::Http::Parameters::ParseError, "Provided ID is not local" unless druid
 
-          { druid: druid.delete_prefix('druid:'), file_name: }
+          { druid: druid.delete_prefix('druid:'), file_name:, version: }
         end
       end
     end
