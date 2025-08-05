@@ -85,7 +85,11 @@ RSpec.describe "Authentication for IIIF requests" do
 
     context 'with a location-restricted item that is not a thumbnail' do
       let(:public_json) do
-        Factories.legacy_cocina_with_file(file_access: { 'view' => 'location-based', 'download' => 'location-based', 'location' => 'location1' },
+        Factories.legacy_cocina_with_file(file_access: {
+                                            'view' => 'location-based',
+                                            'download' => 'location-based',
+                                            'location' => 'location1'
+                                          },
                                           mime_type: 'image/jpeg')
       end
 

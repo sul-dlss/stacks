@@ -6,26 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 24
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: Max, AllowHeredoc, AllowURI, AllowQualifiedName, URISchemes, IgnoreCopDirectives, AllowedPatterns, SplitStrings.
-# URISchemes: http, https
-Layout/LineLength:
-  Exclude:
-    - 'spec/requests/iiif_auth_request_spec.rb'
-    - 'spec/requests/iiif_spec.rb'
-    - 'spec/routing/iiif_routing_spec.rb'
-    - 'spec/routing/legacy_image_api_spec.rb'
-
-# Offense count: 7
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: symmetrical, new_line, same_line
-Layout/MultilineMethodCallBraceLayout:
-  Exclude:
-    - 'spec/routing/file_routing_spec.rb'
-    - 'spec/routing/media_routing_spec.rb'
-
 # Offense count: 6
 # Configuration parameters: AllowedMethods, AllowedPatterns, CountRepeatedAttributes.
 Metrics/AbcSize:

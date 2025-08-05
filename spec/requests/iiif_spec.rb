@@ -54,7 +54,11 @@ RSpec.describe 'IIIF API' do
         context 'outside of the location' do
           context 'when the file is not a thumbnail' do
             let(:public_json) do
-              Factories.legacy_cocina_with_file(file_access: { 'view' => 'location-based', 'download' => 'location-based', 'location' => 'location1' },
+              Factories.legacy_cocina_with_file(file_access: {
+                                                  'view' => 'location-based',
+                                                  'download' => 'location-based',
+                                                  'location' => 'location1'
+                                                },
                                                 mime_type: 'image/jpeg')
             end
 
@@ -66,7 +70,11 @@ RSpec.describe 'IIIF API' do
 
           context 'when the files is a thumbnail' do
             let(:public_json) do
-              Factories.legacy_cocina_with_file(file_access: { 'view' => 'location-based', 'download' => 'location-based', 'location' => 'location1' })
+              Factories.legacy_cocina_with_file(file_access: {
+                                                  'view' => 'location-based',
+                                                  'download' => 'location-based',
+                                                  'location' => 'location1'
+                                                })
             end
 
             it 'redirects requests to the degraded info.json' do
@@ -81,7 +89,8 @@ RSpec.describe 'IIIF API' do
         context 'at the location' do
           let(:user) { User.new(ip_address: 'ip.address1') }
           let(:public_json) do
-            Factories.legacy_cocina_with_file(file_access: { 'view' => 'location-based', 'download' => 'location-based', 'location' => 'location1' })
+            Factories.legacy_cocina_with_file(file_access: { 'view' => 'location-based', 'download' => 'location-based',
+                                                             'location' => 'location1' })
           end
           before do
             allow_any_instance_of(IiifController).to receive(:current_user).and_return(user)
@@ -147,9 +156,10 @@ RSpec.describe 'IIIF API' do
     end
 
     describe 'image requests for world readable items' do
+      let(:image_path_component) { image_server_path('bb000cr7262', 'image.jp2') }
       context 'when the request is valid' do
         before do
-          stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_server_path('bb000cr7262', 'image.jp2')}/0,640,2552,2552/100,100/0/default.jpg")
+          stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_path_component}/0,640,2552,2552/100,100/0/default.jpg")
             .to_return(status: 200, body: "")
         end
 
@@ -163,7 +173,7 @@ RSpec.describe 'IIIF API' do
 
       context 'when additional params are provided' do
         before do
-          stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_server_path('bb000cr7262', 'image.jp2')}/0,640,2552,2552/100,100/0/default.jpg")
+          stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_path_component}/0,640,2552,2552/100,100/0/default.jpg")
             .to_return(status: 200, body: "")
         end
 
@@ -176,7 +186,7 @@ RSpec.describe 'IIIF API' do
 
       context 'when image is missing' do
         before do
-          stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_server_path('bb000cr7262', 'image.jp2')}/0,640,2552,2552/100,100/0/default.jpg")
+          stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_path_component}/0,640,2552,2552/100,100/0/default.jpg")
             .to_return(status: 404, body: "")
         end
 
@@ -192,8 +202,6 @@ RSpec.describe 'IIIF API' do
         end
 
         it 'returns 404 Not Found' do
-          # stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/bb%2F000%2Fcr%2F7262%2Fimage/0,640,2552,2552/100,100/0/default.jpg")
-          #   .to_return(status: 200, body: "", headers: {})
           get "/image/iiif/bb000cr7262%2Fimage/0,640,2552,2552/100,100/0/default.jpg"
           expect(response).to have_http_status :not_found
         end
@@ -201,7 +209,7 @@ RSpec.describe 'IIIF API' do
 
       context 'with the download flag set' do
         before do
-          stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_server_path('bb000cr7262', 'image.jp2')}/0,640,2552,2552/100,100/0/default.jpg")
+          stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_path_component}/0,640,2552,2552/100,100/0/default.jpg")
             .to_return(status: 200, body: "")
         end
 
@@ -215,7 +223,7 @@ RSpec.describe 'IIIF API' do
 
       context 'with a pct region' do
         before do
-          stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_server_path('bb000cr7262', 'image.jp2')}/pct:3.0,3.0,77.0,77.0/full/0/default.jpg")
+          stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_path_component}/pct:3.0,3.0,77.0,77.0/full/0/default.jpg")
             .to_return(status: 200, body: "")
         end
 
@@ -264,7 +272,10 @@ RSpec.describe 'IIIF API' do
         context 'outside of the location' do
           context 'when the file is not a thumbnail' do
             let(:public_json) do
-              Factories.legacy_cocina_with_file(file_access: { 'view' => 'location-based', 'download' => 'location-based', 'location' => 'location1' },
+              Factories.legacy_cocina_with_file(file_access: {
+                                                  'view' => 'location-based',
+                                                  'download' => 'location-based', 'location' => 'location1'
+                                                },
                                                 mime_type: 'image/jpeg')
             end
 
@@ -276,7 +287,8 @@ RSpec.describe 'IIIF API' do
 
           context 'when the files is a thumbnail' do
             let(:public_json) do
-              Factories.legacy_cocina_with_file(file_access: { 'view' => 'location-based', 'download' => 'location-based', 'location' => 'location1' })
+              Factories.legacy_cocina_with_file(file_access: { 'view' => 'location-based', 'download' => 'location-based',
+                                                               'location' => 'location1' })
             end
 
             it 'redirects requests to the degraded info.json' do
@@ -291,7 +303,8 @@ RSpec.describe 'IIIF API' do
         context 'at the location' do
           let(:user) { User.new(ip_address: 'ip.address1') }
           let(:public_json) do
-            Factories.legacy_cocina_with_file(file_access: { 'view' => 'location-based', 'download' => 'location-based', 'location' => 'location1' })
+            Factories.legacy_cocina_with_file(file_access: { 'view' => 'location-based', 'download' => 'location-based',
+                                                             'location' => 'location1' })
           end
           before do
             allow_any_instance_of(IiifController).to receive(:current_user).and_return(user)
@@ -357,9 +370,11 @@ RSpec.describe 'IIIF API' do
     end
 
     describe 'image requests for world readable items' do
+      let(:image_path_component) { image_server_path('nr349ct7889', 'image.jp2') }
+
       context 'when the request is valid' do
         before do
-          stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_server_path('nr349ct7889', 'image.jp2')}/0,640,2552,2552/100,100/0/default.jpg")
+          stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_path_component}/0,640,2552,2552/100,100/0/default.jpg")
             .to_return(status: 200, body: "")
         end
 
@@ -373,7 +388,7 @@ RSpec.describe 'IIIF API' do
 
       context 'when additional params are provided' do
         before do
-          stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_server_path('nr349ct7889', 'image.jp2')}/0,640,2552,2552/100,100/0/default.jpg")
+          stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_path_component}/0,640,2552,2552/100,100/0/default.jpg")
             .to_return(status: 200, body: "")
         end
 
@@ -386,7 +401,7 @@ RSpec.describe 'IIIF API' do
 
       context 'when image is missing' do
         before do
-          stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_server_path('nr349ct7889', 'image.jp2')}/0,640,2552,2552/100,100/0/default.jpg")
+          stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_path_component}/0,640,2552,2552/100,100/0/default.jpg")
             .to_return(status: 404, body: "")
         end
 
@@ -411,7 +426,7 @@ RSpec.describe 'IIIF API' do
 
       context 'with the download flag set' do
         before do
-          stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_server_path('nr349ct7889', 'image.jp2')}/0,640,2552,2552/100,100/0/default.jpg")
+          stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_path_component}/0,640,2552,2552/100,100/0/default.jpg")
             .to_return(status: 200, body: "")
         end
 
@@ -425,7 +440,7 @@ RSpec.describe 'IIIF API' do
 
       context 'with a pct region' do
         before do
-          stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_server_path('nr349ct7889', 'image.jp2')}/pct:3.0,3.0,77.0,77.0/full/0/default.jpg")
+          stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_path_component}/pct:3.0,3.0,77.0,77.0/full/0/default.jpg")
             .to_return(status: 200, body: "")
         end
 
