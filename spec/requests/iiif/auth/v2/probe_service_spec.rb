@@ -71,6 +71,55 @@ RSpec.describe 'IIIF auth v2 probe service' do
     end
   end
 
+  context 'when versioned, the user has access to the resource because it is world accessible' do
+    let(:id) { 'bb000cr7262' }
+    let(:stacks_uri) { "https://stacks-uat.stanford.edu/v2/file/druid:#{id}/version/1/#{URI.encode_uri_component(file_name)}" }
+    let(:public_json) do
+      Factories.cocina_with_file(file_name:)
+    end
+
+    before do
+      get "/iiif/auth/v2/probe?id=#{stacks_uri_param}"
+    end
+
+    context 'when druid has a prefix' do
+      it 'returns a success response' do
+        expect(response).to have_http_status :ok
+        expect(response.parsed_body).to include({
+                                                  "@context" => "http://iiif.io/api/auth/2/context.json",
+                                                  "type" => "AuthProbeResult2",
+                                                  "status" => 200
+                                                })
+      end
+    end
+
+    context 'without a druid prefix' do
+      let(:stacks_uri) { "https://stacks-uat.stanford.edu/v2/file/#{id}/version/1/#{URI.encode_uri_component(file_name)}" }
+
+      it 'returns a success response' do
+        expect(response).to have_http_status :ok
+        expect(response.parsed_body).to include({
+                                                  "@context" => "http://iiif.io/api/auth/2/context.json",
+                                                  "type" => "AuthProbeResult2",
+                                                  "status" => 200
+                                                })
+      end
+    end
+
+    context 'when filename with spaces' do
+      let(:file_name) { 'SC0193 1982-013 b06 f01 1981-09-29.pdf' }
+
+      it 'returns a success response' do
+        expect(response).to have_http_status :ok
+        expect(response.parsed_body).to include({
+                                                  "@context" => "http://iiif.io/api/auth/2/context.json",
+                                                  "type" => "AuthProbeResult2",
+                                                  "status" => 200
+                                                })
+      end
+    end
+  end
+
   context 'when the user has access to the resource because it is world accessible' do
     let(:public_json) do
       Factories.legacy_cocina_with_file(file_name:)
@@ -143,6 +192,33 @@ RSpec.describe 'IIIF auth v2 probe service' do
     end
   end
 
+  context 'when versioned, the user has access to the resource and it is streamable' do
+    let(:file_name) { 'SC0193_1982-013_b06_f01_1981-09-29.mp4' }
+    let(:id) { 'bb000cr7262' }
+
+    let(:public_json) do
+      Factories.cocina_with_file(file_name:)
+    end
+    let(:stacks_uri) { "https://stacks-uat.stanford.edu/v2/file/#{id}/version/1/#{URI.encode_uri_component(file_name)}" }
+
+    before do
+      get "/iiif/auth/v2/probe?id=#{stacks_uri_param}"
+    end
+
+    it 'returns a success response' do
+      expect(response).to have_http_status :ok
+
+      expect(response.parsed_body).to include({
+                                                "@context" => "http://iiif.io/api/auth/2/context.json",
+                                                "type" => "AuthProbeResult2",
+                                                "status" => 302
+                                              })
+      location = response.parsed_body.dig('location', 'id')
+      expect(location).to start_with 'https://sul-mediaserver.stanford.edu/stacks/_definst_/bb/000/cr/7262/mp4:SC0193_1982-013_b06_f01_1981-09-29.mp4/playlist.m3u8?stacks_token='
+      expect(location).to end_with('%3D%3D') # Token is uri encoded (e.g. '==' becomes '%3D%3D')
+    end
+  end
+
   context 'when the requested file does not exist' do
     before do
       allow_any_instance_of(StacksFile).to receive(:readable?).and_return(nil)
@@ -168,6 +244,83 @@ RSpec.describe 'IIIF auth v2 probe service' do
       Factories.legacy_cocina_with_file(file_access: { 'view' => 'stanford', 'download' => 'stanford' }, file_name:)
     end
     let(:token) { nil }
+
+    before do
+      get "/iiif/auth/v2/probe?id=#{stacks_uri_param}", headers: { 'HTTP_AUTHORIZATION' => "Bearer #{token}" }
+    end
+
+    context 'when the user does not have a token' do
+      it 'returns a unauthorized response' do
+        expect(response).to have_http_status :ok
+        expect(response.parsed_body).to include({
+                                                  "@context" => "http://iiif.io/api/auth/2/context.json",
+                                                  "type" => "AuthProbeResult2",
+                                                  "heading" => { "en" => [I18n.t('probe_service.stanford')] },
+                                                  "icon" => I18n.t('probe_service.stanford_icon'),
+                                                  "status" => 401
+                                                })
+      end
+    end
+
+    context 'when the user has a bearer token with the ldap group' do
+      let(:user_webauth_stanford_no_loc) { User.new(webauth_user: true, ldap_groups: %w[stanford:stanford]) }
+      let(:token) { user_webauth_stanford_no_loc.token }
+
+      it 'returns a success response' do
+        expect(response).to have_http_status :ok
+        expect(response.parsed_body).to include({
+                                                  "@context" => "http://iiif.io/api/auth/2/context.json",
+                                                  "type" => "AuthProbeResult2",
+                                                  "status" => 200
+                                                })
+      end
+    end
+
+    context 'when the user does not provide a token' do
+      before do
+        get "/iiif/auth/v2/probe?id=#{stacks_uri_param}"
+      end
+
+      it 'returns a not authorized response' do
+        expect(response).to have_http_status :ok
+        expect(response.parsed_body).to include({
+                                                  "@context" => "http://iiif.io/api/auth/2/context.json",
+                                                  "type" => "AuthProbeResult2",
+                                                  "status" => 401,
+                                                  "heading" => { "en" => ["Stanford users: log in to access all available features."] },
+                                                  "note" => { "en" => ["Access restricted"] }
+                                                })
+      end
+
+      context 'when object has a hierarchically nested filename' do
+        let(:file_name) { 'folder/SC0193_1982-013_b06_f01_1981-09-29.pdf' }
+
+        before do
+          get "/iiif/auth/v2/probe?id=#{stacks_uri_param}"
+        end
+
+        it 'returns a not authorized response' do
+          expect(response).to have_http_status :ok
+          expect(response.parsed_body).to include({
+                                                    "@context" => "http://iiif.io/api/auth/2/context.json",
+                                                    "type" => "AuthProbeResult2",
+                                                    "status" => 401,
+                                                    "heading" => { "en" => ["Stanford users: log in to access all available features."] },
+                                                    "note" => { "en" => ["Access restricted"] }
+                                                  })
+        end
+      end
+    end
+  end
+
+  context 'when versioned, a Stanford only resource' do
+    let(:id) { 'bb000cr7262' }
+
+    let(:public_json) do
+      Factories.cocina_with_file(file_access: { 'view' => 'stanford', 'download' => 'stanford' }, file_name:)
+    end
+    let(:token) { nil }
+    let(:stacks_uri) { "https://stacks-uat.stanford.edu/v2/file/#{id}/version/1/#{URI.encode_uri_component(file_name)}" }
 
     before do
       get "/iiif/auth/v2/probe?id=#{stacks_uri_param}", headers: { 'HTTP_AUTHORIZATION' => "Bearer #{token}" }
