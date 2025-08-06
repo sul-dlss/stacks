@@ -1,5 +1,4 @@
 features:
-  streaming_media: true
   metrics: false
   wowza_token: false
 
