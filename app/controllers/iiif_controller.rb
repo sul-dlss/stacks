@@ -143,6 +143,9 @@ class IiifController < ApplicationController
     { id:, file_name: }
   end
 
+  # If we ever update identifier_params[:file_name] to be the md5 filename
+  # We need to make sure this still works with the human filename for apps like Parker
+  # https://dms-data.stanford.edu/data/manifests/Parker/wz026zp2442/manifest.json
   def download_filename
     [File.basename(identifier_params[:file_name], '.*'), iiif_params[:format]].join('.')
   end
