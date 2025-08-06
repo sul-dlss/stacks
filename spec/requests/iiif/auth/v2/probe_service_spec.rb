@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe 'IIIF auth v2 probe service' do
   let(:id) { 'nr349ct7889' }
   let(:file_name) { 'image.jp2' }
-  let(:stacks_uri) { "https://stacks-uat.stanford.edu/file/druid:#{id}/#{URI.encode_uri_component(file_name)}" }
+  let(:stacks_uri) { URI.encode_uri_component("https://stacks-uat.stanford.edu/file/druid:#{id}/#{file_name}") }
   let(:stacks_uri_param) { URI.encode_uri_component(stacks_uri) }
   let(:public_json) { Factories.cocina }
 
@@ -73,7 +73,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
 
   context 'when versioned, the user has access to the resource because it is world accessible' do
     let(:id) { 'bb000cr7262' }
-    let(:stacks_uri) { "https://stacks-uat.stanford.edu/v2/file/druid:#{id}/version/1/#{URI.encode_uri_component(file_name)}" }
+    let(:stacks_uri) { URI.encode_uri_component("https://stacks-uat.stanford.edu/v2/file/druid:#{id}/version/1/#{file_name}") }
     let(:public_json) do
       Factories.cocina_with_file(file_name:)
     end
@@ -94,7 +94,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
     end
 
     context 'without a druid prefix' do
-      let(:stacks_uri) { "https://stacks-uat.stanford.edu/v2/file/#{id}/version/1/#{URI.encode_uri_component(file_name)}" }
+      let(:stacks_uri) { URI.encode_uri_component("https://stacks-uat.stanford.edu/v2/file/#{id}/version/1/#{file_name}") }
 
       it 'returns a success response' do
         expect(response).to have_http_status :ok
@@ -141,7 +141,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
     end
 
     context 'without a druid prefix' do
-      let(:stacks_uri) { "https://stacks-uat.stanford.edu/file/#{id}/#{URI.encode_uri_component(file_name)}" }
+      let(:stacks_uri) { URI.encode_uri_component("https://stacks-uat.stanford.edu/file/#{id}/#{file_name}") }
 
       it 'returns a success response' do
         expect(response).to have_http_status :ok
@@ -172,7 +172,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
     let(:public_json) do
       Factories.legacy_cocina_with_file(file_name:)
     end
-    let(:stacks_uri) { "https://stacks-uat.stanford.edu/file/#{id}/#{URI.encode_uri_component(file_name)}" }
+    let(:stacks_uri) { URI.encode_uri_component("https://stacks-uat.stanford.edu/file/#{id}/#{file_name}") }
 
     before do
       get "/iiif/auth/v2/probe?id=#{stacks_uri_param}"
@@ -199,7 +199,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
     let(:public_json) do
       Factories.cocina_with_file(file_name:)
     end
-    let(:stacks_uri) { "https://stacks-uat.stanford.edu/v2/file/#{id}/version/1/#{URI.encode_uri_component(file_name)}" }
+    let(:stacks_uri) { URI.encode_uri_component("https://stacks-uat.stanford.edu/v2/file/#{id}/version/1/#{file_name}") }
 
     before do
       get "/iiif/auth/v2/probe?id=#{stacks_uri_param}"
@@ -320,7 +320,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
       Factories.cocina_with_file(file_access: { 'view' => 'stanford', 'download' => 'stanford' }, file_name:)
     end
     let(:token) { nil }
-    let(:stacks_uri) { "https://stacks-uat.stanford.edu/v2/file/#{id}/version/1/#{URI.encode_uri_component(file_name)}" }
+    let(:stacks_uri) { URI.encode_uri_component("https://stacks-uat.stanford.edu/v2/file/#{id}/version/1/#{file_name}") }
 
     before do
       get "/iiif/auth/v2/probe?id=#{stacks_uri_param}", headers: { 'HTTP_AUTHORIZATION' => "Bearer #{token}" }
