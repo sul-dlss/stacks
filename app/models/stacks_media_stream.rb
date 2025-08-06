@@ -15,6 +15,15 @@ class StacksMediaStream
            :embargo_release_date, :location, :world_viewable?, :no_download?, to: :stacks_rights
 
   def streaming_url(ip:)
+    Settings.features.wowza_token ? streaming_url_with_secure_token : legacy_streaming_url(ip:)
+  end
+
+  def streaming_url_with_secure_token
+    file_path = "#{stacks_file.storage_root.treeified_id.delete_prefix('/')}/#{streaming_url_file_segment}"
+    WowzaSecureToken.new(file_path:).streaming_url
+  end
+
+  def legacy_streaming_url(ip:)
     token = encrypted_token(ip:)
     "#{Settings.stream.url}/#{stacks_file.storage_root.treeified_id}/" \
       "#{streaming_url_file_segment}/playlist.m3u8?stacks_token=#{URI.encode_uri_component(token)}"

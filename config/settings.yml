@@ -1,6 +1,7 @@
 features:
   streaming_media: true
   metrics: false
+  wowza_token: false
 
 stacks:
   storage_root: /stacks
@@ -24,6 +25,8 @@ stream:
   # max_token_age is specified in seconds
   max_token_age: 45
   url: https://sul-mediaserver.stanford.edu/stacks/_definst_
+  security_token_prefix: wowzatoken
+  security_token_secret: ~
 
 geo:
   proxy_url: https://earthworks.stanford.edu/restricted_proxy/geoserver/wms
