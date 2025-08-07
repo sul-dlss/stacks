@@ -20,10 +20,8 @@ RSpec.describe StacksFile do
   end
 
   describe '#path' do
-    subject { instance.path }
-
     it 'is the druid tree path to the file' do
-      expect(subject).to eq(path)
+      expect(instance.path).to eq(path)
     end
   end
 

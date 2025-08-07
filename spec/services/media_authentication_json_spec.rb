@@ -14,7 +14,7 @@ RSpec.describe MediaAuthenticationJson do
   end
   let(:ability) { CocinaAbility.new(user) }
   let(:user) { instance_double(User, locations: [], webauth_user: false, stanford?: false) }
-  subject { described_class.new(media:, user:, auth_url: '/the/auth/url', ability:) }
+  subject(:json) { described_class.new(media:, user:, auth_url: '/the/auth/url', ability:).as_json }
 
   describe 'Location Restricted Media' do
     before do
@@ -23,7 +23,7 @@ RSpec.describe MediaAuthenticationJson do
 
     context 'When a user is not in the blessed location' do
       it 'returns JSON that indicates that the item is location restricted' do
-        expect(subject.as_json[:status]).to eq [:location_restricted]
+        expect(json[:status]).to eq [:location_restricted]
       end
     end
 
@@ -33,7 +33,7 @@ RSpec.describe MediaAuthenticationJson do
       end
 
       it 'returns an empty hash because this class should not have been called in this context' do
-        expect(subject.as_json).to eq({})
+        expect(json).to eq({})
       end
     end
   end
@@ -45,12 +45,12 @@ RSpec.describe MediaAuthenticationJson do
 
     context 'when the user is not Stanford authenticated' do
       it 'returns JSON that indicates that the item is stanford restricted' do
-        expect(subject.as_json[:status]).to eq [:stanford_restricted]
+        expect(json[:status]).to eq [:stanford_restricted]
       end
 
       it 'returns login service information' do
-        expect(subject.as_json[:service]['@id']).to eq '/the/auth/url'
-        expect(subject.as_json[:service]['label']).to eq 'Stanford-affiliated? Login to play'
+        expect(json[:service]['@id']).to eq '/the/auth/url'
+        expect(json[:service]['label']).to eq 'Stanford-affiliated? Login to play'
       end
     end
 
@@ -60,7 +60,7 @@ RSpec.describe MediaAuthenticationJson do
       end
 
       it 'returns an empty hash because this class should not have been called in this context' do
-        expect(subject.as_json).to eq({})
+        expect(json).to eq({})
       end
     end
   end
@@ -71,12 +71,12 @@ RSpec.describe MediaAuthenticationJson do
     end
 
     it 'returns JSON that indicates that the item is stanford restricted' do
-      expect(subject.as_json[:status]).to eq %i[stanford_restricted location_restricted]
+      expect(json[:status]).to eq %i[stanford_restricted location_restricted]
     end
 
     it 'returns login service information' do
-      expect(subject.as_json[:service]['@id']).to eq '/the/auth/url'
-      expect(subject.as_json[:service]['label']).to eq 'Stanford-affiliated? Login to play'
+      expect(json[:service]['@id']).to eq '/the/auth/url'
+      expect(json[:service]['label']).to eq 'Stanford-affiliated? Login to play'
     end
   end
 end

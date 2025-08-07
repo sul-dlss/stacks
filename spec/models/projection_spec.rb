@@ -21,7 +21,7 @@ RSpec.describe Projection do
   end
 
   describe '#tile_dimensions' do
-    subject { instance.send(:tile_dimensions) }
+    subject(:dimensions) { instance.send(:tile_dimensions) }
 
     context "for an unrestricted image" do
       context "explicit sizes" do
@@ -51,10 +51,10 @@ RSpec.describe Projection do
       context 'for requests with "max" size' do
         let(:ability) { instance_double(Ability) }
         let(:permissive_ability) do
-          ability.tap { |x| allow(x).to receive(:can?).with(:download, subject).and_return(true) }
+          ability.tap { |x| allow(x).to receive(:can?).with(:download, dimensions).and_return(true) }
         end
         let(:restricted_ability) do
-          ability.tap { |x| allow(x).to receive(:can?).with(:download, subject).and_return(false) }
+          ability.tap { |x| allow(x).to receive(:can?).with(:download, dimensions).and_return(false) }
         end
         let(:options) { { size: 'max', region: '0,0,800,600' } }
 
@@ -74,7 +74,7 @@ RSpec.describe Projection do
         let(:options) { { size: 'max', region: 'full' } }
 
         it 'limits users to thumbnail sizes' do
-          expect(subject).to eq IIIF::Image::Dimension.new(width: 400, height: 400)
+          expect(dimensions).to eq IIIF::Image::Dimension.new(width: 400, height: 400)
         end
       end
 
@@ -82,7 +82,7 @@ RSpec.describe Projection do
         let(:options) { { size: '!800,800', region: 'full' } }
 
         it 'limits users to thumbnail sizes' do
-          expect(subject).to eq IIIF::Image::Dimension.new(width: 400, height: 400)
+          expect(dimensions).to eq IIIF::Image::Dimension.new(width: 400, height: 400)
         end
       end
 
@@ -90,7 +90,7 @@ RSpec.describe Projection do
         let(:options) { { size: 'max', region: '0,0,800,600' } }
 
         it 'limits users to a maximum tiles size' do
-          expect(subject).to eq IIIF::Image::Dimension.new(width: 512, height: 512)
+          expect(dimensions).to eq IIIF::Image::Dimension.new(width: 512, height: 512)
         end
       end
     end
@@ -112,7 +112,7 @@ RSpec.describe Projection do
         it 'allows the user to see the full-resolution image' do
           allow(HTTP).to receive_message_chain(:timeout, :headers, :use).and_return(http_client)
           allow(http_client).to receive(:get).and_return(double(body: nil))
-          subject.response
+          projection.response
           expect(http_client).to have_received(:get).with(%r{/full/max/0/default.jpg})
         end
       end
@@ -123,7 +123,7 @@ RSpec.describe Projection do
         it 'returns original size when requested dimensions are larger' do
           allow(HTTP).to receive_message_chain(:timeout, :headers, :use).and_return(http_client)
           allow(http_client).to receive(:get).and_return(double(body: nil))
-          subject.response
+          projection.response
           expect(http_client).to have_received(:get).with(%r{/full/!800,600/0/default.jpg})
         end
       end
@@ -141,7 +141,7 @@ RSpec.describe Projection do
           allow(HTTP).to receive_message_chain(:timeout, :headers, :use)
             .and_return(http_client)
           allow(http_client).to receive(:get).and_return(double(body: nil))
-          subject.response
+          projection.response
           expect(http_client).to have_received(:get).with(%r{/full/!400,400/0/default.jpg})
         end
       end
@@ -153,7 +153,7 @@ RSpec.describe Projection do
           allow(HTTP).to receive_message_chain(:timeout, :headers, :use)
             .and_return(http_client)
           allow(http_client).to receive(:get).and_return(double(body: nil))
-          subject.response
+          projection.response
           expect(http_client).to have_received(:get).with(%r{/full/!100,100/0/default.jpg})
         end
       end
@@ -165,7 +165,7 @@ RSpec.describe Projection do
           allow(HTTP).to receive_message_chain(:timeout, :headers, :use)
             .and_return(http_client)
           allow(http_client).to receive(:get).and_return(double(body: nil))
-          subject.response
+          projection.response
           expect(http_client).to have_received(:get).with(%r{/full/!400,400/0/default.jpg})
         end
       end
@@ -177,7 +177,7 @@ RSpec.describe Projection do
           allow(HTTP).to receive_message_chain(:timeout, :headers, :use)
             .and_return(http_client)
           allow(http_client).to receive(:get).and_return(double(body: nil))
-          subject.response
+          projection.response
           expect(http_client).to have_received(:get).with(%r{/square/100,100/0/default.jpg})
         end
       end
@@ -272,35 +272,30 @@ RSpec.describe Projection do
 
   describe '#region_dimensions' do
     subject { instance.region_dimensions }
+
     context 'for a full region' do
       let(:options) { { size: 'full', region: 'full' } }
 
-      it 'uses the image dimensions' do
-        expect(subject).to eq IIIF::Image::Dimension.new(width: 800, height: 600)
-      end
+      it { is_expected.to eq IIIF::Image::Dimension.new(width: 800, height: 600) }
     end
 
     context 'for square' do
       let(:options) { { size: 'full', region: 'square' } }
 
-      it 'uses the image dimensions' do
-        expect(subject).to eq IIIF::Image::Dimension.new(width: 600, height: 600)
-      end
+      it { is_expected.to eq IIIF::Image::Dimension.new(width: 600, height: 600) }
     end
 
     context 'for an explicit region' do
       let(:options) { { size: 'full', region: '0,1,2,3' } }
 
-      it 'handles explicit region requests' do
-        expect(subject).to eq IIIF::Image::Dimension.new(width: 2, height: 3)
-      end
+      it { is_expected.to eq IIIF::Image::Dimension.new(width: 2, height: 3) }
     end
 
     context 'for an region that contains negative values' do
       let(:options) { { size: 'full', region: '-22832,-22832,22832,22832' } }
 
       it 'raises an error' do
-        expect { subject }.to raise_error IIIF::Image::InvalidAttributeError
+        expect { instance.region_dimensions }.to raise_error IIIF::Image::InvalidAttributeError
       end
     end
   end

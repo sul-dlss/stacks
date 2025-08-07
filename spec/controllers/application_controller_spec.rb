@@ -4,14 +4,14 @@ require 'rails_helper'
 
 RSpec.describe ApplicationController do
   describe '#current_user' do
-    subject { controller.send(:current_user) }
+    subject(:user) { controller.send(:current_user) }
 
     context 'with a Bearer token' do
-      let(:user) { User.new(id: 'test-user', ldap_groups: ['stanford:stanford']) }
+      let(:persisted_user) { User.new(id: 'test-user', ldap_groups: ['stanford:stanford']) }
       let(:credentials) do
         # `encode_credentials` hardcodes `Token` so make sure to test `Bearer`
         # http://iiif.io/api/auth/1.0/#the-json-access-token-response
-        ActionController::HttpAuthentication::Token.encode_credentials(user.token).gsub('Token', 'Bearer')
+        ActionController::HttpAuthentication::Token.encode_credentials(persisted_user.token).gsub('Token', 'Bearer')
       end
 
       before do
@@ -19,9 +19,9 @@ RSpec.describe ApplicationController do
       end
 
       it 'supports bearer auth users' do
-        expect(subject.id).to eq 'test-user'
-        expect(subject).to be_a_token_user
-        expect(subject).to be_stanford
+        expect(user.id).to eq 'test-user'
+        expect(user).to be_a_token_user
+        expect(user).to be_stanford
       end
     end
 
@@ -31,14 +31,14 @@ RSpec.describe ApplicationController do
       end
 
       it 'supports webauth users' do
-        expect(subject.id).to eq 'my-user'
-        expect(subject).to be_a_webauth_user
+        expect(user.id).to eq 'my-user'
+        expect(user).to be_a_webauth_user
       end
 
       context 'with shibboleth groups' do
         before { request.env['eduPersonEntitlement'] = 'a;b' }
         it 'supports shibboleth users' do
-          expect(subject.ldap_groups).to match_array %w[a b]
+          expect(user.ldap_groups).to match_array %w[a b]
         end
       end
     end
@@ -48,7 +48,7 @@ RSpec.describe ApplicationController do
         request.env['REMOTE_USER'] = ''
       end
 
-      it { expect(subject).not_to be_a_webauth_user }
+      it { expect(user).not_to be_a_webauth_user }
     end
 
     context 'with session information' do
@@ -58,15 +58,15 @@ RSpec.describe ApplicationController do
       end
 
       it 'retrieves the remote user and workgroup information' do
-        expect(subject.id).to eq 'my-user'
-        expect(subject).to be_a_webauth_user
-        expect(subject.ldap_groups).to match_array %w[a b]
+        expect(user.id).to eq 'my-user'
+        expect(user).to be_a_webauth_user
+        expect(user.ldap_groups).to match_array %w[a b]
       end
     end
 
     context 'with no other credentials' do
       it 'is an anonymous locatable user' do
-        expect(subject).to be_an_anonymous_locatable_user
+        expect(user).to be_an_anonymous_locatable_user
       end
     end
   end

@@ -6,16 +6,14 @@ RSpec.describe RestrictedImage do
   let(:instance) { described_class.new(stacks_file: instance_double(StacksImage)) }
 
   describe '#info' do
-    subject { instance.info }
-
     let(:info_service) { instance_double(IiifMetadataService, fetch: {}) }
 
     before do
       allow(instance).to receive(:info_service).and_return(info_service)
+      instance.info
     end
 
     it "adds tile size to the djatoka response" do
-      subject
       expect(info_service).to have_received(:fetch).with(256)
     end
   end
