@@ -71,7 +71,7 @@ RSpec.describe MediaAuthenticationJson do
     end
 
     it 'returns JSON that indicates that the item is stanford restricted' do
-      expect(subject.as_json[:status]).to eq [:stanford_restricted, :location_restricted]
+      expect(subject.as_json[:status]).to eq %i[stanford_restricted location_restricted]
     end
 
     it 'returns login service information' do

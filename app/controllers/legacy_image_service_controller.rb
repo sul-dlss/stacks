@@ -45,12 +45,11 @@ class LegacyImageServiceController < ApplicationController
   end
 
   def iiif_size
-    case
-    when allowed_params[:zoom]
+    if allowed_params[:zoom]
       "pct:#{allowed_params[:zoom]}"
-    when allowed_params[:w]
+    elsif allowed_params[:w]
       "#{allowed_params[:w]},#{allowed_params[:h]}"
-    when size
+    elsif size
       case size
       when 'square'
         '100,100'
@@ -74,12 +73,11 @@ class LegacyImageServiceController < ApplicationController
 
   def iiif_region
     zoomed_region = Region.new(params[:region], params[:zoom]) if params[:region] && params[:zoom]
-    case
-    when zoomed_region
+    if zoomed_region
       zoomed_region.to_iiif_region
-    when region
+    elsif region
       region
-    when size == 'square'
+    elsif size == 'square'
       'square'
     else
       'full'

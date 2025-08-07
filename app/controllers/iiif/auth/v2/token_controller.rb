@@ -12,7 +12,7 @@ module Iiif
         # Returns an HTML response that posts back to the parent window
         # See {https://iiif.io/api/auth/2.0/#workflow-from-the-browser-client-perspective}
         def create
-          params.require([:origin, :messageId])
+          params.require(%i[origin messageId])
 
           token = mint_bearer_token if token_eligible_user?
 

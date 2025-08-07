@@ -7,8 +7,8 @@ RSpec.describe "Authentication for IIIF requests" do
   let(:user_no_loc_no_webauth) { User.new }
   let(:user_loc_no_webauth) { User.new(ip_address: allowed_loc) }
   let(:user_webauth_no_stanford_no_loc) { User.new(webauth_user: true) }
-  let(:user_webauth_stanford_no_loc) { User.new(webauth_user: true, ldap_groups: %w(stanford:stanford)) }
-  let(:user_webauth_stanford_loc) { User.new(webauth_user: true, ldap_groups: %w(stanford:stanford), ip_address: allowed_loc) }
+  let(:user_webauth_stanford_no_loc) { User.new(webauth_user: true, ldap_groups: %w[stanford:stanford]) }
+  let(:user_webauth_stanford_loc) { User.new(webauth_user: true, ldap_groups: %w[stanford:stanford], ip_address: allowed_loc) }
   let(:user_webauth_no_stanford_loc) { User.new(webauth_user: true, ip_address: allowed_loc) }
   let(:region) { '0,640,2552,2552' }
   let(:size) { '100,100' }
