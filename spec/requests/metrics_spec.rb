@@ -4,6 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'Metrics tracking' do
   include ActiveJob::TestHelper
+
   let(:druid) { 'nr349ct7889' }
   let(:file_name) { 'image.jp2' }
   let(:public_json) do
