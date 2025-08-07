@@ -19,8 +19,6 @@ RSpec.describe StacksImage do
   end
 
   describe '#info' do
-    subject { instance.info }
-
     let(:info_service) { instance_double(IiifMetadataService, fetch: {}) }
 
     before do
@@ -28,7 +26,7 @@ RSpec.describe StacksImage do
     end
 
     it "gets the info from the image server response" do
-      subject
+      instance.info
       expect(info_service).to have_received(:fetch).with(nil)
     end
   end
@@ -40,7 +38,7 @@ RSpec.describe StacksImage do
   end
 
   describe '#restricted' do
-    subject { image.restricted }
+    subject(:restricted) { image.restricted }
 
     let(:image) do
       described_class.new(stacks_file:,
@@ -58,9 +56,9 @@ RSpec.describe StacksImage do
     end
 
     it 'passes all the parameters' do
-      expect(subject.transformation).to eq transformation
-      expect(subject.stacks_file).to eq stacks_file
-      expect(subject.canonical_url).to eq 'http://example.com/'
+      expect(restricted.transformation).to eq transformation
+      expect(restricted.stacks_file).to eq stacks_file
+      expect(restricted.canonical_url).to eq 'http://example.com/'
     end
   end
 end

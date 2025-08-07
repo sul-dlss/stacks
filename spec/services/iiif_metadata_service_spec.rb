@@ -11,7 +11,7 @@ RSpec.describe IiifMetadataService do
   let(:http_client) { instance_double(HTTP::Client) }
 
   context "When a valid JSON response is received" do
-    let(:json) do
+    let(:body) do
       '{"@id":"https://sul-imageserver-uat.stanford.edu/cantaloupe/iiif/2/' \
         "#{image_server_path(druid, file_name)}\"," \
         '"width":3832,' \
@@ -19,37 +19,35 @@ RSpec.describe IiifMetadataService do
         '"tiles":[{"width":1000,"height":1000,"scaleFactors":[1,2,4,8]}],' \
         '"sizes":[{"width":1916,"height":1276}]}'
     end
-    let(:response) { instance_double(HTTP::Response, code: 200, body: json) }
+    let(:response) { instance_double(HTTP::Response, code: 200, body:) }
 
     before do
       allow(HTTP).to receive_message_chain(:timeout, :headers, :use).and_return(http_client)
       allow(http_client).to receive(:get)
         .with("https://sul-imageserver-uat.stanford.edu/cantaloupe/iiif/2/#{image_server_path(druid, file_name)}/info.json")
         .and_return(response)
+
+      puts image_server_path(druid, file_name)
     end
 
     describe "#fetch" do
-      subject { service.fetch(256) }
+      subject(:json) { service.fetch(256) }
       it "returns the json" do
-        expect(subject['@id']).to eq 'foo'
-        expect(subject['width']).to eq 3832
-        expect(subject.fetch('tiles').first.fetch('width')).to eq 256
-        expect(subject.fetch('sizes').last.fetch('width')).to eq 3832
+        expect(json['@id']).to eq 'foo'
+        expect(json['width']).to eq 3832
+        expect(json.fetch('tiles').first.fetch('width')).to eq 256
+        expect(json.fetch('sizes').last.fetch('width')).to eq 3832
       end
     end
 
     describe '#image_width' do
       subject { service.image_width }
-      it "Returns the width of the image" do
-        expect(subject).to eq 3832
-      end
+      it { is_expected.to eq 3832 }
     end
 
     describe '#image_height' do
       subject { service.image_height }
-      it "Returns the height of the image" do
-        expect(subject).to eq 2552
-      end
+      it { is_expected.to eq 2552 }
     end
   end
 
@@ -65,9 +63,8 @@ RSpec.describe IiifMetadataService do
     end
 
     describe "#fetch" do
-      subject { service.fetch(256) }
       it "raises Stacks::UnexpectedMetadataResponseError" do
-        expect { subject }.to raise_error Stacks::UnexpectedMetadataResponseError
+        expect { service.fetch(256) }.to raise_error Stacks::UnexpectedMetadataResponseError
       end
     end
   end
