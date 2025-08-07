@@ -111,7 +111,7 @@ RSpec.describe Projection do
 
         it 'allows the user to see the full-resolution image' do
           allow(HTTP).to receive_message_chain(:timeout, :headers, :use).and_return(http_client)
-          allow(http_client).to receive(:get).and_return(double(body: nil))
+          allow(http_client).to receive(:get).and_return(instance_double(HTTP::Response, body: nil))
           projection.response
           expect(http_client).to have_received(:get).with(%r{/full/max/0/default.jpg})
         end
@@ -122,7 +122,7 @@ RSpec.describe Projection do
 
         it 'returns original size when requested dimensions are larger' do
           allow(HTTP).to receive_message_chain(:timeout, :headers, :use).and_return(http_client)
-          allow(http_client).to receive(:get).and_return(double(body: nil))
+          allow(http_client).to receive(:get).and_return(instance_double(HTTP::Response, body: nil))
           projection.response
           expect(http_client).to have_received(:get).with(%r{/full/!800,600/0/default.jpg})
         end
@@ -140,7 +140,7 @@ RSpec.describe Projection do
         it 'limits users to a thumbnail' do
           allow(HTTP).to receive_message_chain(:timeout, :headers, :use)
             .and_return(http_client)
-          allow(http_client).to receive(:get).and_return(double(body: nil))
+          allow(http_client).to receive(:get).and_return(instance_double(HTTP::Response, body: nil))
           projection.response
           expect(http_client).to have_received(:get).with(%r{/full/!400,400/0/default.jpg})
         end
@@ -152,7 +152,7 @@ RSpec.describe Projection do
         it 'limits users to a thumbnail' do
           allow(HTTP).to receive_message_chain(:timeout, :headers, :use)
             .and_return(http_client)
-          allow(http_client).to receive(:get).and_return(double(body: nil))
+          allow(http_client).to receive(:get).and_return(instance_double(HTTP::Response, body: nil))
           projection.response
           expect(http_client).to have_received(:get).with(%r{/full/!100,100/0/default.jpg})
         end
@@ -164,7 +164,7 @@ RSpec.describe Projection do
         it 'limits users to a thumbnail' do
           allow(HTTP).to receive_message_chain(:timeout, :headers, :use)
             .and_return(http_client)
-          allow(http_client).to receive(:get).and_return(double(body: nil))
+          allow(http_client).to receive(:get).and_return(instance_double(HTTP::Response, body: nil))
           projection.response
           expect(http_client).to have_received(:get).with(%r{/full/!400,400/0/default.jpg})
         end
@@ -176,7 +176,7 @@ RSpec.describe Projection do
         it 'limits users to a thumbnail' do
           allow(HTTP).to receive_message_chain(:timeout, :headers, :use)
             .and_return(http_client)
-          allow(http_client).to receive(:get).and_return(double(body: nil))
+          allow(http_client).to receive(:get).and_return(instance_double(HTTP::Response, body: nil))
           projection.response
           expect(http_client).to have_received(:get).with(%r{/square/100,100/0/default.jpg})
         end
