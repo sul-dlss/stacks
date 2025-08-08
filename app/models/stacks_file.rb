@@ -49,6 +49,18 @@ class StacksFile
     CGI.escape(storage_root.relative_path)
   end
 
+  def wowza_identifier
+    file_path = storage_root.relative_path
+    streaming_url_file_segment = case File.extname(file_name)
+                                 when '.mp3'
+                                   "mp3:#{File.basename(file_path)}"
+                                 else
+                                   "mp4:#{File.basename(file_path)}"
+                                 end
+
+    "#{File.dirname(file_path)}/#{streaming_url_file_segment}"
+  end
+
   def storage_root
     @storage_root ||= StorageRoot.new(cocina:, file_name:)
   end

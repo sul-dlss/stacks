@@ -15,18 +15,6 @@ class StacksMediaStream
            :embargo_release_date, :location, :world_viewable?, :no_download?, to: :stacks_rights
 
   def streaming_url
-    file_path = "#{stacks_file.storage_root.treeified_id.delete_prefix('/')}/#{streaming_url_file_segment}"
-    WowzaSecureToken.new(file_path:).streaming_url
-  end
-
-  private
-
-  def streaming_url_file_segment
-    case File.extname(file_name)
-    when '.mp3'
-      "mp3:#{file_name}"
-    else
-      "mp4:#{file_name}"
-    end
+    WowzaSecureToken.new(file_path: stacks_file.wowza_identifier).streaming_url
   end
 end
