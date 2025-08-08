@@ -14,25 +14,9 @@ class StacksMediaStream
   delegate :rights, :restricted_by_location?, :stanford_restricted?, :embargoed?,
            :embargo_release_date, :location, :world_viewable?, :no_download?, to: :stacks_rights
 
-  def streaming_url(ip:)
-    Settings.features.wowza_token ? streaming_url_with_secure_token : legacy_streaming_url(ip:)
-  end
-
-  def streaming_url_with_secure_token
+  def streaming_url
     file_path = "#{stacks_file.storage_root.treeified_id.delete_prefix('/')}/#{streaming_url_file_segment}"
     WowzaSecureToken.new(file_path:).streaming_url
-  end
-
-  def legacy_streaming_url(ip:)
-    token = encrypted_token(ip:)
-    "#{Settings.stream.url}/#{stacks_file.storage_root.treeified_id}/" \
-      "#{streaming_url_file_segment}/playlist.m3u8?stacks_token=#{URI.encode_uri_component(token)}"
-  end
-
-  def encrypted_token(ip:)
-    # we use IP from which request originated -- we want the end user IP, not
-    #   a service on the user's behalf (load-balancer, etc.)
-    StacksMediaToken.new(id, file_name, ip).to_encrypted_string
   end
 
   private
