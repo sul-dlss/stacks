@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe MediaAuthenticationJson do
+  subject(:json) { described_class.new(media:, user:, auth_url: '/the/auth/url', ability:).as_json }
+
   let(:media) do
     instance_double(
       StacksMediaStream,
@@ -14,7 +16,6 @@ RSpec.describe MediaAuthenticationJson do
   end
   let(:ability) { CocinaAbility.new(user) }
   let(:user) { instance_double(User, locations: [], webauth_user: false, stanford?: false) }
-  subject(:json) { described_class.new(media:, user:, auth_url: '/the/auth/url', ability:).as_json }
 
   describe 'Location Restricted Media' do
     before do

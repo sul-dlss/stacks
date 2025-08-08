@@ -42,12 +42,14 @@ RSpec.describe "Authentication for File requests" do
           expect(response).to have_http_status(:forbidden)
         end
       end
+
       it "prompts for webauth when user not webauthed" do
         allow_any_instance_of(FileController).to receive(:current_user).and_return(user_no_loc_no_webauth)
         get "/file/#{druid}/#{file_name}"
         expect(response).to redirect_to(auth_file_url(id: druid, file_name:))
       end
     end
+
     context 'location' do
       context 'not stanford qualified in any way' do
         let(:public_json) do

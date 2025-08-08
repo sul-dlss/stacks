@@ -63,6 +63,7 @@ RSpec.describe Projection do
 
       context 'percentages' do
         let(:options) { { size: 'pct:50', region: '0,0,800,600' } }
+
         it { is_expected.to eq IIIF::Image::Dimension.new(width: 400, height: 300) }
       end
     end
@@ -102,9 +103,9 @@ RSpec.describe Projection do
     let(:cocina) { Cocina.new(Factories.legacy_cocina_with_file) }
 
     context 'for an image' do
-      let(:image) { StacksImage.new(stacks_file: StacksFile.new(file_name:, cocina:)) }
-
       subject(:projection) { described_class.new(image, transformation) }
+
+      let(:image) { StacksImage.new(stacks_file: StacksFile.new(file_name:, cocina:)) }
 
       context "full region" do
         let(:options) { { size: 'max', region: 'full' } }
@@ -130,9 +131,9 @@ RSpec.describe Projection do
     end
 
     context 'for a restricted image' do
-      let(:image) { RestrictedImage.new(stacks_file: StacksFile.new(file_name:, cocina:)) }
-
       subject(:projection) { described_class.new(image, transformation) }
+
+      let(:image) { RestrictedImage.new(stacks_file: StacksFile.new(file_name:, cocina:)) }
 
       context "full region" do
         let(:options) { { size: 'max', region: 'full' } }
@@ -236,6 +237,7 @@ RSpec.describe Projection do
 
     context 'when a full region is specified' do
       let(:options) { { size: 'full', region: 'full' } }
+
       it { is_expected.to be_falsey }
     end
 
@@ -301,9 +303,10 @@ RSpec.describe Projection do
   end
 
   describe '#valid?' do
+    subject { instance.valid? }
+
     let(:options) { { size: 'max', region: 'full' } }
     let(:image) { StacksImage.new(stacks_file: file) }
-    subject { instance.valid? }
 
     before do
       allow(IiifImage).to receive(:new).and_return(source_image)
@@ -312,6 +315,7 @@ RSpec.describe Projection do
     context 'when file exists and transformation is valid' do
       let(:file) { instance_double(StacksFile, readable?: true) }
       let(:source_image) { instance_double(IiifImage, valid?: true) }
+
       it { is_expected.to be true }
     end
 
@@ -331,22 +335,25 @@ RSpec.describe Projection do
   end
 
   describe '#use_original_size?' do
-    let(:image) { StacksImage.new(stacks_file: instance_double(StacksFile)) }
-
     subject(:use_original) { described_class.new(image, transformation).send(:use_original_size?) }
+
+    let(:image) { StacksImage.new(stacks_file: instance_double(StacksFile)) }
 
     context 'when percentage region is requested' do
       let(:options) { { size: 'full', region: 'pct:3.0,3.0,77.0,77.0' } }
+
       it { is_expected.to be false }
     end
 
     context 'when dimensions smaller than original size are requested' do
       let(:options) { { size: '!460,460', region: 'full' } }
+
       it { is_expected.to be false }
     end
 
     context 'when dimensions larger than original size are requested' do
       let(:options) { { size: '!900,900', region: 'full' } }
+
       it { is_expected.to be true }
     end
   end
