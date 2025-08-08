@@ -44,8 +44,9 @@ class StacksFile
   end
 
   # Used as the IIIF identifier for retrieving this file from the image server
-  def treeified_path
-    storage_root.relative_path
+  # return the content addressable path if available, otherwise the legacy path
+  def cantaloupe_identifier
+    CGI.escape(storage_root.relative_path)
   end
 
   def storage_root

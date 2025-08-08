@@ -99,7 +99,7 @@ RSpec.describe Projection do
   describe '#response' do
     let(:druid) { 'nr349ct7889' }
     let(:file_name) { 'image.jp2' }
-    let(:cocina) { Cocina.new({ 'externalIdentifier' => druid }) }
+    let(:cocina) { Cocina.new(Factories.legacy_cocina_with_file) }
 
     context 'for an image' do
       let(:image) { StacksImage.new(stacks_file: StacksFile.new(file_name:, cocina:)) }

@@ -156,7 +156,8 @@ RSpec.describe 'IIIF API' do
     end
 
     describe 'image requests for world readable items' do
-      let(:image_path_component) { image_server_path('bb000cr7262', 'image.jp2') }
+      let(:image_path_component) { "bb%2F000%2Fcr%2F7262%2Fbb000cr7262%2Fcontent%2F8ff299eda08d7c506273840d52a03bf3" }
+
       context 'when the request is valid' do
         before do
           stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_path_component}/0,640,2552,2552/100,100/0/default.jpg")
