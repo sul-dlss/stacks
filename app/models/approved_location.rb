@@ -2,24 +2,22 @@
 
 ###
 # Simple class that will return an approved location (for restricted content)
-# based on a provided locatable object's IP address
+# based on a provided user's IP address
 class ApprovedLocation
   delegate :to_s, to: :location_for_ip
-  def initialize(locatable)
-    @locatable = locatable
+  def initialize(user)
+    @user = user
   end
 
   def locations
-    return [] unless locatable.try(:ip_address)
-
     location_configuration.select do |_, ip_addresses|
-      ip_addresses.include?(locatable.ip_address)
+      ip_addresses.include?(user.ip_address)
     end.keys.map(&:to_s)
   end
 
   private
 
-  attr_reader :locatable
+  attr_reader :user
 
   def location_for_ip
     locations.first
