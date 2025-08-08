@@ -2,8 +2,9 @@
 
 # Token creation for Wowza SecureToken
 class WowzaSecureToken
-  def initialize(file_path:)
+  def initialize(file_path:, seconds: 24.hours.from_now.strftime('%s'))
     @file_path = file_path
+    @seconds = seconds
     @prefix = Settings.stream.security_token_prefix
     @uri = URI.parse Settings.stream.url
   end
@@ -21,7 +22,7 @@ class WowzaSecureToken
   private
 
   def date_param
-    @date_param ||= "#{prefix}endtime=#{24.hours.from_now.strftime('%s')}"
+    @date_param ||= "#{prefix}endtime=#{@seconds}"
   end
 
   def url_safe_hash(str)
