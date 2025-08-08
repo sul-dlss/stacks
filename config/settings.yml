@@ -13,7 +13,7 @@ purl:
   url: "https://purl.stanford.edu/"
 
 stream:
-  url: https://sul-mediaserver.stanford.edu/stacks/_definst_
+  url: https://sul-mediaserver.stanford.edu/stacks-with-token/_definst_
   security_token_prefix: wowzatoken
   security_token_secret: ~
 

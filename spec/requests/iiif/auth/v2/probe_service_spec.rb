@@ -187,7 +187,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
                                                 "status" => 302
                                               })
       location = response.parsed_body.dig('location', 'id')
-      expect(location).to start_with 'https://sul-mediaserver.stanford.edu/stacks/_definst_/nr/349/ct/7889/mp4:SC0193_1982-013_b06_f01_1981-09-29.mp4/playlist.m3u8?wowzatokenendtime='
+      expect(location).to start_with 'https://sul-mediaserver.stanford.edu/stacks-with-token/_definst_/nr/349/ct/7889/mp4:SC0193_1982-013_b06_f01_1981-09-29.mp4/playlist.m3u8?wowzatokenendtime='
       expect(location).to end_with('=') # Token is md5 encoded
     end
   end
@@ -214,7 +214,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
                                                 "status" => 302
                                               })
       location = response.parsed_body.dig('location', 'id')
-      expect(location).to start_with 'https://sul-mediaserver.stanford.edu/stacks/_definst_/bb/000/cr/7262/mp4:SC0193_1982-013_b06_f01_1981-09-29.mp4/playlist.m3u8?wowzatokenendtime='
+      expect(location).to start_with 'https://sul-mediaserver.stanford.edu/stacks-with-token/_definst_/bb/000/cr/7262/mp4:SC0193_1982-013_b06_f01_1981-09-29.mp4/playlist.m3u8?wowzatokenendtime='
       expect(location).to end_with('=') # Token is md5 encoded
     end
   end
