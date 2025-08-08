@@ -25,13 +25,6 @@ Rails.application.routes.draw do
     end
   end
 
-  # stream file_name must include format extension, eg .../oo000oo0000.mp4/verify_token
-  #  other dots do not need to be URL encoded (see media routing specs)
-  constraints id: druid_regex, file_name: %r{[^/]+\.\w+} do
-    get '/media/:id/:file_name/verify_token' => 'media#verify_token'
-    get '/media/druid::id/:file_name/verify_token' => 'media#verify_token'
-  end
-
   root 'stacks#index'
 
   get '/auth/iiif' => 'webauth#login', as: :iiif_auth_api

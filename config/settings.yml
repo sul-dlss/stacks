@@ -1,6 +1,5 @@
 features:
   metrics: false
-  wowza_token: false
 
 stacks:
   storage_root: /stacks
@@ -14,8 +13,6 @@ purl:
   url: "https://purl.stanford.edu/"
 
 stream:
-  # max_token_age is specified in seconds
-  max_token_age: 45
   url: https://sul-mediaserver.stanford.edu/stacks/_definst_
   security_token_prefix: wowzatoken
   security_token_secret: ~
