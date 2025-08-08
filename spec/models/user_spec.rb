@@ -12,13 +12,13 @@ RSpec.describe User do
   describe '#stanford?' do
     context 'with a webauth user in the appropriate workgroups' do
       it 'is a stanford user' do
-        expect(User.new(webauth_user: true, ldap_groups: %w[stanford:stanford])).to be_stanford
+        expect(described_class.new(webauth_user: true, ldap_groups: %w[stanford:stanford])).to be_stanford
       end
     end
 
     context 'with just a webauth user' do
       it 'is not a stanford user' do
-        expect(User.new(webauth_user: true, ldap_groups: %w[stanford:sponsored])).not_to be_stanford
+        expect(described_class.new(webauth_user: true, ldap_groups: %w[stanford:sponsored])).not_to be_stanford
       end
     end
   end
@@ -31,7 +31,7 @@ RSpec.describe User do
 
   describe '#location' do
     it 'is the string representation of the ApprovedLocation' do
-      expect(User.new(ip_address: 'ip.address1').locations).to eq %w[location1 location2]
+      expect(described_class.new(ip_address: 'ip.address1').locations).to eq %w[location1 location2]
     end
   end
 end
