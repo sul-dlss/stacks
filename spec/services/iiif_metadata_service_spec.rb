@@ -32,6 +32,7 @@ RSpec.describe IiifMetadataService do
 
     describe "#fetch" do
       subject(:json) { service.fetch(256) }
+
       it "returns the json" do
         expect(json['@id']).to eq 'foo'
         expect(json['width']).to eq 3832
@@ -42,11 +43,13 @@ RSpec.describe IiifMetadataService do
 
     describe '#image_width' do
       subject { service.image_width }
+
       it { is_expected.to eq 3832 }
     end
 
     describe '#image_height' do
       subject { service.image_height }
+
       it { is_expected.to eq 2552 }
     end
   end
@@ -54,6 +57,7 @@ RSpec.describe IiifMetadataService do
   context "When an invalid JSON response is received" do
     let(:empty_json) { '' }
     let(:bad_response) { instance_double(HTTP::Response, code: 200, body: empty_json) }
+
     before do
       allow(HTTP).to receive_message_chain(:timeout, :headers, :use)
         .and_return(http_client)

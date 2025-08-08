@@ -23,6 +23,7 @@ RSpec.describe 'IIIF API' do
     let(:public_json) do
       Factories.cocina_with_file
     end
+
     context 'with a bare identifier' do
       it 'redirects base uri requests to the info.json document' do
         get '/image/iiif/bb000cr7262/abc'
@@ -92,9 +93,11 @@ RSpec.describe 'IIIF API' do
             Factories.legacy_cocina_with_file(file_access: { 'view' => 'location-based', 'download' => 'location-based',
                                                              'location' => 'location1' })
           end
+
           before do
             allow_any_instance_of(IiifController).to receive(:current_user).and_return(user)
           end
+
           it 'uses the ok status code for the response' do
             get '/image/iiif/bb000cr7262%2Fimage/info.json'
             expect(response).to have_http_status :ok
@@ -242,6 +245,7 @@ RSpec.describe 'IIIF API' do
     let(:public_json) do
       Factories.legacy_cocina_with_file
     end
+
     context 'with a bare identifier' do
       it 'redirects base uri requests to the info.json document' do
         get '/image/iiif/nr349ct7889/abc'
@@ -307,9 +311,11 @@ RSpec.describe 'IIIF API' do
             Factories.legacy_cocina_with_file(file_access: { 'view' => 'location-based', 'download' => 'location-based',
                                                              'location' => 'location1' })
           end
+
           before do
             allow_any_instance_of(IiifController).to receive(:current_user).and_return(user)
           end
+
           it 'uses the ok status code for the response' do
             get '/image/iiif/nr349ct7889%2Fimage/info.json'
             expect(response).to have_http_status :ok

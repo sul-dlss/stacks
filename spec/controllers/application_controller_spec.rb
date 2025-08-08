@@ -37,6 +37,7 @@ RSpec.describe ApplicationController do
 
       context 'with shibboleth groups' do
         before { request.env['eduPersonEntitlement'] = 'a;b' }
+
         it 'supports shibboleth users' do
           expect(user.ldap_groups).to match_array %w[a b]
         end
