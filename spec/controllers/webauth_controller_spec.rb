@@ -20,6 +20,7 @@ RSpec.describe WebauthController do
 
   describe '#login_file' do
     subject { get :login_file, params: }
+
     let(:params) { { id: 'xf680rd3068', file_name: 'xf680rd3068_1.jp2' } }
 
     context 'without a version specified' do
@@ -56,6 +57,7 @@ RSpec.describe WebauthController do
 
   describe '#login_iiif' do
     subject { get :login_iiif, params: }
+
     let(:params) do
       {
         id: 'nr349ct7889',
