@@ -22,7 +22,7 @@ RSpec.describe IiifMetadataService do
     let(:response) { instance_double(HTTP::Response, code: 200, body:) }
 
     before do
-      allow(HTTP).to receive_message_chain(:timeout, :headers, :use).and_return(http_client)
+      allow(HTTP).to receive_message_chain(:timeout, :headers).and_return(http_client)
       allow(http_client).to receive(:get)
         .with("https://sul-imageserver-uat.stanford.edu/cantaloupe/iiif/2/#{image_server_path(druid, file_name)}/info.json")
         .and_return(response)
@@ -57,7 +57,7 @@ RSpec.describe IiifMetadataService do
     let(:bad_response) { instance_double(HTTP::Response, code: 200, body: empty_json) }
 
     before do
-      allow(HTTP).to receive_message_chain(:timeout, :headers, :use)
+      allow(HTTP).to receive_message_chain(:timeout, :headers)
         .and_return(http_client)
       allow(http_client).to receive(:get)
         .with("https://sul-imageserver-uat.stanford.edu/cantaloupe/iiif/2/#{image_server_path(druid, file_name)}/info.json")

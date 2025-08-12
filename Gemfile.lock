@@ -434,7 +434,7 @@ DEPENDENCIES
   dlss-capistrano
   faraday
   honeybadger
-  http
+  http (~> 5.2)
   iiif-image-api (~> 0.2)
   jbuilder (~> 2.7)
   jwt
