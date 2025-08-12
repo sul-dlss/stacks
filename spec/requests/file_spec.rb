@@ -7,7 +7,7 @@ RSpec.describe "File requests" do
     allow(Cocina).to receive(:find).and_return(Cocina.new(public_json))
   end
 
-  let(:druid) { 'nr349ct7889' }
+  let(:druid) { 'bb000cr7262' }
   let(:file_name) { 'image.jp2' }
   let(:public_json) do
     Factories.legacy_cocina_with_file
@@ -25,12 +25,12 @@ RSpec.describe "File requests" do
   describe 'GET file with slashes in filename' do
     let(:file_name) { 'path/to/image.jp2' }
     let(:public_json) do
-      Factories.legacy_cocina_with_file(file_name:)
+      Factories.cocina_with_file(file_name:)
     end
 
     before do
       allow_any_instance_of(FileController).to receive(:send_file)
-        .with('spec/fixtures/nr/349/ct/7889/path/to/image.jp2', filename: 'path/to/image.jp2', disposition: :inline)
+        .with('spec/fixtures/bb/000/cr/7262/bb000cr7262/content/8ff299eda08d7c506273840d52a03bf3', filename: 'path/to/image.jp2', disposition: :inline)
     end
 
     it 'returns a successful HTTP response' do
