@@ -41,7 +41,7 @@ class StorageRoot
       @cocina = cocina
     end
 
-    # As this is used for external service URLs (Canteloupe image server), we don't want to put content addressable path here.'
+    # Used for external service URLs (Canteloupe image server)
     def relative_path
       return relative_content_addressable_path if File.exist?(content_addressable_path)
 
