@@ -7,7 +7,7 @@ RSpec.describe IiifImage do
   let(:druid) { 'nr349ct7889' }
   let(:file_name) { 'image.jp2' }
   let(:transformation) { IIIF::Image::Transformation.new(size: 'full', region: 'full') }
-  let(:stacks_file) { StacksFile.new(file_name:, cocina: Cocina.new(Factories.legacy_cocina_with_file)) }
+  let(:stacks_file) { StacksFile.new(file_name:, cocina: Cocina.new(Factories.cocina_with_file)) }
   let(:instance) { described_class.new(stacks_file:, base_uri:, transformation:) }
 
   describe "#valid?" do

@@ -10,7 +10,7 @@ RSpec.describe "File requests" do
   let(:druid) { 'bb000cr7262' }
   let(:file_name) { 'image.jp2' }
   let(:public_json) do
-    Factories.legacy_cocina_with_file
+    Factories.cocina_with_file
   end
 
   describe 'OPTIONS options' do
