@@ -57,8 +57,20 @@ RSpec.describe "Authentication for IIIF requests" do
       context 'with a authorized webauthed user' do
         let(:current_user) { user_webauth_stanford_no_loc }
 
-        it 'works' do
+        it 'custom size works' do
           get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
+          expect(response).to have_http_status(:ok)
+          expect(response.media_type).to eq('image/jpeg')
+        end
+
+        it 'v3 full size works' do
+          get "/image/iiif/#{identifier}/#{region}/max/#{rotation}/#{quality}.#{format}"
+          expect(response).to have_http_status(:ok)
+          expect(response.media_type).to eq('image/jpeg')
+        end
+
+        it 'v2 full size works' do
+          get "/image/iiif/#{identifier}/#{region}/full/#{rotation}/#{quality}.#{format}"
           expect(response).to have_http_status(:ok)
           expect(response.media_type).to eq('image/jpeg')
         end
