@@ -25,7 +25,7 @@ RSpec.describe "Authentication for File requests" do
     # NOTE:  stanford only + location rights tested under location context
     context 'stanford only (no location qualifications)' do
       let(:public_json) do
-        Factories.legacy_cocina_with_file(file_access: { 'view' => 'stanford', 'download' => 'stanford' })
+        Factories.cocina_with_file(file_access: { 'view' => 'stanford', 'download' => 'stanford' })
       end
 
       context 'webauthed user' do
@@ -53,8 +53,8 @@ RSpec.describe "Authentication for File requests" do
     context 'location' do
       context 'not stanford qualified in any way' do
         let(:public_json) do
-          Factories.legacy_cocina_with_file(file_access: { 'view' => 'location-based', 'download' => 'location-based',
-                                                           'location' => 'location1' })
+          Factories.cocina_with_file(file_access: { 'view' => 'location-based', 'download' => 'location-based',
+                                                    'location' => 'location1' })
         end
 
         it 'allows when user in location' do

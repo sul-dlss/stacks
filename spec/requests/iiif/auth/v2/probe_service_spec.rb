@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'IIIF auth v2 probe service' do
-  let(:id) { 'nr349ct7889' }
+  let(:id) { 'bb000cr7262' }
   let(:file_name) { 'image.jp2' }
   let(:stacks_uri) { "https://stacks-uat.stanford.edu/file/druid:#{id}/#{URI.encode_uri_component(file_name)}" }
   let(:stacks_uri_param) { URI.encode_uri_component(stacks_uri) }
@@ -122,7 +122,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
 
   context 'when the user has access to the resource because it is world accessible' do
     let(:public_json) do
-      Factories.legacy_cocina_with_file(file_name:)
+      Factories.cocina_with_file(file_name:)
     end
 
     before do
@@ -170,52 +170,45 @@ RSpec.describe 'IIIF auth v2 probe service' do
   context 'when the user has access to the resource and it is streamable' do
     let(:file_name) { 'SC0193_1982-013_b06_f01_1981-09-29.mp4' }
     let(:public_json) do
-      Factories.legacy_cocina_with_file(file_name:)
-    end
-    let(:stacks_uri) { "https://stacks-uat.stanford.edu/file/#{id}/#{URI.encode_uri_component(file_name)}" }
-
-    before do
-      get "/iiif/auth/v2/probe?id=#{stacks_uri_param}"
-    end
-
-    it 'returns a success response' do
-      expect(response).to have_http_status :ok
-
-      expect(response.parsed_body).to include({
-                                                "@context" => "http://iiif.io/api/auth/2/context.json",
-                                                "type" => "AuthProbeResult2",
-                                                "status" => 302
-                                              })
-      location = response.parsed_body.dig('location', 'id')
-      expect(location).to start_with 'https://sul-mediaserver.stanford.edu/stacks-with-token/_definst_/nr/349/ct/7889/mp4:SC0193_1982-013_b06_f01_1981-09-29.mp4/playlist.m3u8?wowzatokenendtime='
-      expect(location).to end_with('=') # Token is md5 encoded
-    end
-  end
-
-  context 'when versioned, the user has access to the resource and it is streamable' do
-    let(:file_name) { 'SC0193_1982-013_b06_f01_1981-09-29.mp4' }
-    let(:id) { 'bb000cr7262' }
-
-    let(:public_json) do
       Factories.cocina_with_file(file_name:)
     end
-    let(:stacks_uri) { "https://stacks-uat.stanford.edu/v2/file/#{id}/version/1/#{URI.encode_uri_component(file_name)}" }
 
     before do
       get "/iiif/auth/v2/probe?id=#{stacks_uri_param}"
     end
 
-    it 'returns a success response' do
-      expect(response).to have_http_status :ok
+    context 'when version is not present in the URL and the user has access to the resource and it is streamable' do
+      let(:stacks_uri) { "https://stacks-uat.stanford.edu/file/#{id}/#{URI.encode_uri_component(file_name)}" }
 
-      expect(response.parsed_body).to include({
-                                                "@context" => "http://iiif.io/api/auth/2/context.json",
-                                                "type" => "AuthProbeResult2",
-                                                "status" => 302
-                                              })
-      location = response.parsed_body.dig('location', 'id')
-      expect(location).to start_with 'https://sul-mediaserver.stanford.edu/stacks-with-token/_definst_/bb/000/cr/7262/bb000cr7262/content/mp4:8ff299eda08d7c506273840d52a03bf3/playlist.m3u8?wowzatokenendtime='
-      expect(location).to end_with('=') # Token is md5 encoded
+      it 'returns a success response' do
+        expect(response).to have_http_status :ok
+
+        expect(response.parsed_body).to include({
+                                                  "@context" => "http://iiif.io/api/auth/2/context.json",
+                                                  "type" => "AuthProbeResult2",
+                                                  "status" => 302
+                                                })
+        location = response.parsed_body.dig('location', 'id')
+        expect(location).to start_with 'https://sul-mediaserver.stanford.edu/stacks-with-token/_definst_/bb/000/cr/7262/bb000cr7262/content/mp4:8ff299eda08d7c506273840d52a03bf3/playlist.m3u8?wowzatokenendtime='
+        expect(location).to end_with('=') # Token is md5 encoded
+      end
+    end
+
+    context 'when version is present in the URL and the user has access to the resource and it is streamable' do
+      let(:stacks_uri) { "https://stacks-uat.stanford.edu/v2/file/#{id}/version/1/#{URI.encode_uri_component(file_name)}" }
+
+      it 'returns a success response' do
+        expect(response).to have_http_status :ok
+
+        expect(response.parsed_body).to include({
+                                                  "@context" => "http://iiif.io/api/auth/2/context.json",
+                                                  "type" => "AuthProbeResult2",
+                                                  "status" => 302
+                                                })
+        location = response.parsed_body.dig('location', 'id')
+        expect(location).to start_with 'https://sul-mediaserver.stanford.edu/stacks-with-token/_definst_/bb/000/cr/7262/bb000cr7262/content/mp4:8ff299eda08d7c506273840d52a03bf3/playlist.m3u8?wowzatokenendtime='
+        expect(location).to end_with('=') # Token is md5 encoded
+      end
     end
   end
 
@@ -226,7 +219,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
     end
 
     let(:public_json) do
-      Factories.legacy_cocina_with_file(file_name:)
+      Factories.cocina_with_file(file_name:)
     end
 
     it 'returns a 404 response' do
@@ -241,7 +234,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
 
   context 'when a Stanford only resource' do
     let(:public_json) do
-      Factories.legacy_cocina_with_file(file_access: { 'view' => 'stanford', 'download' => 'stanford' }, file_name:)
+      Factories.cocina_with_file(file_access: { 'view' => 'stanford', 'download' => 'stanford' }, file_name:)
     end
     let(:token) { nil }
 
@@ -392,8 +385,8 @@ RSpec.describe 'IIIF auth v2 probe service' do
 
   context 'when the user does not have access to a location restricted resource' do
     let(:public_json) do
-      Factories.legacy_cocina_with_file(file_access: { 'view' => 'location-based', 'download' => 'location-based',
-                                                       'location' => location_code })
+      Factories.cocina_with_file(file_access: { 'view' => 'location-based', 'download' => 'location-based',
+                                                'location' => location_code })
     end
 
     before do
@@ -440,8 +433,8 @@ RSpec.describe 'IIIF auth v2 probe service' do
 
   context 'when the user does not have access to a stanford restricted embargoed resource' do
     let(:public_json) do
-      Factories.legacy_cocina_with_file(access: { 'embargo' => { "releaseDate" => Time.parse('2099-05-15').getlocal.as_json } },
-                                        file_access: { 'view' => 'stanford', 'download' => 'stanford' })
+      Factories.cocina_with_file(access: { 'embargo' => { "releaseDate" => Time.parse('2099-05-15').getlocal.as_json } },
+                                 file_access: { 'view' => 'stanford', 'download' => 'stanford' })
     end
 
     before do
@@ -465,8 +458,8 @@ RSpec.describe 'IIIF auth v2 probe service' do
 
   context 'when the resource is download none and a document' do
     let(:public_json) do
-      Factories.legacy_cocina_with_file(access: {},
-                                        file_access: { 'view' => 'none', 'download' => 'none' })
+      Factories.cocina_with_file(access: {},
+                                 file_access: { 'view' => 'none', 'download' => 'none' })
     end
 
     before do
@@ -490,8 +483,8 @@ RSpec.describe 'IIIF auth v2 probe service' do
 
   context 'when the user does not have access to an embargoed resource' do
     let(:public_json) do
-      Factories.legacy_cocina_with_file(access: { 'embargo' => { "releaseDate" => Time.parse('2099-05-15').getlocal.as_json } },
-                                        file_access: { 'view' => 'none', 'download' => 'none' })
+      Factories.cocina_with_file(access: { 'embargo' => { "releaseDate" => Time.parse('2099-05-15').getlocal.as_json } },
+                                 file_access: { 'view' => 'none', 'download' => 'none' })
     end
 
     before do

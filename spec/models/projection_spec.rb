@@ -100,7 +100,7 @@ RSpec.describe Projection do
   describe '#response' do
     let(:druid) { 'nr349ct7889' }
     let(:file_name) { 'image.jp2' }
-    let(:cocina) { Cocina.new(Factories.legacy_cocina_with_file) }
+    let(:cocina) { Cocina.new(Factories.cocina_with_file) }
 
     context 'for an image' do
       subject(:projection) { described_class.new(image, transformation) }

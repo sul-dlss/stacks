@@ -7,7 +7,7 @@ RSpec.describe "Versioned File requests" do
     allow(Cocina).to receive(:find).and_call_original
   end
 
-  let(:druid) { 'nr349ct7889' }
+  let(:druid) { 'bb000cr7262' }
   let(:version_id) { '1' }
   let(:file_name) { 'image.jp2' }
   let(:public_json) do
@@ -46,12 +46,13 @@ RSpec.describe "Versioned File requests" do
     let(:file_name) { 'path/to/image.jp2' }
     let(:version_id) { 'v1' }
     let(:public_json) do
-      Factories.legacy_cocina_with_file(file_name:)
+      Factories.cocina_with_file(file_name:)
     end
 
     before do
       allow_any_instance_of(FileController).to receive(:send_file)
-        .with('spec/fixtures/nr/349/ct/7889/path/to/image.jp2', filename: 'path/to/image.jp2', disposition: :inline)
+        .with('spec/fixtures/bb/000/cr/7262/bb000cr7262/content/8ff299eda08d7c506273840d52a03bf3',
+              filename: 'path/to/image.jp2', disposition: :inline)
       stub_request(:get, "https://purl.stanford.edu/#{druid}/version/#{version_id}.json")
         .to_return(status: 200, body: public_json.to_json)
     end

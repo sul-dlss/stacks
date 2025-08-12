@@ -3,13 +3,12 @@
 require 'rails_helper'
 
 RSpec.describe StacksFile do
-  let(:druid) { 'nr349ct7889' }
   let(:file_name) { 'image.jp2' }
   let(:cocina) { Cocina.new(public_json) }
   let(:instance) { described_class.new(file_name:, cocina:) }
   let(:path) { storage_root.absolute_path }
   let(:storage_root) { StorageRoot.new(cocina:, file_name:) }
-  let(:public_json) { Factories.legacy_cocina_with_file }
+  let(:public_json) { Factories.cocina_with_file }
 
   context 'with a missing file name' do
     let(:file_name) { nil }

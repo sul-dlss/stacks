@@ -5,10 +5,10 @@ require 'rails_helper'
 RSpec.describe 'Metrics tracking' do
   include ActiveJob::TestHelper
 
-  let(:druid) { 'nr349ct7889' }
+  let(:druid) { 'bb000cr7262' }
   let(:file_name) { 'image.jp2' }
   let(:public_json) do
-    Factories.legacy_cocina_with_file
+    Factories.cocina_with_file
   end
   let(:ability) { instance_double(CocinaAbility, can?: true, authorize!: true) }
 
@@ -20,13 +20,13 @@ RSpec.describe 'Metrics tracking' do
     stub_request(:get, "https://purl.stanford.edu/#{druid}.json").to_return(status: 200, body: public_json.to_json)
   end
 
-  context 'with an object' do
+  context 'with an zip object' do
     let(:file) do
       instance_double(
         StacksFile,
         id: druid,
         file_name:,
-        path: Rails.root.join('spec/fixtures/nr/349/ct/7889/image.jp2'),
+        path: Rails.root.join('spec/fixtures/bb/000/cr/7262/bb000cr7262/content/8ff299eda08d7c506273840d52a03bf3'),
         mtime: Time.zone.now
       )
     end
