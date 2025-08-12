@@ -26,8 +26,6 @@ RSpec.describe IiifMetadataService do
       allow(http_client).to receive(:get)
         .with("https://sul-imageserver-uat.stanford.edu/cantaloupe/iiif/2/#{image_server_path(druid, file_name)}/info.json")
         .and_return(response)
-
-      puts image_server_path(druid, file_name)
     end
 
     describe "#fetch" do
