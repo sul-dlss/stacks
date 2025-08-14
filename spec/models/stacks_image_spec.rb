@@ -14,7 +14,7 @@ RSpec.describe StacksImage do
   describe "#info_service" do
     subject { instance.send(:info_service) }
 
-    let(:stacks_file) { StacksFile.new(file_name: 'image.jp2', cocina: Cocina.new(Factories.legacy_cocina_with_file)) }
+    let(:stacks_file) { StacksFile.new(file_name: 'image.jp2', cocina: Cocina.new(Factories.cocina_with_file)) }
     let(:instance) { described_class.new(stacks_file:) }
 
     it { is_expected.to be_a IiifMetadataService }
