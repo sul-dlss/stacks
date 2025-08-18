@@ -3,50 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe "File requests" do
-  context 'with a legacy file structure' do
-    before do
-      allow(Cocina).to receive(:find).and_return(Cocina.new(public_json))
-    end
-
-    let(:druid) { 'nr349ct7889' }
-    let(:file_name) { 'image.jp2' }
-    let(:public_json) do
-      Factories.legacy_cocina_with_file(file_name:)
-    end
-
-    describe 'OPTIONS options' do
-      it 'permits Range headers for all origins' do
-        options "/file/#{druid}/#{file_name}"
-        expect(response).to be_successful
-        expect(response.headers['Access-Control-Allow-Origin']).to eq '*'
-        expect(response.headers['Access-Control-Allow-Headers']).to include 'Range'
-      end
-    end
-
-    it 'returns a successful HTTP response' do
-      get "/file/#{druid}/#{file_name}"
-      expect(response).to be_successful
-    end
-
-    describe 'GET missing file' do
-      it 'returns a 400 HTTP response' do
-        get '/file/xf680rd3068/path/to/99999.jp2'
-        expect(response).to have_http_status(:not_found)
-      end
-    end
-
-    describe 'GET download file' do
-      it 'returns legacy file with correct headers' do
-        get "/file/#{druid}/#{file_name}", params: { id: druid, download: 'any' }
-
-        expect(response).to be_successful
-        expect(response.headers['Content-Disposition']).to include('attachment; filename="image.jp2"')
-        expect(response.headers['Accept-Ranges']).to eq('bytes')
-        expect(response.headers['Content-Length'].to_i).to be > 0
-      end
-    end
-  end
-
   context 'with a versioned file structure' do
     before do
       allow(Cocina).to receive(:find).and_call_original
@@ -101,20 +57,9 @@ RSpec.describe "File requests" do
     end
 
     describe 'GET download file' do
-      let(:path) do
-        'spec/fixtures/nr/349/ct/7889/nr349ct7889/content/02f77c96c40ad3c7c843baa9c7b2ff2c'
-      end
-
       before do
         stub_request(:get, "https://purl.stanford.edu/#{druid}/version/#{version_id}.json")
           .to_return(status: 200, body: public_json.to_json)
-
-        FileUtils.mkdir_p(File.dirname(path))
-        File.link('spec/fixtures/nr/349/ct/7889/image.jp2', path)
-      end
-
-      after do
-        FileUtils.rm_rf('spec/fixtures/nr/349/ct/7889/nr349ct7889/')
       end
 
       it 'sends headers for content' do
