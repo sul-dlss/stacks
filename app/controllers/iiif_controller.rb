@@ -79,7 +79,8 @@ class IiifController < ApplicationController
       IiifInfoService.info(
         current_image,
         anonymous_ability.can?(:download, current_image),
-        self
+        self,
+        degraded?
       )
     )
   end
@@ -151,7 +152,10 @@ class IiifController < ApplicationController
   end
 
   def canonical_url
-    iiif_base_url(id: identifier_params[:id], file_name: identifier_params[:file_name], host: request.host_with_port)
+    base_url = iiif_base_url(id: identifier_params[:id], file_name: identifier_params[:file_name], host: request.host_with_port)
+    return base_url unless degraded?
+
+    base_url.gsub('/iiif/', '/iiif/degraded/')
   end
 
   def stacks_file
