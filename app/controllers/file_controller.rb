@@ -24,9 +24,20 @@ class FileController < ApplicationController
       ip: request.remote_ip
     )
 
-    send_file current_file.path, filename: current_file.file_name, disposition:
+    send_file current_file.path, filename: current_file.file_name, type: file_type, disposition:
   end
   # rubocop:enable Metrics/AbcSize
+
+  def file_type
+    mimetype = current_file.cocina.find_file(current_file.file_name)['hasMimeType']
+    return mimetype unless mimetype.starts_with?('text')
+
+    content = File.read(current_file.path)
+    encoding = content.encoding.name
+    mimetype += "; charset=#{encoding}"
+
+    mimetype
+  end
 
   def options
     response.headers['Access-Control-Allow-Methods'] = 'GET, OPTIONS'
