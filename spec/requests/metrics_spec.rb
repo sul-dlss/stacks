@@ -26,7 +26,7 @@ RSpec.describe 'Metrics tracking' do
         StacksFile,
         id: druid,
         file_name:,
-        path: Rails.root.join('spec/fixtures/nr/349/ct/7889/image.jp2'),
+        path: Rails.root.join('spec/fixtures/bb/000/cr/7262/bb000cr7262/content/8ff299eda08d7c506273840d52a03bf3'),
         mtime: Time.zone.now
       )
     end

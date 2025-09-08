@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'IIIF auth v2 probe service' do
-  let(:id) { 'nr349ct7889' }
+  let(:id) { 'bb000cr7262' }
   let(:file_name) { 'image.jp2' }
   let(:stacks_uri) { "https://stacks-uat.stanford.edu/file/druid:#{id}/#{URI.encode_uri_component(file_name)}" }
   let(:stacks_uri_param) { URI.encode_uri_component(stacks_uri) }
@@ -170,7 +170,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
   context 'when the user has access to the resource and it is streamable' do
     let(:file_name) { 'SC0193_1982-013_b06_f01_1981-09-29.mp4' }
     let(:public_json) do
-      Factories.legacy_cocina_with_file(file_name:)
+      Factories.cocina_with_file(file_name:)
     end
     let(:stacks_uri) { "https://stacks-uat.stanford.edu/file/#{id}/#{URI.encode_uri_component(file_name)}" }
 
@@ -187,7 +187,7 @@ RSpec.describe 'IIIF auth v2 probe service' do
                                                 "status" => 302
                                               })
       location = response.parsed_body.dig('location', 'id')
-      expect(location).to start_with 'https://sul-mediaserver.stanford.edu/stacks-with-token/_definst_/nr/349/ct/7889/mp4:SC0193_1982-013_b06_f01_1981-09-29.mp4/playlist.m3u8?wowzatokenendtime='
+      expect(location).to start_with 'https://sul-mediaserver.stanford.edu/stacks-with-token/_definst_/bb/000/cr/7262/bb000cr7262/content/mp4:8ff299eda08d7c506273840d52a03bf3/playlist.m3u8?wowzatokenendtime='
       expect(location).to end_with('=') # Token is md5 encoded
     end
   end
