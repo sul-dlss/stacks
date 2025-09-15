@@ -10,27 +10,29 @@ class IiifInfoService
   # @param downloadable_anonymously [Boolean] can the resource be downloaded anonymously?
   # @param context [IiifController] the context for the routing helpers (has hostname)
   # @return [Hash] a data structure to that expresses the info.json response
-  def self.info(current_image, downloadable_anonymously, context)
-    new(current_image, downloadable_anonymously, context).info
+  def self.info(current_image, downloadable_anonymously, context, degraded)
+    new(current_image, downloadable_anonymously, context, degraded).info
   end
 
   # @param current_image [StacksImage,RestrictedImage] the image to get the information for
   # @param downloadable_anonymously [Boolean] can the resource be downloaded anonymously?
   # @param context [IiifController] the context for the routing helpers (has hostname)
-  def initialize(current_image, downloadable_anonymously, context)
+  def initialize(current_image, downloadable_anonymously, context, degraded)
     @current_image = current_image
     @downloadable_anonymously = downloadable_anonymously
     @context = context
+    @degraded = degraded
   end
 
-  attr_reader :current_image, :downloadable_anonymously, :context
+  attr_reader :current_image, :downloadable_anonymously, :context, :degraded
 
   # @return [Hash] a data structure to that expresses the info.json response
   def info
     current_image.info.tap do |info|
       info['profile'] = current_image.profile
       info['sizes'] = sizes(info['sizes'])
-      info['sizes'] = thumbnail_only_size unless current_image.maybe_downloadable?
+      info['height'] = height(info)
+      info['width'] = width(info)
 
       service = services unless downloadable_anonymously
       info['service'] = service if service
@@ -38,10 +40,24 @@ class IiifInfoService
     end
   end
 
+  def width(info)
+    return info['width'] unless degraded
+
+    info['sizes'].first[:width]
+  end
+
+  def height(info)
+    return info['height'] unless degraded
+
+    info['sizes'].first[:height]
+  end
+
   ##
   # Trims the provided sizes so that known large undownloadable sizes are not
   # returned
   def sizes(sizes)
+    return thumbnail_only_size unless current_image.maybe_downloadable? && !degraded
+
     sizes.to_a.filter do |size|
       size['width'].to_f * size['height'].to_f < MAX_SIZE_ALLOWED
     end
