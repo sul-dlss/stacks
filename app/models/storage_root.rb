@@ -7,63 +7,27 @@ class StorageRoot
   # @param [String] file_name
   # @param [Cocina] cocina
   def initialize(file_name:, cocina:)
-    @file_name = file_name
-    @cocina = cocina
+    @druid = cocina.druid
+    @md5 = cocina.find_file_md5(file_name)
   end
 
-  delegate :druid, to: :cocina
+  def relative_path
+    @relative_path = File.join(treeified_id, druid, 'content', @md5)
+  end
 
-  delegate :absolute_path, to: :path_finder
-
-  delegate :relative_path, to: :path_finder
-
-  def treeified_id
-    File.join(druid_parts[1..4])
+  def absolute_path
+    @absolute_path ||= File.join(Settings.stacks.storage_root, relative_path)
   end
 
   private
 
-  attr_reader :cocina, :file_name
-
-  def path_finder
-    @path_finder ||= PathFinder.new(treeified_id:, file_name:, cocina:)
-  end
+  attr_reader :druid
 
   def druid_parts
     @druid_parts ||= druid.match(DRUID_PARTS_PATTERN)
   end
 
-  # Calculate file paths in the Stacks structure (legacy or content-addressable)
-  class PathFinder
-    def initialize(treeified_id:, file_name:, cocina:)
-      @treeified_id = treeified_id
-      @file_name = file_name
-      @cocina = cocina
-    end
-
-    # Used for external service URLs (Canteloupe image server)
-    def relative_path
-      return relative_content_addressable_path if File.exist?(content_addressable_path)
-
-      File.join(@treeified_id, @file_name) # For legacy files
-    end
-
-    def absolute_path
-      return content_addressable_path if File.exist?(content_addressable_path)
-
-      File.join(Settings.stacks.storage_root, relative_path) # For legacy files
-    end
-
-    private
-
-    def content_addressable_path
-      @content_addressable_path ||= File.join(Settings.stacks.storage_root, relative_content_addressable_path)
-    end
-
-    def relative_content_addressable_path
-      md5 = @cocina.find_file_md5(@file_name)
-
-      File.join(@treeified_id, @cocina.druid, 'content', md5)
-    end
+  def treeified_id
+    File.join(druid_parts[1..4])
   end
 end
