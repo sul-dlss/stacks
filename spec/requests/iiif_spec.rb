@@ -6,17 +6,15 @@ RSpec.describe 'IIIF API' do
   let(:metadata) do
     { 'height' => 2099,
       'width' => 1702,
+      'sizes' => [{ 'width' => 1702, 'height' => 2099 }],
       'tiles' => [{ 'width' => 256, "height" => 256, "scaleFactors" => [1, 2, 4, 8, 16] }] }
-  end
-  let(:metadata_service) do
-    instance_double(IiifMetadataService, fetch: metadata,
-                                         image_width: 1702,
-                                         image_height: 2552)
   end
 
   before do
     allow(Cocina).to receive(:find).and_return(Cocina.new(public_json))
-    allow(IiifMetadataService).to receive(:new).and_return(metadata_service)
+    stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/bb%2F000%2Fcr%2F7262%2Fbb000cr7262%2Fcontent%2F8ff299eda08d7c506273840d52a03bf3/info.json").to_return(
+      status: 200, body: metadata.to_json
+    )
   end
 
   context 'with versioned file layout' do
@@ -122,6 +120,8 @@ RSpec.describe 'IIIF API' do
             get '/image/iiif/degraded/bb000cr7262/image/info.json'
 
             expect(response).to have_http_status :ok
+            expect(response.parsed_body['@id']).to eq 'http://www.example.com/image/iiif/degraded/bb000cr7262/image'
+            expect(response.parsed_body['sizes']).to eq [{ "height" => 400, "width" => 324 }]
             expect(controller.send(:current_image).stacks_file.id).to eq 'bb000cr7262'
           end
         end
@@ -141,7 +141,7 @@ RSpec.describe 'IIIF API' do
           get '/image/iiif/bb000cr7262%2Fimage/info.json'
           json = response.parsed_body
 
-          expect(json['sizes']).to eq [{ 'width' => 266, 'height' => 400 }]
+          expect(json['sizes']).to eq [{ 'width' => 324, 'height' => 400 }]
         end
       end
 
@@ -202,7 +202,7 @@ RSpec.describe 'IIIF API' do
 
       context 'when the object has no filesets (e.g. a collection)' do
         let(:public_json) do
-          { 'structural' => {} }
+          { 'structural' => { 'contains' => [] } }
         end
 
         it 'returns 404 Not Found' do
