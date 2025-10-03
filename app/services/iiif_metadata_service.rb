@@ -58,6 +58,8 @@ class IiifMetadataService
       conn.body
     when 503
       raise Stacks::ImageServerUnavailable, "Unable to reach image server (503 Service Unavailable) for #{@url}."
+    when 502
+      raise Stacks::ImageServerBadGateway, "Unable to reach image server (502 Bad Gateway) for #{@url}."
     else
       raise Stacks::RetrieveMetadataError, "There was a problem fetching #{@url}. Server returned #{conn.code}"
     end

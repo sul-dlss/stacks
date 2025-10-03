@@ -12,4 +12,8 @@ module Stacks
   # ImageServerUnavailable is raised when the image server returns
   # 503 Service Unavailable
   class ImageServerUnavailable < RetrieveMetadataError; end
+
+  # ImageServerUnavailable is raised when the load balancer returns
+  # 502 Bad Gateway
+  class ImageServerBadGateway < RetrieveMetadataError; end
 end
