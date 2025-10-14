@@ -19,7 +19,9 @@ class ObjectController < ApplicationController
     zip_kit_stream(filename: "#{druid}.zip") do |zip|
       files.each do |stacks_file|
         zip.write_file(stacks_file.file_name, modification_time: stacks_file.mtime) do |sink|
-          File.open(stacks_file.path, "rb") { |file_input| IO.copy_stream(file_input, sink) }
+          stacks_file.s3_object do |chunk|
+            sink.write(chunk)
+          end
         end
       end
     end

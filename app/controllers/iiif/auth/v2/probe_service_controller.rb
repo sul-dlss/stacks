@@ -49,12 +49,9 @@ module Iiif
 
         private
 
-        # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
-        def auth_probe_result(file, cocina)
+        def auth_probe_result(file, cocina) # rubocop:disable Metrics/PerceivedComplexity
           if !file.valid?
             AuthProbeResult2.bad_request(file.errors.full_messages)
-          elsif !file.readable?
-            AuthProbeResult2.not_found(cocina.druid)
           elsif can? :access, file
             if file.streamable? || cocina.geo?
               AuthProbeResult2.redirect(iiif_location(cocina.geo?, file))
@@ -66,8 +63,9 @@ module Iiif
           else
             AuthProbeResult2.forbidden(**forbidden_fields(file))
           end
+        rescue ActionController::MissingFile
+          AuthProbeResult2.not_found(cocina.druid)
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
 
         def forbidden_fields(file)
           if file.embargoed?
