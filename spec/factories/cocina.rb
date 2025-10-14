@@ -22,6 +22,7 @@ module Factories
                     { 'type' => 'md5', 'digest' => '8ff299eda08d7c506273840d52a03bf3' }
                   ],
                   'hasMimeType' => mime_type,
+                  'size' => 12_345,
                   'access' => file_access
                 }
               ]

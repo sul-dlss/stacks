@@ -22,17 +22,12 @@ RSpec.describe 'Metrics tracking' do
 
   context 'with an object' do
     let(:file) do
-      instance_double(
-        StacksFile,
-        id: druid,
-        file_name:,
-        path: Rails.root.join('spec/fixtures/bb/000/cr/7262/bb000cr7262/content/8ff299eda08d7c506273840d52a03bf3'),
-        mtime: Time.zone.now
-      )
+      instance_double(StacksFile)
     end
 
     before do
       allow(StacksFile).to receive(:new).and_return(file)
+      allow_any_instance_of(ObjectController).to receive(:zip_kit_stream).and_return(nil) # rubocop:disable RSpec/AnyInstance
     end
 
     it 'tracks downloads' do
