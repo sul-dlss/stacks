@@ -11,7 +11,6 @@ RSpec.describe 'IIIF auth v2 probe service' do
 
   # NOTE: For any unauthorized responses, the status from the service is OK...the access status of the resource is in the response body
 
-  # rubocop:disable RSpec/AnyInstance
   before do
     allow(Cocina).to receive(:find).and_return(Cocina.new(public_json))
     allow(File).to receive(:world_readable?).and_return('420')
@@ -221,9 +220,11 @@ RSpec.describe 'IIIF auth v2 probe service' do
 
   context 'when the requested file does not exist' do
     before do
-      allow_any_instance_of(StacksFile).to receive(:readable?).and_return(nil)
+      # allow_any_instance_of(StacksFile).to receive(:readable?).and_return(nil)
       get "/iiif/auth/v2/probe?id=#{stacks_uri_param}"
     end
+
+    let(:stacks_uri) { "https://stacks-uat.stanford.edu/file/druid:#{id}/#{URI.encode_uri_component('unknown_file.png')}" }
 
     let(:public_json) do
       Factories.cocina_with_file(file_name:)
@@ -510,5 +511,4 @@ RSpec.describe 'IIIF auth v2 probe service' do
                                               })
     end
   end
-  # rubocop:enable RSpec/AnyInstance
 end

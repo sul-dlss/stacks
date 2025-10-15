@@ -60,4 +60,26 @@ RSpec.configure do |config|
   # The different available types are documented in the features, such as in
   # https://relishapp.com/rspec/rspec-rails/docs
   config.infer_spec_type_from_file_location!
+
+  config.before(:suite) do
+    s3_client = S3ClientFactory.create_client
+    bucket_name = Settings.s3.bucket
+    begin
+      s3_client.create_bucket(bucket: bucket_name)
+    rescue Aws::S3::Errors::BucketAlreadyOwnedByYou
+      # Bucket already exists, do nothing
+    end
+
+    # Add test files into MinIO
+    object_key = 'bb/000/cr/7262/bb000cr7262/content/8ff299eda08d7c506273840d52a03bf3'
+    file_path = "spec/fixtures/#{object_key}"
+    File.open(file_path, 'rb') do |file|
+      s3_client.put_object(
+        bucket: bucket_name,
+        key: object_key,
+        body: file
+      )
+    end
+  end
 end
+WebMock.disable_net_connect!(allow_localhost: true)
