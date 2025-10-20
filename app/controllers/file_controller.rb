@@ -3,6 +3,8 @@
 ##
 # API for delivering files from stacks
 class FileController < ApplicationController
+  include ActionController::Live
+
   rescue_from ActionController::MissingFile do
     render plain: 'File not found', status: :not_found
   end
@@ -24,7 +26,16 @@ class FileController < ApplicationController
       ip: request.remote_ip
     )
 
-    send_file current_file.path, filename: current_file.file_name, disposition:
+    response.headers['Content-Length'] = current_file.content_length
+    send_stream(
+      filename: current_file.file_name, # Sets the filename for the download
+      type: current_file.content_type, # Sets the content type
+      disposition:
+    ) do |stream|
+      current_file.s3_object do |chunk|
+        stream.write(chunk)
+      end
+    end
   end
   # rubocop:enable Metrics/AbcSize
 
