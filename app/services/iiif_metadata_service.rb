@@ -66,11 +66,13 @@ class IiifMetadataService
   end
 
   def json
-    retrieved_json = retrieve
-    @json ||= JSON.parse(retrieved_json).tap do |data|
-      data['@id'] = @canonical_url
+    @json ||= begin
+      retrieved_json = retrieve
+      JSON.parse(retrieved_json).tap do |data|
+        data['@id'] = @canonical_url
+      end
+    rescue JSON::ParserError => e
+      raise Stacks::UnexpectedMetadataResponseError, "There was a problem fetching #{@url}. #{e}: #{retrieved_json}"
     end
-  rescue JSON::ParserError => e
-    raise Stacks::UnexpectedMetadataResponseError, "There was a problem fetching #{@url}. #{e}: #{retrieved_json}"
   end
 end
