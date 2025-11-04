@@ -66,7 +66,7 @@ class IiifMetadataService
   end
 
   def json
-    @json ||= begin
+    @json ||= Rails.cache.fetch(cache_key, expires_in: 5.minutes) do
       retrieved_json = retrieve
       JSON.parse(retrieved_json).tap do |data|
         data['@id'] = @canonical_url
@@ -74,5 +74,9 @@ class IiifMetadataService
     rescue JSON::ParserError => e
       raise Stacks::UnexpectedMetadataResponseError, "There was a problem fetching #{@url}. #{e}: #{retrieved_json}"
     end
+  end
+
+  def cache_key
+    "iiif_metadata/#{Digest::SHA256.hexdigest(@url)}"
   end
 end
