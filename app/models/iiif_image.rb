@@ -18,13 +18,7 @@ class IiifImage
   # Get the image data from the remote server
   # @return [IO]
   def response
-    with_retries max_tries: 3, rescue: [HTTP::ConnectionError] do
-      benchmark "Fetch #{image_url}" do
-        HTTP.timeout(connect: 15, read_timeout: 5.minutes)
-            .headers(user_agent: "#{HTTP::Request::USER_AGENT} (#{Settings.user_agent})")
-            .get(image_url)
-      end
-    end
+    @response ||= retrieve
   end
 
   private
@@ -35,6 +29,16 @@ class IiifImage
 
   def image_url
     image_uri.to_s
+  end
+
+  def retrieve
+    with_retries max_tries: 3, rescue: [HTTP::ConnectionError] do
+      benchmark "Fetch #{image_url}" do
+        HTTP.timeout(connect: 15, read_timeout: 5.minutes)
+            .headers(user_agent: "#{HTTP::Request::USER_AGENT} (#{Settings.user_agent})")
+            .get(image_url)
+      end
+    end
   end
 
   attr_reader :transformation, :stacks_file
