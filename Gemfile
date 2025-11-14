@@ -29,7 +29,7 @@ group :development, :test do
   gem "debug"
 
   # RSpec for testing
-  gem 'rspec-rails', '~> 7.0'
+  gem 'rspec-rails', '~> 8.0'
 
   gem 'rails-controller-testing'
 
