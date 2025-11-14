@@ -2,8 +2,7 @@
 
 require 'rails_helper'
 
-# These specs are a rather integration-y approach to testing ability.rb, since they rely
-# on the dor-rights-auth parsing that actually gets used in the real world.  Essentially
+# These specs are a rather integration-y approach to testing ability.rb. Essentially
 # a giant truth table for the various combinations of object rights, object types, and user
 # types that permission checking might deal with.  This is not a comprehensive listing of
 # all possible permutations, but it should cover all the basics, and a number of representitive
