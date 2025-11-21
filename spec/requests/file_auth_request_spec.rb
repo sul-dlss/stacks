@@ -10,15 +10,12 @@ RSpec.describe "Authentication for File requests" do
   let(:user_webauth_stanford_no_loc) { User.new(webauth_user: true, ldap_groups: %w[stanford:stanford]) }
   let(:druid) { 'nr349ct7889' }
   let(:file_name) { 'image.jp2' }
-  let(:path) { storage_root.absolute_path }
   let(:storage_root) { StorageRoot.new(cocina:, file_name:) }
-  let(:perms) { nil }
   let(:stacks_file) { StacksFile.new(file_name:, cocina:) }
   let(:cocina) { Cocina.new(public_json) }
 
   before do
     allow(Cocina).to receive(:find).and_return(cocina)
-    allow(File).to receive(:world_readable?).with(path).and_return(perms)
   end
 
   describe "#show" do
@@ -31,9 +28,8 @@ RSpec.describe "Authentication for File requests" do
       context 'webauthed user' do
         it 'allows when user webauthed and authorized' do
           allow_any_instance_of(FileController).to receive(:current_user).and_return(user_webauth_stanford_no_loc)
-          expect_any_instance_of(FileController).to receive(:send_file).with(stacks_file.path, filename: 'image.jp2',
-                                                                                               disposition: :inline).and_call_original
           get "/file/#{druid}/#{file_name}"
+          expect(response).to have_http_status(:ok)
         end
 
         it 'blocks when user webauthed but NOT authorized' do
@@ -59,9 +55,8 @@ RSpec.describe "Authentication for File requests" do
 
         it 'allows when user in location' do
           allow_any_instance_of(FileController).to receive(:current_user).and_return(user_loc_no_webauth)
-          expect_any_instance_of(FileController).to receive(:send_file).with(stacks_file.path, filename: 'image.jp2',
-                                                                                               disposition: :inline).and_call_original
           get "/file/#{druid}/#{file_name}"
+          expect(response).to have_http_status(:ok)
         end
 
         it 'blocks when user not in location' do

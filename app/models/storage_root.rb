@@ -12,11 +12,7 @@ class StorageRoot
   end
 
   def relative_path
-    @relative_path = File.join(treeified_id, druid, 'content', @md5)
-  end
-
-  def absolute_path
-    @absolute_path ||= File.join(Settings.stacks.storage_root, relative_path)
+    File.join(treeified_id, druid, 'content', @md5)
   end
 
   private
@@ -24,7 +20,7 @@ class StorageRoot
   attr_reader :druid
 
   def druid_parts
-    @druid_parts ||= druid.match(DRUID_PARTS_PATTERN)
+    druid.match(DRUID_PARTS_PATTERN)
   end
 
   def treeified_id

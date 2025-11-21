@@ -34,11 +34,11 @@ class StacksImage
   end
 
   def exist?
-    readable? && image_width.positive?
+    image_width.positive?
   end
 
   delegate :image_width, :image_height, to: :info_service
-  delegate :etag, :mtime, :stacks_rights, :readable?, :not_proxied?, to: :stacks_file
+  delegate :etag, :mtime, :stacks_rights, :not_proxied?, to: :stacks_file
 
   # This is overriden in RestrictedImage
   def max_tile_dimensions

@@ -22,13 +22,14 @@ class StacksFile
 
   delegate :not_proxied?, to: :cocina
 
-  # Some files exist but have unreadable permissions, treat these as non-existent
-  def readable?
-    path && File.world_readable?(path)
+  def s3_object(&)
+    @s3_object ||= S3ClientFactory.create_client.get_object(bucket: Settings.s3.bucket, key: s3_key, &)
+  rescue Aws::S3::Errors::NoSuchKey
+    raise "Unable to find file at #{s3_key}"
   end
 
   def mtime
-    @mtime ||= File.mtime(path) if readable?
+    @mtime ||= s3_head.last_modified
   end
 
   def etag
@@ -36,11 +37,11 @@ class StacksFile
   end
 
   def content_length
-    @content_length ||= File.size(path) if readable?
+    cocina_file['size']
   end
 
-  def path
-    @path ||= storage_root.absolute_path
+  def content_type
+    cocina_file['hasMimeType']
   end
 
   # Used as the IIIF identifier for retrieving this file from the image server
@@ -61,10 +62,6 @@ class StacksFile
     "#{File.dirname(file_path)}/#{streaming_url_file_segment}"
   end
 
-  def storage_root
-    @storage_root ||= StorageRoot.new(cocina:, file_name:)
-  end
-
   def stacks_rights
     @stacks_rights ||= StacksRights.new(cocina:, file_name:)
   end
@@ -75,5 +72,25 @@ class StacksFile
   def streamable?
     accepted_formats = [".mov", ".mp4", ".mpeg", ".m4a", ".mp3"]
     accepted_formats.include? File.extname(file_name)
+  end
+
+  private
+
+  def s3_head
+    @s3_head ||= S3ClientFactory.create_client.head_object(bucket: Settings.s3.bucket, key: s3_key)
+  rescue Aws::S3::Errors::NoSuchKey
+    raise "Unable to find file at #{s3_key}"
+  end
+
+  def cocina_file
+    @cocina_file ||= cocina.find_file(file_name)
+  end
+
+  def s3_key
+    @s3_key ||= storage_root.relative_path
+  end
+
+  def storage_root
+    @storage_root ||= StorageRoot.new(cocina:, file_name:)
   end
 end

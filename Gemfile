@@ -83,3 +83,5 @@ gem 'connection_pool'
 group :production do
   gem 'newrelic_rpm'
 end
+
+gem "aws-sdk-s3", "~> 1.199"
