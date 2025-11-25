@@ -22,8 +22,21 @@ class StacksFile
 
   delegate :not_proxied?, to: :cocina
 
+  def client_params
+    { bucket: Settings.s3.bucket, key: s3_key }
+  end
+
   def s3_object(&)
-    @s3_object ||= S3ClientFactory.create_client.get_object(bucket: Settings.s3.bucket, key: s3_key, &)
+    @s3_object ||= S3ClientFactory.create_client.get_object(client_params, &)
+  rescue Aws::S3::Errors::NoSuchKey
+    raise "Unable to find file at #{s3_key}"
+  end
+
+  def s3_range(range: nil, &)
+    params = client_params.merge(range: range)
+
+    # Don't cache range requests since they're specific to the range
+    S3ClientFactory.create_client.get_object(params, &)
   rescue Aws::S3::Errors::NoSuchKey
     raise "Unable to find file at #{s3_key}"
   end

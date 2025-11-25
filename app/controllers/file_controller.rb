@@ -16,7 +16,6 @@ class FileController < ApplicationController
     authorize! :download, current_file
     expires_in 10.minutes
     response.headers['Accept-Ranges'] = 'bytes'
-    response.headers['Content-Length'] = current_file.content_length
     response.headers.delete('X-Frame-Options')
 
     TrackDownloadJob.perform_later(
@@ -26,15 +25,11 @@ class FileController < ApplicationController
       ip: request.remote_ip
     )
 
-    response.headers['Content-Length'] = current_file.content_length
-    send_stream(
-      filename: current_file.file_name, # Sets the filename for the download
-      type: current_file.content_type, # Sets the content type
-      disposition:
-    ) do |stream|
-      current_file.s3_object do |chunk|
-        stream.write(chunk)
-      end
+    # Handle range requests
+    if request.headers['Range'].present?
+      handle_range_request
+    else
+      handle_full_request
     end
   end
   # rubocop:enable Metrics/AbcSize
@@ -48,6 +43,49 @@ class FileController < ApplicationController
   end
 
   private
+
+  def handle_range_request # rubocop:disable Metrics/AbcSize
+    range_header = RangeHeader.new(request.headers['Range'], current_file.content_length)
+
+    if range_header.invalid?
+      # Invalid range, return 416 Range Not Satisfiable
+      response.headers['Content-Range'] = "bytes */#{current_file.content_length}"
+      head :range_not_satisfiable
+      return
+    end
+
+    # For simplicity, handle only single range requests
+    # Multi-range requests would require multipart/byteranges response
+    range = range_header.ranges.first
+
+    response.status = 206
+    response.headers['Content-Range'] = "bytes #{range}/#{current_file.content_length}"
+    response.headers['Content-Length'] = range.content_length.to_s
+
+    send_stream(
+      filename: current_file.file_name,
+      type: current_file.content_type,
+      disposition:
+    ) do |stream|
+      current_file.s3_range(range: range.s3_range) do |chunk|
+        stream.write(chunk)
+      end
+    end
+  end
+
+  def handle_full_request
+    response.headers['Content-Length'] = current_file.content_length.to_s
+
+    send_stream(
+      filename: current_file.file_name,
+      type: current_file.content_type,
+      disposition:
+    ) do |stream|
+      current_file.s3_object do |chunk|
+        stream.write(chunk)
+      end
+    end
+  end
 
   def disposition
     return :attachment if file_params[:download]

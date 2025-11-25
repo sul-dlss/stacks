@@ -74,5 +74,65 @@ RSpec.describe "File requests" do
         expect(headers['content-length'].to_i).to be > 0
       end
     end
+
+    describe 'GET file with range requests' do
+      before do
+        stub_request(:get, "https://purl.stanford.edu/#{druid}/version/#{version_id}.json")
+          .to_return(status: 200, body: public_json.to_json)
+      end
+
+      it 'returns 206 partial content for valid range request' do
+        get "/v2/file/#{druid}/version/#{version_id}/#{file_name}",
+            headers: { 'Range' => 'bytes=0-499' }
+
+        expect(response).to have_http_status(:partial_content)
+        expect(response.headers['Content-Range']).to eq('bytes 0-499/12345')
+        expect(response.headers['Content-Length']).to eq('500')
+        expect(response.headers['Accept-Ranges']).to eq('bytes')
+      end
+
+      it 'returns 206 partial content for suffix range request' do
+        get "/v2/file/#{druid}/version/#{version_id}/#{file_name}",
+            headers: { 'Range' => 'bytes=-1000' }
+
+        expect(response).to have_http_status(:partial_content)
+        expect(response.headers['Content-Range']).to eq('bytes 11345-12344/12345')
+        expect(response.headers['Content-Length']).to eq('1000')
+      end
+
+      it 'returns 206 partial content for prefix range request' do
+        get "/v2/file/#{druid}/version/#{version_id}/#{file_name}",
+            headers: { 'Range' => 'bytes=12000-' }
+
+        expect(response).to have_http_status(:partial_content)
+        expect(response.headers['Content-Range']).to eq('bytes 12000-12344/12345')
+        expect(response.headers['Content-Length']).to eq('345')
+      end
+
+      it 'returns 416 range not satisfiable for invalid range' do
+        get "/v2/file/#{druid}/version/#{version_id}/#{file_name}",
+            headers: { 'Range' => 'bytes=50000-60000' }
+
+        expect(response).to have_http_status(:range_not_satisfiable)
+        expect(response.headers['Content-Range']).to eq('bytes */12345')
+      end
+
+      it 'returns 416 range not satisfiable for malformed range' do
+        get "/v2/file/#{druid}/version/#{version_id}/#{file_name}",
+            headers: { 'Range' => 'bytes=invalid' }
+
+        expect(response).to have_http_status(:range_not_satisfiable)
+        expect(response.headers['Content-Range']).to eq('bytes */12345')
+      end
+
+      it 'returns full content when no range header is provided' do
+        get "/v2/file/#{druid}/version/#{version_id}/#{file_name}"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.headers['Content-Length'].to_i).to be > 0
+        expect(response.headers['Accept-Ranges']).to eq('bytes')
+        expect(response.headers['Content-Range']).to be_nil
+      end
+    end
   end
 end
