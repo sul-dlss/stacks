@@ -72,7 +72,7 @@ class StacksFile
                                    "mp4:#{File.basename(file_path)}"
                                  end
 
-    "#{File.dirname(file_path)}/#{streaming_url_file_segment}"
+    "weka/#{File.dirname(file_path)}/#{streaming_url_file_segment}"
   end
 
   def stacks_rights
