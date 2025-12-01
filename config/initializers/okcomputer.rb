@@ -14,23 +14,6 @@ OkComputer::Registry.register 'ruby_version', OkComputer::RubyVersionCheck.new
 
 OkComputer::Registry.register 'rails_cache', OkComputer::GenericCacheCheck.new
 
-class DirectoryCheckWithTimeout < OkComputer::DirectoryCheck
-  def check
-    Timeout.timeout(5) do
-      super
-    end
-  rescue Timeout::Error
-    mark_failure
-    mark_message "Timed out after 5 seconds"
-  end
-end
-
-OkComputer::Registry.register 'stacks_root_dir',
-  DirectoryCheckWithTimeout.new(Settings.stacks.storage_root)
-
-OkComputer::Registry.register 'stacks_mounted_dir',
-  OkComputer::DirectoryCheck.new(Settings.stacks.storage_root)
-
 OkComputer::Registry.register 'purl_url', OkComputer::HttpCheck.new(Settings.purl.url + "status/default.json")
 
 # ------------------------------------------------------------------------------
