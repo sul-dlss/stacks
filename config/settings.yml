@@ -1,9 +1,6 @@
 features:
   metrics: false
 
-stacks:
-  storage_root: /stacks
-
 s3:
   access_key_id: ~
   secret_access_key: ~
