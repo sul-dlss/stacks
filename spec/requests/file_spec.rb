@@ -27,9 +27,6 @@ RSpec.describe "File requests" do
     describe 'GET file with slashes in filename' do
       let(:file_name) { 'path/to/image.jp2' }
       let(:version_id) { 'v1' }
-      let(:public_json) do
-        Factories.cocina_with_file(file_name:)
-      end
 
       before do
         stub_request(:get, "https://purl.stanford.edu/#{druid}/version/#{version_id}.json")
@@ -72,6 +69,22 @@ RSpec.describe "File requests" do
         expect(headers['content-disposition']).to include('attachment; filename="image.jp2"')
         expect(headers['accept-ranges']).to eq('bytes')
         expect(headers['content-length'].to_i).to be > 0
+      end
+    end
+
+    describe 'HEAD download file' do
+      before do
+        stub_request(:get, "https://purl.stanford.edu/#{druid}/version/#{version_id}.json")
+          .to_return(status: 200, body: public_json.to_json)
+      end
+
+      it 'sends headers for content' do
+        head "/v2/file/#{druid}/version/#{version_id}/image.jp2", params: { download: 'any' }
+
+        expect(response).to be_ok
+        headers = response.headers.transform_keys(&:downcase)
+        expect(headers['accept-ranges']).to eq('bytes')
+        expect(headers['content-length']).to eq "12345"
       end
     end
 
