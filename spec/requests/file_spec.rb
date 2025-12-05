@@ -75,6 +75,22 @@ RSpec.describe "File requests" do
       end
     end
 
+    describe 'HEAD download file' do
+      before do
+        stub_request(:get, "https://purl.stanford.edu/#{druid}/version/#{version_id}.json")
+          .to_return(status: 200, body: public_json.to_json)
+      end
+
+      it 'sends headers for content' do
+        head "/v2/file/#{druid}/version/#{version_id}/image.jp2", params: { download: 'any' }
+
+        expect(response).to be_ok
+        headers = response.headers.transform_keys(&:downcase)
+        expect(headers['accept-ranges']).to eq('bytes')
+        expect(headers['content-length'].to_i).to be > 0
+      end
+    end
+
     describe 'GET file with range requests' do
       before do
         stub_request(:get, "https://purl.stanford.edu/#{druid}/version/#{version_id}.json")
