@@ -188,7 +188,20 @@ RSpec.describe 'IIIF API' do
         end
       end
 
-      context 'when image is missing' do
+      context 'when image is missing from the stacks S3 bucket' do
+        let(:image_path_component) { "cs362qz2368%252Fargo-logo/full/full/0/default.jpg" }
+
+        let(:public_json) do
+          Factories.cocina_with_file(file_name: 'argo-logo.jp2', md5: 'fffffffffffffff')
+        end
+
+        it 'returns 404 Not Found' do
+          get "/image/iiif/cs362qz2368%252Fargo-logo/full/full/0/default.jpg"
+          expect(response).to have_http_status :not_found
+        end
+      end
+
+      context 'when image is missing from the image server' do
         before do
           stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_path_component}/0,640,2552,2552/100,100/0/default.jpg")
             .to_return(status: 404, body: "")

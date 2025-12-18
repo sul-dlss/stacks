@@ -15,9 +15,14 @@ class IiifController < ApplicationController
   # Image delivery, streamed from the image server backend
   def show
     projection = current_image.projection_for(transformation)
+
     raise ActionController::MissingFile, 'File Not Found' unless projection.valid?
 
-    return unless stale?(**cache_headers_show(projection))
+    begin
+      return unless stale?(**cache_headers_show(projection))
+    rescue StacksFile::NotFound
+      raise ActionController::MissingFile, 'File not found'
+    end
 
     authorize! :read, projection
     expires_in cache_time, public: anonymous_ability.can?(:read, projection)
