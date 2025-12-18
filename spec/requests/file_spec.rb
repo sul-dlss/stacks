@@ -78,13 +78,26 @@ RSpec.describe "File requests" do
           .to_return(status: 200, body: public_json.to_json)
       end
 
-      it 'sends headers for content' do
-        head "/v2/file/#{druid}/version/#{version_id}/image.jp2", params: { download: 'any' }
+      context 'without a range header' do
+        it 'sends headers for content' do
+          head "/v2/file/#{druid}/version/#{version_id}/image.jp2", params: { download: 'any' }
 
-        expect(response).to be_ok
-        headers = response.headers.transform_keys(&:downcase)
-        expect(headers['accept-ranges']).to eq('bytes')
-        expect(headers['content-length']).to eq "12345"
+          expect(response).to be_ok
+          headers = response.headers.transform_keys(&:downcase)
+          expect(headers['accept-ranges']).to eq('bytes')
+          expect(headers['content-length']).to eq "12345"
+        end
+      end
+
+      context 'with a range header' do
+        it 'sends headers for content' do
+          head "/v2/file/#{druid}/version/#{version_id}/image.jp2", params: { download: 'any' }, headers: { 'Range' => 'bytes=0-' }
+
+          expect(response).to be_ok
+          headers = response.headers.transform_keys(&:downcase)
+          expect(headers['accept-ranges']).to eq('bytes')
+          expect(headers['content-length']).to eq "12345"
+        end
       end
     end
 

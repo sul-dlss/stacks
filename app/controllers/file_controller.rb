@@ -58,9 +58,11 @@ class FileController < ApplicationController
     # Multi-range requests would require multipart/byteranges response
     range = range_header.ranges.first
 
-    response.status = 206
     response.headers['Content-Range'] = "bytes #{range}/#{current_file.content_length}"
     response.headers['Content-Length'] = range.content_length.to_s
+    return head(:ok) if request.head?
+
+    response.status = 206
 
     send_stream(
       filename: current_file.file_name,
