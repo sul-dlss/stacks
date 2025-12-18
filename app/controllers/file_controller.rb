@@ -75,6 +75,7 @@ class FileController < ApplicationController
 
   def handle_full_request
     response.headers['Content-Length'] = current_file.content_length.to_s
+    return head(:ok) if request.head?
 
     send_stream(
       filename: current_file.file_name,
