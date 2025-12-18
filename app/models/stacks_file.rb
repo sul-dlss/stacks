@@ -4,6 +4,8 @@
 # Represents a file on disk in stacks. A StacksFile may be downloaded and
 # may be the file that backs a StacksImage or StacksMediaStream
 class StacksFile
+  class NotFound < StandardError; end
+
   include ActiveModel::Validations
 
   def initialize(file_name:, cocina:)
@@ -41,6 +43,7 @@ class StacksFile
     raise "Unable to find file at #{s3_key}"
   end
 
+  # @raises Aws::S3::Errors::NotFound
   def mtime
     @mtime ||= s3_head.last_modified
   end
@@ -91,8 +94,8 @@ class StacksFile
 
   def s3_head
     @s3_head ||= S3ClientFactory.create_client.head_object(bucket: Settings.s3.bucket, key: s3_key)
-  rescue Aws::S3::Errors::NoSuchKey
-    raise "Unable to find file at #{s3_key}"
+  rescue Aws::S3::Errors::NotFound
+    raise NotFound, "Unable to find file at #{s3_key}"
   end
 
   def cocina_file
