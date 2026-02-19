@@ -56,7 +56,11 @@ Configuration is handled through the [RailsConfig](/railsconfig/config) settings
 
 ## Testing
 
-The test suite (with RuboCop style inforcement) will be run with the default rake task (also run on travis)
+You will want to start up the Docker container which uses minio to replace Amazon S3 storage:
+
+    $ docker compose up -d
+
+The test suite (with RuboCop style inforcement) will be run with the default rake task (also run in CI)
 
     $ rake
 

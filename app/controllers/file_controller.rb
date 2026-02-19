@@ -16,6 +16,7 @@ class FileController < ApplicationController
     authorize! :download, current_file
     expires_in 10.minutes
     response.headers['Accept-Ranges'] = 'bytes'
+    response.headers['Access-Control-Expose-Headers'] = 'Content-Range'
     response.headers.delete('X-Frame-Options')
 
     TrackDownloadJob.perform_later(
