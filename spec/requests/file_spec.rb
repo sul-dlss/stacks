@@ -68,6 +68,7 @@ RSpec.describe "File requests" do
 
         expect(headers['content-disposition']).to include('attachment; filename="image.jp2"')
         expect(headers['accept-ranges']).to eq('bytes')
+        expect(headers['access-control-expose-headers']).to eq('Content-Range')
         expect(headers['content-length'].to_i).to be > 0
       end
     end
