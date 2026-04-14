@@ -56,7 +56,7 @@ Configuration is handled through the [RailsConfig](/railsconfig/config) settings
 
 ## Testing
 
-You will want to start up the Docker container which uses minio to replace Amazon S3 storage:
+You will want to start up the Docker container which uses RustFS to replace Amazon S3 storage:
 
     $ docker compose up -d
 
