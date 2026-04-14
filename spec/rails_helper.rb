@@ -70,7 +70,7 @@ RSpec.configure do |config|
       # Bucket already exists, do nothing
     end
 
-    # Add test files into MinIO
+    # Add test files into RustFS
     object_key = 'bb/000/cr/7262/bb000cr7262/content/8ff299eda08d7c506273840d52a03bf3'
     file_path = "spec/fixtures/#{object_key}"
     File.open(file_path, 'rb') do |file|
