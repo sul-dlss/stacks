@@ -96,7 +96,7 @@ RSpec.describe "File requests" do
         it 'sends headers for content' do
           head "/v2/file/#{druid}/version/#{version_id}/image.jp2", params: { download: 'any' }, headers: { 'Range' => 'bytes=0-' }
 
-          expect(response).to have_http_status(:partial_content)
+          expect(response).to be_ok
           headers = response.headers.transform_keys(&:downcase)
           expect(headers['accept-ranges']).to eq('bytes')
           expect(headers['content-length']).to eq "12345"

@@ -63,8 +63,8 @@ class FileController < ApplicationController
     response.headers['Content-Range'] = "bytes #{range}/#{current_file.content_length}"
     response.headers['Content-Length'] = range.content_length.to_s
     if request.head?
-      set_file_headers
-      return head(:partial_content) # 206 Partial Content
+      set_head_response_headers
+      return head(:ok)
     end
 
     response.status = 206
@@ -83,7 +83,7 @@ class FileController < ApplicationController
   def handle_full_request
     response.headers['Content-Length'] = current_file.content_length.to_s
     if request.head?
-      set_file_headers
+      set_head_response_headers
       return head(:ok)
     end
 
@@ -98,7 +98,7 @@ class FileController < ApplicationController
     end
   end
 
-  def set_file_headers
+  def set_head_response_headers
     response.headers['Content-Type'] = current_file.content_type
     response.headers['Content-Disposition'] =
       ActionDispatch::Http::ContentDisposition.format(disposition: disposition, filename: current_file.file_name)
