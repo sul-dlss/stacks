@@ -127,7 +127,7 @@ class FileController < ApplicationController
   end
 
   def cocina
-    @cocina ||= Cocina.find(params[:id], version)
+    @cocina ||= Cocina.find(params.expect(:id), version)
   end
 
   def version
