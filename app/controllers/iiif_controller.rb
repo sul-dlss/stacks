@@ -139,7 +139,7 @@ class IiifController < ApplicationController
   def identifier_params
     return params.permit(:id, :file_name).to_h if params[:id] && params[:file_name]
 
-    id, file_name = params[:identifier].sub('/', '%2F').split('%2F', 2)
+    id, file_name = params.expect(:identifier).sub('/', '%2F').split('%2F', 2)
     { id:, file_name: }
   end
 
