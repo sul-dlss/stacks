@@ -87,6 +87,8 @@ RSpec.describe "File requests" do
           headers = response.headers.transform_keys(&:downcase)
           expect(headers['accept-ranges']).to eq('bytes')
           expect(headers['content-length']).to eq "12345"
+          expect(headers['content-disposition']).to include('attachment; filename="image.jp2"')
+          expect(headers['content-type']).to eq "image/jp2"
         end
       end
 
@@ -98,6 +100,8 @@ RSpec.describe "File requests" do
           headers = response.headers.transform_keys(&:downcase)
           expect(headers['accept-ranges']).to eq('bytes')
           expect(headers['content-length']).to eq "12345"
+          expect(headers['content-disposition']).to include('attachment; filename="image.jp2"')
+          expect(headers['content-type']).to eq "image/jp2"
         end
       end
     end

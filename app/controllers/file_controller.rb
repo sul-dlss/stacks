@@ -2,6 +2,7 @@
 
 ##
 # API for delivering files from stacks
+# rubocop:disable Metrics/ClassLength
 class FileController < ApplicationController
   include ActionController::Live
 
@@ -61,7 +62,10 @@ class FileController < ApplicationController
 
     response.headers['Content-Range'] = "bytes #{range}/#{current_file.content_length}"
     response.headers['Content-Length'] = range.content_length.to_s
-    return head(:ok) if request.head?
+    if request.head?
+      set_head_response_headers
+      return head(:ok)
+    end
 
     response.status = 206
 
@@ -78,7 +82,10 @@ class FileController < ApplicationController
 
   def handle_full_request
     response.headers['Content-Length'] = current_file.content_length.to_s
-    return head(:ok) if request.head?
+    if request.head?
+      set_head_response_headers
+      return head(:ok)
+    end
 
     send_stream(
       filename: current_file.file_name,
@@ -89,6 +96,12 @@ class FileController < ApplicationController
         stream.write(chunk)
       end
     end
+  end
+
+  def set_head_response_headers
+    response.headers['Content-Type'] = current_file.content_type
+    response.headers['Content-Disposition'] =
+      ActionDispatch::Http::ContentDisposition.format(disposition: disposition, filename: current_file.file_name)
   end
 
   def disposition
@@ -134,3 +147,4 @@ class FileController < ApplicationController
     params[:version_id] || :head
   end
 end
+# rubocop:enable Metrics/ClassLength
