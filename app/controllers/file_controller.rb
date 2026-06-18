@@ -46,7 +46,7 @@ class FileController < ApplicationController
 
   private
 
-  def handle_range_request # rubocop:disable Metrics/AbcSize
+  def handle_range_request # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     range_header = RangeHeader.new(request.headers['Range'], current_file.content_length)
 
     if range_header.invalid?
@@ -77,6 +77,9 @@ class FileController < ApplicationController
       current_file.s3_range(range: range.s3_range) do |chunk|
         stream.write(chunk)
       end
+    rescue StandardError => e
+      Honeybadger.notify(e)
+      raise
     end
   end
 
@@ -95,6 +98,9 @@ class FileController < ApplicationController
       current_file.s3_object do |chunk|
         stream.write(chunk)
       end
+    rescue StandardError => e
+      Honeybadger.notify(e)
+      raise
     end
   end
 
