@@ -69,9 +69,11 @@ class User
   end
 
   def self.encryptor
-    salt = 'user'
-    key = ActiveSupport::KeyGenerator.new(Rails.application.secret_key_base).generate_key(salt, 32)
-    ActiveSupport::MessageEncryptor.new(key)
+    @encryptor ||= begin
+      salt = 'user'
+      key = ActiveSupport::KeyGenerator.new(Rails.application.secret_key_base).generate_key(salt, 32)
+      ActiveSupport::MessageEncryptor.new(key)
+    end
   end
 
   def self.stanford_generic_user
