@@ -71,16 +71,11 @@ gem 'config'
 gem 'faraday'
 gem 'http', '~> 5.2'
 gem 'cancancan'
-gem 'dalli'
 gem 'retries'
 gem 'zip_kit', '~> 6.3'
 gem 'jwt'
 gem 'redis'
 gem 'whenever', require: false
-
-# connection_pool required for thread-safe operations in dalli >= 3.0
-# see https://github.com/petergoldstein/dalli/blob/v3.0.0/3.0-Upgrade.md
-gem 'connection_pool'
 
 group :production do
   gem 'newrelic_rpm'
