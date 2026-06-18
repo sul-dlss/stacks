@@ -145,8 +145,6 @@ GEM
       bigdecimal
       rexml
     crass (1.0.6)
-    dalli (5.0.5)
-      logger
     date (3.5.1)
     debug (1.11.1)
       irb (~> 1.10)
@@ -460,8 +458,6 @@ DEPENDENCIES
   capistrano-shared_configs
   capybara
   config
-  connection_pool
-  dalli
   debug
   dlss-capistrano
   faraday
