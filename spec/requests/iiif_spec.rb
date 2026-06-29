@@ -82,7 +82,7 @@ RSpec.describe 'IIIF API' do
               get '/image/iiif/bb000cr7262%2Fimage/info.json'
               expect(response).to have_http_status :redirect
               expect(response).to redirect_to('/image/iiif/degraded/bb000cr7262/image/info.json')
-              expect(response.headers['Cache-Control']).to match(/max-age=0/)
+              expect(response.headers['Cache-Control']).to include('max-age=0')
             end
           end
         end
@@ -114,7 +114,7 @@ RSpec.describe 'IIIF API' do
           get '/image/iiif/bb000cr7262/image/info.json'
           expect(response).to have_http_status :redirect
           expect(response).to redirect_to('/image/iiif/degraded/bb000cr7262/image/info.json')
-          expect(response.headers['Cache-Control']).to match(/max-age=0/)
+          expect(response.headers['Cache-Control']).to include('max-age=0')
         end
 
         context 'when connecting to the degraded url' do
