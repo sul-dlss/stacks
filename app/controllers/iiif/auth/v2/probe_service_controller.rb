@@ -26,15 +26,9 @@ module Iiif
           render json: auth_probe_result(file, cocina)
         end
 
-        def iiif_location(is_geo, stacks_file)
-          if is_geo
-            # 4 hour token
-            token = JWT.encode({ data: 'geo_token', exp: Time.now.to_i + (4 * 3600) }, Settings.geo.proxy_secret, 'HS256')
-            { id: "#{Settings.geo.proxy_url}?stacks_token=#{URI.encode_uri_component(token)}", type: 'Geo' }
-          else
-            stream_url = StacksMediaStream.new(stacks_file:).streaming_url
-            { id: stream_url, type: 'Video' }
-          end
+        def iiif_stream_location(stacks_file)
+          stream_url = StacksMediaStream.new(stacks_file:).streaming_url
+          { id: stream_url, type: 'Video' }
         end
 
         # Because the probe request sets the Accept header, the browser is going to preflight the request.
@@ -49,12 +43,12 @@ module Iiif
 
         private
 
-        def auth_probe_result(file, cocina) # rubocop:disable Metrics/PerceivedComplexity
+        def auth_probe_result(file, cocina)
           if !file.valid?
             AuthProbeResult2.bad_request(file.errors.full_messages)
           elsif can? :access, file
-            if file.streamable? || cocina.geo?
-              AuthProbeResult2.redirect(iiif_location(cocina.geo?, file))
+            if file.streamable?
+              AuthProbeResult2.redirect(iiif_stream_location(file))
             else
               AuthProbeResult2.ok
             end

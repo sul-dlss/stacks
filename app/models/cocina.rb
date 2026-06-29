@@ -53,15 +53,12 @@ class Cocina
     data['type']
   end
 
-  def geo?
-    type == 'https://cocina.sul.stanford.edu/models/geo'
-  end
-
   # types that cannot be viewed when download = 'none'
-  # media(wowza), geo (geoserver), image(Cantaloupe) use different (proxy) servers to display files in sul-embed
+  # media(wowza) and  image(Cantaloupe) use different (proxy) servers to display files in sul-embed
   # this allows view and download to be different values and work, which doesn't work with types below.
   def not_proxied?
-    ['https://cocina.sul.stanford.edu/models/document', 'https://cocina.sul.stanford.edu/models/3d', 'https://cocina.sul.stanford.edu/models/object'].include?(type)
+    ['https://cocina.sul.stanford.edu/models/document', 'https://cocina.sul.stanford.edu/models/geo',
+     'https://cocina.sul.stanford.edu/models/3d', 'https://cocina.sul.stanford.edu/models/object'].include?(type)
   end
 
   def find_file(file_name)

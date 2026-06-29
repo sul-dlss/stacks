@@ -20,10 +20,6 @@ stream:
   security_token_prefix: wowzatoken
   security_token_secret: ~
 
-geo:
-  proxy_url: https://earthworks.stanford.edu/restricted_proxy/geoserver/wms
-  proxy_secret: my$ecretK3y
-
 # non-IIIF images
 legacy:
   sizes:
