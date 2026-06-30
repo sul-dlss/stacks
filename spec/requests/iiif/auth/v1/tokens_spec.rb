@@ -33,7 +33,7 @@ RSpec.describe 'IIIF auth v1 tokens' do
         end
 
         it 'renders HTML anyway' do
-          expect(response.body).to match(/<html/)
+          expect(response.body).to include('<html')
         end
       end
 
