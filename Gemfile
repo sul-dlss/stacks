@@ -35,13 +35,8 @@ group :development, :test do
 
   gem 'rails-controller-testing'
 
-  # Capybara for feature/integration tests
-  gem 'capybara'
-  gem 'selenium-webdriver'
-
   # Rubocop is a static code analyzer to enforce style.
   gem 'rubocop', '~> 1.57', require: false
-  gem 'rubocop-capybara', require: false
   gem 'rubocop-performance', require: false
   gem 'rubocop-rails', require: false
   gem 'rubocop-rspec', require: false
