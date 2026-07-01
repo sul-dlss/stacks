@@ -83,6 +83,7 @@ class FileController < ApplicationController
     end
   end
 
+  # This is similar to ActiveStorage::Streaming#send_blob_stream
   def handle_full_request
     response.headers['Content-Length'] = current_file.content_length.to_s
     if request.head?
@@ -102,6 +103,12 @@ class FileController < ApplicationController
       Honeybadger.notify(e)
       raise
     end
+  rescue StandardError
+    # Status and caching headers are already set, but not committed.
+    # Change the status to 500 manually.
+    expires_now
+    head :internal_server_error
+    raise
   end
 
   def set_head_response_headers
