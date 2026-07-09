@@ -7,6 +7,9 @@ s3:
   bucket: stacks-test
   endpoint: https://sul-weka-s3.stanford.edu
 
+fileserver:
+  host: stacks.stanford.edu
+
 imageserver:
   base_uri: "http://imageserver-prod.stanford.edu/iiif/2/"
 
