@@ -29,7 +29,7 @@ RSpec.describe "Authentication for File requests" do
         it 'allows when user webauthed and authorized' do
           allow_any_instance_of(FileController).to receive(:current_user).and_return(user_webauth_stanford_no_loc)
           get "/file/#{druid}/#{file_name}"
-          expect(response).to have_http_status(:ok)
+          expect(response).to redirect_to %r{^http://stacks.stanford.edu:9000/stacks-test/bb/000/cr/7262/bb000cr7262/content/8ff299eda08d7c506273840d52a03bf3\?X-Amz-Algorithm=AWS4-HMAC-SHA256}
         end
 
         it 'blocks when user webauthed but NOT authorized' do
@@ -56,7 +56,7 @@ RSpec.describe "Authentication for File requests" do
         it 'allows when user in location' do
           allow_any_instance_of(FileController).to receive(:current_user).and_return(user_loc_no_webauth)
           get "/file/#{druid}/#{file_name}"
-          expect(response).to have_http_status(:ok)
+          expect(response).to redirect_to %r{^http://stacks.stanford.edu:9000/stacks-test/bb/000/cr/7262/bb000cr7262/content/8ff299eda08d7c506273840d52a03bf3\?X-Amz-Algorithm=AWS4-HMAC-SHA256}
         end
 
         it 'blocks when user not in location' do

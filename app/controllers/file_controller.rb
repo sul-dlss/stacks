@@ -2,7 +2,6 @@
 
 ##
 # API for delivering files from stacks
-# rubocop:disable Metrics/ClassLength
 class FileController < ApplicationController
   include ActionController::Live
 
@@ -27,12 +26,7 @@ class FileController < ApplicationController
       ip: request.remote_ip
     )
 
-    # Handle range requests
-    if request.headers['Range'].present?
-      handle_range_request
-    else
-      handle_full_request
-    end
+    redirect_to current_file.signed_download_url, allow_other_host: true
   end
   # rubocop:enable Metrics/AbcSize
 
@@ -45,76 +39,6 @@ class FileController < ApplicationController
   end
 
   private
-
-  def handle_range_request # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    range_header = RangeHeader.new(request.headers['Range'], current_file.content_length)
-
-    if range_header.invalid?
-      # Invalid range, return 416 Range Not Satisfiable
-      response.headers['Content-Range'] = "bytes */#{current_file.content_length}"
-      head :range_not_satisfiable
-      return
-    end
-
-    # For simplicity, handle only single range requests
-    # Multi-range requests would require multipart/byteranges response
-    range = range_header.ranges.first
-
-    response.headers['Content-Range'] = "bytes #{range}/#{current_file.content_length}"
-    response.headers['Content-Length'] = range.content_length.to_s
-    if request.head?
-      set_head_response_headers
-      return head(:ok)
-    end
-
-    response.status = 206
-
-    send_stream(
-      filename: current_file.file_name,
-      type: current_file.content_type,
-      disposition:
-    ) do |stream|
-      current_file.s3_range(range: range.s3_range) do |chunk|
-        stream.write(chunk)
-      end
-    rescue StandardError => e
-      Honeybadger.notify(e)
-      raise
-    end
-  end
-
-  def handle_full_request
-    response.headers['Content-Length'] = current_file.content_length.to_s
-    if request.head?
-      set_head_response_headers
-      return head(:ok)
-    end
-
-    send_stream(
-      filename: current_file.file_name,
-      type: current_file.content_type,
-      disposition:
-    ) do |stream|
-      current_file.s3_object do |chunk|
-        stream.write(chunk)
-      end
-    rescue StandardError => e
-      Honeybadger.notify(e)
-      raise
-    end
-  end
-
-  def set_head_response_headers
-    response.headers['Content-Type'] = current_file.content_type
-    response.headers['Content-Disposition'] =
-      ActionDispatch::Http::ContentDisposition.format(disposition: disposition, filename: current_file.file_name)
-  end
-
-  def disposition
-    return :attachment if file_params[:download]
-
-    :inline
-  end
 
   def file_params
     params.permit(:id, :file_name, :download, :version_id)
@@ -153,4 +77,3 @@ class FileController < ApplicationController
     params[:version_id] || :head
   end
 end
-# rubocop:enable Metrics/ClassLength

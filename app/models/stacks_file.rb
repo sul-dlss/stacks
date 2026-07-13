@@ -75,6 +75,19 @@ class StacksFile
     "weka/#{File.dirname(file_path)}/#{streaming_url_file_segment}"
   end
 
+  def signed_download_url
+    presigner = Aws::S3::Presigner.new(client: S3ClientFactory.create_client)
+    url = presigner.presigned_url(
+      :get_object,
+      bucket: Settings.s3.bucket,
+      key: s3_key,
+      expires_in: 3600
+    )
+    uri = URI(url)
+    uri.host = Settings.fileserver.host
+    uri
+  end
+
   def stacks_rights
     @stacks_rights ||= StacksRights.new(cocina:, file_name:)
   end
