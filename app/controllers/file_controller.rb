@@ -74,12 +74,11 @@ class FileController < ApplicationController
       type: current_file.content_type,
       disposition:
     ) do |stream|
-      current_file.s3_range(range: range.s3_range) do |chunk|
-        stream.write(chunk)
+      handle_streaming_errors do
+        current_file.s3_range(range: range.s3_range) do |chunk|
+          stream.write(chunk)
+        end
       end
-    rescue StandardError => e
-      Honeybadger.notify(e)
-      raise
     end
   end
 
@@ -95,13 +94,31 @@ class FileController < ApplicationController
       type: current_file.content_type,
       disposition:
     ) do |stream|
-      current_file.s3_object do |chunk|
-        stream.write(chunk)
+      handle_streaming_errors do
+        current_file.s3_object do |chunk|
+          stream.write(chunk)
+        end
       end
-    rescue StandardError => e
-      Honeybadger.notify(e)
-      raise
     end
+  end
+
+  def handle_streaming_errors
+    yield
+  rescue StandardError => e
+    return if client_disconnected_error?(e)
+
+    Honeybadger.notify(e)
+    raise
+  end
+
+  def client_disconnected_error?(error)
+    return true if error.is_a?(ActionController::Live::ClientDisconnected)
+
+    [error.cause, original_error(error)].compact.any? { |nested_error| client_disconnected_error?(nested_error) }
+  end
+
+  def original_error(error)
+    error.original_error if error.respond_to?(:original_error)
   end
 
   def set_head_response_headers
