@@ -97,8 +97,8 @@ class Cocina
   private
 
   def files_from_json
-    data.dig('structural', 'contains').each do |fileset|
-      fileset.dig('structural', 'contains').each do |file|
+    Array(data.dig('structural', 'contains')).each do |fileset|
+      Array(fileset.dig('structural', 'contains')).each do |file|
         file = StacksFile.new(file_name: file['filename'], cocina: self)
         yield file
       end
