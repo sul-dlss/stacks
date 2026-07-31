@@ -69,5 +69,25 @@ RSpec.describe Cocina do
         expect(actual).to contain_exactly('abc/26855.jp2', 'abc/123.jp2')
       end
     end
+
+    context 'when the object has no files' do
+      let(:json) do
+        {
+          'externalIdentifier' => 'abc',
+          'structural' => {
+            'contains' => []
+          }
+        }.to_json
+      end
+
+      before do
+        stub_request(:get, "https://purl.stanford.edu/abc.json")
+          .to_return(status: 200, body: json)
+      end
+
+      it 'returns no files' do
+        expect(described_class.find('abc').files.to_a).to be_empty
+      end
+    end
   end
 end
