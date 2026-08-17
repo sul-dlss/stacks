@@ -114,7 +114,10 @@ class Projection
   end
 
   def real_transformation
-    return transformation unless (image.is_a? RestrictedImage) || use_original_size?
+    return transformation unless use_original_size?
+
+    # (!image.is_a? RestrictedImage && !use_original_size?)
+    # return transformation unless (image.is_a? RestrictedImage) || use_original_size?
 
     IIIF::Image::Transformation.new(
       region: transformation.region,
