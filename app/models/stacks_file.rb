@@ -3,8 +3,11 @@
 ##
 # Represents a file on disk in stacks. A StacksFile may be downloaded and
 # may be the file that backs a StacksImage or StacksMediaStream
+# rubocop:disable Metrics/ClassLength
 class StacksFile
   include ActiveModel::Validations
+
+  STREAMING_RETRY_LIMIT = 3
 
   def initialize(file_name:, cocina:)
     @file_name = file_name
@@ -27,7 +30,7 @@ class StacksFile
   end
 
   def s3_object(&)
-    @s3_object ||= S3ClientFactory.create_client.get_object(client_params, &)
+    stream_from_s3(client_params, &)
   rescue Aws::S3::Errors::NoSuchKey
     raise "Unable to find file at #{s3_key}"
   end
@@ -35,8 +38,7 @@ class StacksFile
   def s3_range(range: nil, &)
     params = client_params.merge(range: range)
 
-    # Don't cache range requests since they're specific to the range
-    S3ClientFactory.create_client.get_object(params, &)
+    stream_from_s3(params, &)
   rescue Aws::S3::Errors::NoSuchKey
     raise "Unable to find file at #{s3_key}"
   end
@@ -89,6 +91,38 @@ class StacksFile
 
   private
 
+  def stream_from_s3(params)
+    bytes_streamed = 0
+    retries = 0
+    initial_range = params[:range]
+
+    begin
+      S3ClientFactory.create_client.get_object(params) do |chunk|
+        yield chunk
+        bytes_streamed += chunk.bytesize
+      end
+    rescue Aws::S3::Plugins::NonRetryableStreamingError, Seahorse::Client::NetworkingError => e
+      raise unless retryable_streaming_error?(e)
+
+      retries += 1
+      raise if retries > STREAMING_RETRY_LIMIT
+
+      params = params.merge(range: resumed_range(initial_range, bytes_streamed))
+      retry
+    end
+  end
+
+  def retryable_streaming_error?(error)
+    error.is_a?(Seahorse::Client::NetworkingError) ||
+      error.original_error.is_a?(Seahorse::Client::NetworkingError)
+  end
+
+  def resumed_range(range, bytes_streamed)
+    range_start, range_end = range&.delete_prefix('bytes=')&.split('-', 2)
+    range_start = range_start.to_i + bytes_streamed
+    "bytes=#{range_start}-#{range_end}"
+  end
+
   def s3_head
     @s3_head ||= S3ClientFactory.create_client.head_object(bucket: Settings.s3.bucket, key: s3_key)
   rescue Aws::S3::Errors::NoSuchKey
@@ -107,3 +141,4 @@ class StacksFile
     @storage_root ||= StorageRoot.new(cocina:, file_name:)
   end
 end
+# rubocop:enable Metrics/ClassLength

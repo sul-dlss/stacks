@@ -107,8 +107,18 @@ class FileController < ApplicationController
   rescue StandardError => e
     return if client_disconnected_error?(e)
 
-    Honeybadger.notify(e)
+    Honeybadger.notify(e, context: streaming_error_context)
     raise
+  end
+
+  def streaming_error_context
+    {
+      url: request.original_url,
+      druid: params[:id],
+      file_name: current_file.file_name,
+      file_path: current_file.client_params[:key],
+      range: request.headers['Range']
+    }.compact
   end
 
   def client_disconnected_error?(error)
