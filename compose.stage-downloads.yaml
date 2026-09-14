@@ -1,0 +1,42 @@
+# Standalone proxy deployment: Apache/Passenger and Capistrano stay on the host.
+# Do not combine with compose.yaml or compose.downloads.yaml.
+name: stacks-stage-download-proxy
+
+services:
+  downloads:
+    image: nginx:1.28
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      PUBLIC_HOST: sul-stacks-stage.stanford.edu
+      RAILS_UPSTREAM: 127.0.0.1:8443
+      S3_GATEWAY_UPSTREAM: 127.0.0.1:8082
+      NGINX_ENVSUBST_FILTER: "^(PUBLIC_HOST|RAILS_UPSTREAM|S3_GATEWAY_UPSTREAM)$$"
+    volumes:
+      - ./config/nginx/downloads-tls.conf.template:/etc/nginx/templates/default.conf.template:ro
+      # Mount both live/ symlinks and their archive/ targets for renewals.
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    depends_on:
+      - s3_gateway
+
+  s3_gateway:
+    build:
+      context: https://github.com/nginx/nginx-s3-gateway.git#a27035812d9bb7ab2f70266efa815a2635ebd63f
+      dockerfile: Dockerfile.oss
+    restart: unless-stopped
+    env_file:
+      - ./s3.stage.env
+    environment:
+      S3_SERVER: sul-weka-s3.stanford.edu
+      S3_SERVER_PORT: "443"
+      S3_SERVER_PROTO: https
+      S3_REGION: us-east-1
+      S3_STYLE: path
+      AWS_SIGS_VERSION: "4"
+      ALLOW_DIRECTORY_LIST: "false"
+      PROVIDE_INDEX_PAGE: "false"
+      APPEND_SLASH_FOR_POSSIBLE_DIRECTORY: "false"
+    ports:
+      - "127.0.0.1:8082:80"
+    volumes:
+      - ./config/nginx/s3-gateway.conf.template:/etc/nginx/templates/default.conf.template:ro
