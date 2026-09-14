@@ -63,6 +63,121 @@ your SSH agent can access the `stacks` account. Then run:
 
 Configuration is handled through the [RailsConfig](/railsconfig/config) settings.yml files.
 
+### Offloading file downloads to NGINX
+
+The optional download proxy keeps `/file/...` and `/v2/file/...` URLs on the same
+public HTTP port. Rails authorizes the request, resolves the version's storage
+key, and queues download tracking. It then returns `X-Accel-Redirect` to an
+NGINX `internal` location. NGINX streams the object through
+[nginx-s3-gateway](https://github.com/nginx/nginx-s3-gateway), freeing Rails before
+the transfer starts. Login, OPTIONS, IIIF, and other application requests continue
+to use Rails. Dynamically generated `/object/...` ZIPs still stream through Rails.
+
+Run the container setup with Docker Compose 2.24 or newer:
+
+```sh
+docker compose -f compose.yaml -f compose.downloads.yaml up --build
+```
+
+The application remains available at `http://localhost:3001`. Only the front
+NGINX publishes the application port; Rails and the S3 gateway are private Docker
+services. The local S3 backend is RustFS, and its bucket must contain objects
+matching the Cocina metadata, just as for direct Rails downloads.
+
+The overlay enables `SETTINGS__FEATURES__DOWNLOAD_PROXY=true`. Without it, the
+application retains its direct streaming behavior, including `bin/rails server`.
+Never enable that setting on a public Rails listener without the front proxy:
+clients would receive an empty response instead of the file.
+
+For Weka, configure both Rails and the gateway for the same bucket and endpoint:
+
+```sh
+export S3_ENDPOINT=https://sul-weka-s3.stanford.edu
+export S3_SERVER=sul-weka-s3.stanford.edu
+export S3_SERVER_PORT=443
+export S3_SERVER_PROTO=https
+export S3_BUCKET_NAME=your-bucket
+# Supply SETTINGS__S3__ACCESS_KEY_ID and SETTINGS__S3__SECRET_ACCESS_KEY
+# through your deployment's secret management.
+docker compose -f compose.yaml -f compose.downloads.yaml up --build
+```
+
+The gateway uses path-style addressing, Signature V4, and certificate verification
+for HTTPS origins. Its source revision is pinned in `compose.downloads.yaml`.
+Our gateway template uses the upstream credential/signing libraries but disables
+object caching, directory listing, index handling, and range slicing. Rails
+validates ranges (retaining the existing single-range behavior) and evaluates
+`If-Range` against its own validators; S3 supplies the bytes and final length.
+The front proxy preserves Rails' MIME type, disposition, cache policy, validators,
+and CORS headers. Every download still passes through Rails authorization.
+
+### Staging with host Apache/Passenger
+
+Use `compose.stage-downloads.yaml` **by itself**, not as an overlay on the local
+Compose files. It runs only the proxies; Capistrano continues managing Rails.
+Copy it, `s3.stage.env.example`, and `config/nginx/` (preserving that directory
+structure) into a stable directory such as `/opt/app/stacks/download-proxy`.
+Copy `s3.stage.env.example` to `s3.stage.env`, fill in stage's bucket and credentials,
+and run `chmod 600 s3.stage.env`. That file is ignored by Git.
+
+The staging topology is:
+
+```text
+Public HTTPS :443 -> NGINX -> Apache/Passenger 127.0.0.1:8443
+                          -> internal download -> S3 gateway 127.0.0.1:8082 -> Weka
+```
+
+Before starting the front proxy, update the host's Puppet configuration:
+
+* Change Apache's `Listen 443` and `<VirtualHost *:443>` to
+  `Listen 127.0.0.1:8443` and `<VirtualHost 127.0.0.1:8443>`.
+* Preserve Passenger, Shibboleth, directory/location rules, TLS certificates,
+  and encoded-slash handling. Keep the public canonical URL on HTTPS port 443;
+  verify Shibboleth login/callback URLs do not acquire the private port.
+* Keep Apache's port-80 redirect and certificate-renewal handling.
+
+The new `config/nginx/downloads-tls.conf.template` terminates public TLS and
+verifies Apache's upstream certificate against `sul-stacks-stage.stanford.edu`.
+The Compose file mounts `/etc/letsencrypt` read-only, including `live/` symlinks
+and their `archive/` targets. The front container uses Linux host networking.
+It replaces client-supplied forwarding headers with the actual peer IP and the
+public HTTPS scheme/port. If a load balancer sits in front, configure NGINX's
+real-IP handling for that trusted balancer before using location-based rights.
+
+From the stable deployment directory, with the Rails feature still disabled:
+
+```sh
+docker compose -f compose.stage-downloads.yaml build s3_gateway
+docker compose -f compose.stage-downloads.yaml up -d s3_gateway
+curl --fail http://127.0.0.1:8082/health
+docker compose -f compose.stage-downloads.yaml run --rm --no-deps downloads nginx -t
+# After Apache has released public port 443 and serves its private listener:
+docker compose -f compose.stage-downloads.yaml up -d downloads
+curl --resolve sul-stacks-stage.stanford.edu:443:127.0.0.1 \
+  --head https://sul-stacks-stage.stanford.edu/
+```
+
+If the earlier trial Compose deployment is still running, stop its proxy services
+before starting this one; both would otherwise claim port 8082. A gateway health
+response only checks NGINX: also test a known object key to verify Weka access.
+Validate login, real client IP, public and restricted files before enabling
+`features.download_proxy` in staging's managed Rails settings and restarting Rails.
+Then check ranges, HEAD, and that direct `/_private_s3/` requests return 404.
+
+Add the following to certificate renewal's successful deploy hook (using the
+actual stable deployment path), so NGINX loads the renewed certificate:
+
+```sh
+docker compose -f /opt/app/stacks/download-proxy/compose.stage-downloads.yaml \
+  exec -T downloads nginx -s reload
+```
+
+Recreate the affected container after template changes to rerender its configuration.
+Ensure Docker starts at boot. Restrict gateway credentials to bucket read access.
+To roll back the handoff, disable the Rails feature flag and restart Rails;
+the front proxy will forward Rails' streamed responses normally. These files do
+not change Puppet, deploy to stage, or migrate Apache into a container.
+
 ## Testing
 
 You will want to start up the Docker container which uses RustFS to replace Amazon S3 storage:

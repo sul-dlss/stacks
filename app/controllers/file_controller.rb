@@ -12,9 +12,9 @@ class FileController < ApplicationController
 
   # rubocop:disable Metrics/AbcSize
   def show
+    authorize! :download, current_file
     return unless stale?(**cache_headers)
 
-    authorize! :download, current_file
     expires_in 10.minutes
     response.headers['Accept-Ranges'] = 'bytes'
     response.headers['Access-Control-Expose-Headers'] = 'Content-Range'
@@ -26,6 +26,8 @@ class FileController < ApplicationController
       user_agent: request.user_agent,
       ip: request.remote_ip
     )
+
+    return handoff_download if Settings.features.download_proxy
 
     # Handle range requests
     if request.headers['Range'].present?
@@ -45,6 +47,32 @@ class FileController < ApplicationController
   end
 
   private
+
+  def handoff_download # rubocop:disable Metrics/AbcSize
+    if request.headers['Range'].present? && !request.head? && range_current?
+      range_header = RangeHeader.new(request.headers['Range'], current_file.content_length)
+      if range_header.invalid?
+        response.headers['Content-Range'] = "bytes */#{current_file.content_length}"
+        return head(:range_not_satisfiable)
+      end
+      response.headers['X-Stacks-Range'] = range_header.ranges.first.s3_range
+    end
+
+    set_head_response_headers
+    response.headers['X-Accel-Redirect'] = current_file.download_proxy_path
+    head :ok
+  end
+
+  # If-Range must use the validator exposed by Rails, not the S3 object's ETag.
+  def range_current?
+    validator = request.headers['If-Range']
+    return true if validator.blank?
+    return true if !validator.start_with?('W/') && validator == response.headers['ETag']
+
+    current_file.mtime.to_i <= Time.httpdate(validator).to_i
+  rescue ArgumentError
+    false
+  end
 
   def handle_range_request # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     range_header = RangeHeader.new(request.headers['Range'], current_file.content_length)

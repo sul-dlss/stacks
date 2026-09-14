@@ -1,5 +1,7 @@
 features:
   metrics: false
+  # Enable only when Rails is behind config/nginx/downloads.conf.template.
+  download_proxy: false
 
 s3:
   access_key_id: ~
