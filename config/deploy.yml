@@ -1,0 +1,46 @@
+# Name of the application. Used to uniquely configure containers.
+service: stacks
+
+# Use the image published by the GitHub Actions workflow.
+image: ghcr.io/sul-dlss/stacks
+
+# Reuse the existing production hosts. Each host must have Docker installed and
+# be reachable by the configured SSH user.
+servers:
+  web:
+    - sul-stacks-prod-a.stanford.edu
+    - sul-stacks-prod-b.stanford.edu
+    - sul-stacks-prod-c.stanford.edu
+
+# The Stanford load balancer terminates TLS in front of these hosts.
+proxy:
+  app_port: 3000
+  healthcheck:
+    path: /up
+
+registry:
+  server: ghcr.io
+  username: sul-dlss
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+# Values are read from .kamal/secrets and injected into the container.
+env:
+  secret:
+    - SECRET_KEY_BASE
+    - SETTINGS__S3__ACCESS_KEY_ID
+    - SETTINGS__S3__SECRET_ACCESS_KEY
+    - SETTINGS__STREAM__SECURITY_TOKEN_SECRET
+
+aliases:
+  console: app exec --interactive --reuse "bin/rails console"
+  shell: app exec --interactive --reuse "bash"
+  logs: app logs -f
+
+# Build amd64 images when deploying from an ARM64 workstation.
+builder:
+  arch: amd64
+
+# The existing hosts use the stacks deployment account.
+ssh:
+  user: stacks

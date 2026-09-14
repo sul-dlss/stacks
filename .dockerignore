@@ -1,6 +1,7 @@
 .dockerignore
 .git
 .github
+.kamal
 .ruby-lsp
 .claude
 coverage
