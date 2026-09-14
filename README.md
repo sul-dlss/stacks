@@ -50,6 +50,15 @@ A IIIF image request (#2 under "Capabilities" above) to production might look li
 
 In local development, this will become: `http://localhost:3000/image/iiif/qj283wt8591%2FRT0073990001/info.json`.
 
+## Deploying with Kamal
+
+Kamal deploys the container image from GHCR to the production hosts listed in `config/deploy.yml`.
+Copy `.kamal/secrets.example` to `.kamal/secrets`, set each referenced environment variable, and ensure
+your SSH agent can access the `stacks` account. Then run:
+
+    $ bin/kamal setup
+    $ bin/kamal deploy
+
 ## Configuring
 
 Configuration is handled through the [RailsConfig](/railsconfig/config) settings.yml files.
