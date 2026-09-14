@@ -1,0 +1,15 @@
+.dockerignore
+.git
+.github
+.ruby-lsp
+.claude
+coverage
+log/*
+tmp/*
+node_modules
+DTU_1979.zip
+S01.mat
+bad_metadata.j2k
+out.zip
+*.tif
+!.keep
