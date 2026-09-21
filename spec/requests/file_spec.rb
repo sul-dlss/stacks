@@ -102,7 +102,15 @@ RSpec.describe "File requests" do
 
         get path
 
-        expect(Honeybadger).to have_received(:notify).with(streaming_error)
+        expect(Honeybadger).to have_received(:notify).with(
+          streaming_error,
+          context: {
+            url: "http://www.example.com#{path}",
+            druid:,
+            file_name:,
+            file_path: 'bb/000/cr/7262/bb000cr7262/content/8ff299eda08d7c506273840d52a03bf3'
+          }
+        )
       end
     end
 
