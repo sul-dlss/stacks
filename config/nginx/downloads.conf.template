@@ -1,0 +1,61 @@
+# This listener is the only public entry point. RAILS_UPSTREAM and
+# S3_GATEWAY_UPSTREAM are private host:port pairs, without a scheme.
+server {
+    listen 8080;
+    server_tokens off;
+
+    location / {
+        proxy_pass http://${RAILS_UPSTREAM};
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $http_x_forwarded_proto;
+        proxy_hide_header X-Stacks-Range;
+        proxy_cache off;
+    }
+
+    location ^~ /_private_s3/ {
+        internal;
+
+        # Capture Rails headers before the next upstream replaces them.
+        set $download_range $upstream_http_x_stacks_range;
+        set $download_etag $upstream_http_etag;
+        set $download_modified $upstream_http_last_modified;
+        set $download_origin $upstream_http_access_control_allow_origin;
+        set $download_credentials $upstream_http_access_control_allow_credentials;
+        set $download_vary $upstream_http_vary;
+
+        # The trailing slash strips the internal prefix. Public query arguments
+        # are not S3 parameters; the gateway strips the query string as well.
+        proxy_pass http://${S3_GATEWAY_UPSTREAM}/;
+        proxy_pass_request_headers off;
+        proxy_set_header Range $download_range;
+        proxy_set_header Host $proxy_host;
+        proxy_set_header Connection "";
+        proxy_http_version 1.1;
+        proxy_buffering off;
+        proxy_cache off;
+        proxy_read_timeout 300s;
+
+        # NGINX preserves these Rails headers across X-Accel-Redirect.
+        proxy_hide_header Content-Type;
+        proxy_hide_header Content-Disposition;
+        proxy_hide_header Cache-Control;
+        proxy_hide_header Expires;
+        proxy_hide_header Accept-Ranges;
+        proxy_hide_header ETag;
+        proxy_hide_header Last-Modified;
+        proxy_hide_header Access-Control-Allow-Origin;
+        proxy_hide_header Access-Control-Allow-Credentials;
+        proxy_hide_header Access-Control-Expose-Headers;
+        proxy_hide_header Vary;
+        proxy_ignore_headers X-Accel-Redirect Expires Cache-Control Set-Cookie Vary;
+        proxy_hide_header Set-Cookie;
+
+        add_header ETag $download_etag always;
+        add_header Last-Modified $download_modified always;
+        add_header Access-Control-Allow-Origin $download_origin always;
+        add_header Access-Control-Allow-Credentials $download_credentials always;
+        add_header Access-Control-Expose-Headers Content-Range always;
+        add_header Vary $download_vary always;
+    }
+}

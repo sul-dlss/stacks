@@ -28,6 +28,12 @@ class StacksFile
     { bucket: Settings.s3.bucket, key: s3_key }
   end
 
+  def download_proxy_path
+    # Escape each segment without turning path separators into object-key data.
+    path = s3_key.split('/').map { |segment| ERB::Util.url_encode(segment) }.join('/')
+    "/_private_s3/#{path}"
+  end
+
   def s3_object(&)
     @s3_object ||= S3ClientFactory.create_client.get_object(client_params, &)
   rescue Aws::S3::Errors::NoSuchKey
