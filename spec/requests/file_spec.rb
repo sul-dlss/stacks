@@ -74,35 +74,50 @@ RSpec.describe "File requests" do
     end
 
     describe 'GET file streaming errors' do
-      let(:s3_client) { instance_double(Aws::S3::Client, head_object: s3_head) }
-      let(:s3_head) { instance_double(Aws::S3::Types::HeadObjectOutput, last_modified: Time.zone.now) }
       let(:path) { "/v2/file/#{druid}/version/#{version_id}/#{file_name}" }
 
       before do
         stub_request(:get, "https://purl.stanford.edu/#{druid}/version/#{version_id}.json")
           .to_return(status: 200, body: public_json.to_json)
-        allow(S3ClientFactory).to receive(:create_client).and_return(s3_client)
         allow(Honeybadger).to receive(:notify)
       end
 
-      it 'swallows S3 non-retryable streaming errors caused by client disconnects' do
-        client_disconnected_error = ActionController::Live::ClientDisconnected.new('client disconnected')
-        streaming_error = Aws::S3::Plugins::NonRetryableStreamingError.new(client_disconnected_error)
-        allow(s3_client).to receive(:get_object).and_raise(streaming_error)
-
-        expect { get path }.not_to raise_error
-
-        expect(response).to have_http_status(:ok)
-        expect(Honeybadger).not_to have_received(:notify)
+      # Pass each chunk of the response body to the block, which stands in for writing to the client
+      def send_response(env = {}, &)
+        _status, _headers, body = Rails.application.call(Rack::MockRequest.env_for(path, env))
+        body.each(&)
+      ensure
+        body&.close
       end
 
-      it 'reports S3 non-retryable streaming errors with other causes' do
-        streaming_error = Aws::S3::Plugins::NonRetryableStreamingError.new(StandardError.new('connection reset'))
-        allow(s3_client).to receive(:get_object).and_raise(streaming_error)
+      context 'when the client disconnects' do
+        let(:write_error) { Errno::EPIPE.new }
 
-        get path
+        it "doesn't report it to Honeybadger" do
+          expect { send_response { raise write_error } }.to raise_error(Errno::EPIPE) { |error| expect(error).to be write_error }
+          expect(Honeybadger).not_to have_received(:notify)
+        end
 
-        expect(Honeybadger).to have_received(:notify).with(streaming_error)
+        it "also doesn't report it to Honeybadger during a range request" do
+          expect { send_response('HTTP_RANGE' => 'bytes=0-99') { raise write_error } }
+            .to raise_error(Errno::EPIPE) { |error| expect(error).to be write_error }
+          expect(Honeybadger).not_to have_received(:notify)
+        end
+      end
+
+      context 'when reading from S3 fails' do
+        let(:s3_client) { S3ClientFactory.create_client }
+        let(:streaming_error) { Aws::S3::Plugins::NonRetryableStreamingError.new(StandardError.new('connection reset')) }
+
+        before do
+          allow(S3ClientFactory).to receive(:create_client).and_return(s3_client)
+          allow(s3_client).to receive(:get_object).and_raise(streaming_error)
+        end
+
+        it 'reports the error to Honeybadger' do
+          expect { send_response { nil } }.to raise_error(streaming_error)
+          expect(Honeybadger).to have_received(:notify).with(streaming_error)
+        end
       end
     end
 
