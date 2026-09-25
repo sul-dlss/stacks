@@ -14,6 +14,8 @@ RSpec.describe "File requests" do
     let(:public_json) do
       Factories.cocina_with_file(file_name:)
     end
+    # The size of the fixture object in S3, not the size in the cocina
+    let(:file_size) { 11_043 }
 
     describe 'OPTIONS options' do
       it 'permits Range headers for all origins' do
@@ -134,7 +136,7 @@ RSpec.describe "File requests" do
           expect(response).to be_ok
           headers = response.headers.transform_keys(&:downcase)
           expect(headers['accept-ranges']).to eq('bytes')
-          expect(headers['content-length']).to eq "12345"
+          expect(headers['content-length']).to eq file_size.to_s
           expect(headers['content-disposition']).to include('attachment; filename="image.jp2"')
           expect(headers['content-type']).to eq "image/jp2"
         end
@@ -147,7 +149,7 @@ RSpec.describe "File requests" do
           expect(response).to be_ok
           headers = response.headers.transform_keys(&:downcase)
           expect(headers['accept-ranges']).to eq('bytes')
-          expect(headers['content-length']).to eq "12345"
+          expect(headers['content-length']).to eq file_size.to_s
           expect(headers['content-disposition']).to include('attachment; filename="image.jp2"')
           expect(headers['content-type']).to eq "image/jp2"
         end
@@ -165,7 +167,7 @@ RSpec.describe "File requests" do
             headers: { 'Range' => 'bytes=0-499' }
 
         expect(response).to have_http_status(:partial_content)
-        expect(response.headers['Content-Range']).to eq('bytes 0-499/12345')
+        expect(response.headers['Content-Range']).to eq('bytes 0-499/11043')
         expect(response.headers['Content-Length']).to eq('500')
         expect(response.headers['Accept-Ranges']).to eq('bytes')
       end
@@ -175,17 +177,17 @@ RSpec.describe "File requests" do
             headers: { 'Range' => 'bytes=-1000' }
 
         expect(response).to have_http_status(:partial_content)
-        expect(response.headers['Content-Range']).to eq('bytes 11345-12344/12345')
+        expect(response.headers['Content-Range']).to eq('bytes 10043-11042/11043')
         expect(response.headers['Content-Length']).to eq('1000')
       end
 
       it 'returns 206 partial content for prefix range request' do
         get "/v2/file/#{druid}/version/#{version_id}/#{file_name}",
-            headers: { 'Range' => 'bytes=12000-' }
+            headers: { 'Range' => 'bytes=11000-' }
 
         expect(response).to have_http_status(:partial_content)
-        expect(response.headers['Content-Range']).to eq('bytes 12000-12344/12345')
-        expect(response.headers['Content-Length']).to eq('345')
+        expect(response.headers['Content-Range']).to eq('bytes 11000-11042/11043')
+        expect(response.headers['Content-Length']).to eq('43')
       end
 
       it 'returns 416 range not satisfiable for invalid range' do
@@ -193,7 +195,7 @@ RSpec.describe "File requests" do
             headers: { 'Range' => 'bytes=50000-60000' }
 
         expect(response).to have_http_status(:range_not_satisfiable)
-        expect(response.headers['Content-Range']).to eq('bytes */12345')
+        expect(response.headers['Content-Range']).to eq('bytes */11043')
       end
 
       it 'returns 416 range not satisfiable for malformed range' do
@@ -201,7 +203,7 @@ RSpec.describe "File requests" do
             headers: { 'Range' => 'bytes=invalid' }
 
         expect(response).to have_http_status(:range_not_satisfiable)
-        expect(response.headers['Content-Range']).to eq('bytes */12345')
+        expect(response.headers['Content-Range']).to eq('bytes */11043')
       end
 
       it 'returns full content when no range header is provided' do
@@ -211,6 +213,73 @@ RSpec.describe "File requests" do
         expect(response.headers['Content-Length'].to_i).to be > 0
         expect(response.headers['Accept-Ranges']).to eq('bytes')
         expect(response.headers['Content-Range']).to be_nil
+      end
+    end
+
+    # The request helpers above use rack-test, which sends HTTP/1.0 requests and replaces the Content-Length
+    # of any response with a body by the size of the body it read, so they can't show whether the app sent one.
+    # Call the app like Puma or Passenger do instead: Rack::MockRequest sends HTTP/1.1 and keeps the headers
+    # as the app set them, and Rack::Lint fails if the Content-Length doesn't match the body.
+    describe 'Content-Length of HTTP/1.1 responses' do
+      subject(:rack_response) { Rack::MockRequest.new(Rails.application).request(method, path, lint: true, **env) }
+
+      let(:path) { "/v2/file/#{druid}/version/#{version_id}/#{file_name}" }
+      let(:env) { {} }
+      let(:s3_client) { S3ClientFactory.create_client }
+
+      before do
+        stub_request(:get, "https://purl.stanford.edu/#{druid}/version/#{version_id}.json")
+          .to_return(status: 200, body: public_json.to_json)
+        allow(S3ClientFactory).to receive(:create_client).and_return(s3_client)
+        allow(s3_client).to receive(:get_object).and_call_original
+      end
+
+      context 'with a HEAD request' do
+        let(:method) { 'HEAD' }
+
+        it 'sends the file size and the headers of a GET, without fetching the file' do
+          expect(rack_response.status).to eq 200
+          expect(rack_response.headers).to include('content-length' => file_size.to_s,
+                                                   'content-type' => 'image/jp2',
+                                                   'content-disposition' => a_string_starting_with('inline'))
+          expect(rack_response.headers).not_to include('transfer-encoding', 'content-range')
+          expect(rack_response.body).to be_empty
+          expect(s3_client).not_to have_received(:get_object)
+        end
+      end
+
+      context 'with a HEAD request for a range' do
+        let(:method) { 'HEAD' }
+        let(:env) { { 'HTTP_RANGE' => 'bytes=0-99' } }
+
+        it 'ignores the range and sends the file size' do
+          expect(rack_response.status).to eq 200
+          expect(rack_response.headers['content-length']).to eq file_size.to_s
+          expect(rack_response.headers).not_to include('content-range')
+          expect(s3_client).not_to have_received(:get_object)
+        end
+      end
+
+      context 'with a GET request' do
+        let(:method) { 'GET' }
+
+        it 'streams the file with its size' do
+          expect(rack_response.status).to eq 200
+          expect(rack_response.headers['content-length']).to eq file_size.to_s
+          expect(rack_response.headers).not_to include('transfer-encoding')
+          expect(rack_response.body.bytesize).to eq file_size
+        end
+      end
+
+      context 'with a GET request for a range' do
+        let(:method) { 'GET' }
+        let(:env) { { 'HTTP_RANGE' => 'bytes=100-199' } }
+
+        it 'streams the range with its size' do
+          expect(rack_response.status).to eq 206
+          expect(rack_response.headers).to include('content-length' => '100', 'content-range' => "bytes 100-199/#{file_size}")
+          expect(rack_response.body.bytesize).to eq 100
+        end
       end
     end
   end

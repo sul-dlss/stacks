@@ -23,6 +23,7 @@ class StacksFile
   validates :file_name, presence: true
 
   delegate :not_proxied?, to: :cocina
+  delegate :content_length, to: :s3_head
 
   def client_params
     { bucket: Settings.s3.bucket, key: s3_key }
@@ -50,10 +51,6 @@ class StacksFile
 
   def etag
     mtime&.to_i
-  end
-
-  def content_length
-    cocina_file['size']
   end
 
   def content_type
