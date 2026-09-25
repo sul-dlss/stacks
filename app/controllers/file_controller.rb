@@ -4,8 +4,6 @@
 # API for delivering files from stacks
 # rubocop:disable Metrics/ClassLength
 class FileController < ApplicationController
-  include ActionController::Live
-
   rescue_from ActionController::MissingFile do
     render plain: 'File not found', status: :not_found
   end
@@ -27,8 +25,8 @@ class FileController < ApplicationController
       ip: request.remote_ip
     )
 
-    # Handle range requests
-    if request.headers['Range'].present?
+    # Handle range requests. Not used for HEAD requests.
+    if request.headers['Range'].present? && !request.head?
       handle_range_request
     else
       handle_full_request
@@ -46,7 +44,7 @@ class FileController < ApplicationController
 
   private
 
-  def handle_range_request # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def handle_range_request # rubocop:disable Metrics/AbcSize
     range_header = RangeHeader.new(request.headers['Range'], current_file.content_length)
 
     if range_header.invalid?
@@ -61,70 +59,61 @@ class FileController < ApplicationController
     range = range_header.ranges.first
 
     response.headers['Content-Range'] = "bytes #{range}/#{current_file.content_length}"
-    response.headers['Content-Length'] = range.content_length.to_s
-    if request.head?
-      set_head_response_headers
-      return head(:ok)
-    end
 
-    response.status = 206
-
-    send_stream(
-      filename: current_file.file_name,
-      type: current_file.content_type,
-      disposition:
-    ) do |stream|
-      handle_streaming_errors do
-        current_file.s3_range(range: range.s3_range) do |chunk|
-          stream.write(chunk)
-        end
-      end
+    stream_file(status: :partial_content, content_length: range.content_length) do |write|
+      current_file.s3_range(range: range.s3_range) { |chunk| write.call(chunk) }
     end
   end
 
   def handle_full_request
-    response.headers['Content-Length'] = current_file.content_length.to_s
-    if request.head?
-      set_head_response_headers
-      return head(:ok)
-    end
-
-    send_stream(
-      filename: current_file.file_name,
-      type: current_file.content_type,
-      disposition:
-    ) do |stream|
-      handle_streaming_errors do
-        current_file.s3_object do |chunk|
-          stream.write(chunk)
-        end
-      end
+    stream_file(status: :ok, content_length: current_file.content_length) do |write|
+      current_file.s3_object { |chunk| write.call(chunk) }
     end
   end
 
-  def handle_streaming_errors
-    yield
-  rescue StandardError => e
-    return if client_disconnected_error?(e)
-
-    Honeybadger.notify(e)
-    raise
-  end
-
-  def client_disconnected_error?(error)
-    return true if error.is_a?(ActionController::Live::ClientDisconnected)
-
-    [error.cause, original_error(error)].compact.any? { |nested_error| client_disconnected_error?(nested_error) }
-  end
-
-  def original_error(error)
-    error.original_error if error.respond_to?(:original_error)
-  end
-
-  def set_head_response_headers
-    response.headers['Content-Type'] = current_file.content_type
+  # Stream the file from S3 as a response with a Content-Length.
+  # A HEAD request gets the same headers as a GET, but doesn't fetch anything from S3.
+  def stream_file(status:, content_length:, &)
+    response.headers['Content-Type'] = file_content_type
     response.headers['Content-Disposition'] =
-      ActionDispatch::Http::ContentDisposition.format(disposition: disposition, filename: current_file.file_name)
+      ActionDispatch::Http::ContentDisposition.format(disposition:, filename: current_file.file_name)
+    response.headers['Content-Length'] = content_length.to_s
+    return head(status) if request.head?
+
+    self.status = status
+    self.response_body = streaming_body(&)
+  end
+
+  # Send content as an Enumerable Rack body. ActionController::Live deletes the
+  # content-length header before writing the first chunk, so it strips information
+  # from both HEAD and GET requests.
+  def streaming_body
+    Enumerator.new do |yielder|
+      write_error = nil
+      write = lambda do |chunk|
+        yielder << chunk
+      rescue StandardError => e
+        write_error = e
+        raise
+      end
+
+      yield write
+    rescue StandardError => e
+      # The web server couldn't send a chunk, so the client went away. Clients are allowed to
+      # disconnect and we don't need to hear about it. Re-raise the web server's own error
+      # (the S3 client may have wrapped it) so that it can deal with the connection.
+      raise write_error if write_error
+
+      Honeybadger.notify(e)
+      raise
+    end
+  end
+
+  # Same implementation as in ActionController::Live#send_stream
+  def file_content_type
+    current_file.content_type ||
+      Mime::Type.lookup_by_extension(File.extname(current_file.file_name).downcase.delete('.'))&.to_s ||
+      'application/octet-stream'
   end
 
   def disposition
