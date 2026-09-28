@@ -75,6 +75,25 @@ RSpec.describe "File requests" do
       end
     end
 
+    describe 'GET JavaScript file' do
+      let(:file_name) { 'ui.js' }
+      let(:public_json) { Factories.cocina_with_file(file_name:, mime_type: 'text/javascript') }
+
+      before do
+        stub_request(:get, "https://purl.stanford.edu/#{druid}/version/#{version_id}.json")
+          .to_return(status: 200, body: public_json.to_json)
+      end
+
+      # A plain GET, like a browser loading a <script>, which forgery protection won't answer with JavaScript
+      it 'sends the file' do
+        get "/v2/file/#{druid}/version/#{version_id}/#{file_name}"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.media_type).to eq 'text/javascript'
+        expect(response.body.bytesize).to eq file_size
+      end
+    end
+
     describe 'GET file streaming errors' do
       let(:path) { "/v2/file/#{druid}/version/#{version_id}/#{file_name}" }
 

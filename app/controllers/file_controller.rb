@@ -4,6 +4,10 @@
 # API for delivering files from stacks
 # rubocop:disable Metrics/ClassLength
 class FileController < ApplicationController
+  # Forgery protection won't answer a plain GET with JavaScript, which would stop us sending
+  # deposited .js files. It has nothing to protect here: we only answer GET, HEAD and OPTIONS.
+  skip_forgery_protection
+
   rescue_from ActionController::MissingFile do
     render plain: 'File not found', status: :not_found
   end
