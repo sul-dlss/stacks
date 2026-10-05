@@ -69,10 +69,17 @@ class FileController < ApplicationController
     end
   end
 
+  # This is similar to ActiveStorage::Streaming#send_blob_stream
   def handle_full_request
     stream_file(status: :ok, content_length: current_file.content_length) do |write|
       current_file.s3_object { |chunk| write.call(chunk) }
     end
+  rescue StandardError
+    # Status and caching headers are already set, but not committed.
+    # Change the status to 500 manually.
+    expires_now
+    head :internal_server_error
+    raise
   end
 
   # Stream the file from S3 as a response with a Content-Length.
