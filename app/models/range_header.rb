@@ -10,10 +10,6 @@ class RangeHeader
     def to_s
       "#{range_start}-#{range_end}"
     end
-
-    def s3_range
-      "bytes=#{self}"
-    end
   end
 
   def initialize(range_header, content_length)

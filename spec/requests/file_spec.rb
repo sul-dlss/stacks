@@ -128,16 +128,24 @@ RSpec.describe "File requests" do
 
       context 'when reading from S3 fails' do
         let(:s3_client) { S3ClientFactory.create_client }
-        let(:streaming_error) { Aws::S3::Plugins::NonRetryableStreamingError.new(StandardError.new('connection reset')) }
+        let(:streaming_error) do
+          Seahorse::Client::NetworkingError.new(Errno::ECONNRESET.new, 'Connection reset by peer - SSL_read')
+        end
 
         before do
           allow(S3ClientFactory).to receive(:create_client).and_return(s3_client)
           allow(s3_client).to receive(:get_object).and_raise(streaming_error)
         end
 
-        it 'reports the error to Honeybadger' do
+        it 'reports the error to Honeybadger once it gives up resuming' do
           expect { send_response { nil } }.to raise_error(streaming_error)
-          expect(Honeybadger).to have_received(:notify).with(streaming_error)
+          expect(s3_client).to have_received(:get_object).exactly(StacksFile::S3_RESUME_LIMIT + 1).times
+          expect(Honeybadger).to have_received(:notify).with(streaming_error).once
+        end
+
+        it 'reports the error to Honeybadger during a range request' do
+          expect { send_response('HTTP_RANGE' => 'bytes=0-99') { nil } }.to raise_error(streaming_error)
+          expect(Honeybadger).to have_received(:notify).with(streaming_error).once
         end
       end
     end
