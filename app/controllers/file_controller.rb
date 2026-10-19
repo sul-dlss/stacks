@@ -65,7 +65,7 @@ class FileController < ApplicationController
     response.headers['Content-Range'] = "bytes #{range}/#{current_file.content_length}"
 
     stream_file(status: :partial_content, content_length: range.content_length) do |write|
-      current_file.s3_range(range: range.s3_range) { |chunk| write.call(chunk) }
+      current_file.s3_object(range:) { |chunk| write.call(chunk) }
     end
   end
 

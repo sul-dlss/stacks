@@ -29,19 +29,33 @@ class StacksFile
     { bucket: Settings.s3.bucket, key: s3_key }
   end
 
-  def s3_object(&)
-    @s3_object ||= S3ClientFactory.create_client.get_object(client_params, &)
-  rescue Aws::S3::Errors::NoSuchKey
-    raise "Unable to find file at #{s3_key}"
-  end
+  # How many times to ask S3 for the rest of the file after it drops the connection
+  S3_RESUME_LIMIT = 3
 
-  def s3_range(range: nil, &)
-    params = client_params.merge(range: range)
+  # Yields the bytes of the file (or of a RangeHeader::Range of it) from S3 in chunks.
+  # If S3 drops the connection partway through, ask again for the bytes we haven't yielded.
+  # The S3 client won't retry a ranged request that streams to a block, and by then we've
+  # promised the client a content-length, so giving up would leave them a truncated response.
+  def s3_object(range: RangeHeader::Range.new(0, content_length - 1))
+    return if range.content_length <= 0
 
-    # Don't cache range requests since they're specific to the range
-    S3ClientFactory.create_client.get_object(params, &)
-  rescue Aws::S3::Errors::NoSuchKey
-    raise "Unable to find file at #{s3_key}"
+    yielded = 0
+    resumes = 0
+    begin
+      in_block = false
+      get_s3_range(range_start: range.range_start + yielded, range_end: range.range_end) do |chunk|
+        in_block = true
+        yield chunk
+        in_block = false
+        yielded += chunk.bytesize
+      end
+    rescue Seahorse::Client::NetworkingError
+      # The S3 client wraps errors from the block too, but those come from writing to our client.
+      raise if in_block || resumes >= S3_RESUME_LIMIT
+
+      resumes += 1
+      retry
+    end
   end
 
   # @raises Aws::S3::Errors::NotFound
@@ -88,6 +102,12 @@ class StacksFile
   end
 
   private
+
+  def get_s3_range(range_start:, range_end:, &)
+    S3ClientFactory.create_client.get_object(client_params.merge(range: "bytes=#{range_start}-#{range_end}"), &)
+  rescue Aws::S3::Errors::NoSuchKey
+    raise "Unable to find file at #{s3_key}"
+  end
 
   def s3_head
     @s3_head ||= S3ClientFactory.create_client.head_object(bucket: Settings.s3.bucket, key: s3_key)
