@@ -2,7 +2,7 @@
 
 # Creates an S3 client instance.
 class S3ClientFactory
-  # rubocop:disable Naming/MemoizedInstanceVariableName
+  # rubocop:disable-next Naming/MemoizedInstanceVariableName
   def self.create_client
     @client ||= Aws::S3::Client.new(
       region: 'us-east-1',
@@ -12,5 +12,4 @@ class S3ClientFactory
       secret_access_key: Settings.s3.secret_access_key
     )
   end
-  # rubocop:enable Naming/MemoizedInstanceVariableName
 end

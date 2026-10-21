@@ -88,7 +88,7 @@ RSpec.describe 'Metrics tracking' do
       allow(CocinaAbility).to receive(:new).and_return(ability)
     end
 
-    # rubocop:disable RSpec/ExampleLength
+    # rubocop:disable-next RSpec/ExampleLength
     it 'tracks downloads' do
       get iiif_path(
         'nr349ct7889%2Fimage',
@@ -115,6 +115,5 @@ RSpec.describe 'Metrics tracking' do
         expect(req.headers['X-Forwarded-For']).to eq '73.235.188.148'
       end).to have_been_made
     end
-    # rubocop:enable RSpec/ExampleLength
   end
 end
