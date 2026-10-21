@@ -101,7 +101,7 @@ class IiifController < ApplicationController
 
     # Only send browser navigations to the Shibboleth-protected login. Subresource requests (e.g. image
     # tiles) can't complete a SAML login, and each attempt leaves behind a _shibstate cookie.
-    return head :unauthorized unless navigation_request?
+    return render(plain: 'Unauthorized', status: :unauthorized) unless navigation_request?
 
     redirect_to auth_iiif_url(iiif_params.to_h.merge(identifier_params).merge(download: params[:download]).symbolize_keys)
   end

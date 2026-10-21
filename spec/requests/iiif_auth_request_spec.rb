@@ -106,6 +106,7 @@ RSpec.describe "Authentication for IIIF requests" do
             get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}",
                 headers: { 'Sec-Fetch-Mode' => 'no-cors' }
             expect(response).to have_http_status(:unauthorized)
+            expect(response.media_type).to eq('text/plain')
           end
         end
       end
