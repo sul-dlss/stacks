@@ -54,6 +54,13 @@ In local development, this will become: `http://localhost:3000/image/iiif/qj283w
 
 Configuration is handled through the [RailsConfig](/railsconfig/config) settings.yml files.
 
+### Service tokens
+
+Services that need to download Stanford-only files can authenticate with a JWT sent as
+`Authorization: Bearer <token>`. A service token grants the same access as a Stanford user.
+Set `service_token.hmac_secret`, then generate a token by running
+`RAILS_ENV=production bin/rails generate_token` on the prod server.
+
 ## Testing
 
 You will want to start up the Docker container which uses RustFS to replace Amazon S3 storage:

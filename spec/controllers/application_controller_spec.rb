@@ -25,6 +25,20 @@ RSpec.describe ApplicationController do
       end
     end
 
+    context 'with a service token' do
+      let(:token) { JWT.encode({ sub: 'sdr-harvest' }, Settings.service_token.hmac_secret, 'HS256') }
+
+      before do
+        request.env['HTTP_AUTHORIZATION'] = "Bearer #{token}"
+      end
+
+      it 'supports service users' do
+        expect(user.id).to eq 'sdr-harvest'
+        expect(user).to be_a_service_user
+        expect(user).to be_stanford
+      end
+    end
+
     context 'with a REMOTE_USER header' do
       before do
         request.env['REMOTE_USER'] = 'my-user'

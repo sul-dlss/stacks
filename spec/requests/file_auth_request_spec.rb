@@ -39,6 +39,12 @@ RSpec.describe "Authentication for File requests" do
         end
       end
 
+      it 'allows a service authenticated with a service token' do
+        token = JWT.encode({ sub: 'sdr-harvest' }, Settings.service_token.hmac_secret, 'HS256')
+        get "/file/#{druid}/#{file_name}", headers: { 'Authorization' => "Bearer #{token}" }
+        expect(response).to have_http_status(:ok)
+      end
+
       it "prompts for webauth when user not webauthed" do
         allow_any_instance_of(FileController).to receive(:current_user).and_return(user_no_loc_no_webauth)
         get "/file/#{druid}/#{file_name}"
@@ -62,6 +68,12 @@ RSpec.describe "Authentication for File requests" do
         it 'blocks when user not in location' do
           allow_any_instance_of(FileController).to receive(:current_user).and_return(user_no_loc_no_webauth)
           get "/file/#{druid}/#{file_name}"
+          expect(response).to have_http_status(:forbidden)
+        end
+
+        it 'blocks a service authenticated with a service token' do
+          token = JWT.encode({ sub: 'sdr-harvest' }, Settings.service_token.hmac_secret, 'HS256')
+          get "/file/#{druid}/#{file_name}", headers: { 'Authorization' => "Bearer #{token}" }
           expect(response).to have_http_status(:forbidden)
         end
       end

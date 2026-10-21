@@ -38,7 +38,8 @@ module CurrentUserConcern
   def token_user(token)
     return unless token
 
-    User.from_token(token, ip_address: request.remote_ip)
+    User.from_service_token(token, ip_address: request.remote_ip) ||
+      User.from_token(token, ip_address: request.remote_ip)
   end
 
   def webauth_user

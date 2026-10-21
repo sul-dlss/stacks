@@ -6,7 +6,7 @@ class User
   include ActiveModel::Model
 
   attr_accessor :id, :webauth_user, :anonymous_locatable_user, :token_user,
-                :ldap_groups, :ip_address
+                :service_user, :ldap_groups, :ip_address
 
   def ability
     ability_class.new(self)
@@ -24,12 +24,17 @@ class User
     anonymous_locatable_user
   end
 
+  # Services authenticated with a service token get the same access as Stanford users
   def stanford?
-    ldap_groups.present? && ldap_groups.intersect?(Settings.user.stanford_groups)
+    service_user? || (ldap_groups.present? && ldap_groups.intersect?(Settings.user.stanford_groups))
   end
 
   def token_user?
     token_user
+  end
+
+  def service_user?
+    service_user
   end
 
   def etag
@@ -51,6 +56,17 @@ class User
     return nil if expiry < Time.zone.now
 
     User.new(attributes.merge(token_user: true).merge(additional_attributes))
+  end
+
+  # @return [User, nil] the service named by a JWT from `bin/rails generate_token`
+  def self.from_service_token(token, additional_attributes = {})
+    secret = Settings.service_token.hmac_secret
+    return if secret.blank?
+
+    payload, _header = JWT.decode(token, secret, true, algorithm: 'HS256')
+    User.new({ id: payload['sub'], service_user: true }.merge(additional_attributes))
+  rescue JWT::DecodeError
+    nil
   end
 
   def token
