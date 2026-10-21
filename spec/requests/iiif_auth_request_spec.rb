@@ -92,6 +92,22 @@ RSpec.describe "Authentication for IIIF requests" do
           get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}"
           expect(response).to redirect_to(auth_iiif_url(id: druid, file_name:, format:))
         end
+
+        context 'when the browser is navigating to the image' do
+          it 'redirects to the authentication endpoint' do
+            get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}",
+                headers: { 'Sec-Fetch-Mode' => 'navigate' }
+            expect(response).to redirect_to(auth_iiif_url(id: druid, file_name:, format:))
+          end
+        end
+
+        context 'when the browser is loading the image as a subresource (e.g. a tile)' do
+          it 'returns unauthorized without redirecting to the authentication endpoint' do
+            get "/image/iiif/#{identifier}/#{region}/#{size}/#{rotation}/#{quality}.#{format}",
+                headers: { 'Sec-Fetch-Mode' => 'no-cors' }
+            expect(response).to have_http_status(:unauthorized)
+          end
+        end
       end
     end
 
