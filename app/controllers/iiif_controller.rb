@@ -98,11 +98,19 @@ class IiifController < ApplicationController
   #   a)  access not allowed (send to super)  OR
   #   b)  need user to login to determine if access allowed
   def rescue_can_can(exception)
-    if degradable? && !current_user.webauth_user?
-      redirect_to auth_iiif_url(iiif_params.to_h.merge(identifier_params).merge(download: params[:download]).symbolize_keys)
-    else
-      super
-    end
+    return super if !degradable? || current_user.webauth_user?
+
+    # Only send browser navigations to the Shibboleth-protected login. Subresource requests (e.g. image
+    # tiles) can't complete a SAML login, and each attempt leaves behind a _shibstate cookie.
+    return head :unauthorized unless navigation_request?
+
+    redirect_to auth_iiif_url(iiif_params.to_h.merge(identifier_params).merge(download: params[:download]).symbolize_keys)
+  end
+
+  # Clients that don't send Sec-Fetch-Mode (non-browser clients) are treated as navigations.
+  def navigation_request?
+    mode = request.headers['Sec-Fetch-Mode']
+    mode.blank? || mode == 'navigate'
   end
 
   # the cache headers for the metadata action
