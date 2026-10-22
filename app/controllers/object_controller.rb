@@ -51,7 +51,8 @@ class ObjectController < ApplicationController
   #   b)  need user to login to determine if access allowed
   def rescue_can_can(exception)
     current_file = exception.subject
-    if User.stanford_generic_user.ability.can?(:access, current_file) && !current_user.webauth_user?
+    if User.stanford_generic_user.ability.can?(:access, current_file) && !current_user.webauth_user? &&
+       !current_user.service_user?
       redirect_to auth_object_path(id: druid)
     else
       super

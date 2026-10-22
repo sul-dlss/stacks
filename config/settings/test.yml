@@ -11,6 +11,9 @@ user:
 features:
   metrics: true
 
+service_token:
+  hmac_secret: test-secret
+
 metrics_api_url: "https://example.com"
 
 s3:

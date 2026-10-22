@@ -58,4 +58,9 @@ cors:
 token:
   default_expiry_time: <%= 1.hour %>
 
+# Signs the JWTs given to services (e.g. harvesters) with `bin/rails generate_token`.
+# Service tokens are rejected while this is blank.
+service_token:
+  hmac_secret: ~
+
 user_agent: "stacks.stanford.edu"
