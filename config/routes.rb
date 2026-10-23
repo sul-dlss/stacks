@@ -69,8 +69,8 @@ Rails.application.routes.draw do
   end
 
   # IIIF Auth V2
-  get '/iiif/auth/v2/token' => 'iiif/auth/v2/token#create'
-  get '/iiif/auth/v2/probe' => 'iiif/auth/v2/probe_service#show'
+  get '/iiif/auth/v2/token' => 'iiif/auth/v2/token#create', as: :iiif_auth_v2_token
+  get '/iiif/auth/v2/probe' => 'iiif/auth/v2/probe_service#show', as: :iiif_auth_v2_probe
   options '/iiif/auth/v2/probe' => 'iiif/auth/v2/probe_service#options_pre_flight'
 
 end
