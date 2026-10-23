@@ -124,6 +124,19 @@ RSpec.describe 'IIIF API' do
             expect(response).to have_http_status :ok
             expect(controller.send(:current_image).stacks_file.id).to eq 'bb000cr7262'
           end
+
+          it 'advertises Auth v1 and an Auth v2 probe for the image file' do
+            get '/image/iiif/degraded/bb000cr7262/image/info.json'
+
+            services = response.parsed_body.fetch('service')
+            expect(services).to include hash_including('profile' => 'http://iiif.io/api/auth/1/login')
+
+            probe = services.find { |service| service['type'] == 'AuthProbeService2' }
+            expect(URI(probe['id']).path).to eq '/iiif/auth/v2/probe'
+            expect(URI.decode_www_form(URI(probe['id']).query).to_h.fetch('id'))
+              .to eq 'http://www.example.com/file/bb000cr7262/image.jp2'
+            expect(probe.dig('service', 0, 'service', 0, 'type')).to eq 'AuthAccessTokenService2'
+          end
         end
       end
 
