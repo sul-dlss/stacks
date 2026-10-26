@@ -63,15 +63,46 @@ class IiifInfoService
     tiles
   end
 
-  # @return [String,Array<String>,NilClass] return a string if there is one service,
-  #    a array if there are two services or nil if there are none.
+  # @return [Array<Hash>,NilClass] authorization services for restricted images
   def services
     services = []
     services << Iiif::V1::AuthService.to_iiif(context) if current_image.stanford_restricted?
     services << LocationService.to_iiif(context) if current_image.restricted_by_location?
     return nil if services.empty?
 
-    services.one? ? services.first : services
+    services << auth_v2_probe_service
+  end
+
+  def auth_v2_probe_service
+    file = current_image.stacks_file
+    file_url = context.file_url(id: file.id, file_name: file.file_name)
+
+    {
+      '@context' => 'http://iiif.io/api/auth/2/context.json',
+      'id' => context.iiif_auth_v2_probe_url(id: file_url),
+      'type' => 'AuthProbeService2',
+      'service' => [auth_v2_access_service]
+    }
+  end
+
+  def auth_v2_access_service
+    label = if current_image.stanford_restricted?
+              'Stanford users: log in to access all available features'
+            else
+              'Restricted content cannot be accessed from your location'
+            end
+
+    {
+      'id' => context.iiif_auth_api_url,
+      'type' => 'AuthAccessService2',
+      'profile' => 'active',
+      'label' => { 'en' => [label] },
+      'confirmLabel' => { 'en' => ['Log in'] },
+      'service' => [{
+        'id' => context.iiif_auth_v2_token_url,
+        'type' => 'AuthAccessTokenService2'
+      }]
+    }
   end
 
   def thumbnail_only_size

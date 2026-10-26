@@ -12,12 +12,15 @@ RSpec.describe IiifInfoService do
       double('routing context',
              iiif_auth_api_url: 'http://foo/auth/api',
              iiif_token_api_url: 'http://foo/token/api',
+             iiif_auth_v2_token_url: 'http://foo/iiif/auth/v2/token',
+             iiif_auth_v2_probe_url: 'http://foo/iiif/auth/v2/probe?id=http%3A%2F%2Ffoo%2Ffile%2Fnr349ct7889%2Fnr349ct7889_00_0001',
+             file_url: 'http://foo/file/nr349ct7889/nr349ct7889_00_0001',
              logout_url: 'http://foo/logout')
     end
     let(:downloadable_anonymously) { true }
     let(:image) { StacksImage.new(stacks_file:) }
     let(:cocina) { Cocina.new(public_json) }
-    let(:public_json) { {} }
+    let(:public_json) { { 'externalIdentifier' => 'nr349ct7889' } }
     let(:stacks_file) { StacksFile.new(file_name: 'nr349ct7889_00_0001', cocina:) }
     let(:source_info) { {} }
 
@@ -100,8 +103,8 @@ RSpec.describe IiifInfoService do
     context 'when the image is not downloadable' do
       let(:image) { RestrictedImage.new(stacks_file:) }
       let(:downloadable_anonymously) { false }
-      let(:source_info) { { tile_height: 256, tile_width: 256 } }
-      let(:auth_service) { image_info['service'] }
+      let(:source_info) { { tile_height: 256, tile_width: 256, '@context' => 'http://iiif.io/api/image/2/context.json' } }
+      let(:auth_service) { image_info['service'].find { |service| service['profile'] == 'http://iiif.io/api/auth/1/login' } }
 
       before do
         allow(image).to receive_messages(stanford_restricted?: true)
@@ -135,13 +138,25 @@ RSpec.describe IiifInfoService do
         expect(logout_service['@id']).to eq 'http://foo/logout'
         expect(logout_service['label']).to eq 'Logout'
       end
+
+      it 'advertises an Auth v2 probe for the image file' do
+        probe = image_info['service'].find { |service| service['type'] == 'AuthProbeService2' }
+        expect(context).to have_received(:file_url).with(id: 'nr349ct7889', file_name: 'nr349ct7889_00_0001')
+        expect(context).to have_received(:iiif_auth_v2_probe_url)
+          .with(id: 'http://foo/file/nr349ct7889/nr349ct7889_00_0001')
+        expect(image_info['@context']).to eq 'http://iiif.io/api/image/2/context.json'
+        expect(probe['@context']).to eq 'http://iiif.io/api/auth/2/context.json'
+        expect(probe['id']).to eq 'http://foo/iiif/auth/v2/probe?id=http%3A%2F%2Ffoo%2Ffile%2Fnr349ct7889%2Fnr349ct7889_00_0001'
+        expect(probe.dig('service', 0)).to include 'type' => 'AuthAccessService2', 'profile' => 'active', 'id' => 'http://foo/auth/api'
+        expect(probe.dig('service', 0, 'service', 0)).to include 'type' => 'AuthAccessTokenService2', 'id' => 'http://foo/iiif/auth/v2/token'
+      end
     end
 
     context 'when the image is location-restricted' do
       let(:image) { RestrictedImage.new(stacks_file:) }
       let(:downloadable_anonymously) { false }
 
-      let(:location_service) { image_info['service'] }
+      let(:location_service) { image_info['service'].find { |service| service['profile'] == 'http://iiif.io/api/auth/1/external' } }
       let(:public_json) do
         {
           'externalIdentifier' => 'nr349ct7889',
@@ -181,6 +196,11 @@ RSpec.describe IiifInfoService do
         expect(location_service['service'].first['profile']).to eq 'http://iiif.io/api/auth/1/token'
         expect(location_service['service'].first['@id']).to eq 'http://foo/token/api'
       end
+
+      it 'also advertises a location-aware Auth v2 probe' do
+        probe = image_info['service'].find { |service| service['type'] == 'AuthProbeService2' }
+        expect(probe.dig('service', 0, 'label')).to eq 'en' => ['Restricted content cannot be accessed from your location']
+      end
     end
 
     context 'when the item has location and stanford-only rights' do
@@ -189,6 +209,7 @@ RSpec.describe IiifInfoService do
 
       let(:public_json) do
         {
+          'externalIdentifier' => 'nr349ct7889',
           'structural' => {
             'contains' => [
               {
@@ -216,8 +237,10 @@ RSpec.describe IiifInfoService do
 
       it 'advertises support for both login and external authentication' do
         expect(image_info['service']).to be_present
-        expect(image_info['service'].length).to eq 2
-        expect(image_info['service'].pluck('profile')).to contain_exactly('http://iiif.io/api/auth/1/login', 'http://iiif.io/api/auth/1/external')
+        expect(image_info['service'].length).to eq 3
+        expect(image_info['service'].filter_map { |service| service['profile'] })
+          .to contain_exactly('http://iiif.io/api/auth/1/login', 'http://iiif.io/api/auth/1/external')
+        expect(image_info['service'].pluck('type')).to include 'AuthProbeService2'
       end
     end
   end
