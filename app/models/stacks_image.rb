@@ -31,7 +31,7 @@ class StacksImage
 
   # @return [String,Array] the compliance level, expressed for the IIIF Image API version the image server speaks
   def profile
-    api_version >= 3 ? 'level2' : ['http://iiif.io/api/image/2/level2.json']
+    api_version == 3 ? 'level2' : ['http://iiif.io/api/image/2/level2.json']
   end
 
   # IIIF Image API 3 expresses size limits as top-level info.json properties rather than within the profile

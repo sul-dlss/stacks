@@ -89,7 +89,7 @@ class IiifInfoService
   end
 
   def v3?
-    current_image.api_version >= 3
+    current_image.api_version == 3
   end
 
   def thumbnail_only_size

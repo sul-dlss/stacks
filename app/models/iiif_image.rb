@@ -33,7 +33,7 @@ class IiifImage
   # IIIF Image API 3 removed the "full" size in favor of "max"
   # @return [IIIF::Image::Transformation] the transformation in the image server's dialect
   def server_transformation
-    return transformation unless @api_version >= 3 && transformation.size.is_a?(IIIF::Image::Size::Full)
+    return transformation unless @api_version == 3 && transformation.size.is_a?(IIIF::Image::Size::Full)
 
     IIIF::Image::Transformation.new(region: transformation.region, size: IIIF::Image::Size::Max.new,
                                     rotation: transformation.rotation, quality: transformation.quality,

@@ -8,7 +8,7 @@ class RestrictedImage < StacksImage
   end
 
   def profile
-    api_version >= 3 ? 'level2' : ["http://iiif.io/api/image/2/level2.json", size_limits]
+    api_version == 3 ? 'level2' : ["http://iiif.io/api/image/2/level2.json", size_limits]
   end
 
   def size_limits
