@@ -39,6 +39,10 @@ RSpec.describe IiifMetadataService do
       end
     end
 
+    describe '#api_version' do
+      it { expect(service.api_version).to eq 2 }
+    end
+
     describe '#image_width' do
       subject { service.image_width }
 
@@ -49,6 +53,53 @@ RSpec.describe IiifMetadataService do
       subject { service.image_height }
 
       it { is_expected.to eq 2552 }
+    end
+  end
+
+  context "When the image server responds with IIIF Image API 3" do
+    let(:base_uri) { 'https://imageserver.example.com/v3/' }
+    let(:body) do
+      {
+        '@context' => 'http://iiif.io/api/image/3/context.json',
+        'id' => "https://imageserver.example.com/v3/#{image_server_path(druid, file_name)}",
+        'type' => 'ImageService3',
+        'protocol' => 'http://iiif.io/api/image',
+        'profile' => 'level2',
+        'width' => 6048,
+        'height' => 4024,
+        'sizes' => [{ 'width' => 3024, 'height' => 2012 }, { 'width' => 6048, 'height' => 4024 }],
+        'tiles' => [{ 'scaleFactors' => [1, 2, 4, 8], 'width' => 1024 }]
+      }.to_json
+    end
+    let(:response) { instance_double(HTTP::Response, code: 200, body:) }
+
+    before do
+      allow(HTTP).to receive_message_chain(:timeout, :headers).and_return(http_client)
+      allow(http_client).to receive(:get)
+        .with("https://imageserver.example.com/v3/#{image_server_path(druid, file_name)}/info.json")
+        .and_return(response)
+    end
+
+    describe '#api_version' do
+      it { expect(service.api_version).to eq 3 }
+    end
+
+    describe "#fetch" do
+      subject(:json) { service.fetch(nil) }
+
+      it "returns the version 3 response with the canonical id" do
+        expect(json).to include('@context' => 'http://iiif.io/api/image/3/context.json', 'id' => 'foo', 'type' => 'ImageService3')
+        expect(json).not_to have_key '@id'
+      end
+
+      it 'does not add a duplicate full size' do
+        expect(json.fetch('sizes')).to eq [{ 'width' => 3024, 'height' => 2012 }, { 'width' => 6048, 'height' => 4024 }]
+      end
+
+      it 'does not modify the cached response when called again' do
+        service.fetch(256)
+        expect(json.fetch('tiles')).to eq [{ 'scaleFactors' => [1, 2, 4, 8], 'width' => 1024 }]
+      end
     end
   end
 

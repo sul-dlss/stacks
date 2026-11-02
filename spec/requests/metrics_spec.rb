@@ -71,7 +71,8 @@ RSpec.describe 'Metrics tracking' do
         exist?: true,
         etag: nil,
         mtime: nil,
-        restricted: false
+        restricted: false,
+        api_version: 2
       )
     end
     let(:image_response) { instance_double(HTTP::Response, body: StringIO.new, status: 200) }

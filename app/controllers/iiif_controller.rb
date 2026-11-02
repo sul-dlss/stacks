@@ -5,8 +5,6 @@
 class IiifController < ApplicationController
   skip_forgery_protection
 
-  before_action :add_iiif_profile_header
-
   rescue_from ActionController::MissingFile do
     render plain: 'File not found', status: :not_found
   end
@@ -17,6 +15,8 @@ class IiifController < ApplicationController
     projection = current_image.projection_for(transformation)
 
     raise ActionController::MissingFile, 'File Not Found' unless projection.valid?
+
+    add_iiif_profile_header
 
     begin
       return unless stale?(**cache_headers_show(projection))
@@ -46,6 +46,8 @@ class IiifController < ApplicationController
   # rubocop:disable-next Metrics/PerceivedComplexity
   def metadata
     raise ActionController::MissingFile, 'File Not Found' if !Rails.env.development? && !current_image.exist?
+
+    add_iiif_profile_header
 
     return unless stale?(**cache_headers_metadata)
 
@@ -181,7 +183,7 @@ class IiifController < ApplicationController
   end
 
   def add_iiif_profile_header
-    headers['Link'] = '<http://iiif.io/api/image/2/level2.json>;rel="profile"'
+    headers['Link'] = "<http://iiif.io/api/image/#{current_image.api_version}/level2.json>;rel=\"profile\""
   end
 
   # We consider an image to be degraded if the user isn't currently able to download it, but if they

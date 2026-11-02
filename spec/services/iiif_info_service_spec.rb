@@ -20,11 +20,13 @@ RSpec.describe IiifInfoService do
     let(:public_json) { {} }
     let(:stacks_file) { StacksFile.new(file_name: 'nr349ct7889_00_0001', cocina:) }
     let(:source_info) { {} }
+    let(:api_version) { 2 }
 
     before do
       allow(image).to receive_messages(info: source_info,
                                        maybe_downloadable?: true,
-                                       restricted_by_location?: false)
+                                       restricted_by_location?: false,
+                                       api_version:)
     end
 
     # This is kind of a round-about way to test this,
@@ -218,6 +220,55 @@ RSpec.describe IiifInfoService do
         expect(image_info['service']).to be_present
         expect(image_info['service'].length).to eq 2
         expect(image_info['service'].pluck('profile')).to contain_exactly('http://iiif.io/api/auth/1/login', 'http://iiif.io/api/auth/1/external')
+      end
+    end
+
+    context 'when the image server speaks IIIF Image API 3' do
+      let(:api_version) { 3 }
+      let(:source_info) do
+        {
+          '@context' => 'http://iiif.io/api/image/3/context.json',
+          'id' => 'https://stacks.example.com/image/iiif/nr349ct7889/nr349ct7889_00_0001',
+          'type' => 'ImageService3',
+          'profile' => 'level2',
+          'width' => 6048,
+          'height' => 4024,
+          'sizes' => [{ 'width' => 6048, 'height' => 4024 }],
+          'tiles' => [{ 'scaleFactors' => [1, 2, 4, 8], 'width' => 1024 }]
+        }
+      end
+
+      it 'returns a version 3 response' do
+        expect(image_info).to include(
+          '@context' => 'http://iiif.io/api/image/3/context.json',
+          'id' => 'https://stacks.example.com/image/iiif/nr349ct7889/nr349ct7889_00_0001',
+          'type' => 'ImageService3',
+          'profile' => 'level2'
+        )
+        expect(image_info).not_to have_key 'maxWidth'
+      end
+
+      it 'keeps the tile size, which has an implicit height' do
+        expect(image_info['tiles']).to eq [{ 'scaleFactors' => [1, 2, 4, 8], 'width' => 1024 }]
+      end
+
+      context 'when the image is restricted' do
+        let(:image) { RestrictedImage.new(stacks_file:) }
+        let(:downloadable_anonymously) { false }
+
+        before do
+          allow(image).to receive_messages(stanford_restricted?: true)
+        end
+
+        it 'expresses size limits as top-level properties' do
+          expect(image_info).to include('profile' => 'level2', 'maxWidth' => 400, 'maxHeight' => 400)
+        end
+
+        it 'lists the services in an array' do
+          expect(image_info['service']).to contain_exactly(
+            a_hash_including('profile' => 'http://iiif.io/api/auth/1/login')
+          )
+        end
       end
     end
   end

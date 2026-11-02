@@ -36,7 +36,21 @@ RSpec.describe StacksImage do
   describe 'profile' do
     subject { instance.profile }
 
-    it { is_expected.to eq ['http://iiif.io/api/image/2/level2.json'] }
+    before do
+      allow(instance).to receive(:api_version).and_return(api_version) # rubocop:disable RSpec/SubjectStub
+    end
+
+    context 'with a IIIF Image API 2 image server' do
+      let(:api_version) { 2 }
+
+      it { is_expected.to eq ['http://iiif.io/api/image/2/level2.json'] }
+    end
+
+    context 'with a IIIF Image API 3 image server' do
+      let(:api_version) { 3 }
+
+      it { is_expected.to eq 'level2' }
+    end
   end
 
   describe '#restricted' do

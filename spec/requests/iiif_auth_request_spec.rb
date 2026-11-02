@@ -31,6 +31,7 @@ RSpec.describe "Authentication for IIIF requests" do
       allow(http_client).to receive(:get).and_return(instance_double(HTTP::Response, status: 200, body: StringIO.new))
       allow_any_instance_of(IiifController).to receive(:current_user).and_return(current_user)
       allow_any_instance_of(IiifController).to receive(:current_image).and_return(current_image)
+      allow(current_image).to receive(:api_version).and_return(2)
     end
 
     context 'with a public item' do
