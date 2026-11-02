@@ -11,7 +11,8 @@ RSpec.describe 'IIIF API' do
   let(:metadata_service) do
     instance_double(IiifMetadataService, fetch: metadata,
                                          image_width: 1702,
-                                         image_height: 2552)
+                                         image_height: 2552,
+                                         api_version: 2)
   end
 
   before do
@@ -41,6 +42,30 @@ RSpec.describe 'IIIF API' do
         json = response.parsed_body
         expect(json['tiles']).to eq [{ 'width' => 256, 'height' => 256, 'scaleFactors' => [1, 2, 4, 8, 16] }]
         expect(response.headers['Link']).to eq '<http://iiif.io/api/image/2/level2.json>;rel="profile"'
+      end
+
+      context 'when the image server speaks IIIF Image API 3' do
+        let(:metadata) do
+          { '@context' => 'http://iiif.io/api/image/3/context.json',
+            'type' => 'ImageService3',
+            'height' => 2099,
+            'width' => 1702,
+            'sizes' => [],
+            'tiles' => [{ 'width' => 256, "scaleFactors" => [1, 2, 4, 8, 16] }] }
+        end
+
+        before do
+          allow(metadata_service).to receive(:api_version).and_return(3)
+        end
+
+        it 'returns a version 3 response' do
+          get '/image/iiif/bb000cr7262%2Fimage/info.json', headers: { HTTP_ACCEPT: 'application/json' }
+
+          json = response.parsed_body
+          expect(json).to include('@context' => 'http://iiif.io/api/image/3/context.json', 'profile' => 'level2')
+          expect(json['tiles']).to eq [{ 'width' => 256, 'scaleFactors' => [1, 2, 4, 8, 16] }]
+          expect(response.headers['Link']).to eq '<http://iiif.io/api/image/3/level2.json>;rel="profile"'
+        end
       end
 
       it 'handles JSON-LD requests' do

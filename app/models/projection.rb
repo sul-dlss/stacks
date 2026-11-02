@@ -110,7 +110,7 @@ class Projection
 
   # @return [IiifImage]
   def image_source
-    @image_source ||= IiifImage.new(stacks_file:, transformation: real_transformation)
+    @image_source ||= IiifImage.new(stacks_file:, transformation: real_transformation, api_version: image.api_version)
   end
 
   def real_transformation

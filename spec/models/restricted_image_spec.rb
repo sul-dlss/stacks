@@ -21,6 +21,24 @@ RSpec.describe RestrictedImage do
   describe '#profile' do
     subject { instance.profile }
 
-    it { is_expected.to eq ['http://iiif.io/api/image/2/level2.json', { 'maxHeight' => 400, 'maxWidth' => 400 }] }
+    before do
+      allow(instance).to receive(:api_version).and_return(api_version)
+    end
+
+    context 'with a IIIF Image API 2 image server' do
+      let(:api_version) { 2 }
+
+      it { is_expected.to eq ['http://iiif.io/api/image/2/level2.json', { 'maxHeight' => 400, 'maxWidth' => 400 }] }
+    end
+
+    context 'with a IIIF Image API 3 image server' do
+      let(:api_version) { 3 }
+
+      it { is_expected.to eq 'level2' }
+    end
+  end
+
+  describe '#size_limits' do
+    it { expect(instance.size_limits).to eq('maxWidth' => 400, 'maxHeight' => 400) }
   end
 end

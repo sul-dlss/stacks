@@ -2,6 +2,8 @@
 
 # Fetch metadata from the remote IIIF server
 class IiifMetadataService
+  V3_CONTEXT = 'http://iiif.io/api/image/3/context.json'
+
   attr_reader :canonical_url
 
   # @param stacks_file [StacksFile]
@@ -14,21 +16,23 @@ class IiifMetadataService
   end
 
   # Get the metadata from the remote server and rewrite the tile size if required.
-  # Cantaloupe also doesn't send the full size as one of the 'sizes'
+  # The response may be either IIIF Image API version 2 or 3, depending on the image server.
   # @param tile_size [Integer,NilClass] force the tile size to this unless it's nil
   # @return [Hash] a data structure representing the IIIF info response
   def fetch(tile_size)
-    json.tap do |updated|
+    json.deep_dup.tap do |updated|
       if tile_size
         tiledef = updated.fetch('tiles').first
         tiledef['height'] = tile_size
         tiledef['width'] = tile_size
       end
-      # Add a full size for parity with our Djatoka implmentation,
-      # because Cantaloupe doesn't provide it
-      updated.fetch('sizes').push('width' => updated.fetch('width'),
-                                  'height' => updated.fetch('height'))
+      add_full_size(updated)
     end
+  end
+
+  # @return [Integer] the major version of the IIIF Image API the image server responded with
+  def api_version
+    Array(json['@context']).include?(V3_CONTEXT) ? 3 : 2
   end
 
   def image_width
@@ -69,11 +73,20 @@ class IiifMetadataService
     @json ||= Rails.cache.fetch(cache_key, expires_in: 5.minutes) do
       retrieved_json = retrieve
       JSON.parse(retrieved_json).tap do |data|
-        data['@id'] = @canonical_url
+        # Version 3 uses 'id' rather than '@id'
+        data[data.key?('id') ? 'id' : '@id'] = @canonical_url
       end
     rescue JSON::ParserError => e
       raise Stacks::UnexpectedMetadataResponseError, "There was a problem fetching #{@url}. #{e}: #{retrieved_json}"
     end
+  end
+
+  # Add a full size for parity with our Djatoka implementation,
+  # because some image servers (e.g. Cantaloupe's v2 endpoint) don't provide it
+  def add_full_size(info)
+    full = { 'width' => info.fetch('width'), 'height' => info.fetch('height') }
+    sizes = info.fetch('sizes')
+    sizes.push(full) unless sizes.any? { |size| size.slice('width', 'height') == full }
   end
 
   def cache_key

@@ -8,7 +8,11 @@ class RestrictedImage < StacksImage
   end
 
   def profile
-    ["http://iiif.io/api/image/2/level2.json", { "maxWidth" => 400, "maxHeight" => 400 }]
+    api_version >= 3 ? 'level2' : ["http://iiif.io/api/image/2/level2.json", size_limits]
+  end
+
+  def size_limits
+    { "maxWidth" => 400, "maxHeight" => 400 }
   end
 
   # Overides stacks image to provide fixed dimensions

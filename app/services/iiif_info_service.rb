@@ -28,14 +28,27 @@ class IiifInfoService
   # @return [Hash] a data structure to that expresses the info.json response
   def info
     current_image.info.tap do |info|
-      info['profile'] = current_image.profile
+      add_profile(info)
       info['sizes'] = sizes(info['sizes'])
       info['sizes'] = thumbnail_only_size unless current_image.maybe_downloadable?
 
-      service = services unless downloadable_anonymously
-      info['service'] = service if service
+      add_services(info) unless downloadable_anonymously
       info['tiles'] = tiles(info['tiles']) if info['tiles']
     end
+  end
+
+  # IIIF Image API 3 expresses size limits as top-level properties rather than within the profile
+  def add_profile(info)
+    info['profile'] = current_image.profile
+    info.merge!(current_image.size_limits) if v3?
+  end
+
+  # IIIF Image API 3 requires the services to be an array
+  def add_services(info)
+    service = services
+    return unless service
+
+    info['service'] = v3? ? Array.wrap(service) : service
   end
 
   ##
@@ -53,7 +66,8 @@ class IiifInfoService
   # browser canvas APIs can handle the returned images without failing.
   def tiles(tiles)
     width = tiles[0]['width'].to_f
-    height = tiles[0]['height'].to_f
+    # In IIIF Image API 3, the tile height is optional and defaults to the width
+    height = (tiles[0]['height'] || tiles[0]['width']).to_f
     minimum = [width, height].min
     aspect_ratio = width / height
     if aspect_ratio < (1 / ASPECT_EXAGGERATION) || aspect_ratio > ASPECT_EXAGGERATION
@@ -72,6 +86,10 @@ class IiifInfoService
     return nil if services.empty?
 
     services.one? ? services.first : services
+  end
+
+  def v3?
+    current_image.api_version >= 3
   end
 
   def thumbnail_only_size

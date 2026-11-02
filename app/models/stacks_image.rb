@@ -29,15 +29,23 @@ class StacksImage
     nil
   end
 
+  # @return [String,Array] the compliance level, expressed for the IIIF Image API version the image server speaks
   def profile
-    ['http://iiif.io/api/image/2/level2.json']
+    api_version >= 3 ? 'level2' : ['http://iiif.io/api/image/2/level2.json']
+  end
+
+  # IIIF Image API 3 expresses size limits as top-level info.json properties rather than within the profile
+  # This is overriden in RestrictedImage
+  # @return [Hash]
+  def size_limits
+    {}
   end
 
   def exist?
     image_width.positive?
   end
 
-  delegate :image_width, :image_height, to: :info_service
+  delegate :image_width, :image_height, :api_version, to: :info_service
   delegate :etag, :mtime, :stacks_rights, :not_proxied?, to: :stacks_file
 
   # This is overriden in RestrictedImage

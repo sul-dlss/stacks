@@ -29,4 +29,29 @@ RSpec.describe IiifImage do
       it { is_expected.to be false }
     end
   end
+
+  describe '#response' do
+    let(:http_client) { instance_double(HTTP::Client, get: instance_double(HTTP::Response)) }
+    let(:transformation) { IIIF::Image::OptionDecoder.decode(ActiveSupport::HashWithIndifferentAccess.new(size: 'full', region: 'full')) }
+
+    before do
+      allow(HTTP).to receive_message_chain(:timeout, :headers).and_return(http_client)
+      instance.response
+    end
+
+    context 'with a IIIF Image API 2 server' do
+      it 'requests the full size' do
+        expect(http_client).to have_received(:get).with(%r{/full/full/0/default.jpg$})
+      end
+    end
+
+    context 'with a IIIF Image API 3 server' do
+      let(:base_uri) { 'https://imageserver.example.com/v3/' }
+      let(:instance) { described_class.new(stacks_file:, base_uri:, transformation:, api_version: 3) }
+
+      it 'requests the max size, because v3 removed "full"' do
+        expect(http_client).to have_received(:get).with(%r{^https://imageserver.example.com/v3/.+/full/max/0/default.jpg$})
+      end
+    end
+  end
 end

@@ -9,7 +9,7 @@ RSpec.describe Projection do
   let(:http_client) { instance_double(HTTP::Client) }
 
   before do
-    allow(image).to receive_messages(image_width: 800, image_height: 600)
+    allow(image).to receive_messages(image_width: 800, image_height: 600, api_version: 2)
   end
 
   describe '.thumbnail' do
