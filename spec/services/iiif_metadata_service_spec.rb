@@ -43,6 +43,14 @@ RSpec.describe IiifMetadataService do
       it { expect(service.api_version).to eq 2 }
     end
 
+    context 'when the image server omits the optional sizes field' do
+      let(:body) { JSON.parse(super()).except('sizes').to_json }
+
+      it 'includes the full image size' do
+        expect(service.fetch(nil).fetch('sizes')).to eq [{ 'width' => 3832, 'height' => 2552 }]
+      end
+    end
+
     describe '#image_width' do
       subject { service.image_width }
 

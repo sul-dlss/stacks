@@ -83,9 +83,10 @@ class IiifMetadataService
 
   # Add a full size for parity with our Djatoka implementation,
   # because some image servers (e.g. Cantaloupe's v2 endpoint) don't provide it
+  # or omit the optional 'sizes' field entirely
   def add_full_size(info)
     full = { 'width' => info.fetch('width'), 'height' => info.fetch('height') }
-    sizes = info.fetch('sizes')
+    sizes = info.fetch('sizes') { info['sizes'] = [] }
     sizes.push(full) unless sizes.any? { |size| size.slice('width', 'height') == full }
   end
 
