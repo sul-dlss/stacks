@@ -263,6 +263,22 @@ RSpec.describe 'IIIF API' do
         end
       end
 
+      context 'with a zero-size region' do
+        it 'returns 400 Bad Request' do
+          get '/image/iiif/bb000cr7262%2Fimage/4096,0,0,0/133,/0/default.jpg'
+
+          expect(response).to have_http_status :bad_request
+        end
+      end
+
+      context 'with an invalid region' do
+        it 'returns 400 Bad Request' do
+          get '/image/iiif/bb000cr7262%2Fimage/bogus/133,/0/default.jpg'
+
+          expect(response).to have_http_status :bad_request
+        end
+      end
+
       context 'with a pct region' do
         before do
           stub_request(:get, "http://imageserver-prod.stanford.edu/iiif/2/#{image_path_component}/pct:3.0,3.0,77.0,77.0/full/0/default.jpg")

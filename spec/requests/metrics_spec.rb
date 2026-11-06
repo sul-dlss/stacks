@@ -77,7 +77,7 @@ RSpec.describe 'Metrics tracking' do
     end
     let(:image_response) { instance_double(HTTP::Response, body: StringIO.new, status: 200) }
     let(:projection) { instance_double(Projection, response: image_response, valid?: true) }
-    let(:transformation) { double }
+    let(:transformation) { instance_double(IIIF::Image::Transformation, region: IIIF::Image::Region::Full.new) }
     let(:ability) { instance_double(CocinaAbility, can?: true, authorize!: true) }
 
     before do

@@ -9,6 +9,10 @@ class IiifController < ApplicationController
     render plain: 'File not found', status: :not_found
   end
 
+  rescue_from IIIF::Image::InvalidAttributeError do |exception|
+    render plain: exception.message, status: :bad_request
+  end
+
   ##
   # Image delivery, streamed from the image server backend
   def show
@@ -179,7 +183,17 @@ class IiifController < ApplicationController
   def transformation
     return unless iiif_params.key?(:size)
 
-    IIIF::Image::OptionDecoder.decode(iiif_params)
+    IIIF::Image::OptionDecoder.decode(iiif_params).tap do |transformation|
+      validate_region!(transformation.region)
+    end
+  end
+
+  # The IIIF Image API requires a 400 response when the requested region has zero width or height.
+  def validate_region!(region)
+    return unless region.is_a?(IIIF::Image::Region::Absolute)
+    return if region.width.positive? && region.height.positive?
+
+    raise IIIF::Image::InvalidAttributeError, "Invalid region: #{region}"
   end
 
   def add_iiif_profile_header
