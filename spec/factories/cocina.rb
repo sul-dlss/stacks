@@ -12,6 +12,7 @@ module Factories
                             mime_type: 'image/jp2')
     # rubocop:enable Metrics/ParameterLists
     cocina(id:).merge(
+      'modified' => '2026-03-18T21:24:52.000+00:00',
       'access' => access,
       'structural' => {
         'contains' => [
