@@ -52,12 +52,17 @@ In local development, this will become: `http://localhost:3000/image/iiif/qj283w
 
 ## Deploying with Kamal
 
-Kamal deploys the container image from GHCR to the production hosts listed in `config/deploy.yml`.
-Copy `.kamal/secrets.example` to `.kamal/secrets`, set each referenced environment variable, and ensure
-your SSH agent can access the `stacks` account. Then run:
+Kamal deploys the container image from GHCR. Shared settings are in `config/deploy.yml`, and each
+environment (`prod`, `stage` and `uat`) lists its hosts in `config/deploy.<destination>.yml`. Every
+Kamal command needs a destination given with `-d`; without one, Kamal refuses to run.
 
-    $ bin/kamal setup
-    $ bin/kamal deploy
+Copy `.kamal/secrets-common.example` to `.kamal/secrets-common` for secrets shared by every environment,
+and `.kamal/secrets.<destination>.example` to `.kamal/secrets.<destination>` for that environment's
+secrets. Set each referenced environment variable and ensure your SSH agent can access the `stacks`
+account. Then run, for example:
+
+    $ bin/kamal setup -d stage
+    $ bin/kamal deploy -d stage
 
 ## Configuring
 

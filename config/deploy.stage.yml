@@ -1,0 +1,3 @@
+servers:
+  web:
+    - sul-stacks-stage.stanford.edu

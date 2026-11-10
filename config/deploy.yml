@@ -1,16 +1,14 @@
 # Name of the application. Used to uniquely configure containers.
 service: stacks
 
-# Use the image published by the GitHub Actions workflow.
-image: ghcr.io/sul-dlss/stacks
+# Use the image published by the GitHub Actions workflow. Kamal prefixes the
+# registry server, so this resolves to ghcr.io/sul-dlss/stacks.
+image: sul-dlss/stacks
 
-# Reuse the existing production hosts. Each host must have Docker installed and
-# be reachable by the configured SSH user.
-servers:
-  web:
-    - sul-stacks-prod-a.stanford.edu
-    - sul-stacks-prod-b.stanford.edu
-    - sul-stacks-prod-c.stanford.edu
+# Hosts are listed per environment in config/deploy.<destination>.yml, so every
+# command needs a destination, e.g. `bin/kamal deploy -d stage`. Each host must
+# have Docker installed and be reachable by the configured SSH user.
+require_destination: true
 
 # The Stanford load balancer terminates TLS in front of these hosts.
 proxy:

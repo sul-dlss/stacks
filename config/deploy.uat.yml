@@ -1,0 +1,4 @@
+servers:
+  web:
+    - sul-stacks-uat-a.stanford.edu
+    - sul-stacks-uat-b.stanford.edu
