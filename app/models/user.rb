@@ -6,7 +6,7 @@ class User
   include ActiveModel::Model
 
   attr_accessor :id, :webauth_user, :anonymous_locatable_user, :token_user,
-                :service_user, :ldap_groups, :ip_address
+                :service_user, :download_all, :ldap_groups, :ip_address
 
   def ability
     ability_class.new(self)
@@ -37,6 +37,11 @@ class User
     service_user
   end
 
+  # A service whose token has the download_all claim (e.g., Argo, to preserve shelved files) downloads every file.
+  def download_all?
+    service_user? && download_all == true
+  end
+
   def etag
     id
   end
@@ -64,7 +69,8 @@ class User
     return if secret.blank?
 
     payload, _header = JWT.decode(token, secret, true, algorithm: 'HS256')
-    User.new({ id: payload['sub'], service_user: true }.merge(additional_attributes))
+    User.new({ id: payload['sub'], service_user: true, download_all: payload['download_all'] == true }
+               .merge(additional_attributes))
   rescue JWT::DecodeError
     nil
   end

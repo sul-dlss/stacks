@@ -13,6 +13,10 @@ RSpec.describe "Authentication for File requests" do
   let(:storage_root) { StorageRoot.new(cocina:, file_name:) }
   let(:stacks_file) { StacksFile.new(file_name:, cocina:) }
   let(:cocina) { Cocina.new(public_json) }
+  let(:service_token) { JWT.encode({ sub: 'sdr-harvest' }, Settings.service_token.hmac_secret, 'HS256') }
+  let(:download_all_token) do
+    JWT.encode({ sub: 'argo', download_all: true }, Settings.service_token.hmac_secret, 'HS256')
+  end
 
   before do
     allow(Cocina).to receive(:find).and_return(cocina)
@@ -76,6 +80,27 @@ RSpec.describe "Authentication for File requests" do
           get "/file/#{druid}/#{file_name}", headers: { 'Authorization' => "Bearer #{token}" }
           expect(response).to have_http_status(:forbidden)
         end
+
+        it 'allows a service authenticated with a download_all service token' do
+          get "/file/#{druid}/#{file_name}", headers: { 'Authorization' => "Bearer #{download_all_token}" }
+          expect(response).to have_http_status(:ok)
+        end
+      end
+    end
+
+    context 'world view, no download' do
+      let(:public_json) do
+        Factories.cocina_with_file(file_access: { 'view' => 'world', 'download' => 'none' })
+      end
+
+      it 'blocks a service authenticated with a service token' do
+        get "/file/#{druid}/#{file_name}", headers: { 'Authorization' => "Bearer #{service_token}" }
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it 'allows a service authenticated with a download_all service token' do
+        get "/file/#{druid}/#{file_name}", headers: { 'Authorization' => "Bearer #{download_all_token}" }
+        expect(response).to have_http_status(:ok)
       end
     end
   end
