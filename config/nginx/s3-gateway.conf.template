@@ -1,0 +1,67 @@
+# A minimal download-only configuration using nginx-s3-gateway's credential
+# handling and signing libraries. No cache, listing, index pages, or slicing.
+js_import /etc/nginx/include/awscredentials.js;
+js_import /etc/nginx/include/s3gateway.js;
+include /etc/nginx/conf.d/gateway/v4_js_vars.conf;
+js_set $uri_full_path s3gateway.uriFullPath;
+map $uri_full_path $uri_path {
+    default $uri_full_path;
+}
+js_var $s3_host ${S3_HOST_HEADER};
+js_var $forIndexPage true;
+js_set $s3auth s3gateway.s3auth;
+js_set $awsSessionToken awscredentials.sessionToken;
+js_set $s3uri s3gateway.s3uri;
+
+server {
+    listen 80;
+    server_tokens off;
+    include /etc/nginx/conf.d/gateway/server_variables.conf;
+
+    location = /health {
+        return 200;
+    }
+
+    location = /aws/credentials/retrieve {
+        internal;
+        js_content awscredentials.fetchCredentials;
+        include /etc/nginx/conf.d/gateway/js_fetch_trusted_certificate.conf;
+    }
+
+    location / {
+        if ($request_method !~ ^(GET|HEAD)$) { return 405; }
+        # Empty keys and directory requests must never list the bucket.
+        if ($uri ~ /$) { return 404; }
+        auth_request /aws/credentials/retrieve;
+        include /etc/nginx/conf.d/gateway/v4_headers.conf;
+        proxy_pass_request_headers off;
+        proxy_set_header Authorization $s3auth;
+        proxy_set_header X-Amz-Security-Token $awsSessionToken;
+        proxy_set_header Host $s3_host;
+        proxy_set_header Range $http_range;
+        proxy_set_header Connection "";
+        proxy_http_version 1.1;
+        proxy_ssl_server_name on;
+        proxy_ssl_name ${S3_SERVER};
+        include /etc/nginx/conf.d/gateway/s3_proxy_ssl.conf;
+        proxy_cache off;
+        proxy_buffering off;
+        proxy_read_timeout 300s;
+        proxy_ignore_headers X-Accel-Redirect;
+        js_header_filter s3gateway.editHeaders;
+        proxy_intercept_errors on;
+        error_page 403 404 =404 /missing;
+        error_page 500 502 503 504 =502 /storage_error;
+        proxy_pass ${S3_SERVER_PROTO}://storage_urls$s3uri;
+    }
+
+    location = /missing {
+        internal;
+        return 404;
+    }
+
+    location = /storage_error {
+        internal;
+        return 502;
+    }
+}

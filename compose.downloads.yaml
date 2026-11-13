@@ -1,0 +1,46 @@
+# Run with: docker compose -f compose.yaml -f compose.downloads.yaml up --build
+services:
+  web:
+    ports: !reset []
+    environment:
+      SETTINGS__FEATURES__DOWNLOAD_PROXY: "true"
+      SETTINGS__S3__ENDPOINT: ${S3_ENDPOINT:-http://rustfs_server:9000}
+      SETTINGS__S3__BUCKET: ${S3_BUCKET_NAME:-stacks-test}
+      SETTINGS__S3__ACCESS_KEY_ID: ${SETTINGS__S3__ACCESS_KEY_ID:-rustfs-user}
+      SETTINGS__S3__SECRET_ACCESS_KEY: ${SETTINGS__S3__SECRET_ACCESS_KEY:-rustfs-password}
+
+  downloads:
+    image: nginx:1.28
+    ports:
+      - "3001:8080"
+    environment:
+      RAILS_UPSTREAM: web:3000
+      S3_GATEWAY_UPSTREAM: s3_gateway:80
+      NGINX_ENVSUBST_FILTER: "^(RAILS_UPSTREAM|S3_GATEWAY_UPSTREAM)$$"
+    volumes:
+      - ./config/nginx/downloads.conf.template:/etc/nginx/templates/default.conf.template:ro
+    depends_on:
+      - web
+      - s3_gateway
+
+  s3_gateway:
+    build:
+      context: https://github.com/nginx/nginx-s3-gateway.git#a27035812d9bb7ab2f70266efa815a2635ebd63f
+      dockerfile: Dockerfile.oss
+    environment:
+      AWS_ACCESS_KEY_ID: ${SETTINGS__S3__ACCESS_KEY_ID:-rustfs-user}
+      AWS_SECRET_ACCESS_KEY: ${SETTINGS__S3__SECRET_ACCESS_KEY:-rustfs-password}
+      S3_BUCKET_NAME: ${S3_BUCKET_NAME:-stacks-test}
+      S3_SERVER: ${S3_SERVER:-rustfs_server}
+      S3_SERVER_PORT: ${S3_SERVER_PORT:-9000}
+      S3_SERVER_PROTO: ${S3_SERVER_PROTO:-http}
+      S3_REGION: us-east-1
+      S3_STYLE: path
+      AWS_SIGS_VERSION: "4"
+      ALLOW_DIRECTORY_LIST: "false"
+      PROVIDE_INDEX_PAGE: "false"
+      APPEND_SLASH_FOR_POSSIBLE_DIRECTORY: "false"
+    volumes:
+      - ./config/nginx/s3-gateway.conf.template:/etc/nginx/templates/default.conf.template:ro
+    depends_on:
+      - rustfs_server

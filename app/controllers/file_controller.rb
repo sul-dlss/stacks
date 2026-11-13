@@ -14,9 +14,9 @@ class FileController < ApplicationController
 
   # rubocop:disable-next Metrics/AbcSize
   def show
+    authorize! :download, current_file
     return unless stale?(**cache_headers)
 
-    authorize! :download, current_file
     expires_in 10.minutes
     response.headers['Accept-Ranges'] = 'bytes'
     response.headers['Access-Control-Expose-Headers'] = 'Content-Range'
@@ -28,6 +28,8 @@ class FileController < ApplicationController
       user_agent: request.user_agent,
       ip: request.remote_ip
     )
+
+    return handoff_download if Settings.features.download_proxy
 
     # Handle range requests. Not used for HEAD requests.
     if request.headers['Range'].present? && !request.head?
@@ -46,6 +48,32 @@ class FileController < ApplicationController
   end
 
   private
+
+  def handoff_download # rubocop:disable Metrics/AbcSize
+    if request.headers['Range'].present? && !request.head? && range_current?
+      range_header = RangeHeader.new(request.headers['Range'], current_file.content_length)
+      if range_header.invalid?
+        response.headers['Content-Range'] = "bytes */#{current_file.content_length}"
+        return head(:range_not_satisfiable)
+      end
+      response.headers['X-Stacks-Range'] = "bytes=#{range_header.ranges.first}"
+    end
+
+    set_file_headers
+    response.headers['X-Accel-Redirect'] = current_file.download_proxy_path
+    head :ok
+  end
+
+  # If-Range must use the validator exposed by Rails, not the S3 object's ETag.
+  def range_current?
+    validator = request.headers['If-Range']
+    return true if validator.blank?
+    return true if !validator.start_with?('W/') && validator == response.headers['ETag']
+
+    current_file.mtime.to_i <= Time.httpdate(validator).to_i
+  rescue ArgumentError
+    false
+  end
 
   def handle_range_request # rubocop:disable Metrics/AbcSize
     range_header = RangeHeader.new(request.headers['Range'], current_file.content_length)
@@ -77,14 +105,18 @@ class FileController < ApplicationController
   # Stream the file from S3 as a response with a Content-Length.
   # A HEAD request gets the same headers as a GET, but doesn't fetch anything from S3.
   def stream_file(status:, content_length:, &)
-    response.headers['Content-Type'] = file_content_type
-    response.headers['Content-Disposition'] =
-      ActionDispatch::Http::ContentDisposition.format(disposition:, filename: current_file.file_name)
+    set_file_headers
     response.headers['Content-Length'] = content_length.to_s
     return head(status) if request.head?
 
     self.status = status
     self.response_body = streaming_body(&)
+  end
+
+  def set_file_headers
+    response.headers['Content-Type'] = file_content_type
+    response.headers['Content-Disposition'] =
+      ActionDispatch::Http::ContentDisposition.format(disposition:, filename: current_file.file_name)
   end
 
   # Send content as an Enumerable Rack body. ActionController::Live deletes the

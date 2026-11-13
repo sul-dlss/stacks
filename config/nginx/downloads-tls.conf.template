@@ -1,0 +1,76 @@
+# Public TLS entry point; Apache/Passenger remains on the host's private HTTPS
+# listener. Mount /etc/letsencrypt read-only, including live and archive directories.
+server {
+    listen 443 ssl;
+    server_name ${PUBLIC_HOST};
+    ssl_certificate /etc/letsencrypt/live/${PUBLIC_HOST}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${PUBLIC_HOST}/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    server_tokens off;
+
+    location / {
+        proxy_pass https://${RAILS_UPSTREAM};
+        proxy_ssl_server_name on;
+        proxy_ssl_name ${PUBLIC_HOST};
+        proxy_ssl_verify on;
+        proxy_ssl_trusted_certificate /etc/ssl/certs/ca-certificates.crt;
+        proxy_ssl_verify_depth 3;
+        proxy_set_header Host ${PUBLIC_HOST};
+        proxy_set_header X-Forwarded-Host ${PUBLIC_HOST};
+        proxy_set_header Forwarded "";
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header X-Forwarded-Port 443;
+        proxy_hide_header Strict-Transport-Security;
+        proxy_hide_header X-Stacks-Range;
+        proxy_cache off;
+    }
+
+    location ^~ /_private_s3/ {
+        internal;
+
+        # Capture Rails headers before the next upstream replaces them.
+        set $download_range $upstream_http_x_stacks_range;
+        set $download_etag $upstream_http_etag;
+        set $download_modified $upstream_http_last_modified;
+        set $download_origin $upstream_http_access_control_allow_origin;
+        set $download_credentials $upstream_http_access_control_allow_credentials;
+        set $download_vary $upstream_http_vary;
+
+        # The trailing slash strips the internal prefix. Public query arguments
+        # are not S3 parameters; the gateway strips the query string as well.
+        proxy_pass http://${S3_GATEWAY_UPSTREAM}/;
+        proxy_pass_request_headers off;
+        proxy_set_header Range $download_range;
+        proxy_set_header Host $proxy_host;
+        proxy_set_header Connection "";
+        proxy_http_version 1.1;
+        proxy_buffering off;
+        proxy_cache off;
+        proxy_read_timeout 300s;
+
+        # NGINX preserves these Rails headers across X-Accel-Redirect.
+        proxy_hide_header Content-Type;
+        proxy_hide_header Content-Disposition;
+        proxy_hide_header Cache-Control;
+        proxy_hide_header Expires;
+        proxy_hide_header Accept-Ranges;
+        proxy_hide_header ETag;
+        proxy_hide_header Last-Modified;
+        proxy_hide_header Access-Control-Allow-Origin;
+        proxy_hide_header Access-Control-Allow-Credentials;
+        proxy_hide_header Access-Control-Expose-Headers;
+        proxy_hide_header Vary;
+        proxy_ignore_headers X-Accel-Redirect Expires Cache-Control Set-Cookie Vary;
+        proxy_hide_header Set-Cookie;
+
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+        add_header ETag $download_etag always;
+        add_header Last-Modified $download_modified always;
+        add_header Access-Control-Allow-Origin $download_origin always;
+        add_header Access-Control-Allow-Credentials $download_credentials always;
+        add_header Access-Control-Expose-Headers Content-Range always;
+        add_header Vary $download_vary always;
+    }
+}
