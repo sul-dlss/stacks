@@ -78,6 +78,8 @@ class CocinaAbility
       end
     end
 
+    can :download, StacksFile if user.download_all?
+
     cannot :download, RestrictedImage
 
     # These are called when checking to see if the image response should be served

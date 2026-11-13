@@ -58,6 +58,8 @@ Configuration is handled through the [RailsConfig](/railsconfig/config) settings
 
 Services that need to download Stanford-only files can authenticate with a JWT sent as
 `Authorization: Bearer <token>`. A service token grants the same access as a Stanford user.
+A token with the `download_all` claim (e.g., for Argo, which copies shelved files into preservation)
+can also download every file, regardless of its rights.
 Set `service_token.hmac_secret`, then generate a token by running
 `RAILS_ENV=production bin/rails generate_token` on the prod server.
 

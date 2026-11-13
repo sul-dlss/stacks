@@ -38,6 +38,16 @@ RSpec.describe User do
         expect(user.id).to eq 'sdr-harvest'
         expect(user).to be_a_service_user
         expect(user).to be_stanford
+        expect(user).not_to be_download_all
+      end
+    end
+
+    context 'with a token with the download_all claim' do
+      let(:token) { JWT.encode({ sub: 'argo', download_all: true }, Settings.service_token.hmac_secret, 'HS256') }
+
+      it 'is a service user that downloads every file' do
+        expect(user).to be_a_service_user
+        expect(user).to be_download_all
       end
     end
 

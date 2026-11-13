@@ -15,7 +15,7 @@ RSpec.describe MediaAuthenticationJson do
     )
   end
   let(:ability) { CocinaAbility.new(user) }
-  let(:user) { instance_double(User, locations: [], webauth_user: false, stanford?: false) }
+  let(:user) { instance_double(User, locations: [], webauth_user: false, stanford?: false, download_all?: false) }
 
   describe 'Location Restricted Media' do
     before do
