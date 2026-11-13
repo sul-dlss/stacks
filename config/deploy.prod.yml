@@ -1,0 +1,5 @@
+servers:
+  web:
+    - sul-stacks-prod-a.stanford.edu
+    - sul-stacks-prod-b.stanford.edu
+    - sul-stacks-prod-c.stanford.edu
