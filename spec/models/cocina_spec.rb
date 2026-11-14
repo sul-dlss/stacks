@@ -90,4 +90,14 @@ RSpec.describe Cocina do
       end
     end
   end
+
+  describe '#modified' do
+    it 'returns the time the object was modified' do
+      expect(described_class.new(Factories.cocina_with_file).modified).to eq Time.zone.parse('2026-03-18T21:24:52Z')
+    end
+
+    it 'returns nil when the object has no modified time' do
+      expect(described_class.new(Factories.cocina).modified).to be_nil
+    end
+  end
 end

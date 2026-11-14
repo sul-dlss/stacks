@@ -46,7 +46,7 @@ class StacksImage
   end
 
   delegate :image_width, :image_height, :api_version, to: :info_service
-  delegate :etag, :mtime, :stacks_rights, :not_proxied?, to: :stacks_file
+  delegate :etag, :cocina_modified, :stacks_rights, :not_proxied?, to: :stacks_file
 
   # This is overriden in RestrictedImage
   def max_tile_dimensions

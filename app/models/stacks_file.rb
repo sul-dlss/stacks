@@ -63,9 +63,15 @@ class StacksFile
     @mtime ||= s3_head.last_modified
   end
 
+  # Derived from the public cocina (rather than S3) so validating a cached response doesn't require a request to S3
   def etag
-    mtime&.to_i
+    cocina.find_file_md5(file_name)
   end
+
+  # When the object (not just this file) last changed, per the public cocina.
+  # Unlike #mtime, this doesn't require a request to S3
+  # @return [Time, nil]
+  delegate :modified, to: :cocina, prefix: true
 
   def content_type
     cocina_file['hasMimeType']

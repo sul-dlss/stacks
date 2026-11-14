@@ -18,6 +18,22 @@ RSpec.describe StacksFile do
     end
   end
 
+  describe 'cache validators' do
+    before do
+      allow(S3ClientFactory).to receive(:create_client)
+    end
+
+    it 'uses the md5 from the cocina as the etag, without asking S3' do
+      expect(instance.etag).to eq '8ff299eda08d7c506273840d52a03bf3'
+      expect(S3ClientFactory).not_to have_received(:create_client)
+    end
+
+    it 'uses the modified time from the cocina, without asking S3' do
+      expect(instance.cocina_modified).to eq Time.zone.parse('2026-03-18T21:24:52Z')
+      expect(S3ClientFactory).not_to have_received(:create_client)
+    end
+  end
+
   describe '#s3_object' do
     let(:s3_client) { S3ClientFactory.create_client }
     let(:content) { read_all(instance) }
