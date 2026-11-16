@@ -53,6 +53,11 @@ class Cocina
     data['type']
   end
 
+  # @return [Time, nil] when the object was last modified
+  def modified
+    Time.zone.parse(data['modified']) if data['modified']
+  end
+
   # types that cannot be viewed when download = 'none'
   # media(wowza) and  image(Cantaloupe) use different (proxy) servers to display files in sul-embed
   # this allows view and download to be different values and work, which doesn't work with types below.

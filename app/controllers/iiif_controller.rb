@@ -18,15 +18,12 @@ class IiifController < ApplicationController
   def show
     projection = current_image.projection_for(transformation)
 
-    raise ActionController::MissingFile, 'File Not Found' unless projection.valid?
-
     add_iiif_profile_header
 
-    begin
-      return unless stale?(**cache_headers_show(projection))
-    rescue StacksFile::NotFound
-      raise ActionController::MissingFile, 'File not found'
-    end
+    # Check freshness before validating the projection, so a 304 doesn't require a request to the image server
+    return unless stale?(**cache_headers_show(projection))
+
+    raise ActionController::MissingFile, 'File Not Found' unless projection.valid?
 
     authorize! :read, projection
     expires_in cache_time, public: anonymous_ability.can?(:read, projection)
@@ -49,11 +46,12 @@ class IiifController < ApplicationController
   # IIIF info.json endpoint
   # rubocop:disable-next Metrics/PerceivedComplexity
   def metadata
-    raise ActionController::MissingFile, 'File Not Found' if !Rails.env.development? && !current_image.exist?
-
     add_iiif_profile_header
 
+    # Check freshness before checking the image exists, so a 304 doesn't require a request to the image server
     return unless stale?(**cache_headers_metadata)
+
+    raise ActionController::MissingFile, 'File Not Found' if !Rails.env.development? && !current_image.exist?
 
     if !degraded? && degradable?
       redirect_to degraded_iiif_metadata_url(id: identifier_params[:id], file_name: identifier_params[:file_name])
@@ -133,7 +131,7 @@ class IiifController < ApplicationController
   def cache_headers
     {
       etag: [current_image.etag, current_user.try(:etag)],
-      last_modified: current_image.mtime,
+      last_modified: current_image.cocina_modified,
       template: false
     }
   end

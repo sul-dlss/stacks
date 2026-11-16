@@ -70,7 +70,7 @@ RSpec.describe 'Metrics tracking' do
         StacksImage,
         exist?: true,
         etag: nil,
-        mtime: nil,
+        cocina_modified: nil,
         restricted: false,
         api_version: 2
       )

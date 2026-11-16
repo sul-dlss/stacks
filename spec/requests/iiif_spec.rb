@@ -220,6 +220,12 @@ RSpec.describe 'IIIF API' do
           Factories.cocina_with_file(file_name: 'argo-logo.jp2', md5: 'fffffffffffffff')
         end
 
+        before do
+          # S3 isn't consulted for image requests; the image server reports the missing file
+          stub_request(:get, %r{http://imageserver-prod.stanford.edu/iiif/2/.*fffffffffffffff/full/full/0/default.jpg})
+            .to_return(status: 404, body: "")
+        end
+
         it 'returns 404 Not Found' do
           get "/image/iiif/cs362qz2368%252Fargo-logo/full/full/0/default.jpg"
           expect(response).to have_http_status :not_found
@@ -246,6 +252,27 @@ RSpec.describe 'IIIF API' do
         it 'returns 404 Not Found' do
           get "/image/iiif/bb000cr7262%2Fimage/0,640,2552,2552/100,100/0/default.jpg"
           expect(response).to have_http_status :not_found
+        end
+      end
+
+      context 'when the client has a fresh copy' do
+        let(:tile_url) { "http://imageserver-prod.stanford.edu/iiif/2/#{image_path_component}/0,640,2552,2552/100,100/0/default.jpg" }
+
+        before do
+          stub_request(:get, tile_url).to_return(status: 200, body: "")
+          allow(S3ClientFactory).to receive(:create_client)
+        end
+
+        it 'returns 304 Not Modified without asking the image server or S3' do
+          get "/image/iiif/bb000cr7262%2Fimage/0,640,2552,2552/100,100/0/default.jpg"
+          etag = response.headers['ETag']
+
+          get "/image/iiif/bb000cr7262%2Fimage/0,640,2552,2552/100,100/0/default.jpg",
+              headers: { 'If-None-Match' => etag }
+
+          expect(response).to have_http_status :not_modified
+          expect(a_request(:get, tile_url)).to have_been_made.once
+          expect(S3ClientFactory).not_to have_received(:create_client)
         end
       end
 
