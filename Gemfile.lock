@@ -81,8 +81,8 @@ GEM
       sshkit (>= 1.6.1, != 1.7.0)
     ast (2.4.3)
     aws-eventstream (1.4.1)
-    aws-partitions (1.1304.0)
-    aws-sdk-core (3.266.0)
+    aws-partitions (1.1305.0)
+    aws-sdk-core (3.268.0)
       aws-eventstream (~> 1, >= 1.4.1)
       aws-partitions (~> 1, >= 1.992.0)
       aws-sigv4 (~> 1.9)
@@ -91,11 +91,11 @@ GEM
       jmespath (~> 1, >= 1.6.1)
       logger
       rexml (~> 3.4, >= 3.4.2)
-    aws-sdk-kms (1.141.0)
-      aws-sdk-core (~> 3, >= 3.266.0)
+    aws-sdk-kms (1.143.0)
+      aws-sdk-core (~> 3, >= 3.268.0)
       aws-sigv4 (~> 1.5)
-    aws-sdk-s3 (1.240.0)
-      aws-sdk-core (~> 3, >= 3.266.0)
+    aws-sdk-s3 (1.242.0)
+      aws-sdk-core (~> 3, >= 3.268.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
     aws-sigv4 (1.12.1)
@@ -160,6 +160,7 @@ GEM
       logger
     faraday-net_http (3.5.0)
       net-http (~> 0.5)
+    ffi (1.17.4)
     ffi (1.17.4-arm64-darwin)
     ffi (1.17.4-x86_64-darwin)
     ffi (1.17.4-x86_64-linux-gnu)
@@ -169,7 +170,7 @@ GEM
     globalid (1.4.0)
       activesupport (>= 6.1)
     hashdiff (1.2.2)
-    honeybadger (6.10.1)
+    honeybadger (6.10.2)
       logger
       ostruct
     http (5.3.1)
@@ -214,6 +215,7 @@ GEM
       net-smtp
     marcel (1.2.1)
     mini_mime (1.1.5)
+    mini_portile2 (2.8.9)
     minitest (6.1.0)
       drb (~> 2.0)
       prism (>= 1.5, < 3)
@@ -228,7 +230,7 @@ GEM
       net-protocol
     net-protocol (0.4.0)
       timeout
-    net-scp (4.2.1)
+    net-scp (4.2.2)
       net-ssh (>= 2.6.5, < 9.0.0)
     net-sftp (4.1.1)
       net-ssh (>= 5.0.0, < 9.0.0)
@@ -240,6 +242,9 @@ GEM
     newrelic_rpm (10.9.1)
       logger
     nio4r (2.7.5)
+    nokogiri (1.19.7)
+      mini_portile2 (~> 2.8.2)
+      racc (~> 1.4)
     nokogiri (1.19.7-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.19.7-x86_64-darwin)
@@ -257,6 +262,7 @@ GEM
     pp (0.6.4)
       prettyprint
     prettyprint (0.2.1)
+    prism (2.1.0)
     prism (2.1.0-arm64-darwin)
     prism (2.1.0-x86_64-darwin)
     prism (2.1.0-x86_64-linux-gnu)
@@ -265,7 +271,7 @@ GEM
       activesupport (>= 7.0.0)
       rack
     public_suffix (7.0.5)
-    puma (7.2.1)
+    puma (7.2.2)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.2.8)
@@ -414,7 +420,7 @@ GEM
     whenever (1.1.4)
       chronic (>= 0.6.3)
     zeitwerk (2.8.3)
-    zip_kit (6.4.1)
+    zip_kit (6.4.2)
 
 PLATFORMS
   arm64-darwin-23
@@ -466,4 +472,4 @@ DEPENDENCIES
   zip_kit (~> 6.3)
 
 BUNDLED WITH
-  4.0.24
+  4.1.0
