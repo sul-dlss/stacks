@@ -51,7 +51,44 @@ RSpec.describe "File requests" do
       it 'returns a 400 HTTP response' do
         get '/v2/file/xf680rd3068/version/1/path/to/99999.jp2'
         expect(response).to have_http_status(:not_found)
-        expect(Cocina).to have_received(:find).with('xf680rd3068', '1')
+        expect(Cocina).to have_received(:find).with('xf680rd3068', '1').once
+      end
+    end
+
+    describe 'GET head file missing from the cached cocina' do
+      let(:cache) { ActiveSupport::Cache::MemoryStore.new }
+      let(:stale_json) { Factories.cocina_with_file(file_name: 'other.jp2') }
+
+      before do
+        # The test environment's null store caches nothing.
+        allow(Rails).to receive(:cache).and_return(cache)
+        Rails.cache.write("purl/#{druid}.json", stale_json)
+      end
+
+      context 'when a new version added the file' do
+        before do
+          stub_request(:get, "https://purl.stanford.edu/#{druid}.json")
+            .to_return(status: 200, body: public_json.to_json)
+        end
+
+        it 'fetches the public json again and caches it' do
+          get "/file/#{druid}/#{file_name}"
+          expect(response).to be_successful
+          expect(Cocina).to have_received(:find).with(druid, :head, fresh: true)
+          expect(Rails.cache.read("purl/#{druid}.json")).to eq public_json
+        end
+      end
+
+      context 'when the file is not in the current cocina either' do
+        before do
+          stub_request(:get, "https://purl.stanford.edu/#{druid}.json")
+            .to_return(status: 200, body: stale_json.to_json)
+        end
+
+        it 'returns a 404 HTTP response' do
+          get "/file/#{druid}/#{file_name}"
+          expect(response).to have_http_status(:not_found)
+        end
       end
     end
 

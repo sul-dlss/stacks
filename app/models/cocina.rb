@@ -6,9 +6,10 @@ class Cocina
 
   THUMBNAIL_MIME_TYPE = 'image/jp2'
 
+  # @param fresh [Boolean] when true, fetches the public json even if cached (and caches it)
   # @return [Cocina] Returns the cocina object for the given druid and version
-  def self.find(druid, version = :head)
-    data = Rails.cache.fetch(metadata_cache_key(druid, version), expires_in: 10.minutes) do
+  def self.find(druid, version = :head, fresh: false)
+    data = Rails.cache.fetch(metadata_cache_key(druid, version), expires_in: 10.minutes, force: fresh) do
       benchmark "Fetching public json for #{druid} version #{version}" do
         connection = Faraday.new({ url: public_json_url(druid, version),
                                    headers: { user_agent: Settings.user_agent },
