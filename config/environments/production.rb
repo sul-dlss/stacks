@@ -44,7 +44,7 @@ Rails.application.configure do
   config.active_support.report_deprecations = false
 
   # Replace the default file-based cache store with a more robust alternative.
-  # config.cache_store = :redis_cache_store, { url: ENV["REDIS_CACHE_URL"] }
+  config.cache_store = :redis_cache_store, { url: ENV.fetch('REDIS_URL', nil) }
 
   # Replace the default in-process and non-durable queuing backend for Active Job.
   # config.active_job.queue_adapter = :resque

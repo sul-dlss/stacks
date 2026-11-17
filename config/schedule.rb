@@ -23,7 +23,3 @@
 env :HONEYBADGER_INSIGHTS_ENABLED, false
 
 job_type :runner, "cd :path && RAILS_LOG_LEVEL=warn bin/rails runner -e :environment ':task' :output"
-
-every :day, at: '3:00 am' do
-  runner 'Rails.cache.cleanup'
-end
