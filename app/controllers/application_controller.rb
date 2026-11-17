@@ -15,6 +15,11 @@ class ApplicationController < ActionController::Base
 
   private
 
+  # A client that needs a change published moments ago (e.g., a just-added file) asks for it with no-cache.
+  def no_cache_requested?
+    request.headers['Cache-Control'].to_s.split(',').map(&:strip).include?('no-cache')
+  end
+
   def set_cors_headers
     origin = request.origin
     permitted_origins = [Settings.cors.allow_origin_url]

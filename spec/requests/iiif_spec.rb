@@ -44,6 +44,13 @@ RSpec.describe 'IIIF API' do
         expect(response.headers['Link']).to eq '<http://iiif.io/api/image/2/level2.json>;rel="profile"'
       end
 
+      it 'fetches the public json without the cache for a no-cache request' do
+        get '/image/iiif/bb000cr7262%2Fimage/info.json', headers: { HTTP_ACCEPT: 'application/json', 'Cache-Control' => 'no-cache' }
+
+        expect(response).to be_successful
+        expect(Cocina).to have_received(:find).with('bb000cr7262', fresh: true)
+      end
+
       context 'when the image server speaks IIIF Image API 3' do
         let(:metadata) do
           { '@context' => 'http://iiif.io/api/image/3/context.json',

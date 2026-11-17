@@ -156,7 +156,7 @@ class FileController < ApplicationController
   end
 
   def cocina
-    @cocina ||= Cocina.find(params.expect(:id), version)
+    @cocina ||= Cocina.find(params.expect(:id), version, fresh: no_cache_requested?)
   end
 
   def version

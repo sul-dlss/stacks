@@ -7,6 +7,33 @@ RSpec.describe Cocina do
     Rails.cache.clear
   end
 
+  describe '.find' do
+    let(:cache) { ActiveSupport::Cache::MemoryStore.new }
+
+    before do
+      # The test environment's null store caches nothing.
+      allow(Rails).to receive(:cache).and_return(cache)
+      stub_request(:get, 'https://purl.stanford.edu/abc.json')
+        .to_return({ status: 200, body: { 'externalIdentifier' => 'abc', 'modified' => '2026-11-16T00:00:00Z' }.to_json },
+                   { status: 200, body: { 'externalIdentifier' => 'abc', 'modified' => '2026-11-17T00:00:00Z' }.to_json })
+    end
+
+    it 'uses the cached public json' do
+      described_class.find('abc')
+
+      expect(described_class.find('abc').modified).to eq Time.zone.parse('2026-11-16T00:00:00Z')
+    end
+
+    context 'when fresh' do
+      it 'fetches the public json again and caches it' do
+        described_class.find('abc')
+
+        expect(described_class.find('abc', fresh: true).modified).to eq Time.zone.parse('2026-11-17T00:00:00Z')
+        expect(described_class.find('abc').modified).to eq Time.zone.parse('2026-11-17T00:00:00Z')
+      end
+    end
+  end
+
   describe '#files' do
     let(:json) do
       {

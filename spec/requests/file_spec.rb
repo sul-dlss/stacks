@@ -38,7 +38,7 @@ RSpec.describe "File requests" do
       it 'returns a successful HTTP response' do
         get "/v2/file/#{druid}/version/#{version_id}/#{file_name}"
         expect(response).to be_successful
-        expect(Cocina).to have_received(:find).with(druid, version_id)
+        expect(Cocina).to have_received(:find).with(druid, version_id, fresh: false)
       end
     end
 
@@ -51,7 +51,20 @@ RSpec.describe "File requests" do
       it 'returns a 400 HTTP response' do
         get '/v2/file/xf680rd3068/version/1/path/to/99999.jp2'
         expect(response).to have_http_status(:not_found)
-        expect(Cocina).to have_received(:find).with('xf680rd3068', '1')
+        expect(Cocina).to have_received(:find).with('xf680rd3068', '1', fresh: false)
+      end
+    end
+
+    describe 'GET file with a no-cache request' do
+      before do
+        stub_request(:get, "https://purl.stanford.edu/#{druid}.json")
+          .to_return(status: 200, body: public_json.to_json)
+      end
+
+      it 'fetches the public json without the cache' do
+        get "/file/#{druid}/#{file_name}", headers: { 'Cache-Control' => 'no-cache' }
+        expect(response).to be_successful
+        expect(Cocina).to have_received(:find).with(druid, :head, fresh: true)
       end
     end
 
