@@ -19,11 +19,11 @@ module Iiif
                        Cocina.find(parsed_uri[:druid])
                      end
             file = StacksFile.new(file_name: parsed_uri[:file_name], cocina:)
-          rescue Purl::Exception
+          rescue Purl::Exception, ActionController::MissingFile
             return render json: AuthProbeResult2.not_found(parsed_uri[:druid])
           end
 
-          render json: auth_probe_result(file, cocina)
+          render json: auth_probe_result(file)
         end
 
         def iiif_stream_location(stacks_file)
@@ -43,7 +43,7 @@ module Iiif
 
         private
 
-        def auth_probe_result(file, cocina)
+        def auth_probe_result(file)
           if !file.valid?
             AuthProbeResult2.bad_request(file.errors.full_messages)
           elsif can? :access, file
@@ -57,8 +57,6 @@ module Iiif
           else
             AuthProbeResult2.forbidden(**forbidden_fields(file))
           end
-        rescue ActionController::MissingFile
-          AuthProbeResult2.not_found(cocina.druid)
         end
 
         def forbidden_fields(file)

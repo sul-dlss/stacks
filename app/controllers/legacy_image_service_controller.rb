@@ -5,6 +5,10 @@
 class LegacyImageServiceController < ApplicationController
   before_action :load_image
 
+  rescue_from ActionController::MissingFile do
+    render plain: 'File not found', status: :not_found
+  end
+
   ##
   # Redirect legacy image requests to their IIIF equivalents
   def show
@@ -31,7 +35,7 @@ class LegacyImageServiceController < ApplicationController
   end
 
   def stacks_file
-    StacksFile.new(file_name:, cocina: Cocina.find(id))
+    StacksFile.new(file_name: "#{file_name}.jp2", cocina: Cocina.find(id))
   end
 
   def iiif_params

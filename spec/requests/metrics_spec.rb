@@ -95,7 +95,7 @@ RSpec.describe 'Metrics tracking' do
         'nr349ct7889%2Fimage',
         {
           id: druid,
-          file_name:,
+          file_name: File.basename(file_name, '.jp2'), # IIIF requests omit the .jp2
           region: '0,640,2552,2552',
           size: '100,100',
           rotation: '0',

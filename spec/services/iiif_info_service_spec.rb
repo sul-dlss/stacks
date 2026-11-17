@@ -17,7 +17,7 @@ RSpec.describe IiifInfoService do
     let(:downloadable_anonymously) { true }
     let(:image) { StacksImage.new(stacks_file:) }
     let(:cocina) { Cocina.new(public_json) }
-    let(:public_json) { {} }
+    let(:public_json) { Factories.cocina_with_file(file_name: 'nr349ct7889_00_0001') }
     let(:stacks_file) { StacksFile.new(file_name: 'nr349ct7889_00_0001', cocina:) }
     let(:source_info) { {} }
     let(:api_version) { 2 }

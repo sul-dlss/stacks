@@ -12,6 +12,7 @@ class StacksFile
     @file_name = file_name
     @cocina = cocina
     validate!
+    cocina_file # raises ActionController::MissingFile if the cocina lacks the file
   end
 
   attr_reader :file_name, :cocina

@@ -18,6 +18,14 @@ RSpec.describe StacksFile do
     end
   end
 
+  context 'with a file that is not in the cocina' do
+    let(:file_name) { 'other.jp2' }
+
+    it 'raises an error' do
+      expect { instance }.to raise_error ActionController::MissingFile
+    end
+  end
+
   describe 'cache validators' do
     before do
       allow(S3ClientFactory).to receive(:create_client)

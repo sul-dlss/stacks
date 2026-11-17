@@ -16,7 +16,7 @@ RSpec.describe LegacyImageServiceController do
             'structural' => {
               'contains' => [
                 {
-                  'filename' => 'image.jp2',
+                  'filename' => 'nr349ct7889_00_0001.jp2',
                   'access' => {
                     'view' => 'world',
                     'download' => 'world'
@@ -28,6 +28,13 @@ RSpec.describe LegacyImageServiceController do
         ]
       }
     }
+  end
+
+  context 'with an image that is not in the cocina' do
+    it 'is not found' do
+      page = get :show, params: { id: 'nr349ct7889', file_name: 'other', size: 'square' }
+      expect(page).to have_http_status(:not_found)
+    end
   end
 
   describe 'Precast sizes' do

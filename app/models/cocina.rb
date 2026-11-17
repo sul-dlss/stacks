@@ -71,9 +71,10 @@ class Cocina
     file_sets = data.dig('structural', 'contains')
     raise(ActionController::MissingFile, "File not found '#{file_name}'") unless file_sets # Trap for Collections
 
-    file_sets.lazy.flat_map { |file_set| file_set.dig('structural', 'contains') }
-             .find { |file| file['filename'] == file_name } || raise(ActionController::MissingFile,
-                                                                     "File not found '#{file_name}'")
+    # Indexed, since a StacksFile is built (and looked up) for every file of an object.
+    @files_by_name ||= file_sets.flat_map { |file_set| file_set.dig('structural', 'contains') }
+                                .reverse.index_by { |file| file['filename'] }
+    @files_by_name[file_name] || raise(ActionController::MissingFile, "File not found '#{file_name}'")
   end
 
   def find_file_md5(file_name)
