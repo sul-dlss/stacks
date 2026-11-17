@@ -152,7 +152,17 @@ class FileController < ApplicationController
   end
 
   def current_file
-    @file ||= StacksFile.new(file_name: params[:file_name], cocina:)
+    @file ||= StacksFile.new(file_name: params[:file_name], cocina: cocina_with_file)
+  end
+
+  # The cached head cocina may predate the version that added the file, so a miss fetches it again.
+  def cocina_with_file
+    cocina.find_file(params[:file_name])
+    cocina
+  rescue ActionController::MissingFile
+    raise unless version == :head
+
+    @cocina = Cocina.find(params.expect(:id), version, fresh: true)
   end
 
   def cocina
