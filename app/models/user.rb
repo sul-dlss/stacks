@@ -6,7 +6,7 @@ class User
   include ActiveModel::Model
 
   attr_accessor :id, :webauth_user, :anonymous_locatable_user, :token_user,
-                :service_user, :download_all, :ldap_groups, :ip_address
+                :service_user, :download_all, :purge_cache, :ldap_groups, :ip_address
 
   def ability
     ability_class.new(self)
@@ -42,6 +42,11 @@ class User
     service_user? && download_all == true
   end
 
+  # A service whose token has the purge_cache claim (e.g., purl-fetcher, after publishing) can purge cached public JSON.
+  def purge_cache?
+    service_user? && purge_cache == true
+  end
+
   def etag
     id
   end
@@ -69,7 +74,9 @@ class User
     return if secret.blank?
 
     payload, _header = JWT.decode(token, secret, true, algorithm: 'HS256')
-    User.new({ id: payload['sub'], service_user: true, download_all: payload['download_all'] == true }
+    User.new({ id: payload['sub'], service_user: true,
+               download_all: payload['download_all'] == true,
+               purge_cache: payload['purge_cache'] == true }
                .merge(additional_attributes))
   rescue JWT::DecodeError
     nil
