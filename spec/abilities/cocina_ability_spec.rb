@@ -450,4 +450,26 @@ RSpec.describe CocinaAbility, type: :model do
       it { is_expected.to be_able_to(:read, square_thumbnail) }
     end
   end
+
+  describe 'purging cached public JSON' do
+    let(:access) { { 'view' => 'dark', 'download' => 'none' } }
+
+    context 'with a service user whose token has the purge_cache claim' do
+      let(:user) { User.new(id: 'purl-fetcher', service_user: true, purge_cache: true) }
+
+      it { is_expected.to be_able_to(:purge, Cocina) }
+    end
+
+    context 'with a service user without the purge_cache claim' do
+      let(:user) { User.new(id: 'sdr-harvest', service_user: true) }
+
+      it { is_expected.not_to be_able_to(:purge, Cocina) }
+    end
+
+    context 'with a non-service user claiming purge_cache' do
+      let(:user) { User.new(id: 'a', webauth_user: true, purge_cache: true) }
+
+      it { is_expected.not_to be_able_to(:purge, Cocina) }
+    end
+  end
 end

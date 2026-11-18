@@ -39,6 +39,17 @@ RSpec.describe User do
         expect(user).to be_a_service_user
         expect(user).to be_stanford
         expect(user).not_to be_download_all
+        expect(user).not_to be_purge_cache
+      end
+    end
+
+    context 'with a token with the purge_cache claim' do
+      let(:token) { JWT.encode({ sub: 'purl-fetcher', purge_cache: true }, Settings.service_token.hmac_secret, 'HS256') }
+
+      it 'is a service user that purges cached public JSON' do
+        expect(user).to be_a_service_user
+        expect(user).to be_purge_cache
+        expect(user).not_to be_download_all
       end
     end
 
