@@ -24,6 +24,14 @@ class Cocina
     new(data)
   end
 
+  # Drop the cached public JSON for the head version
+  # If `version` is passed, drops that cocina from the cache too
+  def self.expire(druid, version: nil)
+    keys = [metadata_cache_key(druid, :head)]
+    keys << metadata_cache_key(druid, version) if version
+    Rails.cache.delete_multi(keys)
+  end
+
   def self.metadata_cache_key(druid, version)
     return "purl/#{druid}.json" if version == :head
 

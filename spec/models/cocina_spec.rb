@@ -7,6 +7,40 @@ RSpec.describe Cocina do
     Rails.cache.clear
   end
 
+  describe '.expire' do
+    let(:cache) { ActiveSupport::Cache::MemoryStore.new }
+    let(:druid) { 'bc123df4567' }
+
+    def public_json(version)
+      { status: 200, body: { 'externalIdentifier' => "druid:#{druid}", 'version' => version }.to_json }
+    end
+
+    before do
+      allow(Rails).to receive(:cache).and_return(cache)
+      stub_request(:get, "https://purl.stanford.edu/#{druid}.json").to_return(public_json(4), public_json(5))
+      stub_request(:get, "https://purl.stanford.edu/#{druid}/version/5.json").to_return(public_json(5), public_json(6))
+    end
+
+    it 'makes the next find fetch the head version from purl again' do
+      expect(described_class.find(druid).data['version']).to eq 4
+      expect(described_class.find(druid).data['version']).to eq 4 # cached
+
+      described_class.expire(druid)
+
+      expect(described_class.find(druid).data['version']).to eq 5
+    end
+
+    it 'leaves cached versions alone unless asked to expire one' do
+      expect(described_class.find(druid, '5').data['version']).to eq 5
+
+      described_class.expire(druid)
+      expect(described_class.find(druid, '5').data['version']).to eq 5 # still cached
+
+      described_class.expire(druid, version: 5)
+      expect(described_class.find(druid, '5').data['version']).to eq 6
+    end
+  end
+
   describe '#files' do
     let(:json) do
       {

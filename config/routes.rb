@@ -4,6 +4,11 @@ Rails.application.routes.draw do
   get '/object/:id' => 'object#show', as: :object
   get '/object/:id/version/:version_id', to: 'object#show'
 
+  constraints id: druid_regex, version_id: /\d+/ do
+    delete '/cocina_cache/:id', to: 'cocina_cache#destroy'
+    delete '/cocina_cache/:id/version/:version_id', to: 'cocina_cache#destroy'
+  end
+
   constraints id: druid_regex do
     scope format: false do  # Tell rails not to separate out the filename suffixes
       scope '/v2' do # versionable files
